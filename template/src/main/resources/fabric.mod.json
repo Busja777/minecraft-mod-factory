@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "placeholder-mod",
+  "version": "1.0.0",
+  "name": "Placeholder Mod",
+  "description": "Generated mod",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.mod.ModMain"]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
