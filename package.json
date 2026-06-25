@@ -1,0 +1,16 @@
+{
+  "name": "minecraft-mod-factory",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate.js",
+    "images": "node scripts/build-images.js",
+    "inject": "node scripts/inject.js",
+    "upload": "node scripts/upload.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@fal-ai/client": "^1.3.0",
+    "form-data": "^4.0.0"
+  }
+}

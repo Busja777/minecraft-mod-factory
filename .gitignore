@@ -1,0 +1,8 @@
+node_modules/
+generated-mod.json
+images/
+template/build/
+template/.gradle/
+template/run/
+.env
+*.env
