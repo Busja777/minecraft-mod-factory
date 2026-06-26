@@ -14,7 +14,12 @@ const errors = buildOutput
   .slice(0, 30)
   .join('\n');
 
-console.log('Compile errors found:\n' + errors);
+if (!errors) {
+  console.log('No compile errors found in build-output.txt — nothing to fix.');
+  process.exit(0);
+}
+
+console.log('Compile errors:\n' + errors);
 console.log('\nSending to Claude for fix...');
 
 const response = await client.messages.create({
@@ -22,24 +27,25 @@ const response = await client.messages.create({
   max_tokens: 4096,
   tools: [{
     name: 'fix_code',
-    description: 'Return fixed, compilable Java code',
+    description: 'Return fixed, compilable Java source code',
     input_schema: {
       type: 'object',
-      properties: { javaCode: { type: 'string', description: 'Complete fixed Java source code' } },
+      properties: { javaCode: { type: 'string' } },
       required: ['javaCode']
     }
   }],
   tool_choice: { type: 'tool', name: 'fix_code' },
   messages: [{
     role: 'user',
-    content: `Fix the Java compile errors below. This is a Minecraft Fabric 1.21.1 mod.
+    content: `Fix the Java compile errors below for a Minecraft Fabric 1.21.1 mod.
 
 RULES:
 - Package: com.factory.mod | Class: ModMain implements ModInitializer
-- ONLY use APIs in Fabric API 0.102.0+1.21.1 + Java 21
+- Only use APIs in Fabric API 0.102.0+1.21.1 + Java 21
 - BANNED: setStepHeight(), getStepHeight() → use EntityAttributes.GENERIC_STEP_HEIGHT
-- BANNED: any Client-side classes in server entrypoint
-- Keep it simple — prefer ServerTickEvents, UseEntityCallback, PlayerBlockBreakEvents
+- BANNED: any net.minecraft.client.* class
+- Prefer ServerTickEvents, UseEntityCallback, PlayerBlockBreakEvents
+- If the feature is too complex to fix, simplify to a working basic version
 
 Current code:
 \`\`\`java
@@ -56,4 +62,4 @@ if (!fix) throw new Error('Claude did not return a fix');
 
 mod.javaCode = fix.input.javaCode;
 fs.writeFileSync('./generated-mod.json', JSON.stringify(mod, null, 2));
-console.log('Fix applied successfully.');
+console.log('Fix applied to generated-mod.json');

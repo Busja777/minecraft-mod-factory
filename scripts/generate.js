@@ -6,7 +6,6 @@ const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 
 let recentMods = [];
 try { recentMods = JSON.parse(fs.readFileSync('./data/recent-mods.json', 'utf-8')); } catch {}
-
 const avoidList = recentMods.map(m => m.name).join(', ') || 'none';
 
 const response = await client.messages.create({
@@ -14,16 +13,16 @@ const response = await client.messages.create({
   max_tokens: 4096,
   tools: [{
     name: 'create_mod',
-    description: 'Create a Minecraft Fabric QoL mod',
+    description: 'Create a Minecraft Fabric 1.21.1 QoL mod',
     input_schema: {
       type: 'object',
       properties: {
         name:        { type: 'string', description: 'Mod display name, e.g. "AutoSort"' },
-        modId:       { type: 'string', description: 'Mod ID: lowercase letters and hyphens only, e.g. "auto-sort"' },
-        description: { type: 'string', description: '1-2 sentence description for CurseForge' },
+        modId:       { type: 'string', description: 'Lowercase letters and hyphens only, max 32 chars, e.g. "auto-sort"' },
+        description: { type: 'string', description: '1-2 sentence description for the mod page' },
         changelog:   { type: 'string', description: 'Markdown changelog for v1.0.0' },
-        javaCode:    { type: 'string', description: 'Complete, compilable Java source for ModMain.java using package com.factory.mod and class ModMain implementing ModInitializer' },
-        imagePrompt: { type: 'string', description: 'Detailed fal.ai image prompt for a gaming thumbnail' }
+        javaCode:    { type: 'string', description: 'Complete, compilable Java source for ModMain.java' },
+        imagePrompt: { type: 'string', description: 'Detailed image generation prompt for a gaming thumbnail' }
       },
       required: ['name', 'modId', 'description', 'changelog', 'javaCode', 'imagePrompt']
     }
@@ -34,36 +33,46 @@ const response = await client.messages.create({
     content: `You are an expert Minecraft Fabric 1.21.1 mod developer.
 Generate a small, useful ${config.niche} mod (${config.style}).
 
-STRICT RULES — the code must compile with Fabric API 0.102.0+1.21.1 and Java 21:
-- Package: com.factory.mod | Main class: ModMain implements net.fabricmc.api.ModInitializer
-- Keep it simple: one clear feature, 50-150 lines max, no external dependencies
-- Use only vanilla Minecraft + Fabric API imports
+STRICT RULES — must compile with Fabric API 0.102.0+1.21.1 and Java 21:
+- Package: com.factory.mod | Class: ModMain implements net.fabricmc.api.ModInitializer
+- Simple: one clear feature, 50-150 lines, no external dependencies
+- Server-side only (no client classes in main entrypoint)
 
-SAFE APIs to use (these exist in 1.21.1):
+SAFE APIs (confirmed exist in 1.21.1):
 - ServerTickEvents.END_SERVER_TICK, ServerTickEvents.END_WORLD_TICK
 - UseEntityCallback, AttackEntityCallback, PlayerBlockBreakEvents
-- ServerPlayerEntity methods: sendMessage(), getInventory(), getHealth(), getHungerManager()
-- ItemStack, Items, Inventories
+- ServerPlayerEntity: sendMessage(), getInventory(), getHealth(), getHungerManager(), getExperienceLevel()
+- ItemStack, Items, Inventories, NbtCompound
 - Text.literal(), Text.translatable()
-- ServerWorld, World methods: getPlayers(), getTime()
+- ServerWorld, World: getPlayers(), getTime(), isRaining()
 - ServerLifecycleEvents.SERVER_STARTED
 
-BANNED — do NOT use (removed or changed in 1.21.1):
-- setStepHeight(), getStepHeight() — removed, use getAttribute(EntityAttributes.GENERIC_STEP_HEIGHT)
-- Any method not in the standard Fabric API 0.102.0 javadocs
-- Mixins, ASM, reflection
-- Client-side only classes (MinecraftClient, etc.) in server entrypoint
+BANNED (removed/changed in 1.21.1 — will cause compile errors):
+- setStepHeight() / getStepHeight() — use getAttribute(EntityAttributes.GENERIC_STEP_HEIGHT)
+- MinecraftClient or any net.minecraft.client.* class in server entrypoint
+- Mixins, ASM, or reflection
 
-PREFERRED PATTERN — simple event-based mods:
+PREFERRED PATTERN:
 \`\`\`java
-ServerTickEvents.END_SERVER_TICK.register(server -> {
-    for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-        // your logic here
+package com.factory.mod;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+
+public class ModMain implements ModInitializer {
+    @Override
+    public void onInitialize() {
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                // your logic here
+            }
+        });
     }
-});
+}
 \`\`\`
 
-Avoid these already-made mods: ${avoidList}`
+Already made — do not repeat: ${avoidList}`
   }]
 });
 

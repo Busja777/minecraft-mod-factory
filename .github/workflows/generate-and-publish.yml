@@ -26,10 +26,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install Node dependencies
         run: npm ci
@@ -61,7 +61,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          echo "::warning::Build failed — asking Claude to fix compile errors..."
+          echo "::warning::First build failed — sending errors to Claude for fix..."
           node scripts/fix.js
           node scripts/inject.js
 
@@ -78,7 +78,7 @@ jobs:
           RELEASE_TYPE: alpha
         run: node scripts/upload.js
 
-      - name: Commit updated tracking files
+      - name: Commit tracking files
         run: |
           git config user.name "Mod Factory Bot"
           git config user.email "bot@modfactory.dev"
@@ -89,56 +89,46 @@ jobs:
       - name: Save problem log on failure
         if: failure()
         run: |
-          MOD_ID=$(node -e "try{const m=require('./generated-mod.json');console.log(m.modId)}catch{console.log('unknown-mod')}" 2>/dev/null || echo "unknown-mod")
+          MOD_ID=$(node -e "try{const m=JSON.parse(require('fs').readFileSync('./generated-mod.json','utf-8'));console.log(m.modId)}catch{console.log('unknown-mod')}" 2>/dev/null || echo "unknown-mod")
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           LOG_DIR="Problem_logfile/${MOD_ID}/${TIMESTAMP}"
           mkdir -p "$LOG_DIR"
 
-          cat > "$LOG_DIR/error.md" << EOF
-          # Pipeline Failure — ${MOD_ID}
-
-          **Timestamp:** ${TIMESTAMP}
-          **Run URL:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          **Trigger:** ${{ github.event_name }}
-
-          ## What failed
-          Check the run URL above for the full step-by-step log.
-
-          ## Generated Mod Info
-          EOF
+          {
+            echo "# Pipeline Failure — ${MOD_ID}"
+            echo ""
+            echo "**Timestamp:** ${TIMESTAMP}"
+            echo "**Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo ""
+            echo "## Generated Mod"
+          } > "$LOG_DIR/error.md"
 
           if [ -f generated-mod.json ]; then
             echo '```json' >> "$LOG_DIR/error.md"
             cat generated-mod.json >> "$LOG_DIR/error.md"
             echo '```' >> "$LOG_DIR/error.md"
             cp generated-mod.json "$LOG_DIR/generated-mod.json"
-          else
-            echo "_generated-mod.json not available (failure before generate step)_" >> "$LOG_DIR/error.md"
           fi
 
-          if [ -f template/build/reports/problems/problems-report.html ] || ls template/build/reports/ 2>/dev/null | head -5; then
-            echo "" >> "$LOG_DIR/error.md"
-            echo "## Gradle Build Report" >> "$LOG_DIR/error.md"
-            echo "_See $LOG_DIR/build-error.txt_" >> "$LOG_DIR/error.md"
-            find template/build/reports -name "*.txt" -exec cat {} >> "$LOG_DIR/build-error.txt" \; 2>/dev/null || true
+          if [ -f build-output.txt ]; then
+            grep -E "error:|cannot find symbol" build-output.txt > "$LOG_DIR/compile-errors.txt" || true
           fi
 
           git config user.name "Mod Factory Bot"
           git config user.email "bot@modfactory.dev"
           git add "Problem_logfile/"
-          git diff --staged --quiet || git commit -m "log: pipeline failure for ${MOD_ID} at ${TIMESTAMP} [skip ci]"
+          git diff --staged --quiet || git commit -m "log: failure ${MOD_ID} ${TIMESTAMP} [skip ci]"
           git push
 
-      - name: Create issue on failure
+      - name: Create GitHub issue on failure
         if: failure()
         uses: actions/github-script@v7
         with:
           script: |
-            const modId = '${{ github.run_number }}';
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Pipeline failed: ${new Date().toISOString().split('T')[0]}`,
-              body: `The mod generation pipeline failed. Check the [Actions run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.\n\nError log saved to \`Problem_logfile/\` in the repository.`,
+              body: `Pipeline failed. See [Actions run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).\n\nError log: \`Problem_logfile/\``,
               labels: ['pipeline-failure']
             });
