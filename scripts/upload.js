@@ -58,6 +58,7 @@ function streamToBuffer(form) {
 async function uploadModrinth() {
   const slug = `${mod.modId}-${Date.now()}`.slice(0, 64);
 
+  // Modrinth requires initial_versions + the jar file in one single multipart POST
   const projectForm = new FormData();
   projectForm.append('data', JSON.stringify({
     slug,
@@ -69,8 +70,20 @@ async function uploadModrinth() {
     body: `# ${mod.name}\n\n${mod.description}\n\n## Changelog\n\n${mod.changelog}`,
     project_type: 'mod',
     license_id: 'MIT',
-    is_draft: false
+    is_draft: false,
+    initial_versions: [{
+      name: 'v1.0.0',
+      version_number: '1.0.0',
+      changelog: mod.changelog,
+      dependencies: [{ project_id: 'P7dR8mSH', dependency_type: 'required' }],
+      game_versions: ['1.21.1'],
+      version_type: process.env.RELEASE_TYPE || 'alpha',
+      loaders: ['fabric'],
+      featured: true,
+      file_parts: ['mod-file']
+    }]
   }), { contentType: 'application/json', filename: 'data.json' });
+  projectForm.append('mod-file', fs.readFileSync(jarPath), { filename: jarFile, contentType: 'application/java-archive' });
 
   const projectRes = await fetch('https://api.modrinth.com/v2/project', {
     method: 'POST',
@@ -79,13 +92,13 @@ async function uploadModrinth() {
   });
   if (!projectRes.ok) throw new Error(`Modrinth project creation failed (${projectRes.status}): ${await projectRes.text()}`);
   const project = await projectRes.json();
-  console.log(`Modrinth project created: ${project.id}`);
+  console.log(`Modrinth ✓ — https://modrinth.com/mod/${slug}`);
 
   for (const [filename, title] of [['screenshot1.png', 'Feature showcase'], ['screenshot2.png', 'UI overview']]) {
     if (!fs.existsSync(`./images/${filename}`)) continue;
     const imgForm = new FormData();
     imgForm.append('ext', 'png');
-    imgForm.append('featured', 'true');
+    imgForm.append('featured', 'false');
     imgForm.append('title', title);
     imgForm.append('image', fs.readFileSync(`./images/${filename}`), { filename, contentType: 'image/png' });
     const galleryRes = await fetch(`https://api.modrinth.com/v2/project/${project.id}/gallery`, {
@@ -96,30 +109,6 @@ async function uploadModrinth() {
     if (galleryRes.ok) console.log(`Modrinth gallery: ${filename}`);
     else console.log(`Modrinth gallery warning (${galleryRes.status}): ${await galleryRes.text()}`);
   }
-
-  const versionForm = new FormData();
-  versionForm.append('data', JSON.stringify({
-    name: 'v1.0.0',
-    version_number: '1.0.0',
-    changelog: mod.changelog,
-    dependencies: [{ project_id: 'P7dR8mSH', dependency_type: 'required' }],
-    game_versions: ['1.21.1'],
-    version_type: process.env.RELEASE_TYPE || 'alpha',
-    loaders: ['fabric'],
-    featured: true,
-    project_id: project.id,
-    file_parts: ['file']
-  }), { contentType: 'application/json', filename: 'data.json' });
-  versionForm.append('file', fs.readFileSync(jarPath), { filename: jarFile, contentType: 'application/java-archive' });
-
-  const versionBuf = versionForm.getBuffer();
-  const versionRes = await fetch('https://api.modrinth.com/v2/version', {
-    method: 'POST',
-    headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, ...versionForm.getHeaders() },
-    body: versionBuf
-  });
-  if (!versionRes.ok) throw new Error(`Modrinth version upload failed (${versionRes.status}): ${await versionRes.text()}`);
-  console.log(`Modrinth ✓ — https://modrinth.com/mod/${slug}`);
 }
 
 await uploadCurseForge().catch(e => console.error('CurseForge error (non-fatal):', e.message));
