@@ -19,21 +19,13 @@ async function uploadCurseForge() {
   const projectId = projectIds.find(id => !used.includes(id));
   if (!projectId) throw new Error('All CurseForge project IDs used. Add more to CF_PROJECT_IDS.');
 
-  const versionsRes = await fetch('https://minecraft.curseforge.com/api/game/versions', {
-    headers: { 'X-Api-Token': process.env.CF_API_TOKEN }
-  });
-  if (!versionsRes.ok) throw new Error(`CF versions fetch failed: ${versionsRes.status}`);
-  const versions = await versionsRes.json();
-
-  const mc = versions.find(v => v.name === '1.21.1' && v.gameVersionTypeID === 73407);
-  const fabric = versions.find(v => v.name === 'Fabric');
-  if (!mc || !fabric) throw new Error('Could not find MC 1.21.1 or Fabric in CF versions list');
-
+  // CF game versions endpoint is unreliable; use empty array so CurseForge
+  // falls back to the project's default game versions.
   const metadata = {
     changelog: mod.changelog,
     changelogType: 'markdown',
     displayName: `${mod.name} v1.0.0`,
-    gameVersions: [mc.id, fabric.id],
+    gameVersions: [],
     releaseType: process.env.RELEASE_TYPE || 'alpha'
   };
 
@@ -57,21 +49,24 @@ async function uploadCurseForge() {
 async function uploadModrinth() {
   const slug = `${mod.modId}-${Date.now()}`.slice(0, 64);
 
+  const projectForm = new FormData();
+  projectForm.append('data', JSON.stringify({
+    slug,
+    title: mod.name,
+    description: mod.description,
+    categories: ['utility'],
+    client_side: 'optional',
+    server_side: 'optional',
+    body: `# ${mod.name}\n\n${mod.description}\n\n## Changelog\n\n${mod.changelog}`,
+    project_type: 'mod',
+    license_id: 'MIT',
+    is_draft: false
+  }));
+
   const projectRes = await fetch('https://api.modrinth.com/v2/project', {
     method: 'POST',
-    headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      slug,
-      title: mod.name,
-      description: mod.description,
-      categories: ['utility'],
-      client_side: 'optional',
-      server_side: 'optional',
-      body: `# ${mod.name}\n\n${mod.description}\n\n## Changelog\n\n${mod.changelog}`,
-      project_type: 'mod',
-      license_id: 'MIT',
-      is_draft: false
-    })
+    headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, ...projectForm.getHeaders() },
+    body: projectForm
   });
   if (!projectRes.ok) throw new Error(`Modrinth project creation failed (${projectRes.status}): ${await projectRes.text()}`);
   const project = await projectRes.json();
