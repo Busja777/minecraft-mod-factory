@@ -47,47 +47,28 @@ jobs:
       - name: Inject generated code into template
         run: node scripts/inject.js
 
-      - name: Build mod with Gradle (with retry)
+      - name: Build mod with Gradle
+        id: first-build
+        continue-on-error: true
+        working-directory: ./template
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon 2>&1 | tee ../build-output.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Auto-fix compile errors via Claude
+        if: steps.first-build.outcome == 'failure'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          chmod +x template/gradlew
-          build_attempt() {
-            cd template && ./gradlew build --no-daemon 2>&1
-          }
+          echo "::warning::Build failed — asking Claude to fix compile errors..."
+          node scripts/fix.js
+          node scripts/inject.js
 
-          output=$(build_attempt)
-          exit_code=$?
-          echo "$output"
-
-          if [ $exit_code -ne 0 ]; then
-            echo "::warning::First build failed — asking Claude to fix compile errors..."
-            cd ..
-            # Extract error lines and send to Claude for a fix
-            errors=$(echo "$output" | grep -E "error:|cannot find symbol|symbol:|location:" | head -20)
-            node -e "
-              import('@anthropic-ai/sdk').then(async ({ default: Anthropic }) => {
-                const fs = await import('fs');
-                const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-                const mod = JSON.parse(fs.readFileSync('./generated-mod.json', 'utf-8'));
-                const res = await client.messages.create({
-                  model: 'claude-sonnet-4-6',
-                  max_tokens: 4096,
-                  tools: [{ name: 'fix_code', description: 'Return fixed Java code', input_schema: { type: 'object', properties: { javaCode: { type: 'string' } }, required: ['javaCode'] } }],
-                  tool_choice: { type: 'tool', name: 'fix_code' },
-                  messages: [{ role: 'user', content: 'Fix these Java compile errors in this Minecraft Fabric 1.21.1 mod. Only use APIs that exist in Fabric API 0.102.0+1.21.1. Do NOT use setStepHeight() or any removed methods.\n\nCurrent code:\n\`\`\`java\n' + mod.javaCode + '\n\`\`\`\n\nErrors:\n${errors}' }]
-                });
-                const fix = res.content.find(b => b.type === 'tool_use');
-                if (fix) {
-                  mod.javaCode = fix.input.javaCode;
-                  fs.writeFileSync('./generated-mod.json', JSON.stringify(mod, null, 2));
-                  console.log('Code fixed by Claude');
-                }
-              });
-            "
-            node scripts/inject.js
-            cd template && ./gradlew build --no-daemon
-          fi
+      - name: Retry build after fix
+        if: steps.first-build.outcome == 'failure'
+        working-directory: ./template
+        run: ./gradlew build --no-daemon
 
       - name: Upload to CurseForge + Modrinth
         env:
