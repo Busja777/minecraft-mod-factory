@@ -70,10 +70,8 @@ jobs:
         working-directory: ./template
         run: ./gradlew build --no-daemon
 
-      - name: Upload to CurseForge + Modrinth
+      - name: Upload to Modrinth
         env:
-          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CF_PROJECT_IDS: ${{ secrets.CF_PROJECT_IDS }}
           MODRINTH_API_TOKEN: ${{ secrets.MODRINTH_API_TOKEN }}
           RELEASE_TYPE: alpha
         run: node scripts/upload.js
@@ -82,8 +80,8 @@ jobs:
         run: |
           git config user.name "Mod Factory Bot"
           git config user.email "bot@modfactory.dev"
-          git add data/published-mods.json data/used-cf-projects.json || true
-          git diff --staged --quiet || git commit -m "chore: update mod tracking [skip ci]"
+          git add data/published-mods.json || true
+          git diff --staged --quiet || git commit -m "chore: track published mod [skip ci]"
           git push
 
       - name: Save problem log on failure
