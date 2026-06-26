@@ -46,6 +46,15 @@ async function uploadCurseForge() {
   console.log(`CurseForge ✓ — project ${projectId}, file ${result.id}`);
 }
 
+function streamToBuffer(form) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    form.on('data', c => chunks.push(c));
+    form.on('end', () => resolve(Buffer.concat(chunks)));
+    form.on('error', reject);
+  });
+}
+
 async function uploadModrinth() {
   const slug = `${mod.modId}-${Date.now()}`.slice(0, 64);
 
@@ -61,12 +70,12 @@ async function uploadModrinth() {
     project_type: 'mod',
     license_id: 'MIT',
     is_draft: false
-  }));
+  }), { contentType: 'application/json', filename: 'data.json' });
 
   const projectRes = await fetch('https://api.modrinth.com/v2/project', {
     method: 'POST',
     headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, ...projectForm.getHeaders() },
-    body: projectForm
+    body: projectForm.getBuffer()
   });
   if (!projectRes.ok) throw new Error(`Modrinth project creation failed (${projectRes.status}): ${await projectRes.text()}`);
   const project = await projectRes.json();
@@ -78,17 +87,18 @@ async function uploadModrinth() {
     imgForm.append('ext', 'png');
     imgForm.append('featured', 'true');
     imgForm.append('title', title);
-    imgForm.append('image', fs.createReadStream(`./images/${filename}`), { filename });
+    imgForm.append('image', fs.readFileSync(`./images/${filename}`), { filename, contentType: 'image/png' });
     const galleryRes = await fetch(`https://api.modrinth.com/v2/project/${project.id}/gallery`, {
       method: 'POST',
       headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, ...imgForm.getHeaders() },
-      body: imgForm
+      body: imgForm.getBuffer()
     });
     if (galleryRes.ok) console.log(`Modrinth gallery: ${filename}`);
+    else console.log(`Modrinth gallery warning (${galleryRes.status}): ${await galleryRes.text()}`);
   }
 
   const versionForm = new FormData();
-  const versionData = {
+  versionForm.append('data', JSON.stringify({
     name: 'v1.0.0',
     version_number: '1.0.0',
     changelog: mod.changelog,
@@ -99,14 +109,14 @@ async function uploadModrinth() {
     featured: true,
     project_id: project.id,
     file_parts: ['file']
-  };
-  versionForm.append('data', JSON.stringify(versionData));
-  versionForm.append('file', fs.createReadStream(jarPath), { filename: jarFile });
+  }), { contentType: 'application/json', filename: 'data.json' });
+  versionForm.append('file', fs.readFileSync(jarPath), { filename: jarFile, contentType: 'application/java-archive' });
 
+  const versionBuf = versionForm.getBuffer();
   const versionRes = await fetch('https://api.modrinth.com/v2/version', {
     method: 'POST',
     headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, ...versionForm.getHeaders() },
-    body: versionForm
+    body: versionBuf
   });
   if (!versionRes.ok) throw new Error(`Modrinth version upload failed (${versionRes.status}): ${await versionRes.text()}`);
   console.log(`Modrinth ✓ — https://modrinth.com/mod/${slug}`);
