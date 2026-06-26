@@ -1,0 +1,22 @@
+# Pipeline Failure — step-up
+
+**Timestamp:** 2026-06-26T18-55-08Z
+**Run URL:** https://github.com/Busja777/minecraft-mod-factory/actions/runs/28258777038
+**Trigger:** workflow_dispatch
+
+## What failed
+Check the run URL above for the full step-by-step log.
+
+## Generated Mod Info
+```json
+{
+  "name": "StepUp",
+  "modId": "step-up",
+  "description": "Automatically increases your step height to 1 block while on the ground, letting you walk up full blocks without jumping. Toggle it on or off anytime with a keybind.",
+  "changelog": "# StepUp v1.0.0\n- 🚀 Initial release\n- ✅ Automatically step up 1 full block without jumping\n- ⌨️ Keybind (default: `K`) to toggle step-up on/off\n- 💬 Action bar notification when toggling\n- 🔒 Only applies on the ground to prevent unintended behavior mid-air",
+  "javaCode": "package com.factory.mod;\n\nimport net.fabricmc.api.ModInitializer;\nimport net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;\nimport net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;\nimport net.minecraft.client.option.KeyBinding;\nimport net.minecraft.client.util.InputUtil;\nimport net.minecraft.text.Text;\nimport net.minecraft.util.Formatting;\nimport org.lwjgl.glfw.GLFW;\nimport org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;\n\npublic class ModMain implements ModInitializer {\n\n    public static final String MOD_ID = \"step-up\";\n    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);\n\n    // Default vanilla step height\n    private static final float VANILLA_STEP_HEIGHT = 0.6f;\n    // Enhanced step height (1 full block)\n    private static final float ENHANCED_STEP_HEIGHT = 1.0f;\n\n    private static boolean stepUpEnabled = true;\n\n    private static KeyBinding toggleKeyBinding;\n\n    @Override\n    public void onInitialize() {\n        LOGGER.info(\"[StepUp] Initializing StepUp mod...\");\n\n        // Register the toggle keybinding (default: K)\n        toggleKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(\n                \"key.step-up.toggle\",\n                InputUtil.Type.KEYSYM,\n                GLFW.GLFW_KEY_K,\n                \"category.step-up\"\n        ));\n\n        // Register client tick event\n        ClientTickEvents.END_CLIENT_TICK.register(client -> {\n            if (client.player == null) return;\n\n            // Handle toggle key press\n            while (toggleKeyBinding.wasPressed()) {\n                stepUpEnabled = !stepUpEnabled;\n\n                String statusLabel = stepUpEnabled ? \"Enabled\" : \"Disabled\";\n                Formatting statusColor = stepUpEnabled ? Formatting.GREEN : Formatting.RED;\n\n                client.player.sendMessage(\n                        Text.literal(\"⬆ StepUp: \")\n                                .formatted(Formatting.WHITE)\n                                .append(Text.literal(statusLabel).formatted(statusColor)),\n                        true // action bar = true\n                );\n\n                LOGGER.info(\"[StepUp] StepUp toggled: {}\", statusLabel);\n            }\n\n            // Apply or revert step height every tick\n            if (stepUpEnabled && client.player.isOnGround()) {\n                if (client.player.getStepHeight() < ENHANCED_STEP_HEIGHT) {\n                    client.player.setStepHeight(ENHANCED_STEP_HEIGHT);\n                }\n            } else {\n                if (client.player.getStepHeight() > VANILLA_STEP_HEIGHT) {\n                    client.player.setStepHeight(VANILLA_STEP_HEIGHT);\n                }\n            }\n        });\n\n        LOGGER.info(\"[StepUp] StepUp mod initialized successfully!\");\n    }\n\n    public static boolean isStepUpEnabled() {\n        return stepUpEnabled;\n    }\n}\n",
+  "imagePrompt": "A cinematic Minecraft gaming thumbnail with a bold, glowing title \"StepUp\" in large neon-green 3D block letters at the top center. The scene shows a Minecraft player character mid-stride smoothly walking up a tall stone block wall without jumping, surrounded by a dramatic golden particle trail effect showing the step path. The background is a lush Minecraft overworld at sunset with orange and purple skies, rolling green hills, and pixel-art trees. A glowing green upward arrow icon floats above the player. The overall style is vibrant, high-contrast, and polished like a popular CurseForge mod thumbnail, with deep shadows and bright highlights for a professional look."
+}```
+
+## Gradle Build Report
+_See Problem_logfile/step-up/2026-06-26T18-55-08Z/build-error.txt_
