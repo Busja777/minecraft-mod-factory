@@ -33,13 +33,36 @@ const response = await client.messages.create({
     role: 'user',
     content: `You are an expert Minecraft Fabric 1.21.1 mod developer.
 Generate a small, useful ${config.niche} mod (${config.style}).
-Rules:
-- Package must be: com.factory.mod
-- Main class must be: ModMain implementing net.fabricmc.api.ModInitializer
-- Must compile with Fabric API 0.102.0+1.21.1 and Java 21
-- Keep it simple: one clear feature, 50-200 lines max
+
+STRICT RULES — the code must compile with Fabric API 0.102.0+1.21.1 and Java 21:
+- Package: com.factory.mod | Main class: ModMain implements net.fabricmc.api.ModInitializer
+- Keep it simple: one clear feature, 50-150 lines max, no external dependencies
 - Use only vanilla Minecraft + Fabric API imports
-- No external dependencies
+
+SAFE APIs to use (these exist in 1.21.1):
+- ServerTickEvents.END_SERVER_TICK, ServerTickEvents.END_WORLD_TICK
+- UseEntityCallback, AttackEntityCallback, PlayerBlockBreakEvents
+- ServerPlayerEntity methods: sendMessage(), getInventory(), getHealth(), getHungerManager()
+- ItemStack, Items, Inventories
+- Text.literal(), Text.translatable()
+- ServerWorld, World methods: getPlayers(), getTime()
+- ServerLifecycleEvents.SERVER_STARTED
+
+BANNED — do NOT use (removed or changed in 1.21.1):
+- setStepHeight(), getStepHeight() — removed, use getAttribute(EntityAttributes.GENERIC_STEP_HEIGHT)
+- Any method not in the standard Fabric API 0.102.0 javadocs
+- Mixins, ASM, reflection
+- Client-side only classes (MinecraftClient, etc.) in server entrypoint
+
+PREFERRED PATTERN — simple event-based mods:
+\`\`\`java
+ServerTickEvents.END_SERVER_TICK.register(server -> {
+    for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+        // your logic here
+    }
+});
+\`\`\`
+
 Avoid these already-made mods: ${avoidList}`
   }]
 });
