@@ -30,13 +30,13 @@ async function uploadCurseForge() {
   };
 
   const form = new FormData();
-  form.append('metadata', JSON.stringify(metadata));
-  form.append('file', fs.createReadStream(jarPath), { filename: jarFile });
+  form.append('metadata', JSON.stringify(metadata), { contentType: 'application/json' });
+  form.append('file', fs.readFileSync(jarPath), { filename: jarFile, contentType: 'application/java-archive' });
 
   const res = await fetch(`https://minecraft.curseforge.com/api/projects/${projectId}/upload-file`, {
     method: 'POST',
     headers: { 'X-Api-Token': process.env.CF_API_TOKEN, ...form.getHeaders() },
-    body: form
+    body: form.getBuffer()
   });
   if (!res.ok) throw new Error(`CurseForge upload failed (${res.status}): ${await res.text()}`);
 
@@ -96,15 +96,12 @@ async function uploadModrinth() {
 
   for (const [filename, title] of [['screenshot1.png', 'Feature showcase'], ['screenshot2.png', 'UI overview']]) {
     if (!fs.existsSync(`./images/${filename}`)) continue;
-    const imgForm = new FormData();
-    imgForm.append('ext', 'png');
-    imgForm.append('featured', 'false');
-    imgForm.append('title', title);
-    imgForm.append('image', fs.readFileSync(`./images/${filename}`), { filename, contentType: 'image/png' });
-    const galleryRes = await fetch(`https://api.modrinth.com/v2/project/${project.id}/gallery`, {
+    const imgData = fs.readFileSync(`./images/${filename}`);
+    const params = new URLSearchParams({ ext: 'png', featured: 'false', title });
+    const galleryRes = await fetch(`https://api.modrinth.com/v2/project/${project.id}/gallery?${params}`, {
       method: 'POST',
-      headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, ...imgForm.getHeaders() },
-      body: imgForm.getBuffer()
+      headers: { 'Authorization': process.env.MODRINTH_API_TOKEN, 'Content-Type': 'image/png' },
+      body: imgData
     });
     if (galleryRes.ok) console.log(`Modrinth gallery: ${filename}`);
     else console.log(`Modrinth gallery warning (${galleryRes.status}): ${await galleryRes.text()}`);
