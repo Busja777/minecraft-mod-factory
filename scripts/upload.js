@@ -50,6 +50,20 @@ async function uploadCurseForge() {
 async function uploadModrinth() {
   const slug = `${mod.modId}-${Date.now()}`.slice(0, 64);
 
+  const profileUrl = 'https://modrinth.com/user/madeforaisimba';
+  const body = [
+    `# ${mod.name}`,
+    '',
+    mod.description,
+    '',
+    '## Changelog',
+    '',
+    mod.changelog,
+    '',
+    '---',
+    `*Crafted by SevFactory · [See all mods](${profileUrl})*`
+  ].join('\n');
+
   const form = new FormData();
   form.append('data', JSON.stringify({
     slug,
@@ -58,10 +72,11 @@ async function uploadModrinth() {
     categories: ['utility'],
     client_side: 'optional',
     server_side: 'optional',
-    body: `# ${mod.name}\n\n${mod.description}\n\n## Changelog\n\n${mod.changelog}`,
+    body,
     project_type: 'mod',
     license_id: 'MIT',
     is_draft: false,
+    link_urls: { issues: 'https://github.com/Busja777/minecraft-mod-factory/issues' },
     initial_versions: [{
       name: 'v1.0.0',
       version_number: '1.0.0',
@@ -75,6 +90,9 @@ async function uploadModrinth() {
     }]
   }), { contentType: 'application/json', filename: 'data.json' });
   form.append('mod-file', jarBytes, { filename: jarFile, contentType: 'application/java-archive' });
+  if (fs.existsSync('./images/icon.png')) {
+    form.append('icon', fs.readFileSync('./images/icon.png'), { filename: 'icon.png', contentType: 'image/png' });
+  }
 
   const projectRes = await fetch('https://api.modrinth.com/v2/project', {
     method: 'POST',
