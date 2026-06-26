@@ -11,8 +11,7 @@ const libsDir = './template/build/libs';
 const jarFile = fs.readdirSync(libsDir)
   .find(f => f.endsWith('.jar') && !f.includes('sources') && !f.includes('javadoc'));
 if (!jarFile) throw new Error('No .jar found in template/build/libs/');
-const jarPath = `${libsDir}/${jarFile}`;
-const jarBytes = fs.readFileSync(jarPath);
+const jarBytes = fs.readFileSync(`${libsDir}/${jarFile}`);
 console.log(`Found jar: ${jarFile} (${(jarBytes.length / 1024).toFixed(0)} KB)`);
 
 async function uploadCurseForge() {
@@ -47,6 +46,7 @@ async function uploadCurseForge() {
   console.log(`CurseForge ✓ — project ${projectId}, file ${result.id}`);
 }
 
+// Returns the slug on success so upload.js can record it in published-mods.json
 async function uploadModrinth() {
   const slug = `${mod.modId}-${Date.now()}`.slice(0, 64);
 
@@ -114,7 +114,33 @@ async function uploadModrinth() {
     if (galleryRes.ok) console.log(`Modrinth gallery ✓ — ${filename}`);
     else console.log(`Modrinth gallery warning (${galleryRes.status}): ${await galleryRes.text()}`);
   }
+
+  return slug;
 }
 
 await uploadCurseForge().catch(e => console.error('CurseForge error (non-fatal):', e.message));
-await uploadModrinth().catch(e => console.error('Modrinth error (non-fatal):', e.message));
+
+let modrinthSlug = null;
+try {
+  modrinthSlug = await uploadModrinth();
+} catch (e) {
+  console.error('Modrinth error (non-fatal):', e.message);
+}
+
+// Only track after confirmed successful Modrinth publish — never after failed builds
+if (modrinthSlug) {
+  const publishedPath = './data/published-mods.json';
+  const published = fs.existsSync(publishedPath)
+    ? JSON.parse(fs.readFileSync(publishedPath, 'utf-8'))
+    : [];
+  published.push({
+    name: mod.name,
+    modId: mod.modId,
+    description: mod.description,
+    features: mod.features || [],
+    publishedAt: new Date().toISOString(),
+    modrinthSlug
+  });
+  fs.writeFileSync(publishedPath, JSON.stringify(published, null, 2));
+  console.log(`Tracked in published-mods.json (${published.length} total)`);
+}

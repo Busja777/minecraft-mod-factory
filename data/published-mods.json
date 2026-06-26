@@ -1,0 +1,10 @@
+[
+  {
+    "name": "HungerAlert",
+    "modId": "hunger-alert",
+    "description": "Automatically warns players in chat when their hunger is critically low, reminding them to eat before they stop regenerating health.",
+    "features": ["hunger monitoring", "critical threshold warnings", "chat messages", "server-side only"],
+    "publishedAt": "2026-06-26T00:00:00Z",
+    "modrinthSlug": "hungeralert"
+  }
+]

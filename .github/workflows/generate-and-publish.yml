@@ -82,7 +82,7 @@ jobs:
         run: |
           git config user.name "Mod Factory Bot"
           git config user.email "bot@modfactory.dev"
-          git add data/recent-mods.json data/used-cf-projects.json || true
+          git add data/published-mods.json data/used-cf-projects.json || true
           git diff --staged --quiet || git commit -m "chore: update mod tracking [skip ci]"
           git push
 
