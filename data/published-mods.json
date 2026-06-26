@@ -3,8 +3,27 @@
     "name": "HungerAlert",
     "modId": "hunger-alert",
     "description": "Automatically warns players in chat when their hunger is critically low, reminding them to eat before they stop regenerating health.",
-    "features": ["hunger monitoring", "critical threshold warnings", "chat messages", "server-side only"],
+    "features": [
+      "hunger monitoring",
+      "critical threshold warnings",
+      "chat messages",
+      "server-side only"
+    ],
     "publishedAt": "2026-06-26T00:00:00Z",
     "modrinthSlug": "hungeralert"
+  },
+  {
+    "name": "StormWatch",
+    "modId": "storm-watch",
+    "description": "StormWatch automatically warns players when rain is about to begin or end, giving them time to prepare — seek shelter, light torches before mobs spawn, or head outside to farm crops and fill water sources.",
+    "features": [
+      "weather monitoring",
+      "rain alerts",
+      "thunderstorm warnings",
+      "server broadcast",
+      "automatic notifications"
+    ],
+    "publishedAt": "2026-06-26T20:58:34.071Z",
+    "modrinthSlug": "storm-watch-1782507504277"
   }
 ]
