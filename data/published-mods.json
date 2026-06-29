@@ -39,5 +39,19 @@
     ],
     "publishedAt": "2026-06-27T11:26:02.446Z",
     "modrinthSlug": "night-owl-1782559558851"
+  },
+  {
+    "name": "LootPing",
+    "modId": "loot-ping",
+    "description": "LootPing automatically announces to the server whenever a player finds a rare or valuable item in a chest, rewarding exciting discoveries and sparking lively conversation. Never let a legendary loot moment go unnoticed again!",
+    "features": [
+      "rare item detection",
+      "server-wide loot announcements",
+      "container monitoring",
+      "inventory snapshot comparison",
+      "server-side only"
+    ],
+    "publishedAt": "2026-06-29T14:02:37.997Z",
+    "modrinthSlug": "loot-ping-1782741752772"
   }
 ]
