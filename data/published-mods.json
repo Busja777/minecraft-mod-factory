@@ -53,5 +53,19 @@
     ],
     "publishedAt": "2026-06-29T14:02:37.997Z",
     "modrinthSlug": "loot-ping-1782741752772"
+  },
+  {
+    "name": "DeathMemo",
+    "modId": "death-memo",
+    "description": "DeathMemo privately reminds you exactly where you died and what caused it the next time you log in or respawn, so you never lose track of your grave and can confidently recover your lost items.",
+    "features": [
+      "death location tracking",
+      "respawn reminder",
+      "private chat message",
+      "dimension-aware coordinates",
+      "cause of death display"
+    ],
+    "publishedAt": "2026-07-01T12:31:50.336Z",
+    "modrinthSlug": "death-memo-1782909105290"
   }
 ]
