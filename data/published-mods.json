@@ -67,5 +67,19 @@
     ],
     "publishedAt": "2026-07-01T12:31:50.336Z",
     "modrinthSlug": "death-memo-1782909105290"
+  },
+  {
+    "name": "LevelUp Ping",
+    "modId": "levelup-ping",
+    "description": "LevelUp Ping broadcasts a celebratory server-wide announcement every time a player reaches a notable XP level milestone, turning every grind into a shared moment of glory. Never let a hard-earned level go unnoticed again!",
+    "features": [
+      "XP milestone tracking",
+      "server-wide announcements",
+      "level celebration broadcasts",
+      "join-safe seeding",
+      "server-side only"
+    ],
+    "publishedAt": "2026-07-03T12:06:38.734Z",
+    "modrinthSlug": "levelup-ping-1783080394456"
   }
 ]
