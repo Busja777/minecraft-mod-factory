@@ -6,3 +6,6 @@ template/.gradle/
 template/run/
 .env
 *.env
+kit-issue.json
+build-output.txt
+.DS_Store

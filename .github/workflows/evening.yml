@@ -1,0 +1,154 @@
+name: Evening — update a due project
+
+# Runs once per day at a randomized time between 19:00 and 22:00 Europe/Berlin,
+# updating at most one published project whose per-project due date (22–25 days) has passed.
+on:
+  schedule:
+    - cron: '*/30 19-21 * * *'
+      timezone: Europe/Berlin
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Run now, ignoring the time window and the once-per-day rule'
+        type: boolean
+        default: false
+      modId:
+        description: 'Update this modId (default: earliest due project)'
+        type: string
+        default: ''
+      releaseType:
+        description: 'CurseForge release type for the upload (alpha for tests)'
+        type: choice
+        options: [release, beta, alpha]
+        default: release
+
+env:
+  PLATFORMS: curseforge
+  RELEASE_TYPE: ${{ inputs.releaseType || 'release' }}
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+      slot: ${{ steps.gate.outputs.slot }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Decide whether this fire runs
+        id: gate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE: ${{ inputs.force && 'true' || 'false' }}
+        run: node scripts/schedule-gate.js --window evening --job update
+
+  update:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: mod-factory
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Pick due project
+        id: select
+        env:
+          MODE: update
+          INPUT_MOD_ID: ${{ inputs.modId }}
+        run: node scripts/select-mode.js
+
+      - name: Improve mod via Claude API
+        if: steps.select.outputs.mode == 'update'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/improve.js --mod "${{ steps.select.outputs.modId }}"
+
+      - name: Build (with one auto-fix retry)
+        if: steps.select.outputs.mode == 'update'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: scripts/build.sh "${{ steps.select.outputs.modId }}"
+
+      - name: Publish update to CurseForge
+        if: steps.select.outputs.mode == 'update'
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          MODRINTH_API_TOKEN: ${{ secrets.MODRINTH_API_TOKEN }}
+        run: node scripts/publish.js --mod "${{ steps.select.outputs.modId }}"
+
+      - name: Commit data
+        if: steps.select.outputs.mode == 'update'
+        run: |
+          git config user.name "Mod Factory Bot"
+          git config user.email "bot@modfactory.dev"
+          git add data/
+          if git diff --staged --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "chore(update): ${{ steps.select.outputs.modId }} [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push
+
+      - name: Save problem log on failure
+        if: failure()
+        run: |
+          MOD_ID="${{ steps.select.outputs.modId || 'evening-run' }}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          LOG_DIR="Problem_logfile/${MOD_ID}/${TIMESTAMP}"
+          mkdir -p "$LOG_DIR"
+          {
+            echo "# Pipeline Failure — ${MOD_ID}"
+            echo ""
+            echo "**Timestamp:** ${TIMESTAMP}"
+            echo "**Workflow:** evening (update)"
+            echo "**Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } > "$LOG_DIR/error.md"
+          if [ -f "data/mods/${MOD_ID}/mod.json" ]; then cp "data/mods/${MOD_ID}/mod.json" "data/mods/${MOD_ID}/ModMain.java" "$LOG_DIR/" || true; fi
+          [ -f build-output.txt ] && grep -E "error:|cannot find symbol|symbol:|location:|FAILED" build-output.txt > "$LOG_DIR/compile-errors.txt" || true
+          git config user.name "Mod Factory Bot"
+          git config user.email "bot@modfactory.dev"
+          git checkout -- data/ || true
+          git add "Problem_logfile/"
+          git diff --staged --quiet || git commit -m "log: failure ${MOD_ID} ${TIMESTAMP} [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push || true
+
+      - name: Create GitHub issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `Evening update failed: ${new Date().toISOString().split('T')[0]}`,
+              body: `See [Actions run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).\n\nError log: \`Problem_logfile/\``,
+              labels: ['pipeline-failure']
+            });

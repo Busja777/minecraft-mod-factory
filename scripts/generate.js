@@ -1,72 +1,80 @@
-import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
+import { callTool } from './lib/claude.js';
+import { loadAllMeta } from './lib/mods.js';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, maxRetries: 5 });
+// Generates a new Fabric 1.21.1 mod concept + source. Output: ./generated-mod.json
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 
-const published = fs.existsSync('./data/published-mods.json')
-  ? JSON.parse(fs.readFileSync('./data/published-mods.json', 'utf-8'))
-  : [];
+const published = fs.existsSync('./data/published-mods.json') ? JSON.parse(fs.readFileSync('./data/published-mods.json', 'utf-8')) : [];
+const known = new Map();
+for (const m of [...published, ...loadAllMeta()]) if (!known.has(m.modId)) known.set(m.modId, m);
 
-const avoidSection = published.length > 0
-  ? `ALREADY PUBLISHED — do NOT repeat these features or concepts:\n${published.map(m =>
-      `- ${m.name}: ${m.description} (features: ${(m.features || []).join(', ')})`
-    ).join('\n')}`
-  : 'No mods published yet — any idea is fair game.';
+const avoidSection = known.size > 0
+  ? `ALREADY EXISTING — do NOT repeat these features or concepts:\n${[...known.values()].map(m =>
+      `- ${m.name}: ${m.description} (features: ${(m.features || []).join(', ')})`).join('\n')}`
+  : 'No mods exist yet — any idea is fair game.';
 
-async function callClaude(attempt) {
-  console.log(`Claude API call — attempt ${attempt}...`);
-  return await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
-    tools: [{
-      name: 'create_mod',
-      description: 'Create a Minecraft Fabric 1.21.1 QoL mod',
-      input_schema: {
-        type: 'object',
-        properties: {
-          name:        { type: 'string', description: 'Mod display name, e.g. "AutoSort"' },
-          modId:       { type: 'string', description: 'Lowercase letters and hyphens only, max 32 chars' },
-          description: { type: 'string', description: '1-2 sentence description for the mod page' },
-          changelog:   { type: 'string', description: 'Markdown changelog for v1.0.0' },
-          javaCode:    { type: 'string', description: 'Complete, compilable Java source for ModMain.java' },
-          imagePrompt: { type: 'string', description: 'Detailed image prompt for a gaming-style mod thumbnail' },
-          features:    { type: 'array', items: { type: 'string' }, description: '3-5 keywords describing what this mod does' }
-        },
-        required: ['name', 'modId', 'description', 'changelog', 'javaCode', 'imagePrompt', 'features']
-      }
-    }],
-    tool_choice: { type: 'tool', name: 'create_mod' },
-    messages: [{
-      role: 'user',
-      content: `You are an expert Minecraft Fabric 1.21.1 mod developer and creative director.
+export const CF_CATEGORIES = ['Utility & QoL', 'Server Utility', 'Map and Information', 'Food', 'Storage', 'Mobs', 'Miscellaneous'];
 
-Your task: generate a small, creative ${config.niche} mod (${config.style}).
+const mod = await callTool({
+  tool: {
+    name: 'create_mod',
+    description: 'Create a complete Minecraft Fabric 1.21.1 mod: concept, store listing and compilable source.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        name:            { type: 'string', description: 'Mod display name, e.g. "AutoSort". Must be unique and descriptive.' },
+        altNames:        { type: 'array', items: { type: 'string' }, description: 'Exactly 2 alternative names in case the first is taken' },
+        modId:           { type: 'string', description: 'Lowercase letters and hyphens only, max 32 chars' },
+        description:     { type: 'string', description: '1-2 sentence summary for the project list (max 250 chars)' },
+        pageDescription: { type: 'string', description: 'Full project page in Markdown: intro paragraph, "## Features" bullet list, "## How it works", "## Compatibility" (Fabric 1.21.1, Fabric API, server-side). 150-300 words, no placeholders.' },
+        cfCategory:      { type: 'string', enum: CF_CATEGORIES, description: 'Best fitting CurseForge category' },
+        changelog:       { type: 'string', description: 'Markdown changelog for v1.0.0 listing every feature' },
+        javaCode:        { type: 'string', description: 'Complete, compilable Java source for ModMain.java' },
+        imagePrompt:     { type: 'string', description: 'Detailed image prompt for a 400x400 mod icon (no text in the image)' },
+        features:        { type: 'array', items: { type: 'string' }, description: '3-6 keywords describing what this mod does' }
+      },
+      required: ['name', 'altNames', 'modId', 'description', 'pageDescription', 'cfCategory', 'changelog', 'javaCode', 'imagePrompt', 'features'],
+      additionalProperties: false
+    }
+  },
+  prompt: `You are an expert Minecraft Fabric 1.21.1 mod developer and creative director.
+
+Your task: design and implement a small but genuinely useful ${config.niche} mod (${config.style}). Call the create_mod tool with the result.
 
 CREATIVITY RULES:
 - Think of 3 different mod concepts internally, then pick the most unique and useful one
-- The mod must solve a real player pain point that is NOT already solved by existing mods
+- The mod must solve a real player or server-admin pain point that is NOT already solved by well-known mods
 - Avoid generic ideas — look for the gap in the market
 - The name should be memorable and clearly describe what it does
 
+QUALITY BAR (CurseForge rejects low-effort projects):
+- 2-3 related features that form one coherent mod, not a single trivial tweak
+- 150-300 lines of clean, commented Java; sensible constants grouped at the top
+- Player-facing messages must be polished (no debug text)
+- pageDescription must read like a real store page a human wrote
+
 STRICT COMPILE RULES — must compile with Fabric API 0.102.0+1.21.1 and Java 21:
 - Package: com.factory.mod | Class: ModMain implements net.fabricmc.api.ModInitializer
-- Simple: one clear feature, 50-150 lines, no external dependencies
+- No external dependencies besides Fabric API
 - Server-side only (no client classes in main entrypoint)
 
 SAFE APIs (confirmed exist in 1.21.1):
 - ServerTickEvents.END_SERVER_TICK, ServerTickEvents.END_WORLD_TICK
-- UseEntityCallback, AttackEntityCallback, PlayerBlockBreakEvents
-- ServerPlayerEntity: sendMessage(), getInventory(), getHealth(), getHungerManager(), getExperienceLevel()
-- ItemStack, Items, Inventories, NbtCompound
+- UseEntityCallback, AttackEntityCallback, PlayerBlockBreakEvents, UseBlockCallback, UseItemCallback
+- ServerPlayerEntity: sendMessage(Text, boolean actionBar), getInventory(), getHealth(), getHungerManager(), getExperienceLevel(), getUuid(), getName()
+- ItemStack, Items, Inventories, NbtCompound, Formatting
 - Text.literal(), Text.translatable()
-- ServerWorld, World: getPlayers(), getTime(), isRaining()
-- ServerLifecycleEvents.SERVER_STARTED, ServerPlayConnectionEvents.JOIN, ServerPlayConnectionEvents.DISCONNECT
+- ServerWorld, World: getPlayers(), getTime(), getTimeOfDay(), isRaining(), isThundering(), getRegistryKey()
+- ServerLifecycleEvents.SERVER_STARTED/SERVER_STOPPING, ServerPlayConnectionEvents.JOIN/DISCONNECT
+- CommandRegistrationCallback.EVENT with com.mojang.brigadier (CommandManager.literal/argument) for simple /commands
+- MinecraftServer.getPlayerManager().getPlayerList(), getPlayerManager().broadcast(Text, boolean)
 
 BANNED (will cause compile errors):
 - setStepHeight() / getStepHeight() — use getAttribute(EntityAttributes.GENERIC_STEP_HEIGHT)
 - Any net.minecraft.client.* class in server entrypoint
-- Mixins, ASM, or reflection
+- Mixins, ASM, access wideners, or reflection
+- Scoreboard/Team APIs unless you are certain of the 1.21.1 signatures
 
 PREFERRED PATTERN:
 \`\`\`java
@@ -89,33 +97,10 @@ public class ModMain implements ModInitializer {
 \`\`\`
 
 ${avoidSection}`
-    }]
-  });
-}
+});
 
-// Retry wrapper for transient network errors (e.g. "Premature close")
-let response;
-for (let attempt = 1; attempt <= 3; attempt++) {
-  try {
-    response = await callClaude(attempt);
-    break;
-  } catch (err) {
-    const transient = err.message?.includes('Premature close') || err.message?.includes('ECONNRESET') || err.code === 'ECONNRESET';
-    if (transient && attempt < 3) {
-      console.log(`Network error (${err.message}) — retrying in 10s...`);
-      await new Promise(r => setTimeout(r, 10000));
-    } else {
-      throw err;
-    }
-  }
-}
-
-const toolUse = response.content.find(b => b.type === 'tool_use');
-if (!toolUse) throw new Error('Claude did not return tool_use block');
-
-const mod = toolUse.input;
-mod.modId = mod.modId.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 32);
-
+mod.modId = mod.modId.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 32);
+if (!CF_CATEGORIES.includes(mod.cfCategory)) mod.cfCategory = 'Utility & QoL';
 fs.writeFileSync('./generated-mod.json', JSON.stringify(mod, null, 2));
-console.log(`Generated: ${mod.name} (${mod.modId})`);
+console.log(`Generated: ${mod.name} (${mod.modId}) — ${mod.javaCode.split('\n').length} lines`);
 console.log(`Features: ${(mod.features || []).join(', ')}`);
