@@ -29,7 +29,8 @@ node scripts/import-skinpack.js "/path/to/MCPE/Glowing Samurai" --project 149888
 - **Cover:** upload `<Name> Cover.png` under *Media* with the title **MCPEDL** (MCPEDL takes the cover from there), description `<Name> Cover.png`, ★ Feature Media.
 - **Description order:** legend → AI note → skins of V1.0 → one section per update (`Added in V1.2: …` with renders) → install notes. Description and gallery have no API: every update opens an issue with the new section to paste.
 - **Upload:** `config.bedrock.uploadApi` stays `false` until a test upload with the UUID upload token worked on a Bedrock project; until then the issue contains the file link for a manual upload. A manual upload is detected on the next run (file name = `.mcpack` name).
-- Renders: `node scripts/render-skins.js --pack <slug> --all` (three.js in headless Chromium; 4D/custom geometry is not supported).
+- Renders look like the 3D preview of the skin editor (`Input/minecraft-skin-editor`): same lights, poses and background `#252538`. 4D/custom geometry is not supported.
+- Positions: `node scripts/skin-views.js --pack <slug>` renders every skin in all positions of `tools/skin-render/views.json` and writes `previews/<slug>/index.html` (← → position, ↑ ↓ skin). Apply one with `node scripts/render-skins.js --pack <slug> --view walk --all` (or `--version 1.3 --view fight` for one version); the choice is stored in `pack.json`, default `editor`.
 
 ## Files
 

@@ -49,5 +49,9 @@
     "distribution": "Allow distribution to 3rd party",
     "source": "The source code is not publicly available",
     "galleryTitle": "MCPEDL"
+  },
+  "skinRender": {
+    "defaultView": "editor",
+    "background": "#252538"
   }
 }

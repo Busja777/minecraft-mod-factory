@@ -15,6 +15,11 @@ on:
         type: choice
         options: [refresh, new]
         default: refresh
+      view:
+        description: 'Camera position for the skin screenshots (see tools/skin-render/views.json)'
+        type: choice
+        options: [keep, editor, front, right, walk, run, fight, wave, back]
+        default: keep
       forceImages:
         description: 'Regenerate logo and cover even if they exist'
         type: boolean
@@ -39,7 +44,7 @@ jobs:
       - name: Install Chromium for skin renders
         run: node node_modules/playwright-core/cli.js install --with-deps chromium
       - name: Render all versions
-        run: node scripts/render-skins.js --pack "${{ inputs.pack }}" --all
+        run: node scripts/render-skins.js --pack "${{ inputs.pack }}" --all ${{ inputs.view != 'keep' && format('--view {0}', inputs.view) || '' }}
       - name: Legend, summary and notes via Claude
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

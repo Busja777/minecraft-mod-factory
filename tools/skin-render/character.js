@@ -1,6 +1,7 @@
-// Runs in headless Chromium. Builds a Minecraft player model (64x64 skin, classic or slim arms,
-// inner + overlay layer) and exposes window.renderSkin(dataUrl, opts) → PNG data URL.
-// UV layout ported from Input/minecraft-skin-editor/src/utils/minecraftUVs.ts.
+// Runs in headless Chromium. Reproduces the 3D preview of the user's skin editor
+// (Input/minecraft-skin-editor/src/components/Preview3D.tsx): same model, UVs, material,
+// lights, camera (fov 45, distance 40, target 0,0,0) and poses. Exposes
+// window.renderSkin(dataUrl, opts) → transparent PNG data URL.
 import * as THREE from 'three';
 
 function faces(type) {
@@ -35,57 +36,57 @@ function box(w, h, d, uv) {
   return geo;
 }
 
-function buildPlayer(texture, type) {
+function buildPlayer(texture, type, pose) {
   const { uvs, overlays } = faces(type);
-  const inner = new THREE.MeshLambertMaterial({ map: texture, alphaTest: 0.1 });
-  const outer = new THREE.MeshLambertMaterial({ map: texture, alphaTest: 0.1, side: THREE.DoubleSide });
+  // Editor: one MeshLambertMaterial for inner and overlay layer.
+  const material = new THREE.MeshLambertMaterial({ map: texture, transparent: true, alphaTest: 0.1, side: THREE.DoubleSide });
   const aw = type === 'classic' ? 4 : 3, armX = type === 'classic' ? 6 : 5.5;
   const parts = [
     ['head', [8, 8, 8], [0, 24, 0], [0, 4, 0]],
     ['body', [8, 12, 4], [0, 18, 0], [0, 0, 0]],
-    ['rightArm', [aw, 12, 4], [-armX, 22, 0], [0, -4, 0], 0.06],
-    ['leftArm', [aw, 12, 4], [armX, 22, 0], [0, -4, 0], -0.06],
+    ['rightArm', [aw, 12, 4], [-armX, 22, 0], [0, -4, 0]],
+    ['leftArm', [aw, 12, 4], [armX, 22, 0], [0, -4, 0]],
     ['rightLeg', [4, 12, 4], [-2, 12, 0], [0, -6, 0]],
     ['leftLeg', [4, 12, 4], [2, 12, 0], [0, -6, 0]]
   ];
   const player = new THREE.Group();
-  for (const [name, [w, h, d], pivot, offset, rollZ = 0] of parts) {
+  for (const [name, [w, h, d], pivot, offset] of parts) {
     const g = new THREE.Group();
     g.position.set(...pivot);
-    g.rotation.z = rollZ;
-    const m = new THREE.Mesh(box(w, h, d, uvs[name]), inner); m.position.set(...offset); g.add(m);
-    const o = new THREE.Mesh(box(w + 0.5, h + 0.5, d + 0.5, overlays[name]), outer); o.position.set(...offset); g.add(o);
+    const r = pose?.[name] || { x: 0, y: 0, z: 0 };
+    g.rotation.set(r.x, r.y, r.z);
+    const m = new THREE.Mesh(box(w, h, d, uvs[name]), material); m.position.set(...offset); g.add(m);
+    const o = new THREE.Mesh(box(w + 0.5, h + 0.5, d + 0.5, overlays[name]), material); o.position.set(...offset); g.add(o);
     player.add(g);
   }
   player.position.y = -12;
   return player;
 }
 
-window.renderSkin = async (dataUrl, { width = 578, height = 967, slim = false, yaw = -0.32, pitch = 0.12, background = null } = {}) => {
+// view: { azimuth, elevation } in degrees around the editor's orbit target (0,0,0), distance 40.
+window.renderSkin = async (dataUrl, { width = 540, height = 600, pixelRatio = 2, slim = false, pose = null, azimuth = 30, elevation = 14, distance = 40 } = {}) => {
   const texture = await new THREE.TextureLoader().loadAsync(dataUrl);
   texture.magFilter = THREE.NearestFilter;
   texture.minFilter = THREE.NearestFilter;
   texture.colorSpace = THREE.SRGBColorSpace;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.toneMapping = THREE.NoToneMapping;
+  renderer.setPixelRatio(pixelRatio);
   renderer.setSize(width, height);
-  renderer.setClearColor(background ? new THREE.Color(background) : 0x000000, background ? 1 : 0);
+  renderer.setClearColor(0x000000, 0);
+
   const scene = new THREE.Scene();
-  scene.add(new THREE.AmbientLight(0xffffff, 2.2));
-  const sun = new THREE.DirectionalLight(0xffffff, 1.1);
-  sun.position.set(-20, 30, 40);
-  scene.add(sun);
+  scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x888888, 1.0));
+  const d1 = new THREE.DirectionalLight(0xffffff, 1.0); d1.position.set(10, 20, 25); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0xffffff, 0.8); d2.position.set(-10, 10, -25); scene.add(d2);
+  scene.add(buildPlayer(texture, slim ? 'slim' : 'classic', pose));
 
-  const player = buildPlayer(texture, slim ? 'slim' : 'classic');
-  player.rotation.y = yaw;
-  scene.add(player);
-
-  const fov = 30;
-  const camera = new THREE.PerspectiveCamera(fov, width / height, 1, 500);
-  const halfH = 18.5;
-  const dist = Math.max(halfH, 12 / (width / height)) / Math.tan((fov / 2) * Math.PI / 180);
-  camera.position.set(0, 4 + Math.sin(pitch) * dist, Math.cos(pitch) * dist);
-  camera.lookAt(0, 4, 0);
+  const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+  const az = azimuth * Math.PI / 180, el = elevation * Math.PI / 180;
+  camera.position.set(distance * Math.cos(el) * Math.sin(az), distance * Math.sin(el), distance * Math.cos(el) * Math.cos(az));
+  camera.lookAt(0, 0, 0);
   renderer.render(scene, camera);
   const url = renderer.domElement.toDataURL('image/png');
   renderer.dispose();
