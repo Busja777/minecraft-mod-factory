@@ -38,7 +38,16 @@ export function extractToolInput(response, toolName) {
   return block ? block.input : null;
 }
 
-export async function callTool({ tool, prompt, maxTokens = 16000, effort = 'high', attempts = 3, waitMs = 10000, client = getClient(), model = MODEL }) {
+// images: [{ data: base64, mediaType: 'image/png' }] are sent before the text prompt.
+export function userContent(text, images = []) {
+  if (!images.length) return text;
+  return [
+    ...images.map(i => ({ type: 'image', source: { type: 'base64', media_type: i.mediaType || 'image/png', data: i.data } })),
+    { type: 'text', text }
+  ];
+}
+
+export async function callTool({ tool, prompt, images = [], maxTokens = 16000, effort = 'high', attempts = 3, waitMs = 10000, client = getClient(), model = MODEL }) {
   const strict = strictTool(tool);
   const instruction = `\n\nRespond ONLY by calling the ${strict.name} tool with every field filled in.`;
   let lastErr;
@@ -53,7 +62,7 @@ export async function callTool({ tool, prompt, maxTokens = 16000, effort = 'high
         output_config: { effort },
         tools: [strict],
         tool_choice: { type: 'auto', disable_parallel_tool_use: true },
-        messages: [{ role: 'user', content: prompt + (attempt > 1 ? instruction : '') }]
+        messages: [{ role: 'user', content: userContent(prompt + (attempt > 1 ? instruction : ''), images) }]
       });
       const input = extractToolInput(response, strict.name);
       if (input) {

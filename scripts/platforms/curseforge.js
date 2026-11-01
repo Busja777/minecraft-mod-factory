@@ -13,9 +13,14 @@ export function apiBase(gameEndpoint = 'minecraft') {
   return `https://${gameEndpoint}.curseforge.com/api`;
 }
 
+// CurseForge echoes part of a bad token in its error text; the repo and its CI logs are public.
+export function redact(text) {
+  return String(text).replace(/(Token provided:\s*)\S+/gi, '$1[redacted]');
+}
+
 async function getJson(url, token, fetchImpl) {
   const res = await fetchImpl(url, { headers: { 'X-Api-Token': token } });
-  if (!res.ok) throw new Error(`CurseForge GET ${url} failed (${res.status}): ${await res.text()}`);
+  if (!res.ok) throw new Error(`CurseForge GET ${url} failed (${res.status}): ${redact(await res.text())}`);
   return res.json();
 }
 
@@ -77,6 +82,20 @@ export async function resolveGameVersions({ token, mcVersion, loader = 'Fabric',
   return { ...result, fromCache: false };
 }
 
+// Bedrock files list many game versions (e.g. 1.21.x and 26.0 … 26.60). Picks every name from
+// `include` (the versions of the previous file) plus every catalog version starting with `prefix`,
+// skipping beta/preview/snapshot types.
+export function matchBedrockVersionIds(catalog, { prefix = '26.', include = [] } = {}) {
+  const skipTypes = new Set(catalog.types.filter(t => /beta|preview|snapshot/i.test(`${t.name} ${t.slug || ''}`)).map(t => t.id));
+  const wanted = new Set(include.map(String));
+  const ids = catalog.versions
+    .filter(v => !skipTypes.has(v.gameVersionTypeID) && !/beta|preview/i.test(v.name))
+    .filter(v => wanted.has(String(v.name)) || String(v.name).startsWith(prefix))
+    .map(v => v.id);
+  if (!ids.length) throw new Error(`No CurseForge Bedrock game versions start with "${prefix}"`);
+  return [...new Set(ids)];
+}
+
 export function buildMetadata({ changelog, displayName, releaseType = 'release', gameVersionIds }) {
   if (!changelog || !changelog.trim()) throw new Error('CurseForge requires a non-empty changelog');
   if (!['alpha', 'beta', 'release'].includes(releaseType)) throw new Error(`Invalid releaseType "${releaseType}"`);
@@ -87,17 +106,20 @@ export function buildMetadata({ changelog, displayName, releaseType = 'release',
 function formatError(status, text) {
   try {
     const { errorCode, errorMessage } = JSON.parse(text);
-    if (errorMessage) return `CurseForge upload failed (${status}, code ${errorCode}): ${errorMessage}`;
+    if (errorMessage) return `CurseForge upload failed (${status}, code ${errorCode}): ${redact(errorMessage)}`;
   } catch { /* not JSON */ }
-  return `CurseForge upload failed (${status}): ${text}`;
+  return `CurseForge upload failed (${status}): ${redact(text)}`;
 }
 
-export async function uploadFile({ token, projectId, jarPath, metadata, gameEndpoint = 'minecraft', fetchImpl = fetch }) {
+const CONTENT_TYPES = { '.jar': 'application/java-archive', '.mcpack': 'application/zip', '.mcaddon': 'application/zip', '.zip': 'application/zip' };
+
+export async function uploadFile({ token, projectId, jarPath, filePath = jarPath, metadata, gameEndpoint = 'minecraft', fetchImpl = fetch }) {
   if (!token) throw new Error('CF_API_TOKEN is missing');
   if (!Number.isInteger(Number(projectId))) throw new Error(`Invalid CurseForge projectId "${projectId}"`);
   const form = new FormData();
   form.append('metadata', JSON.stringify(metadata), { contentType: 'application/json' });
-  form.append('file', fs.readFileSync(jarPath), { filename: path.basename(jarPath), contentType: 'application/java-archive' });
+  const contentType = CONTENT_TYPES[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
+  form.append('file', fs.readFileSync(filePath), { filename: path.basename(filePath), contentType });
 
   const res = await fetchImpl(`${apiBase(gameEndpoint)}/projects/${projectId}/upload-file`, {
     method: 'POST',
@@ -107,5 +129,6 @@ export async function uploadFile({ token, projectId, jarPath, metadata, gameEndp
   const text = await res.text();
   if (!res.ok) throw new Error(formatError(res.status, text));
   const result = JSON.parse(text);
-  return { fileId: result.id, url: `https://www.curseforge.com/minecraft/mc-mods/${projectId}/files/${result.id}` };
+  const section = gameEndpoint === 'minecraft' ? 'minecraft/mc-mods' : 'minecraft-bedrock/skins';
+  return { fileId: result.id, url: `https://www.curseforge.com/${section}/${projectId}/files/${result.id}` };
 }

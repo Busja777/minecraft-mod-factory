@@ -2,11 +2,12 @@ import fs from 'fs';
 
 // Tracking file for CurseForge projects.
 // Entry shape:
-// { modId, name, cfName, projectId: number|null, status: 'pending'|'published'|'rejected',
+// { modId, kind: 'mod'|'skinpack', name, cfName, projectId: number|null, status: 'pending'|'published'|'rejected',
 //   version, lastPublishedAt: ISO|null, nextUpdateDue: ISO|null, updateCount,
 //   files: [{ fileId, version, uploadedAt }] }
 
 export const DEFAULT_PATH = './data/cf-projects.json';
+export const kindOf = p => p.kind || 'mod';
 export const DEFAULT_INTERVAL_DAYS = [22, 25];
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -21,9 +22,9 @@ export function saveProjects(projects, path = DEFAULT_PATH) {
   fs.writeFileSync(path, JSON.stringify(projects, null, 2) + '\n');
 }
 
-export function newEntry({ modId, name, version = '1.0.0' }) {
+export function newEntry({ modId, name, version = '1.0.0', kind = 'mod' }) {
   return {
-    modId, name, cfName: null, projectId: null, status: 'pending',
+    modId, kind, name, cfName: null, projectId: null, status: 'pending',
     version, lastPublishedAt: null, nextUpdateDue: null, updateCount: 0, files: []
   };
 }
@@ -42,12 +43,12 @@ export function upsertProject(projects, entry) {
 
 // Pending mods whose CurseForge project has been created (projectId set) → ready to upload.
 export function findPending(projects) {
-  return projects.filter(p => p.status === 'pending' && Number.isInteger(p.projectId));
+  return projects.filter(p => kindOf(p) === 'mod' && p.status === 'pending' && Number.isInteger(p.projectId));
 }
 
 // Pending mods still waiting for the user to create the CurseForge project.
 export function findUnassigned(projects) {
-  return projects.filter(p => p.status === 'pending' && !Number.isInteger(p.projectId));
+  return projects.filter(p => kindOf(p) === 'mod' && p.status === 'pending' && !Number.isInteger(p.projectId));
 }
 
 // Random per-project due date: now + [min, max) days.
@@ -66,11 +67,13 @@ export function effectiveDue(p, { minIntervalDays = DEFAULT_INTERVAL_DAYS[0] } =
   return new Date(Math.max(floor, stored));
 }
 
-// Picks the published project whose due date is earliest and already reached; null if none is due.
-export function pickForUpdate(projects, { now = new Date(), minIntervalDays = DEFAULT_INTERVAL_DAYS[0] } = {}) {
+// Picks the published project (mod or skin pack) whose due date is earliest and already reached;
+// null if none is due. `eligible` can exclude projects that have nothing to update (e.g. a skin
+// pack without a prepared next version).
+export function pickForUpdate(projects, { now = new Date(), minIntervalDays = DEFAULT_INTERVAL_DAYS[0], eligible = () => true } = {}) {
   const nowMs = now.getTime();
   const due = projects
-    .filter(p => p.status === 'published' && Number.isInteger(p.projectId) && p.lastPublishedAt)
+    .filter(p => p.status === 'published' && Number.isInteger(p.projectId) && p.lastPublishedAt && eligible(p))
     .map(p => ({ p, due: effectiveDue(p, { minIntervalDays }) }))
     .filter(x => x.due.getTime() <= nowMs)
     .sort((a, b) => a.due - b.due);

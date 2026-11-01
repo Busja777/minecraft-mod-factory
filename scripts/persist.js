@@ -1,10 +1,9 @@
 import fs from 'fs';
-import path from 'path';
 import { saveMod, metaFromGenerated, modDir, listMods } from './lib/mods.js';
 import { loadProjects, saveProjects, upsertProject, newEntry } from './lib/cf-projects.js';
 import { setOutputs } from './lib/github-output.js';
 
-// Moves a fresh generation (generated-mod.json + images/icon.png) into permanent storage
+// Moves a fresh generation (generated-mod.json) into permanent storage
 // under data/mods/<modId>/ and registers a pending entry in data/cf-projects.json.
 const genPath = './generated-mod.json';
 const gen = JSON.parse(fs.readFileSync(genPath, 'utf-8'));
@@ -17,11 +16,7 @@ if (listMods().includes(gen.modId)) {
 }
 
 const meta = metaFromGenerated(gen);
-const dir = saveMod(gen.modId, { meta, javaCode: gen.javaCode });
-if (fs.existsSync('./images/icon.png')) {
-  fs.copyFileSync('./images/icon.png', path.join(dir, 'icon.png'));
-  console.log('Stored: icon.png');
-}
+saveMod(gen.modId, { meta, javaCode: gen.javaCode });
 
 const projects = loadProjects();
 upsertProject(projects, newEntry({ modId: gen.modId, name: gen.name }));

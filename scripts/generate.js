@@ -26,15 +26,17 @@ const mod = await callTool({
         name:            { type: 'string', description: 'Mod display name, e.g. "AutoSort". Must be unique and descriptive.' },
         altNames:        { type: 'array', items: { type: 'string' }, description: 'Exactly 2 alternative names in case the first is taken' },
         modId:           { type: 'string', description: 'Lowercase letters and hyphens only, max 32 chars' },
-        description:     { type: 'string', description: '1-2 sentence summary for the project list (max 250 chars)' },
+        description:     { type: 'string', description: 'ONE English sentence for the CurseForge summary (max 200 chars), not copied from the page description' },
         pageDescription: { type: 'string', description: 'Full project page in Markdown: intro paragraph, "## Features" bullet list, "## How it works", "## Compatibility" (Fabric 1.21.1, Fabric API, server-side). 150-300 words, no placeholders.' },
         cfCategory:      { type: 'string', enum: CF_CATEGORIES, description: 'Best fitting CurseForge category' },
         changelog:       { type: 'string', description: 'Markdown changelog for v1.0.0 listing every feature' },
         javaCode:        { type: 'string', description: 'Complete, compilable Java source for ModMain.java' },
-        imagePrompt:     { type: 'string', description: 'Detailed image prompt for a 400x400 mod icon (no text in the image)' },
+        legend:          { type: 'string', description: 'Mini story ("legend") in English, 80-150 words, that frames what the mod does as a small myth of the Minecraft world; ends with a teaser. No headings.' },
+        imagePrompt:     { type: 'string', description: 'Detailed image prompt for a square mod logo showing the core idea (no text in the image)' },
+        coverPrompt:     { type: 'string', description: 'Image prompt for a wide cover banner showing the mod in action in a Minecraft-style scene; the title text is added separately' },
         features:        { type: 'array', items: { type: 'string' }, description: '3-6 keywords describing what this mod does' }
       },
-      required: ['name', 'altNames', 'modId', 'description', 'pageDescription', 'cfCategory', 'changelog', 'javaCode', 'imagePrompt', 'features'],
+      required: ['name', 'altNames', 'modId', 'description', 'pageDescription', 'cfCategory', 'changelog', 'javaCode', 'legend', 'imagePrompt', 'coverPrompt', 'features'],
       additionalProperties: false
     }
   },

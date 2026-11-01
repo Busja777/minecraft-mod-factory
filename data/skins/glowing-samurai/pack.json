@@ -1,0 +1,223 @@
+{
+  "slug": "glowing-samurai",
+  "name": "Glowing Samurai",
+  "packName": "Samurai Saga",
+  "summary": "These are glowing samurai. Black armour, burning eyes, and something inside that refuses to stay sealed ...",
+  "legend": "Long before the first torch was lit, the samurai of the three realms swore their souls to the dark. Their armour was forged black as a moonless night, and only their spirit was allowed to shine through the cracks: a thunder-gold crest on RAIJIN's helm, twin blood-red eyes burning behind ONI-KAI's mask, a faint violet haze where MUGEN's face should be. They say the light is not decoration. It is what remains of the warriors they once were, smouldering at the wrists, the knees and the eyes, refusing to go out. Some generals fell. Some were sealed away until their glow returned brighter than before. Others never belonged to any realm at all. When the night is darkest, watch for coloured bands moving between the trees... and pray they are not walking toward you.",
+  "altNames": [
+    "Samurai Saga: Neon Blades of the Night",
+    "Shadow Ronin Glow"
+  ],
+  "logoPrompt": "Square logo artwork: a single blocky Minecraft-style samurai figure (ONI-KAI, the Blood Oni) in pitch-black pixel armour with layered shoulder plates. Two narrow, intensely glowing blood-red eye slits shine from a dark helmet, with thin crimson glowing bands across the chest, glowing red cuff rims on the wrists and glowing red bands and squares on the shins. Strong red neon bloom and light spill against a near-black background, faint red embers drifting, low-angle heroic three-quarter view, dramatic rim lighting, high contrast, centred composition, no text, no letters, no logos.",
+  "coverPrompt": "Wide cinematic cover artwork: three blocky Minecraft-style samurai figures standing side by side in pitch-black pixel armour with only their pixel patterns glowing. Left: RAIJIN, the Thunder Samurai, glowing golden yellow, with a bright yellow crest block on top of the helmet, yellow eye dots, yellow chest stripes, glowing yellow wrist cuffs and shin bands. Centre: ONI-KAI, the Blood Oni, glowing vivid red, with two fierce red eye slits, red chest bands, red wrist cuffs and shin bands. Right: MUGEN, the Void Ghost, glowing deep violet purple, with dim purple eyes, a purple chest mark, bright purple wrist cuffs and shin bands. Background: a dark Japanese mountain temple at night with a misty torii gate, a thin moon, faint lightning on the horizon and drifting embers, neon glow reflecting on wet stone. Above them, the title \"Glowing Samurai\" in big stylised brush-stroke letters with a multicoloured neon glow.",
+  "logoFile": "Glowing Samurai.png",
+  "coverFile": "Glowing Samurai Cover.png",
+  "cfProjectId": 1498885,
+  "source": "Glowing Samurai",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "Three Realms Glow Pack",
+      "skins": [
+        {
+          "file": "raijin.png",
+          "name": "RAIJIN — Thunder Samurai",
+          "slim": false
+        },
+        {
+          "file": "oni_kai.png",
+          "name": "ONI-KAI — Blood Oni",
+          "slim": false
+        },
+        {
+          "file": "mugen.png",
+          "name": "MUGEN — Void Ghost",
+          "slim": false
+        }
+      ],
+      "mcpack": "SamuraiSaga_GlowPack.mcpack",
+      "status": "published",
+      "note": "The Three Realms Glow Pack: RAIJIN wakes in thunder-gold, ONI-KAI burns blood-red, and MUGEN drifts through the void in violet. The first three lights are on in the dark.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7841193,
+      "publishedAt": "2026-03-29T15:08:11.680Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "The Four Fallen Generals",
+      "skins": [
+        {
+          "file": "kaze_ki.png",
+          "name": "KAZE-KI — Wind Wraith",
+          "slim": false
+        },
+        {
+          "file": "doku_ha.png",
+          "name": "DOKU-HA — Poison Blade",
+          "slim": false
+        },
+        {
+          "file": "hyoketsu.png",
+          "name": "HYOKETSU — Frozen Warlord",
+          "slim": false
+        },
+        {
+          "file": "kurohono.png",
+          "name": "KUROHONO — Shadow Flame",
+          "slim": false
+        }
+      ],
+      "mcpack": "SamuraiSaga_ChapterII.mcpack",
+      "status": "published",
+      "note": "The Four Fallen Generals rise from defeat: KAZE-KI in cyan wind, DOKU-HA in toxic green, HYOKETSU in frozen ice-blue and KUROHONO in shadowed orange flame. They lost their war, but they kept their glow.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7943840,
+      "publishedAt": "2026-04-18T07:22:32.453Z"
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "The Celestial Guardians",
+      "skins": [
+        {
+          "file": "shiroi_ki.png",
+          "name": "SHIROI-KI — White Lotus",
+          "slim": false
+        },
+        {
+          "file": "jigoku_ya.png",
+          "name": "JIGOKU-YA — Hell Archer",
+          "slim": false
+        },
+        {
+          "file": "raikage.png",
+          "name": "RAIKAGE — Storm Shogun",
+          "slim": false
+        },
+        {
+          "file": "tetsuki.png",
+          "name": "TETSUKI — Iron Forge",
+          "slim": false
+        }
+      ],
+      "mcpack": "SamuraiSaga_ChapterIII.mcpack",
+      "status": "published",
+      "note": "The Celestial Guardians come down from the heavens: SHIROI-KI with the white lotus on his chest, JIGOKU-YA with a hellfire-pink visor, RAIKAGE in storm violet and TETSUKI in forge amber. Their oath is older than the shogunate.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": 9392940,
+      "publishedAt": "2026-11-01T08:43:36.083Z"
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "The Evolution Arc",
+      "skins": [
+        {
+          "file": "shinki_s1.png",
+          "name": "SHINKI (魂鬼) — Sealed",
+          "slim": false
+        },
+        {
+          "file": "shinki_s2.png",
+          "name": "SHINKI (魂鬼) — Ascended",
+          "slim": false
+        },
+        {
+          "file": "ryujin_s1.png",
+          "name": "RYUJIN (龍神) — Sealed",
+          "slim": false
+        },
+        {
+          "file": "ryujin_s2.png",
+          "name": "RYUJIN (龍神) — Ascended",
+          "slim": false
+        },
+        {
+          "file": "muramasa_s1.png",
+          "name": "MURAMASA (村正) — Sealed",
+          "slim": false
+        },
+        {
+          "file": "muramasa_s2.png",
+          "name": "MURAMASA (村正) — Ascended",
+          "slim": false
+        }
+      ],
+      "mcpack": "SamuraiSaga_ChapterIV.mcpack",
+      "status": "due",
+      "note": "The Evolution Arc: SHINKI, RYUJIN and MURAMASA each come in two forms, a dim sealed form and an ascended form that blazes in a new colour. Once the seal breaks, they can't go back.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "The Outliers",
+      "skins": [
+        {
+          "file": "kagami.png",
+          "name": "KAGAMI (鏡) — Mirror Wraith",
+          "slim": false
+        },
+        {
+          "file": "jikoku.png",
+          "name": "JIKOKU (時刻) — The Timekeeper",
+          "slim": false
+        },
+        {
+          "file": "okami.png",
+          "name": "OKAMI-DO (狼道) — Wolf Road",
+          "slim": false
+        },
+        {
+          "file": "yomigaeri.png",
+          "name": "YOMIGAERI (蘇り) — The Reborn",
+          "slim": false
+        },
+        {
+          "file": "akumu.png",
+          "name": "AKUMU (悪夢) — The Nightmare",
+          "slim": false
+        }
+      ],
+      "mcpack": "SamuraiSaga_ChapterV.mcpack",
+      "status": "due",
+      "note": "The Outliers turn up where nobody expected them: KAGAMI with a mirror-framed face, JIKOKU with a clock on his helmet, OKAMI-DO, YOMIGAERI and the glitching pink AKUMU. They don't follow any clan, and the countdown has already begun.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.2",
+    "1.20.1",
+    "1.21",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10",
+    "26.11",
+    "26.12",
+    "26.20",
+    "26.13",
+    "26.30",
+    "26.40",
+    "26.50",
+    "26.60"
+  ]
+}
