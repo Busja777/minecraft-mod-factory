@@ -1,0 +1,234 @@
+name: Morning — publish pending & new mod
+
+# Runs once per day at a randomized time between 06:00 and 12:00 Europe/Berlin.
+# The cron fires every 30 min inside the window; the gate job picks today's slot.
+on:
+  schedule:
+    - cron: '*/30 6-11 * * *'
+      timezone: Europe/Berlin
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Run now, ignoring the time window and the once-per-day rule'
+        type: boolean
+        default: false
+      newMod:
+        description: 'Generate a new mod: auto = only on newModDays, always, never'
+        type: choice
+        options: [auto, always, never]
+        default: auto
+      releaseType:
+        description: 'CurseForge release type for uploads in this run (alpha for tests)'
+        type: choice
+        options: [release, beta, alpha]
+        default: release
+
+env:
+  PLATFORMS: curseforge
+  RELEASE_TYPE: ${{ inputs.releaseType || 'release' }}
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+      slot: ${{ steps.gate.outputs.slot }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Decide whether this fire runs
+        id: gate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE: ${{ inputs.force && 'true' || 'false' }}
+        run: node scripts/schedule-gate.js --window morning --job publish
+
+  publish:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency:
+      group: mod-factory
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      # ── 1. Upload pending mods whose CurseForge project now has an ID ─────
+      - name: Find pending mods
+        id: pending
+        run: echo "mods=$(node scripts/list-pending.js)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and publish pending mods
+        id: publish-pending
+        if: steps.pending.outputs.mods != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          MODRINTH_API_TOKEN: ${{ secrets.MODRINTH_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          FAILED=""
+          for MOD in ${{ steps.pending.outputs.mods }}; do
+            echo "::group::Publishing $MOD"
+            if scripts/build.sh "$MOD" && node scripts/publish.js --mod "$MOD"; then
+              echo "✓ $MOD published"
+            else
+              echo "::error::$MOD failed"
+              FAILED="$FAILED $MOD"
+            fi
+            echo "::endgroup::"
+          done
+          echo "failed=${FAILED# }" >> "$GITHUB_OUTPUT"
+
+      # ── 2. New mod kit on configured weekdays ──────────────────────────────
+      - name: Decide on new mod
+        id: select
+        if: inputs.newMod != 'never'
+        env:
+          MODE: ${{ inputs.newMod == 'always' && 'new' || 'scheduled-new' }}
+        run: node scripts/select-mode.js
+
+      - name: Generate mod via Claude API
+        if: steps.select.outputs.mode == 'new'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/generate.js
+
+      - name: Generate icon via fal.ai
+        if: steps.select.outputs.mode == 'new'
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+        run: node scripts/build-images.js
+
+      - name: Persist mod to data/mods
+        id: persist
+        if: steps.select.outputs.mode == 'new'
+        run: node scripts/persist.js
+
+      - name: Build new mod (with one auto-fix retry)
+        if: steps.select.outputs.mode == 'new'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: scripts/build.sh "${{ steps.persist.outputs.modId }}"
+
+      - name: Write project kit
+        if: steps.select.outputs.mode == 'new'
+        run: node scripts/kit.js --mod "${{ steps.persist.outputs.modId }}"
+
+      # ── 3. Commit, issues ──────────────────────────────────────────────────
+      - name: Discard failed new mod before committing
+        if: failure() && steps.persist.outputs.modId != ''
+        run: |
+          MOD_ID="${{ steps.persist.outputs.modId }}"
+          echo "::warning::New mod $MOD_ID failed after persist — removing it from data/ so nothing broken is committed"
+          rm -rf "data/mods/$MOD_ID"
+          node -e "const fs=require('fs');const p='data/cf-projects.json';const a=JSON.parse(fs.readFileSync(p,'utf-8'));fs.writeFileSync(p,JSON.stringify(a.filter(x=>x.modId!==process.argv[1]),null,2)+'\n')" "$MOD_ID"
+
+      - name: Commit data
+        if: always()
+        run: |
+          git config user.name "Mod Factory Bot"
+          git config user.email "bot@modfactory.dev"
+          git add data/
+          if git diff --staged --quiet; then echo "Nothing to commit"; exit 0; fi
+          git commit -m "chore(morning): pending uploads / new kit [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push
+
+      - name: Open issue with project kit
+        if: steps.select.outputs.mode == 'new'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = JSON.parse(require('fs').readFileSync('./kit-issue.json', 'utf-8'));
+            const { data } = await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, ...issue });
+            core.notice(`Kit issue created: ${data.html_url}`);
+
+      - name: Close kit issues for published mods
+        if: always() && steps.pending.outputs.mods != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const projects = JSON.parse(require('fs').readFileSync('./data/cf-projects.json', 'utf-8'));
+            const published = new Set(projects.filter(p => p.status === 'published').map(p => p.modId));
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'cf-project-needed', per_page: 100
+            });
+            for (const issue of issues) {
+              const m = /\(([a-z0-9-]+)\)\s*$/.exec(issue.title);
+              if (!m || !published.has(m[1])) continue;
+              const p = projects.find(x => x.modId === m[1]);
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: issue.number,
+                body: `✅ Datei hochgeladen: CurseForge-Projekt ${p.projectId}, Version ${p.version}. Das Projekt ist jetzt bei CurseForge in der Moderation.` });
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: issue.number, state: 'closed' });
+            }
+
+      - name: Fail if a pending upload failed
+        if: steps.publish-pending.outputs.failed != ''
+        run: |
+          echo "::error::Pending uploads failed: ${{ steps.publish-pending.outputs.failed }}"
+          exit 1
+
+      # ── Failure handling ───────────────────────────────────────────────────
+      - name: Save problem log on failure
+        if: failure()
+        run: |
+          MOD_ID="${{ steps.persist.outputs.modId || 'morning-run' }}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          LOG_DIR="Problem_logfile/${MOD_ID}/${TIMESTAMP}"
+          mkdir -p "$LOG_DIR"
+          {
+            echo "# Pipeline Failure — ${MOD_ID}"
+            echo ""
+            echo "**Timestamp:** ${TIMESTAMP}"
+            echo "**Workflow:** morning (pending: ${{ steps.pending.outputs.mods || '-' }}, failed: ${{ steps.publish-pending.outputs.failed || '-' }}, new: ${{ steps.select.outputs.mode || '-' }})"
+            echo "**Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } > "$LOG_DIR/error.md"
+          [ -f generated-mod.json ] && cp generated-mod.json "$LOG_DIR/" || true
+          [ -f build-output.txt ] && grep -E "error:|cannot find symbol|symbol:|location:|FAILED" build-output.txt > "$LOG_DIR/compile-errors.txt" || true
+          git config user.name "Mod Factory Bot"
+          git config user.email "bot@modfactory.dev"
+          git add "Problem_logfile/"
+          git diff --staged --quiet || git commit -m "log: failure ${MOD_ID} ${TIMESTAMP} [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push || true
+
+      - name: Create GitHub issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `Morning pipeline failed: ${new Date().toISOString().split('T')[0]}`,
+              body: `See [Actions run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).\n\nError log: \`Problem_logfile/\``,
+              labels: ['pipeline-failure']
+            });
