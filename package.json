@@ -12,7 +12,8 @@
     "improve": "node scripts/improve.js",
     "publish": "node scripts/publish.js",
     "select-mode": "node scripts/select-mode.js",
-    "list-pending": "node scripts/list-pending.js"
+    "list-pending": "node scripts/list-pending.js",
+    "secrets:push": "bash scripts/push-secrets.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",
