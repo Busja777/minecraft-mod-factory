@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { loadProjects, pickForUpdate, findUnassigned, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
+import { loadProjects, pickForUpdate, findUnassigned, kindOf, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
+import { loadPack, hasDueVersion, listPacks } from './lib/skinpacks.js';
 import { localParts } from './lib/schedule.js';
 import { setOutputs } from './lib/github-output.js';
 
@@ -17,6 +18,10 @@ const minIntervalDays = (config.updateIntervalDays || DEFAULT_INTERVAL_DAYS)[0];
 const maxPendingKits = config.maxPendingKits ?? 5;
 const newModDays = config.newModDays || [1, 3, 5, 6];
 const local = localParts(now, config.timezone || 'Europe/Berlin');
+const packs = new Set(listPacks());
+
+// Skin packs are only updatable while a prepared next version exists (local U-folders).
+const eligible = p => kindOf(p) !== 'skinpack' || (packs.has(p.modId) && hasDueVersion(loadPack(p.modId)));
 
 function pickUpdate() {
   if (requested) {
@@ -25,9 +30,10 @@ function pickUpdate() {
     if (target.status !== 'published' || !Number.isInteger(target.projectId)) {
       throw new Error(`Project "${requested}" is ${target.status} without a published file — cannot update`);
     }
+    if (!eligible(target)) throw new Error(`Skin pack "${requested}" has no prepared next version`);
     return target;
   }
-  return pickForUpdate(projects, { now, minIntervalDays });
+  return pickForUpdate(projects, { now, minIntervalDays, eligible });
 }
 
 function scheduledNew() {
@@ -55,5 +61,8 @@ if (mode === 'new') {
   throw new Error(`Unknown MODE "${mode}" (expected new|update|scheduled-new|auto)`);
 }
 
-console.log(`Selected mode: ${result.mode}${result.modId ? ` (${result.modId})` : ''} — ${result.reason}`);
+const picked = result.modId ? projects.find(p => p.modId === result.modId) : null;
+result.kind = picked ? kindOf(picked) : 'mod';
+
+console.log(`Selected mode: ${result.mode}${result.mode === 'update' ? ` [${result.kind}]` : ''}${result.modId ? ` (${result.modId})` : ''} — ${result.reason}`);
 setOutputs(result);

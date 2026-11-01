@@ -2,13 +2,13 @@
 # Überträgt die ausgefüllten Werte aus secrets.env als GitHub-Actions-Secrets.
 # Werte gehen per stdin an gh, nie als Argument, und werden nie ausgegeben.
 #   npm run secrets:push              → nur setzen
-#   npm run secrets:push -- --cleanup → zusätzlich veraltetes CF_PROJECT_IDS löschen
+#   npm run secrets:push -- --cleanup → zusätzlich veraltete Secrets (CF_PROJECT_IDS, FAL_API_KEY) löschen
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 FILE="secrets.env"
-ALLOWED=(ANTHROPIC_API_KEY CF_API_TOKEN OPENAI_API_KEY FAL_API_KEY MODRINTH_API_TOKEN)
-OBSOLETE=(CF_PROJECT_IDS)
+ALLOWED=(ANTHROPIC_API_KEY CF_API_TOKEN CF_CORE_API_KEY OPENAI_API_KEY MODRINTH_API_TOKEN)
+OBSOLETE=(CF_PROJECT_IDS FAL_API_KEY)
 
 [[ -f "$FILE" ]] || { echo "✗ $FILE fehlt. Erst: cp secrets.env.example secrets.env"; exit 1; }
 command -v gh >/dev/null || { echo "✗ GitHub CLI (gh) nicht installiert"; exit 1; }
@@ -32,6 +32,8 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     CF_API_TOKEN)
       [[ "$val" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]] \
         || { echo "✗ CF_API_TOKEN ist keine UUID (Studios-Key erwischt?) – übersprungen"; continue; } ;;
+    CF_CORE_API_KEY)
+      [[ "$val" == '$2a$'* ]] || { echo "✗ CF_CORE_API_KEY ist kein Studios-Key (\$2a\$…) – übersprungen"; continue; } ;;
     ANTHROPIC_API_KEY)
       [[ "$val" == sk-ant-* ]] || { echo "✗ ANTHROPIC_API_KEY beginnt nicht mit sk-ant- – übersprungen"; continue; } ;;
     OPENAI_API_KEY)

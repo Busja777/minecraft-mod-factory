@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-// Persistent storage of generated mods: data/mods/<modId>/{mod.json, ModMain.java, icon.png, kit.md}
+// Persistent storage of generated mods: data/mods/<modId>/{mod.json, ModMain.java, <Name>.png, <Name> Cover.png, kit.md}
 // mod.json: { name, modId, description, pageDescription, features, version, imagePrompt,
 //             altNames, cfCategory, changelog: [{ version, date, text }], createdAt }
 
@@ -48,6 +48,8 @@ export function metaFromGenerated(gen, { now = new Date() } = {}) {
     altNames: gen.altNames || [],
     cfCategory: gen.cfCategory || 'Utility & QoL',
     imagePrompt: gen.imagePrompt || '',
+    coverPrompt: gen.coverPrompt || '',
+    legend: gen.legend || '',
     version: '1.0.0',
     createdAt: now.toISOString(),
     changelog: [{ version: '1.0.0', date: now.toISOString().slice(0, 10), text: gen.changelog || '## v1.0.0\n- Initial release' }]

@@ -1,36 +1,61 @@
-import { fal } from '@fal-ai/client';
 import fs from 'fs';
-import sharp from 'sharp';
+import path from 'path';
+import { generateImage, toLogo, toCover } from './lib/images.js';
+import { logoFileName, coverFileName } from './lib/naming.js';
+import { loadMod, saveMod, modDir } from './lib/mods.js';
+import { loadPack, savePack, packDir } from './lib/skinpacks.js';
+import { arg, flag } from './lib/github-output.js';
 
-// Generates the 400x400 project icon (always) and, only when Modrinth is enabled,
-// two showcase screenshots. CurseForge's upload API cannot take images, so the icon
-// is stored in the kit for the manual project creation step.
-fal.config({ credentials: process.env.FAL_API_KEY });
+// Logo "<Name>.png" (400x400) and cover "<Name> Cover.png" (720x340) via ChatGPT.
+// node scripts/build-images.js --mod <modId> | --skinpack <slug> [--force]
+// Skin packs pass their real skin renders as references so the cover shows the actual characters.
+const argv = process.argv.slice(2);
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-const platforms = (process.env.PLATFORMS || (config.platforms || ['curseforge']).join(',')).split(',').map(s => s.trim());
-const mod = JSON.parse(fs.readFileSync('./generated-mod.json', 'utf-8'));
-fs.mkdirSync('./images', { recursive: true });
+const img = config.images || {};
+const model = img.model;
+const coverSize = img.coverSize || [720, 340];
+const force = flag(argv, '--force');
 
-async function generate(prompt, size) {
-  const result = await fal.subscribe('fal-ai/flux/dev', {
-    input: { prompt, image_size: size, num_images: 1, num_inference_steps: 28, guidance_scale: 3.5 }
-  });
-  const res = await fetch(result.data.images[0].url);
-  if (!res.ok) throw new Error(`Image download failed (${res.status})`);
-  return Buffer.from(await res.arrayBuffer());
+async function build({ dir, name, logoPrompt, coverPrompt, references = [] }) {
+  const logoPath = path.join(dir, logoFileName(name));
+  const coverPath = path.join(dir, coverFileName(name));
+  if (!force && fs.existsSync(logoPath) && fs.existsSync(coverPath)) {
+    console.log(`Images exist for ${name} (use --force to regenerate)`);
+    return { logoFile: path.basename(logoPath), coverFile: path.basename(coverPath) };
+  }
+  const style = 'Minecraft-inspired blocky voxel art, high detail, vibrant glow, dark moody background';
+  const logo = await generateImage({ model, size: '1024x1024', references,
+    prompt: `${logoPrompt}. ${style}. Square game logo, one centred subject, absolutely no text or letters.` });
+  fs.writeFileSync(logoPath, await toLogo(logo, img.logoSize || 400));
+  console.log(`Generated: ${path.basename(logoPath)}`);
+
+  const cover = await generateImage({ model, size: '1536x1024', references,
+    prompt: `${coverPrompt}. ${style}. Wide banner composition, keep all important content inside the central horizontal band (it is cropped to ${coverSize[0]}x${coverSize[1]}). Title text exactly: "${name}".` });
+  fs.writeFileSync(coverPath, await toCover(cover, coverSize));
+  console.log(`Generated: ${path.basename(coverPath)}`);
+  return { logoFile: path.basename(logoPath), coverFile: path.basename(coverPath) };
 }
 
-const iconRaw = await generate(
-  `${mod.imagePrompt}, minecraft mod icon, pixel art style, vibrant colors, dark background, no text, no letters, centered subject, square`,
-  'square_hd'
-);
-await sharp(iconRaw).resize(400, 400, { fit: 'cover' }).png().toFile('./images/icon.png');
-console.log('Generated: icon.png (400x400)');
-
-if (platforms.includes('modrinth')) {
-  fs.writeFileSync('./images/screenshot1.png', await generate(`minecraft gameplay screenshot, ${mod.description}, fantasy environment, high quality, detailed, 16:9 aspect ratio`, 'landscape_16_9'));
-  fs.writeFileSync('./images/screenshot2.png', await generate(`minecraft user interface, ${mod.name} mod feature in action, clean HUD, game UI, 16:9`, 'landscape_16_9'));
-  console.log('Generated: screenshot1.png, screenshot2.png');
+const modId = arg(argv, '--mod');
+const slug = arg(argv, '--skinpack');
+if (modId) {
+  const { meta } = loadMod(modId);
+  const files = await build({
+    dir: modDir(modId), name: meta.name,
+    logoPrompt: meta.imagePrompt || `Icon for the Minecraft mod ${meta.name}: ${meta.description}`,
+    coverPrompt: meta.coverPrompt || `Key art for the Minecraft mod ${meta.name}: ${meta.description}`
+  });
+  saveMod(modId, { meta: { ...meta, ...files } });
+} else if (slug) {
+  const pack = loadPack(slug);
+  if (!pack.logoPrompt || !pack.coverPrompt) throw new Error(`Run skin-meta.js --pack ${slug} first (prompts missing)`);
+  const dir = packDir(slug);
+  const base = pack.versions[0];
+  const references = base.skins.slice(0, 3)
+    .map(s => path.join(dir, 'media', `v${base.version}`, s.file)).filter(f => fs.existsSync(f)).map(f => fs.readFileSync(f));
+  if (!references.length) console.log('::warning::No skin renders found — cover is generated without references (run render-skins.js first)');
+  Object.assign(pack, await build({ dir, name: pack.name, logoPrompt: pack.logoPrompt, coverPrompt: pack.coverPrompt, references }));
+  savePack(pack);
 } else {
-  console.log('Screenshots skipped (Modrinth disabled)');
+  throw new Error('Usage: node scripts/build-images.js --mod <modId> | --skinpack <slug> [--force]');
 }

@@ -94,3 +94,25 @@ test('resolveGameVersions fetches once and then serves from cache', async () => 
   assert.equal(second.fromCache, true);
   assert.equal(f.calls.length, 2);
 });
+
+import { matchBedrockVersionIds } from '../scripts/platforms/curseforge.js';
+
+test('matchBedrockVersionIds picks every 26.x release version and skips previews', () => {
+  const catalog = {
+    types: [{ id: 1, name: 'Minecraft Bedrock', slug: 'bedrock' }, { id: 2, name: 'Bedrock Preview', slug: 'bedrock-preview' }],
+    versions: [
+      { id: 10, gameVersionTypeID: 1, name: '26.0' }, { id: 11, gameVersionTypeID: 1, name: '26.0.02' },
+      { id: 12, gameVersionTypeID: 1, name: '26.3' }, { id: 13, gameVersionTypeID: 1, name: '26.10' },
+      { id: 14, gameVersionTypeID: 1, name: '1.21.130' }, { id: 15, gameVersionTypeID: 2, name: '26.20' }
+    ]
+  };
+  assert.deepEqual(matchBedrockVersionIds(catalog, { prefix: '26.' }), [10, 11, 12, 13]);
+  assert.deepEqual(matchBedrockVersionIds(catalog, { prefix: '26.', include: ['1.21.130'] }), [10, 11, 12, 13, 14]);
+  assert.throws(() => matchBedrockVersionIds(catalog, { prefix: '27.' }), /No CurseForge Bedrock/);
+});
+
+import { redact } from '../scripts/platforms/curseforge.js';
+
+test('redact removes token fragments echoed by CurseForge', () => {
+  assert.equal(redact('API token is malformed. Token provided: abc.DEF123.'), 'API token is malformed. Token provided: [redacted]');
+});

@@ -122,16 +122,16 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/generate.js
 
-      - name: Generate icon via fal.ai
-        if: steps.select.outputs.mode == 'new'
-        env:
-          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
-        run: node scripts/build-images.js
-
       - name: Persist mod to data/mods
         id: persist
         if: steps.select.outputs.mode == 'new'
         run: node scripts/persist.js
+
+      - name: Generate logo and cover via ChatGPT
+        if: steps.select.outputs.mode == 'new'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/build-images.js --mod "${{ steps.persist.outputs.modId }}"
 
       - name: Build new mod (with one auto-fix retry)
         if: steps.select.outputs.mode == 'new'

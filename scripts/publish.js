@@ -65,7 +65,7 @@ if (platforms.includes('modrinth')) {
   if (!dryRun) {
     const { slug } = await createModrinthProject({
       token: process.env.MODRINTH_API_TOKEN, mod: meta, jarPath, version, changelog, releaseType,
-      iconPath: `./data/mods/${modId}/icon.png`,
+      iconPath: `./data/mods/${modId}/${meta.logoFile || 'icon.png'}`,
       screenshots: [['./images/screenshot1.png', 'Feature showcase'], ['./images/screenshot2.png', 'UI overview']]
     });
     const entry = findProject(projects, modId);
