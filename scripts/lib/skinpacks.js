@@ -51,8 +51,11 @@ export function markVersionPublished(pack, version, { fileId = null, now = new D
   return v;
 }
 
-export function changelogFor(v) {
+// imageUrls: public URLs of the version's renders. CurseForge moderators want screenshots of the
+// new content in the changelog too (Anleitung_CF), so they are appended as Markdown images.
+export function changelogFor(v, { imageUrls = [] } = {}) {
   const names = v.skins.map(s => `- ${s.name}`).join('\n');
   const title = v.title ? ` — ${v.title}` : '';
-  return `## V${v.version}${title}\n\n${v.note ? v.note + '\n\n' : ''}${v.version === '1.0' ? 'Skins in this pack' : 'New skins'}:\n${names}\n`;
+  const images = imageUrls.map(u => `\n![V${v.version} skins](${u})\n`).join('');
+  return `## V${v.version}${title}\n\n${v.note ? v.note + '\n\n' : ''}${v.version === '1.0' ? 'Skins in this pack' : 'New skins'}:\n${names}\n${images}`;
 }

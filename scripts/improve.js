@@ -1,3 +1,4 @@
+import './lib/load-secrets.js';
 import crypto from 'crypto';
 import { callTool } from './lib/claude.js';
 import { loadMod, saveMod, bumpMinor } from './lib/mods.js';

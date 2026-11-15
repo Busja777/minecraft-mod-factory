@@ -76,3 +76,9 @@ test('CurseForge files mark matching versions as published and keep the latest g
   assert.equal(pack.versions[2].status, 'due');
   assert.deepEqual(pack.lastGameVersions, ['1.21.81', '26.60']);
 });
+
+test('changelog carries the screenshots of the new skins', () => {
+  const cl = changelogFor({ version: '1.3', skins: [{ name: 'SHINKI' }] }, { imageUrls: ['https://x/v1.3-skins.png'] });
+  assert.match(cl, /!\[V1\.3 skins\]\(https:\/\/x\/v1\.3-skins\.png\)/);
+  assert.doesNotMatch(changelogFor({ version: '1.3', skins: [{ name: 'SHINKI' }] }), /!\[/);
+});

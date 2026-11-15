@@ -1,3 +1,4 @@
+import './lib/load-secrets.js';
 import fs from 'fs';
 import { callTool } from './lib/claude.js';
 import { loadAllMeta } from './lib/mods.js';

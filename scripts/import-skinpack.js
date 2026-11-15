@@ -1,3 +1,4 @@
+import './lib/load-secrets.js';
 import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';

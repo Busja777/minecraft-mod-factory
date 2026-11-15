@@ -1,8 +1,9 @@
+import './lib/load-secrets.js';
 import fs from 'fs';
 import path from 'path';
 import { loadPack, savePack, packDir, nextDueVersion, markVersionPublished, changelogFor } from './lib/skinpacks.js';
 import { buildMcpack } from './lib/mcpack.js';
-import { skinpackUpdateKit } from './lib/kit.js';
+import { skinpackUpdateKit, versionImageUrls } from './lib/kit.js';
 import { loadProjects, saveProjects, findProject, markPublished } from './lib/cf-projects.js';
 import { fetchGameVersionCatalog, matchBedrockVersionIds, buildMetadata, uploadFile } from './platforms/curseforge.js';
 import { listFiles, syncPackWithFiles } from './platforms/curseforge-core.js';
@@ -46,7 +47,7 @@ if (!v.mcpack) {
   v.mcpack = fileName;
   console.log(`Built ${fileName} (${skins.length} skins, new UUIDs)`);
 }
-v.changelog = changelogFor(v);
+v.changelog = changelogFor(v, { imageUrls: versionImageUrls(pack, v) });
 const filePath = path.join(dir, 'mcpack', v.mcpack);
 
 const projects = loadProjects();

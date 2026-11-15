@@ -28,12 +28,25 @@ export async function assertNotFlat(buf, minStdev = 18) {
   return stdev;
 }
 
+// CurseForge rejects uploads of 2 MB or more. At 400×400 / 720×340 a PNG stays far below that,
+// but larger custom sizes could cross it: then re-encode as palette PNG, which keeps the .png name.
+export const CF_MAX_IMAGE_BYTES = 2 * 1000 * 1000;
+
+export async function fitUnderLimit(buf, maxBytes = CF_MAX_IMAGE_BYTES) {
+  if (buf.length < maxBytes) return buf;
+  for (const colours of [256, 128, 64]) {
+    const out = await sharp(buf).png({ palette: true, colours, compressionLevel: 9 }).toBuffer();
+    if (out.length < maxBytes) return out;
+  }
+  throw new Error(`Image is ${(buf.length / 1e6).toFixed(2)} MB even after compression (CurseForge limit: 2 MB)`);
+}
+
 export async function toLogo(buf, size = 400) {
-  const out = await sharp(buf).resize(size, size, { fit: 'cover' }).png().toBuffer();
+  const out = await fitUnderLimit(await sharp(buf).resize(size, size, { fit: 'cover' }).png().toBuffer());
   await assertNotFlat(out);
   return out;
 }
 
 export async function toCover(buf, [width, height] = [720, 340]) {
-  return sharp(buf).resize(width, height, { fit: 'cover', position: 'attention' }).png().toBuffer();
+  return fitUnderLimit(await sharp(buf).resize(width, height, { fit: 'cover', position: 'attention' }).png().toBuffer());
 }

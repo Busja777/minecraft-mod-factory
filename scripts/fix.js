@@ -1,3 +1,4 @@
+import './lib/load-secrets.js';
 import fs from 'fs';
 import { resolveWorkingMod } from './lib/mods.js';
 import { callTool } from './lib/claude.js';
