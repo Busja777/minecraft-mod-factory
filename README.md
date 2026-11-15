@@ -13,6 +13,8 @@ Two scheduled workflows, both in **Europe/Berlin** time with a randomized daily 
 
 **Your part:** create the project on https://authors.curseforge.com from the kit (name, summary, category, icon, description), put the numeric project ID into `data/cf-projects.json` (`"projectId": 123456`), commit, push. The next morning run uploads it. For an immediate upload run *Actions → Morning → Run workflow* with `force = true`.
 
+**Keyboard Maestro hand-over:** `npm run macro -- --mod <id>` / `--skinpack <slug> [--refresh | --update [--version x]]` writes every form value, image and file under fixed names to `~/Desktop/Macros/aktuell/` (`--out` to change). The macros (guide: `~/Desktop/Macros/ANLEITUNG.md`) fill in the CurseForge forms and stop before *Create*.
+
 **How the random slot works:** the cron fires every 30 minutes inside each window. A light `gate` job derives today's slot from a hash of the date, checks via the GitHub API whether the heavy job already ran today, and only then starts the heavy job (sleeping up to 30 min to hit the exact minute). Late or dropped cron fires are caught up later in the same window. Scheduled workflows only run on the default branch, and GitHub disables them after 60 days without repository activity.
 
 ## Skin packs (CurseForge Bedrock)

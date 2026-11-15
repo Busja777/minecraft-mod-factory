@@ -9,6 +9,7 @@
     "persist": "node scripts/persist.js",
     "inject": "node scripts/inject.js",
     "kit": "node scripts/kit.js",
+    "macro": "node scripts/macro-prep.js",
     "improve": "node scripts/improve.js",
     "publish": "node scripts/publish.js",
     "select-mode": "node scripts/select-mode.js",
