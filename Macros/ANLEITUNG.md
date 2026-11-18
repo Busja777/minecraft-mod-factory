@@ -2,6 +2,8 @@
 
 Alles liegt in **einem** Ordner: `~/Desktop/minecraft-mod-factory`. Die Starter und Anleitungen findest du darin unter `Macros/`.
 
+Diese Anleitung und die Makro-Anleitung gibt es zusammen als PDF: `Macros/ANLEITUNG.pdf` (neu erzeugen mit `npm run guide`).
+
 ## Das Studio (dein Startpunkt)
 
 **Doppelklick auf `Macros/Studio.command`** (im Projektordner). Dein Browser öffnet das Dashboard (http://127.0.0.1:4747, läuft nur auf deinem Mac).

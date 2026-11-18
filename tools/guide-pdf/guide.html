@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Anleitung: Studio, CurseForge-Helfer und Makros</title>
+<style>
+@page { size: A4; margin: 15mm 16mm 16mm; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: #1c2230; font-size: 9.8pt; line-height: 1.43; margin: 0; }
+header { border-bottom: 3px solid #4caf50; padding-bottom: 9px; margin-bottom: 12px; }
+h1 { font-size: 22pt; margin: 0 0 2px; letter-spacing: -0.3px; }
+.sub { color: #5a6577; font-size: 10.3pt; }
+h2 { font-size: 13.5pt; margin: 0 0 8px; color: #fff; background: #2e7d32; border-radius: 6px; padding: 5px 11px; break-after: avoid; }
+h3 { font-size: 11pt; margin: 13px 0 5px; color: #2e7d32; break-after: avoid; }
+p { margin: 0 0 7px; }
+code, .path { font-family: Menlo, monospace; font-size: 8.5pt; background: #eef1f5; border-radius: 3px; padding: 0 3px; }
+kbd { font-family: -apple-system, Helvetica, Arial, sans-serif; font-size: 8.8pt; border: 1px solid #b9c1cf; border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: #fff; white-space: nowrap; }
+ol, ul { margin: 0 0 7px; padding-left: 19px; }
+li { margin: 2px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 4px 0 8px; break-inside: avoid; }
+th { text-align: left; background: #eef3ee; padding: 4px 7px; border-bottom: 1.5px solid #bcd9bc; }
+td { padding: 4px 7px; border-bottom: 1px solid #e3e8ef; vertical-align: top; }
+.box { border-radius: 7px; padding: 8px 11px; margin: 6px 0 9px; break-inside: avoid; }
+.info { background: #eef6ee; border: 1px solid #bcd9bc; }
+.warn { background: #fff4d6; border: 1px solid #ecd58b; }
+.stop { background: #fbeeee; border: 1px solid #ecc3c3; }
+.flow { display: flex; gap: 6px; align-items: stretch; margin: 6px 0 8px; break-inside: avoid; }
+.step { flex: 1; border-radius: 7px; padding: 7px 8px; font-size: 9pt; background: #eef3ee; border: 1px solid #cfdccf; text-align: center; }
+.step b { display: block; margin-bottom: 2px; }
+.step.you { background: #fff4d6; border-color: #ecd58b; }
+.arrow { align-self: center; color: #7a8699; font-size: 12pt; }
+.macro { border: 1px solid #d5dbe5; border-radius: 7px; padding: 8px 11px 4px; margin: 7px 0 9px; background: #f8faf8; break-inside: avoid; }
+.macro h3 { margin-top: 0; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.page { break-before: page; }
+.small { font-size: 8.8pt; color: #5a6577; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Studio, CurseForge-Helfer und Makros</h1>
+  <div class="sub">Minecraft Mod Factory &middot; Schritt-für-Schritt-Anleitung für den Betreiber &middot; Stand 18.11.2026</div>
+</header>
+
+<p>Alles liegt in <b>einem</b> Ordner: <span class="path">~/Desktop/minecraft-mod-factory</span>. Starter und Anleitungen findest du darin unter <span class="path" data-path="Macros">Macros/</span>.
+Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den <b>Browser-Helfer</b> (fertig, sofort nutzbar) und <b>Keyboard-Maestro-Makros</b> (baust du einmal selbst).</p>
+
+<h3>Welcher Weg wofür?</h3>
+<table>
+  <tr><th style="width:27%">Weg</th><th style="width:36%">Was er macht</th><th>Wann du ihn nimmst</th></tr>
+  <tr><td><b>Teil 1: Browser-Helfer</b><br><code>npm run cf</code></td><td>Öffnet ein eigenes Chrome-Fenster, füllt die Formulare aus und stoppt vor dem letzten Klick.</td><td><b>Hauptweg.</b> Nichts zu bauen, kennt alle Seiten schon.</td></tr>
+  <tr><td><b>Teil 2: Makros</b><br>Keyboard Maestro</td><td>Du drückst einen Hotkey in deinem normalen Chrome, das Makro füllt aus und stoppt.</td><td>Alternative, wenn du lieber in deinem eigenen Chrome arbeitest oder später andere Mac-Apps automatisieren willst.</td></tr>
+  <tr><td><b>Automatik</b><br>GitHub</td><td>Lädt Dateien über die CurseForge-Schnittstelle hoch, ganz ohne dich.</td><td>Für Updates. Stand heute noch nicht aktiv, siehe Teil 3.</td></tr>
+</table>
+
+<h3>Dein Alltag in vier Schritten</h3>
+<div class="flow">
+  <div class="step you"><b>1. Studio öffnen</b>Doppelklick auf <i>Studio.command</i></div><div class="arrow">&rarr;</div>
+  <div class="step you"><b>2. Prüfen</b>Notiz schreiben oder Go geben</div><div class="arrow">&rarr;</div>
+  <div class="step"><b>3. Ausfüllen lassen</b>Helfer oder Makro füllt das Formular</div><div class="arrow">&rarr;</div>
+  <div class="step you"><b>4. Letzter Klick</b>Du klickst Create, Apply oder Add File</div>
+</div>
+
+<div class="box stop"><b>Drei Regeln, die immer gelten</b>
+<ul style="margin:3px 0 0">
+  <li><b>Den letzten Klick machst du.</b> Weder Helfer noch Makro klicken auf Create, Save, Apply, Upload oder Add File.</li>
+  <li><b>Login, Captcha und 2FA löst immer du.</b> Nichts davon wird umgangen. Der Helfer wartet so lange.</li>
+  <li><b>Ein Projekt pro Lauf, in normalem Tempo.</b> Kein Massenbetrieb.</li>
+</ul></div>
+
+<h3>Das Studio (dein Startpunkt)</h3>
+<p>Doppelklick auf <span class="path" data-path="Macros/Studio.command">Macros/Studio.command</span>. Dein Browser öffnet das Dashboard (läuft nur auf deinem Mac).</p>
+<table>
+  <tr><th style="width:24%">Abschnitt</th><th>Was du tust</th></tr>
+  <tr><td>Jetzt fällig</td><td>Der Termin ist da. „Jetzt veröffentlichen“ startet den Komplettlauf. Du klickst nur Create, Apply und Add File.</td></tr>
+  <tr><td>Wartet auf dein Go</td><td>Packs nacheinander prüfen. Passt alles: <b>Go</b>. Passt ein Teil nicht: dort <b>Ändern</b>, kurz schreiben was, am Ende <b>An Claude zurückgeben</b>.</td></tr>
+  <tr><td>Wartet auf Claude</td><td>Nichts. Sag Claude in der nächsten Sitzung „bearbeite die Studio-Notizen“.</td></tr>
+  <tr><td>Eingeplant</td><td>Nichts. Der Termin steht dran. „Go zurücknehmen“ geht jederzeit.</td></tr>
+  <tr><td>Updates</td><td>Nur zur Info. Updates bestehender Projekte brauchen kein Go.</td></tr>
+</table>
+<p class="small">Go ist gesperrt, solange Notizen offen sind oder eine automatische Prüfung rot ist. Der Grund steht direkt unter dem Knopf.</p>
+
+<!-- ───────────────────────── Teil 1 ───────────────────────── -->
+<div class="page"></div>
+<h2>Teil 1: Der Browser-Helfer (Hauptweg)</h2>
+<p>Der Helfer füllt die CurseForge-Formulare aus, für die es keine Schnittstelle gibt: <b>neues Projekt anlegen</b>, <b>Cover und Media</b>, <b>Skinpack-Datei hochladen</b>. Am Ende hält er an.</p>
+
+<h3>Einmalig einrichten (ca. 15 Minuten)</h3>
+<ol>
+  <li>Doppelklick auf <span class="path" data-path="Macros/CurseForge.command">Macros/CurseForge.command</span>. Meldet macOS beim ersten Mal „nicht verifizierter Entwickler“: Rechtsklick → Öffnen → Öffnen.</li>
+  <li>Im Menü <kbd>l</kbd> tippen und <kbd>↩</kbd> drücken. Es öffnet sich ein eigenes Chrome-Fenster.</li>
+  <li>Dort ganz normal bei CurseForge einloggen. Danach im Terminal <kbd>↩</kbd> drücken. Das Fenster merkt sich den Login. Dein normales Chrome bleibt unberührt.</li>
+  <li><b>Probelauf:</b> Starter erneut öffnen, „Cover &amp; Media: Glowing Samurai“ wählen und zuschauen. Am Ende <b>nicht</b> auf Apply klicken, sondern das Fenster schließen.</li>
+  <li>Steht in der Zusammenfassung „⚠ … nicht gefunden“: im Menü <kbd>i</kbd> wählen, genau diese Seite öffnen, <kbd>↩</kbd>, dann <kbd>q</kbd> und Claude Bescheid geben.</li>
+</ol>
+
+<h3>Im Alltag</h3>
+<ol>
+  <li>Doppelklick auf <span class="path">Macros/CurseForge.command</span>. Der Helfer holt die neuesten Daten und zeigt die offenen Aufgaben.</li>
+  <li>Nummer eintippen und <kbd>↩</kbd>. Chrome füllt alles aus. <b>Nicht ins Fenster klicken, solange es arbeitet.</b></li>
+  <li>Im Terminal steht, was erledigt ist und was du noch prüfen oder tun sollst.</li>
+  <li>Prüfen, Rest erledigen und <b>selbst abschicken</b>. Danach das Fenster schließen.</li>
+</ol>
+
+<div class="cols">
+  <div class="box info"><b>Bei Skinpack-Updates</b><br>Der neue Beschreibungsabschnitt liegt schon in der Zwischenablage. Unter <i>Description</i> fügst du ihn <b>vor „How to install“</b> mit <kbd>⌘V</kbd> ein.</div>
+  <div class="box info"><b>Bei neuen Projekten</b><br>Alles läuft in einem Durchgang: General → Description → License (du klickst <b>Create</b>), dann Media (du klickst <b>Apply</b>), dann File (du klickst <b>Add File</b>).</div>
+</div>
+
+<h3>Befehle für das Terminal</h3>
+<table>
+  <tr><th style="width:52%">Befehl</th><th>Wirkung</th></tr>
+  <tr><td><code>npm run cf</code></td><td>Menü mit offenen Aufgaben</td></tr>
+  <tr><td><code>npm run cf -- publish --skinpack &lt;slug&gt;</code></td><td>Neues Projekt komplett (Create → Media → File)</td></tr>
+  <tr><td><code>npm run cf -- media --skinpack &lt;slug&gt;</code></td><td>Nur Cover und Media</td></tr>
+  <tr><td><code>npm run cf -- update --skinpack &lt;slug&gt;</code></td><td>Update hochladen (mit <code>--version 1.3</code> gezielt)</td></tr>
+  <tr><td><code>npm run cf -- login</code></td><td>Neu einloggen</td></tr>
+</table>
+
+<h3>Wenn es hakt</h3>
+<table>
+  <tr><th style="width:40%">Problem</th><th>Lösung</th></tr>
+  <tr><td>„⚠ … Feld nicht gefunden“</td><td>Dieses Feld selbst ausfüllen. Passiert es immer wieder: Menü <kbd>i</kbd> für diese Seite und Claude Bescheid geben.</td></tr>
+  <tr><td>„👉 … Bitte selbst klicken“</td><td>Den Knopf selbst klicken und <kbd>↩</kbd> drücken. Danach macht der Helfer weiter.</td></tr>
+  <tr><td>„Fenster ist schon offen“</td><td>Das alte Fenster schließen und neu starten.</td></tr>
+  <tr><td>Keine Aufgabe, obwohl ein Issue da ist</td><td>Gezielt starten mit dem Befehl <code>update</code> aus der Tabelle oben.</td></tr>
+</table>
+
+<!-- ───────────────────────── Teil 2 ───────────────────────── -->
+<div class="page"></div>
+<h2>Teil 2: Makros mit Keyboard Maestro anlegen</h2>
+<p>Die Makros machen dasselbe wie der Helfer, aber per Hotkey in deinem normalen Chrome. Du baust sie einmal. Danach musst du sie nie anpassen, weil sie immer dieselben Dateien lesen.</p>
+
+<h3>So hängen Befehl und Makro zusammen</h3>
+<p>Vor jedem Makro-Lauf füllst du den Übergabe-Ordner <span class="path" data-path="Macros">Macros/aktuell/</span> mit einem Befehl. Das Makro liest die Werte von dort.</p>
+<table>
+  <tr><th style="width:24%">Situation</th><th style="width:48%">Befehl im Terminal (im Projektordner)</th><th>Makro</th></tr>
+  <tr><td>Neues Projekt, Mod</td><td><code>npm run macro -- --mod &lt;modId&gt;</code></td><td><kbd>⌃⌥N</kbd> Neues Projekt</td></tr>
+  <tr><td>Neues Projekt, Skinpack</td><td><code>npm run macro -- --skinpack &lt;slug&gt;</code></td><td><kbd>⌃⌥N</kbd> Neues Projekt</td></tr>
+  <tr><td>Seite auffrischen</td><td><code>npm run macro -- --skinpack &lt;slug&gt; --refresh</code></td><td><kbd>⌃⌥M</kbd> Cover &amp; Media</td></tr>
+  <tr><td>Skinpack-Update</td><td><code>npm run macro -- --skinpack &lt;slug&gt; --update</code></td><td><kbd>⌃⌥U</kbd> Skinpack-Update</td></tr>
+</table>
+
+<h3>Schritt 1: Keyboard Maestro einrichten (ca. 10 Minuten)</h3>
+<ol>
+  <li>Keyboard Maestro öffnen (Download auf keyboardmaestro.com, 30 Tage gratis, danach einmalig kostenpflichtig).</li>
+  <li>Rechte geben unter <b>Systemeinstellungen → Datenschutz &amp; Sicherheit</b>:
+    <ul><li><b>Bedienungshilfen:</b> „Keyboard Maestro“ und „Keyboard Maestro Engine“ erlauben.</li>
+        <li><b>Bildschirmaufnahme:</b> „Keyboard Maestro Engine“ erlauben. Das braucht die Bildsuche.</li></ul></li>
+  <li>Links unten <b>+</b> → neue <b>Makro-Gruppe</b> mit dem Namen <code>CurseForge</code>.</li>
+  <li>Rechts bei der Gruppe: <b>Available in these applications → Google Chrome</b>. Die Hotkeys gelten dann nur in Chrome.</li>
+  <li>In Chrome bei CurseForge eingeloggt bleiben. Das Makro loggt sich nie selbst ein. Chrome-Zoom auf 100 % lassen.</li>
+</ol>
+
+<h3>Schritt 2: Die Bausteine kennen</h3>
+<p>Aktionen fügst du über <b>New Action</b> (<kbd>⌘K</kbd>) hinzu und suchst sie per Namen.</p>
+<table>
+  <tr><th style="width:21%">Baustein</th><th style="width:25%">Aktion in KM</th><th>Einstellung</th></tr>
+  <tr><td>Wert laden</td><td>Read a File</td><td>„Read text file <code>~/Desktop/minecraft-mod-factory/Macros/aktuell/name.txt</code> to Variable <code>CF_Name</code>“</td></tr>
+  <tr><td>Wert einfügen</td><td>Insert Text by Pasting</td><td>Text: <code>%Variable%CF_Name%</code></td></tr>
+  <tr><td>In ein Feld klicken</td><td>Move or Click Mouse</td><td>„Click at (x, y) from the <b>found image</b>“. Screenshot vom Feld-Label einfügen, Versatz so wählen, dass der Klick im Eingabefeld landet.</td></tr>
+  <tr><td>Kurz warten</td><td>Pause</td><td>0,5 bis 1 Sekunde zwischen den Schritten</td></tr>
+  <tr><td>Warten bis geladen</td><td>Pause Until</td><td>Bedingung „Found Image“: ein Element, das erst nach dem Laden erscheint</td></tr>
+  <tr><td>Taste drücken</td><td>Type a Keystroke</td><td>z. B. <kbd>⇥</kbd> oder <kbd>↩</kbd></td></tr>
+  <tr><td>Stopp-Hinweis</td><td>Alert</td><td>Text: „Bitte prüfen und selbst auf Create klicken.“</td></tr>
+</table>
+<div class="box info"><b>Screenshot für die Bildsuche:</b> <kbd>⌃⇧⌘4</kbd> drücken und einen Rahmen nur um das Label ziehen (nicht um das leere Feld). Das Bild liegt dann in der Zwischenablage. Mit <kbd>⌘V</kbd> fügst du es ins Image-Feld der Aktion ein.<br>
+<b>Warum Bildsuche statt fester Koordinaten?</b> Das Makro findet das Label, egal wo das Fenster liegt oder wie weit gescrollt ist.</div>
+
+<div class="page"></div>
+<h3>Schritt 3: Hilfs-Makro „Datei wählen“ (das Herzstück)</h3>
+<p>Damit lädt jedes Makro Dateien hoch. Es bedient das Dateifenster von macOS.</p>
+<div class="macro">
+<ol>
+  <li>Neues Makro in der Gruppe <code>CurseForge</code>, Name: <code>Datei wählen</code>.</li>
+  <li>Trigger: <b>This macro is triggered by: Subroutine</b>, Parameter: <code>Local_Pfad</code>.</li>
+  <li>Aktionen in dieser Reihenfolge:
+    <ol>
+      <li><b>Pause</b> 1 s (das Dateifenster öffnet sich)</li>
+      <li><b>Type a Keystroke</b> <kbd>⌘⇧G</kbd> („Gehe zu Ordner“)</li>
+      <li><b>Pause</b> 0,5 s</li>
+      <li><b>Insert Text by Pasting</b> <code>%Variable%Local_Pfad%</code></li>
+      <li><b>Pause</b> 0,5 s, dann <b>Type a Keystroke</b> <kbd>↩</kbd> (springt zur Datei)</li>
+      <li><b>Pause</b> 0,5 s, dann <b>Type a Keystroke</b> <kbd>↩</kbd> (lädt hoch)</li>
+    </ol></li>
+</ol>
+<p class="small">Aufruf aus anderen Makros: Aktion <b>Execute a Subroutine</b> → <code>Datei wählen</code>, Parameter z. B. <code>%Variable%CF_LogoPfad%</code>. Vorher muss das Makro auf den Upload-Knopf der Seite geklickt haben.</p>
+</div>
+
+<h3>Schritt 4: Makro „CF: Neues Projekt“ <kbd>⌃⌥N</kbd></h3>
+<div class="macro">
+<ol>
+  <li>Trigger: <b>Hot Key</b> <kbd>⌃⌥N</kbd>.</li>
+  <li><b>Werte laden</b> (in einer Aktion <b>Group</b>, je ein <b>Read a File</b>):<br>
+    <code>name.txt → CF_Name</code>, <code>summary.txt → CF_Summary</code>, <code>kategorie.txt → CF_Kategorie</code>, <code>zusatz-kategorien.txt → CF_Zusatz</code>, <code>lizenz.txt → CF_Lizenz</code>, <code>verbreitung.txt → CF_Verbreitung</code>, <code>quellcode.txt → CF_Quellcode</code>, <code>beschreibung.md → CF_Beschreibung</code>, <code>logo-pfad.txt → CF_LogoPfad</code>.</li>
+  <li><b>Open URL</b> <code>https://authors.curseforge.com</code>, dann <b>Pause Until</b> (Found Image: Knopf „Start Project“).</li>
+  <li>Klick auf „Start Project“, dann das Spiel, dann die Klasse (Mods bzw. Skins). Je ein <b>Move or Click Mouse</b> mit Bildsuche, dazwischen <b>Pause</b> 1 s.</li>
+  <li>Pro Textfeld zwei Aktionen, Klick neben das Label und Einfügen: Project name → <code>CF_Name</code>, Summary → <code>CF_Summary</code>, Source Code → <code>CF_Quellcode</code>.</li>
+  <li><b>Dropdowns</b> (Main category, License, Distribution): hineinklicken, Wert einfügen, <kbd>↩</kbd>. Zickt ein Dropdown, lass es weg und wähle es beim Prüfen selbst.</li>
+  <li><b>Logo:</b> Klick auf den Logo-Upload, dann <b>Execute a Subroutine</b> <code>Datei wählen</code> mit <code>%Variable%CF_LogoPfad%</code>.</li>
+  <li><b>Beschreibung:</b> ins Description-Feld klicken, <code>%Variable%CF_Beschreibung%</code> einfügen.</li>
+  <li><b>Alert:</b> „Alles ausgefüllt. Bitte prüfen und selbst auf Create klicken. Danach Cover über ⌃⌥M hochladen.“</li>
+</ol>
+</div>
+
+<h3>Schritt 5: Makro „CF: Cover &amp; Media“ <kbd>⌃⌥M</kbd></h3>
+<div class="macro">
+<p class="small">Starten, wenn die Projektseite offen ist (nach Create oder zum Auffrischen).</p>
+<ol>
+  <li>Werte laden: <code>cover-pfad.txt → CF_CoverPfad</code>, <code>media-titel.txt → CF_MediaTitel</code>, <code>media-beschreibung.txt → CF_MediaBeschreibung</code>.</li>
+  <li>Klick auf den Reiter <b>Media</b>, dann auf <b>Upload / Add Image</b>.</li>
+  <li><b>Execute a Subroutine</b> <code>Datei wählen</code> mit <code>%Variable%CF_CoverPfad%</code>.</li>
+  <li>Title-Feld: <code>%Variable%CF_MediaTitel%</code>. Bei Skinpacks muss das genau <b>MCPEDL</b> sein, sonst übernimmt MCPEDL das Cover nicht.</li>
+  <li>Description-Feld: <code>%Variable%CF_MediaBeschreibung%</code>, dann Klick auf den Stern <b>Feature Media</b>.</li>
+  <li><b>Alert:</b> „Prüfen und selbst speichern.“</li>
+</ol>
+</div>
+
+<div class="page"></div>
+<h3>Schritt 6: Makro „CF: Skinpack-Update“ <kbd>⌃⌥U</kbd></h3>
+<div class="macro">
+<p class="small">Starten, wenn die Projektseite des Skinpacks offen ist.</p>
+<ol>
+  <li>Werte laden: <code>datei-pfad.txt → CF_DateiPfad</code>, <code>changelog.md → CF_Changelog</code>, <code>beschreibungs-abschnitt.md → CF_Abschnitt</code>.</li>
+  <li>Reiter <b>Files</b>, dann <b>Add File</b> anklicken und <b>Pause Until</b> (Found Image: Upload-Bereich).</li>
+  <li>Klick auf den Upload-Bereich, dann <b>Execute a Subroutine</b> <code>Datei wählen</code> mit <code>%Variable%CF_DateiPfad%</code>.</li>
+  <li>Changelog-Feld: <code>%Variable%CF_Changelog%</code>. Release Type <b>R</b> anklicken.</li>
+  <li>Game Versions: alle aktuellen <b>26.x</b> anhaken. Ändert sich die Liste oft, mach das beim Prüfen selbst.</li>
+  <li><b>Alert:</b> „Datei bereit. Bitte prüfen und selbst hochladen.“</li>
+  <li><b>Set Clipboard to Text</b> <code>%Variable%CF_Abschnitt%</code>, dann <b>Alert:</b> „Der neue Beschreibungsabschnitt ist in der Zwischenablage. In Description vor ‚How to install‘ einfügen.“</li>
+</ol>
+<p class="small">Die <code>.mcpack</code> behält ihren Originalnamen. Daran erkennt das Projekt deinen Upload, also bitte nicht umbenennen.</p>
+</div>
+
+<h3>Die Dateien im Übergabe-Ordner <span class="path">Macros/aktuell/</span></h3>
+<table>
+  <tr><th style="width:47%">Datei</th><th>Inhalt</th></tr>
+  <tr><td><code>name.txt</code>, <code>slug.txt</code>, <code>summary.txt</code></td><td>Projektname, Slug, Kurzbeschreibung</td></tr>
+  <tr><td><code>klasse.txt</code>, <code>kategorie.txt</code>, <code>zusatz-kategorien.txt</code></td><td>z. B. Skins / Players / Skin Packs</td></tr>
+  <tr><td><code>lizenz.txt</code>, <code>verbreitung.txt</code>, <code>quellcode.txt</code></td><td>Lizenz, Distribution, Source Code</td></tr>
+  <tr><td><code>beschreibung.md</code></td><td>Die komplette Projektbeschreibung</td></tr>
+  <tr><td><code>logo-pfad.txt</code>, <code>cover-pfad.txt</code></td><td>Voller Pfad zu Logo und Cover</td></tr>
+  <tr><td><code>media-titel.txt</code>, <code>media-beschreibung.txt</code></td><td>„MCPEDL“ bei Skinpacks bzw. Mod-Name, und der Cover-Dateiname</td></tr>
+  <tr><td><code>datei-pfad.txt</code>, <code>datei-name.txt</code></td><td>Die <code>.mcpack</code>-Datei, nur bei Skinpacks</td></tr>
+  <tr><td><code>changelog.md</code>, <code>beschreibungs-abschnitt.md</code>, <code>version.txt</code></td><td>Nur bei <code>--update</code></td></tr>
+  <tr><td><code>CHECKLISTE.md</code></td><td>Alles noch einmal zum Nachlesen</td></tr>
+</table>
+<p class="small">Der Ordner wird bei jedem <code>npm run macro</code> komplett neu geschrieben. Die Textdateien enden ohne Zeilenumbruch, damit beim Einfügen nicht versehentlich Enter gedrückt wird.</p>
+
+<h3>Wenn ein Makro hakt</h3>
+<table>
+  <tr><th style="width:40%">Problem</th><th>Lösung</th></tr>
+  <tr><td>Makro klickt daneben oder findet ein Bild nicht</td><td>Für diesen einen Schritt den Screenshot neu aufnehmen (<kbd>⌃⇧⌘4</kbd>). Der Rest bleibt.</td></tr>
+  <tr><td>Bildsuche findet nie etwas</td><td>Recht „Bildschirmaufnahme“ für die Keyboard Maestro Engine prüfen. Chrome-Zoom auf 100 %.</td></tr>
+  <tr><td>Text wird nicht eingefügt</td><td>Pause davor auf 1 s erhöhen.</td></tr>
+  <tr><td>Dateifenster bleibt offen</td><td>In „Datei wählen“ die erste Pause auf 1,5 s erhöhen.</td></tr>
+  <tr><td>Makro läuft falsch weiter</td><td>Menüleisten-Icon von Keyboard Maestro → <b>Cancel All Macros</b>.</td></tr>
+</table>
+<div class="box info"><b>Tipp zum Bauen:</b> Bau jedes Makro, während das CurseForge-Formular daneben offen ist, und teste nach jedem zweiten Schritt mit dem <b>Try</b>-Knopf. Ein Projekt ausfüllen, ohne auf Create zu klicken, kostet nichts. Damit kannst du gefahrlos üben.</div>
+
+<!-- ───────────────────────── Teil 3 ───────────────────────── -->
+<div class="page"></div>
+<h2>Teil 3: Was läuft automatisch, was machst du?</h2>
+<table>
+  <tr><th style="width:34%">Aufgabe</th><th style="width:24%">Wer</th><th>Hinweis</th></tr>
+  <tr><td>Mods und Skins bauen, Bilder, Texte</td><td>Claude</td><td>In der Sitzung oder über GitHub</td></tr>
+  <tr><td>Neues Projekt freigeben (Go)</td><td><b>Du</b>, im Studio</td><td>Nur neue Projekte brauchen Go</td></tr>
+  <tr><td>Neues Projekt anlegen (Formular)</td><td>Helfer oder Makro, <b>du</b> klickst Create</td><td>CurseForge hat dafür keine Schnittstelle</td></tr>
+  <tr><td>Cover und Galerie</td><td>Helfer oder Makro, <b>du</b> klickst Apply</td><td>Keine Schnittstelle</td></tr>
+  <tr><td>Beschreibung ändern</td><td>Helfer oder Makro, <b>du</b> speicherst</td><td>Keine Schnittstelle. Bei Updates liegt der Abschnitt in der Zwischenablage.</td></tr>
+  <tr><td>Datei eines Updates hochladen</td><td>Automatik (geplant)</td><td>Siehe Kasten unten</td></tr>
+  <tr><td>Login, Captcha, 2FA</td><td><b>Immer du</b></td><td>Wird nie umgangen</td></tr>
+</table>
+
+<div class="box warn"><b>Stand 18.11.2026: Die Upload-Automatik ist noch nicht aktiv.</b> Es fehlen drei Dinge:
+<ol style="margin:4px 0 0">
+  <li>Der richtige Upload-Token (CurseForge → Account → My API Tokens, sieht aus wie <code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>) in <span class="path">secrets.env</span> unter <code>CF_API_TOKEN</code>. Der bisherige Wert dort gehört unter <code>CF_CORE_API_KEY</code>.</li>
+  <li>Die neuen Abläufe müssen auf den Hauptzweig bei GitHub, weil nur dort Zeitpläne laufen.</li>
+  <li>Ein erfolgreicher Test-Upload auf ein Bedrock-Projekt.</li>
+</ol>
+Bis dahin lädst du Update-Dateien mit dem Helfer oder dem Makro <kbd>⌃⌥U</kbd> hoch.</div>
+
+<h3>Der Takt</h3>
+<ul>
+  <li><b>Updates:</b> abends zwischen 19 und 22 Uhr, höchstens eines pro Abend, pro Projekt alle 22 bis 25 Tage, nur mit echten neuen Inhalten.</li>
+  <li><b>Neue Projekte:</b> nach deinem Go im Morgenfenster (6 bis 12 Uhr) an einem Upload-Tag, höchstens eines pro Tag.</li>
+  <li><b>Erinnerung zum Termin:</b> einmal <code>npm run studio -- zeitplan-installieren</code> ausführen. Dein Mac prüft dann alle 30 Minuten die Termine und meldet sich. Entfernen: <code>npm run studio -- zeitplan-entfernen</code>.</li>
+</ul>
+
+<h3>Wo liegt was</h3>
+<table>
+  <tr><th style="width:42%">Ort</th><th>Inhalt</th></tr>
+  <tr><td><span class="path" data-path="Macros/Studio.command">Macros/Studio.command</span></td><td>Doppelklick: Studio</td></tr>
+  <tr><td><span class="path" data-path="Macros/CurseForge.command">Macros/CurseForge.command</span></td><td>Doppelklick: CurseForge-Helfer</td></tr>
+  <tr><td><span class="path" data-path="Macros/ANLEITUNG.md">Macros/ANLEITUNG.md</span></td><td>Diese Anleitung als Text (Helfer)</td></tr>
+  <tr><td><span class="path" data-path="Macros/ANLEITUNG-keyboard-maestro.md">Macros/ANLEITUNG-keyboard-maestro.md</span></td><td>Diese Anleitung als Text (Makros)</td></tr>
+  <tr><td><span class="path">Macros/aktuell/</span></td><td>Übergabe-Ordner für die Makros</td></tr>
+  <tr><td><span class="path" data-path="secrets.env.example">secrets.env</span></td><td>Zugangsdaten, nur auf deinem Mac</td></tr>
+</table>
+
+</body>
+</html>
