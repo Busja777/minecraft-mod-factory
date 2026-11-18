@@ -1,0 +1,36 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Fullbright Plus",
+    "description": "Fullbright Plus makes your Minecraft Bedrock world brighter and easier to see.",
+    "uuid": "d119b9f3-194c-496b-9c55-3f9ce9224459",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      20,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "ff5c485d-f355-467f-8ffe-9d53796cb960",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "description": "Fullbright Plus visuals"
+    }
+  ],
+  "metadata": {
+    "authors": [
+      "LeoTermado"
+    ],
+    "license": "MIT"
+  }
+}

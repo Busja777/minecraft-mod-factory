@@ -1,0 +1,26 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:fog_settings": {
+    "description": { "identifier": "leotdoo:fullbright" },
+    "distance": {
+      "air": {
+        "fog_start": 0.999,
+        "fog_end": 1.0,
+        "fog_color": "#FFFFFF",
+        "render_distance_type": "render"
+      },
+      "weather": {
+        "fog_start": 0.999,
+        "fog_end": 1.0,
+        "fog_color": "#FFFFFF",
+        "render_distance_type": "render"
+      },
+      "water": {
+        "fog_start": 200.0,
+        "fog_end": 300.0,
+        "fog_color": "#A0FFF0",
+        "render_distance_type": "fixed"
+      }
+    }
+  }
+}

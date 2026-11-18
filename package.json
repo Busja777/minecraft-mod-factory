@@ -13,6 +13,7 @@
     "cf": "node scripts/cf.js",
     "studio": "node scripts/studio.js",
     "notes": "node scripts/notes.js",
+    "fullbright": "node tools/fullbright-plus/build.js",
     "improve": "node scripts/improve.js",
     "publish": "node scripts/publish.js",
     "select-mode": "node scripts/select-mode.js",
