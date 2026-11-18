@@ -1,0 +1,10 @@
+{
+  "editor": { "label": "Editor-Ansicht", "pose": "idle", "azimuth": 25, "elevation": 20, "distance": 70 },
+  "front":  { "label": "Gerade von vorn", "pose": "idle", "azimuth": 0, "elevation": 8, "distance": 70 },
+  "right":  { "label": "Schräg von rechts", "pose": "idle", "azimuth": -25, "elevation": 20, "distance": 70 },
+  "walk":   { "label": "Gehen", "pose": "walk", "azimuth": 35, "elevation": 14, "distance": 70 },
+  "run":    { "label": "Laufen", "pose": "run", "azimuth": 40, "elevation": 8, "distance": 70 },
+  "fight":  { "label": "Kampf", "pose": "fight", "azimuth": -35, "elevation": 12, "distance": 70 },
+  "wave":   { "label": "Winken", "pose": "wave", "azimuth": 25, "elevation": 12, "distance": 72 },
+  "back":   { "label": "Rücken", "pose": "idle", "azimuth": 160, "elevation": 18, "distance": 70 }
+}

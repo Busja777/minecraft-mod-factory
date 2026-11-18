@@ -1,0 +1,77 @@
+/* Minecraft Studio – Stil angelehnt an Projekt A (packages/ui/tokens.css): Papier-Neutraltöne,
+   Königsblau als einzige Markenfarbe für Knöpfe, Links und Fokus. */
+:root {
+  --papier-0: #ffffff; --papier-50: #fdfbfa; --papier-100: #f6f2f0; --papier-200: #ede7e4;
+  --papier-300: #ded5d1; --papier-500: #8e7f7a; --papier-700: #5c4f4a; --papier-900: #241e1b;
+  --blau-50: #eef1fa; --blau-300: #9db0e8; --blau-500: #22346b; --blau-600: #1b2a57;
+  --gruen: #1f7a4d; --gruen-hell: #e6f4ec; --gelb: #8a5a00; --gelb-hell: #fdf3dc; --rot: #a3242a; --rot-hell: #fbe9ea;
+  --bg: var(--papier-50); --flaeche: var(--papier-0); --rand: var(--papier-200); --text: var(--papier-900);
+  --leise: var(--papier-700); --primary: var(--blau-500); --primary-text: #fff; --primary-hover: var(--blau-600);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16110f; --flaeche: #241e1b; --rand: #3a312d; --text: #f6f2f0; --leise: #b8aba6;
+    --primary: var(--blau-300); --primary-text: #0e1630; --primary-hover: #b9c7ef;
+    --gruen-hell: #12301f; --gelb-hell: #33270a; --rot-hell: #3a1416; --gruen: #6fcf9a; --gelb: #f0c060; --rot: #f08a8f;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+a { color: var(--primary); }
+.kopf { display: flex; gap: 1rem; align-items: baseline; flex-wrap: wrap; padding: 1rem 1.25rem; border-bottom: 1px solid var(--rand); background: var(--flaeche); }
+.marke { font-weight: 800; font-size: 1.15rem; text-decoration: none; color: var(--text); }
+.untertitel { color: var(--leise); font-size: .9rem; }
+main { max-width: 56rem; margin: 0 auto; padding: 1.25rem 1rem 8rem; }
+h1 { font-size: 1.5rem; margin: .25rem 0 1rem; }
+h2 { font-size: 1.05rem; margin: 2rem 0 .75rem; display: flex; gap: .5rem; align-items: center; }
+.zahl { background: var(--papier-200); color: var(--papier-900); border-radius: 999px; padding: 0 .55rem; font-size: .8rem; }
+.leer { color: var(--leise); }
+.hinweis { color: var(--leise); font-size: .9rem; margin: -.25rem 0 .75rem; }
+.karten { display: grid; gap: .75rem; }
+.karte { display: flex; gap: .9rem; align-items: center; background: var(--flaeche); border: 1px solid var(--rand); border-radius: .75rem; padding: .75rem; }
+.karte img { width: 56px; height: 56px; border-radius: .5rem; object-fit: cover; image-rendering: auto; background: var(--papier-100); }
+.karte .mitte { flex: 1; min-width: 0; }
+.karte .titel { font-weight: 650; }
+.karte .meta { color: var(--leise); font-size: .85rem; }
+.knopf { appearance: none; border: 1px solid var(--rand); background: var(--flaeche); color: var(--text); border-radius: .5rem; padding: .5rem .9rem; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+.knopf:hover { border-color: var(--leise); }
+.knopf.primaer { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
+.knopf.primaer:hover { background: var(--primary-hover); }
+.knopf.go { background: var(--gruen); border-color: var(--gruen); color: #fff; }
+.knopf:disabled { opacity: .45; cursor: not-allowed; }
+.knopf.klein { padding: .3rem .65rem; font-size: .85rem; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.pruefungen { display: grid; gap: .35rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+.pruefungen li { padding: .4rem .65rem; border-radius: .5rem; font-size: .9rem; }
+.ok { background: var(--gruen-hell); color: var(--gruen); }
+.warn { background: var(--gelb-hell); color: var(--gelb); }
+.error { background: var(--rot-hell); color: var(--rot); font-weight: 600; }
+.teil { background: var(--flaeche); border: 1px solid var(--rand); border-radius: .75rem; padding: .9rem; margin-bottom: .75rem; }
+.teil.markiert { border-color: var(--rot); box-shadow: 0 0 0 1px var(--rot) inset; }
+.teil-kopf { display: flex; justify-content: space-between; gap: .5rem; align-items: center; margin-bottom: .5rem; }
+.teil-name { font-weight: 650; }
+.abzeichen { font-size: .75rem; padding: .1rem .5rem; border-radius: 999px; background: var(--blau-50); color: var(--blau-500); margin-left: .4rem; }
+.teil img.bild { max-width: 100%; border-radius: .5rem; display: block; }
+.teil img.logo { width: 200px; height: 200px; }
+.skins { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+.skins .teil { margin: 0; }
+.skins .teil-kopf { flex-direction: column; align-items: flex-start; }
+.skins img.bild { width: 100%; aspect-ratio: 1; object-fit: contain; background: #252538; }
+.textur { width: 64px; height: 64px; image-rendering: pixelated; border: 1px solid var(--rand); margin-top: .35rem; }
+.wert { white-space: pre-wrap; }
+.notiz { background: var(--rot-hell); color: var(--rot); border-radius: .5rem; padding: .5rem .65rem; margin-top: .5rem; font-size: .9rem; }
+.alt { color: var(--leise); font-size: .85rem; margin-top: .35rem; }
+textarea { width: 100%; min-height: 5rem; font: inherit; padding: .5rem; border-radius: .5rem; border: 1px solid var(--rand); background: var(--bg); color: var(--text); }
+.reihe { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
+.md { border-top: 1px dashed var(--rand); padding-top: .5rem; max-height: 32rem; overflow: auto; }
+.md img { max-width: 100%; border-radius: .4rem; }
+.md h3 { font-size: 1.2rem; margin: .5rem 0; } .md h4 { font-size: 1.02rem; margin: 1rem 0 .4rem; }
+.leiste { position: fixed; left: 0; right: 0; bottom: 0; background: var(--flaeche); border-top: 1px solid var(--rand); padding: .75rem 1rem; box-shadow: 0 -4px 16px rgba(0,0,0,.06); }
+.leiste .innen { max-width: 56rem; margin: 0 auto; display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.leiste .stand { color: var(--leise); font-size: .9rem; margin-right: auto; }
+.grund { color: var(--leise); font-size: .8rem; flex-basis: 100%; text-align: right; }
+.fehler { background: var(--rot-hell); color: var(--rot); padding: .6rem .8rem; border-radius: .5rem; margin: .5rem 0; }
+.verlauf { color: var(--leise); font-size: .85rem; }
+@media (max-width: 600px) { .karte { flex-wrap: wrap; } .teil img.logo { width: 140px; height: 140px; } }

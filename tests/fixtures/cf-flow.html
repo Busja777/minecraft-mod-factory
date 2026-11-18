@@ -1,0 +1,128 @@
+<!doctype html>
+<!-- Stand-in for the CurseForge author pages as seen in Input/Anleitung_CF.docx, used by
+     tests/cf-runner.test.js. Labels are deliberately NOT linked to their inputs (like on CF),
+     "Skin Packs" is pre-ticked, and "Add File" exists twice (opener + submit). Not the real page. -->
+<title>CF stand-in</title>
+<style>.list{border:1px solid #888;padding:4px}</style>
+<script>
+  window.log = [];
+  const show = list => { const ids = list.split(' '); document.querySelectorAll('[data-panel]').forEach(p => p.hidden = !p.dataset.panel.split(' ').some(t => ids.includes(t))); };
+  function dropdown(box, list) { document.getElementById(list).hidden = false; }
+  function pick(li, valueId, listId) { document.getElementById(valueId).textContent = li.textContent; document.getElementById(listId).hidden = true; }
+</script>
+
+<!-- Projects page -->
+<section data-panel="projects">
+  <h1>Projects</h1>
+  <button onclick="show('games')">+ Create A Project</button>
+</section>
+
+<!-- Choose game -->
+<section data-panel="games" hidden>
+  <div>Choose a game</div>
+  <div class="tile" onclick="show('wizard general')">Minecraft Bedrock</div>
+  <div class="tile" onclick="show('wizard general')">Minecraft</div>
+</section>
+
+<!-- Create Project wizard -->
+<section data-panel="wizard" hidden>
+  <h2>Create Project</h2>
+  <div role="tablist">
+    <button role="tab" onclick="show('wizard general')">General</button>
+    <button role="tab" onclick="show('wizard description')">Description</button>
+    <button role="tab" onclick="show('wizard license')">License</button>
+  </div>
+</section>
+<section data-panel="general" hidden>
+  <div>Project name<span>*</span></div><div class="help">Avoid including the game's name</div><input id="name">
+  <div>Logo<span>*</span></div><button>Upload image</button><input type="file" id="logo" accept="image/*" hidden>
+  <div>Summary<span>*</span></div><input id="summary">
+  <div>Class<span>*</span></div>
+  <div role="combobox" tabindex="0" onclick="dropdown(this,'class-list')"><span id="class-value">Choose</span></div>
+  <ul id="class-list" class="list" role="listbox" hidden>
+    <li role="option" onclick="pick(this,'class-value','class-list')">Addons</li>
+    <li role="option" onclick="pick(this,'class-value','class-list')">Skins</li>
+  </ul>
+  <div>Main category<span>*</span></div>
+  <input id="main" role="combobox" onclick="dropdown(this,'main-list')">
+  <ul id="main-list" class="list" role="listbox" hidden>
+    <li role="option" onclick="document.getElementById('main').value=this.textContent;this.parentNode.hidden=true">Mobs</li>
+    <li role="option" onclick="document.getElementById('main').value=this.textContent;this.parentNode.hidden=true">Players</li>
+  </ul>
+  <div>Additional categories</div>
+  <div role="combobox" tabindex="0" onclick="dropdown(this,'add-list')">Skin Packs</div>
+  <div id="add-list" class="list" role="listbox" hidden>
+    <label role="option"><input type="checkbox" id="add-mobs"> Mobs</label>
+    <label role="option"><input type="checkbox" id="add-skinpacks" checked> Skin Packs</label>
+  </div>
+  <label><input type="checkbox" checked> Allow Comments</label>
+</section>
+<section data-panel="description" hidden>
+  <select aria-label="Editor" id="desc-editor"><option>WYSIWYG</option><option>Markdown</option></select>
+  <textarea id="desc"></textarea>
+</section>
+<section data-panel="license" hidden>
+  <div>Project License</div>
+  <div role="combobox" tabindex="0" onclick="dropdown(this,'lic-list')"><span id="lic-value">MIT</span></div>
+  <ul id="lic-list" class="list" role="listbox" hidden>
+    <li role="option" onclick="pick(this,'lic-value','lic-list')">MIT</li>
+    <li role="option" onclick="pick(this,'lic-value','lic-list')">All Rights Reserved</li>
+  </ul>
+  <div>Project distribution<span>*</span></div>
+  <div role="combobox" tabindex="0" onclick="dropdown(this,'dist-list')"><span id="dist-value">Allow distribution to 3rd party</span></div>
+  <ul id="dist-list" class="list" role="listbox" hidden>
+    <li role="option" onclick="pick(this,'dist-value','dist-list')">Allow distribution to 3rd party</li>
+    <li role="option" onclick="pick(this,'dist-value','dist-list')">Don't allow distribution to 3rd party</li>
+  </ul>
+  <button>Previous</button> <button id="create" onclick="window.log.push('create'); location.hash='#/projects/1234567/description'; show('edit')">Create</button>
+</section>
+
+<!-- Edit project page -->
+<section data-panel="edit media files" hidden>
+  <h2>Edit 'Glowing Samurai'</h2>
+  <div role="tablist">
+    <button role="tab" onclick="show('edit')">General</button>
+    <button role="tab" onclick="show('edit files')">Files</button>
+    <button role="tab" onclick="show('edit media')">Media</button>
+  </div>
+</section>
+<section data-panel="media" hidden>
+  <button onclick="document.getElementById('media-modal').hidden=false">+ Add Media</button>
+  <div id="media-modal" hidden>
+    <div>Add media</div>
+    <div onclick="window.log.push('upload-choice')">Upload or Drag Image</div>
+    <input type="file" id="cover" accept="image/png" hidden onchange="document.getElementById('tile').hidden=false;document.getElementById('media-modal').hidden=true">
+    <div>Add YouTube Video</div>
+  </div>
+  <div id="tile" hidden>
+    <span id="tile-name">cover.png</span>
+    <button aria-label="Edit" onclick="document.getElementById('media-edit').hidden=false">✎</button>
+    <button aria-label="Delete">🗑</button>
+  </div>
+  <div id="media-edit" hidden>
+    <div>Title</div><input id="media-title">
+    <button id="apply" onclick="window.log.push('apply');document.getElementById('media-edit').hidden=true">Apply</button>
+  </div>
+</section>
+<section data-panel="files" hidden>
+  <button id="open-file-form" onclick="document.getElementById('file-form').hidden=false">+ Add File</button>
+  <div id="file-form" hidden>
+    <div>Upload File</div><input type="file" id="pack-file" hidden>
+    <div>Display name</div><input id="display">
+    <div>Game<span>*</span></div>
+    <div role="combobox" tabindex="0" onclick="dropdown(this,'ver-list')">Versions</div>
+    <div id="ver-list" class="list" role="listbox" hidden>
+      <label role="option"><input type="checkbox" id="v263"> 26.3</label>
+      <label role="option"><input type="checkbox" id="v2610" checked> 26.10</label>
+    </div>
+    <div>Release Type</div>
+    <div role="combobox" tabindex="0" onclick="dropdown(this,'rel-list')"><span id="rel-value">Release</span></div>
+    <ul id="rel-list" class="list" role="listbox" hidden><li role="option" onclick="pick(this,'rel-value','rel-list')">Beta</li><li role="option" onclick="pick(this,'rel-value','rel-list')">Release</li></ul>
+    <div>Changelog</div>
+    <select aria-label="Editor" id="cl-editor"><option>WYSIWYG</option><option>Markdown</option></select>
+    <textarea id="changelog"></textarea>
+    <button>Cancel</button>
+    <button id="submit-file" onclick="window.log.push('add-file');document.getElementById('file-form').hidden=true">Add File</button>
+  </div>
+</section>
+<script>show('projects');</script>

@@ -6,3 +6,11 @@ template/.gradle/
 template/run/
 .env
 *.env
+kit-issue.json
+build-output.txt
+.DS_Store
+previews/
+# local working folders (one-folder setup): generated hand-over, build output, reference input
+Macros/aktuell/
+Output/
+Input/
