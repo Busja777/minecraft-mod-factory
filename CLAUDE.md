@@ -17,6 +17,13 @@
 - Alle Seiten-Ziele stehen in `selectors.js`. Wenn CurseForge seine Seiten ändert, nur dort anpassen (`npm run cf -- inspect` speichert die echte Seitenstruktur).
 - Keine Umgehung von Login-, Captcha- oder Cloudflare-Prüfungen. Der Helfer wartet, bis der Betreiber sie selbst löst.
 
+## Ein Arbeitsordner
+Alles liegt in diesem Repo; es gibt keinen zweiten Ordner mehr (früher `~/Desktop/Macros`).
+- `Macros/`: Doppelklick-Starter (`Studio.command`, `CurseForge.command`) und Anleitungen. Die Starter finden das Repo selbst und pullen nur bei sauberem Arbeitsstand.
+- `Macros/aktuell/`: Übergabe für Keyboard Maestro, schreibt nur `npm run macro` (Standard-Ziel). Nie von Hand befüllen, nie committen.
+- Lokale Arbeits-/Erzeugnisordner sind git-ignoriert und werden nie committet: `Macros/aktuell/`, `Output/` (gebaute Packs, Screenshots), `Input/` (Referenzen), `previews/`.
+- Neue Ausgaben gehören in `Output/` (oder den Downloads-Ordner, wenn der Betreiber es so will), nicht verstreut ins Repo oder auf den Schreibtisch.
+
 ## Allgemein
 - Texte für den Betreiber auf Deutsch, Du-Form. CurseForge-Texte (Name, Summary, Beschreibung, Changelog) auf Englisch.
 - `npm test` muss grün bleiben. Neue Logik bekommt Tests (`node:test`), Browser-Abläufe einen Fixture-Test (`tests/fixtures/`).

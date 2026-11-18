@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { buildMacroBundle, pickUpdateVersion, missingSources } from '../scripts/lib/macro-bundle.js';
 
 const config = { mcVersion: '1.21.1', bedrock: { galleryTitle: 'MCPEDL', versionPrefix: '26.' } };
-const outDir = '/Users/x/Desktop/Macros/aktuell';
+const outDir = '/Users/x/Desktop/minecraft-mod-factory/Macros/aktuell';
 const pack = {
   slug: 'glowing-samurai', name: 'Glowing Samurai', summary: 'Glowing samurai.', legend: 'Long ago...', altNames: [],
   versions: [

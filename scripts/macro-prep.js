@@ -1,19 +1,20 @@
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { loadMod } from './lib/mods.js';
 import { loadPack } from './lib/skinpacks.js';
 import { buildMacroBundle, missingSources, MARKER } from './lib/macro-bundle.js';
 import { arg, flag } from './lib/github-output.js';
 
-// Fills the hand-over folder for the Keyboard Maestro macros (see ~/Desktop/Macros/ANLEITUNG.md).
+// Fills the hand-over folder for the Keyboard Maestro macros (see Macros/ANLEITUNG-keyboard-maestro.md).
 // npm run macro -- --mod <modId>
 // npm run macro -- --skinpack <slug> [--refresh]            new project / refresh project page
 // npm run macro -- --skinpack <slug> --update [--version x]  file waiting for a manual upload
-// Optional: --out <folder> (default ~/Desktop/Macros/aktuell)
+// Optional: --out <folder> (default <repo>/Macros/aktuell, git-ignored)
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const argv = process.argv.slice(2);
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-const outDir = path.resolve(arg(argv, '--out', path.join(os.homedir(), 'Desktop', 'Macros', 'aktuell')));
+const outDir = path.resolve(arg(argv, '--out', path.join(REPO, 'Macros', 'aktuell')));
 const modId = arg(argv, '--mod');
 const slug = arg(argv, '--skinpack');
 

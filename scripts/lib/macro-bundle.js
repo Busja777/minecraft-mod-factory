@@ -3,7 +3,7 @@ import { skinpackKitFields, modKitFields, skinpackKit, modKit, skinpackUpdateKit
 import { changelogFor } from './skinpacks.js';
 
 // The "macro bundle": every value a Keyboard Maestro macro needs to fill in a CurseForge form,
-// written as plain files with FIXED names into one folder (default ~/Desktop/Macros/aktuell/).
+// written as plain files with FIXED names into one folder (default <repo>/Macros/aktuell/, git-ignored).
 // The macro always reads the same paths; only the folder contents change per project.
 //
 // Entries are { name, text } (written as-is) or { name, from } (repo file copied unchanged).
