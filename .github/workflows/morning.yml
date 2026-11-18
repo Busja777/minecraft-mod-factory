@@ -1,11 +1,13 @@
 name: Morning — publish pending & new mod
 
-# Runs once per day at a randomized time between 06:00 and 12:00 Europe/Berlin.
-# The cron fires every 30 min inside the window; the gate job picks today's slot.
+# Manual start only (operator decision 2026-11-18): new projects go through the local Studio and
+# its Go, so this workflow has no schedule for now. To bring the daily 06:00–12:00 Europe/Berlin
+# slot back, re-add under `on:`
+#   schedule:
+#     - cron: '*/30 6-11 * * *'
+#       timezone: Europe/Berlin
+# Started by hand with force=false, the gate job still applies the window and once-per-day rule.
 on:
-  schedule:
-    - cron: '*/30 6-11 * * *'
-      timezone: Europe/Berlin
   workflow_dispatch:
     inputs:
       force:

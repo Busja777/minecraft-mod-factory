@@ -4,7 +4,7 @@ Automated pipeline that generates small Fabric 1.21.1 QoL mods with Claude, buil
 
 ## How it works
 
-Two scheduled workflows, both in **Europe/Berlin** time with a randomized daily slot:
+Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `evening.yml` runs on a schedule; `morning.yml` is manual-start for now (new projects go through the local Studio):
 
 | Workflow | Window | What happens |
 |---|---|---|
