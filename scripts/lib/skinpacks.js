@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 // Storage for Bedrock skin packs: data/skins/<slug>/
 //   pack.json   { slug, name, packName, summary, legend, altNames, cfProjectId,
@@ -38,6 +39,19 @@ export function stageToVersion(stage) {
 
 export function stageOrder(stage) {
   return Number(stageToVersion(stage).split('.')[1]);
+}
+
+// Update packs are often cumulative ("…_Complete.mcpack" repeats every earlier skin). Returns only
+// the skins whose texture was not part of an earlier stage and remembers the new ones in `seen`.
+export function newSkinsOnly(skins, seen = new Set()) {
+  const fresh = [];
+  for (const s of skins) {
+    const hash = crypto.createHash('sha1').update(s.png).digest('hex');
+    if (seen.has(hash)) continue;
+    seen.add(hash);
+    fresh.push(s);
+  }
+  return fresh;
 }
 
 export const publishedVersions = pack => pack.versions.filter(v => v.status === 'published');

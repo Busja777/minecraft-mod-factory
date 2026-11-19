@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 import { readMcpack, humanize } from './lib/mcpack.js';
-import { stageToVersion, stageOrder, savePack, packDir, listPacks, loadPack } from './lib/skinpacks.js';
+import { stageToVersion, stageOrder, newSkinsOnly, savePack, packDir, listPacks, loadPack } from './lib/skinpacks.js';
 import { loadProjects, saveProjects, findProject, newEntry, nextDueDate, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
 import { slugify } from './lib/naming.js';
 import { listFiles, syncPackWithFiles } from './platforms/curseforge-core.js';
@@ -48,6 +48,7 @@ const dir = packDir(slug);
 const previous = listPacks().includes(slug) ? loadPack(slug) : null;
 for (const sub of ['skins', 'mcpack']) fs.rmSync(path.join(dir, sub), { recursive: true, force: true });
 const versions = [];
+const seen = new Set(); // textures of earlier stages, so a cumulative update pack only lists its new skins
 let packName = name;
 
 for (const { stage, dir: sdir, root } of stages) {
@@ -64,8 +65,10 @@ for (const { stage, dir: sdir, root } of stages) {
     if (stage === 'V1' && read.packTitle) packName = read.packTitle;
     const desc = read.manifest.header?.description || '';
     title = desc.includes('—') ? desc.split('—').pop().trim() : '';
-    for (const s of read.skins) {
-      if (!s.png) continue;
+    const present = read.skins.filter(s => s.png);
+    const fresh = newSkinsOnly(present, seen);
+    if (fresh.length < present.length) console.log(`${stage}: ${present.length - fresh.length} of ${present.length} skins are already in an earlier stage, ${fresh.length} new`);
+    for (const s of fresh) {
       fs.writeFileSync(path.join(dir, 'skins', version, s.texture), s.png);
       skins.push({ file: s.texture, name: s.name, slim: s.slim });
     }
@@ -77,6 +80,7 @@ for (const { stage, dir: sdir, root } of stages) {
     const pngDir = root && fs.existsSync(path.join(sdir, 'PNG')) ? path.join(sdir, 'PNG') : sdir;
     for (const f of fs.readdirSync(pngDir).filter(f => f.toLowerCase().endsWith('.png') && !isPreview(f))) {
       if (!(await is64(path.join(pngDir, f)))) continue;
+      if (!newSkinsOnly([{ png: fs.readFileSync(path.join(pngDir, f)) }], seen).length) continue;
       fs.copyFileSync(path.join(pngDir, f), path.join(dir, 'skins', version, f));
       skins.push({ file: f, name: humanize(f), slim: false });
     }

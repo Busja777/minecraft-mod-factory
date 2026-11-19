@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import AdmZip from 'adm-zip';
-import { stageToVersion, nextDueVersion, markVersionPublished, changelogFor } from '../scripts/lib/skinpacks.js';
+import { stageToVersion, nextDueVersion, markVersionPublished, changelogFor, newSkinsOnly } from '../scripts/lib/skinpacks.js';
 import { buildMcpack, readMcpack, parseLang, manifestIssues, humanize } from '../scripts/lib/mcpack.js';
 import { pickForUpdate, newEntry } from '../scripts/lib/cf-projects.js';
 
@@ -10,6 +10,14 @@ test('stage mapping V1/Un → versions', () => {
   assert.equal(stageToVersion('U1'), '1.1');
   assert.equal(stageToVersion('u4'), '1.4');
   assert.throws(() => stageToVersion('Granpa Skinpack U2'));
+});
+
+test('a cumulative update pack only counts skins that no earlier stage had', () => {
+  const png = t => Buffer.from(t);
+  const seen = new Set();
+  assert.deepEqual(newSkinsOnly([{ name: 'A', png: png('a') }, { name: 'B', png: png('b') }], seen).map(s => s.name), ['A', 'B']);
+  assert.deepEqual(newSkinsOnly([{ name: 'C', png: png('c') }, { name: 'A again', png: png('a') }, { name: 'B', png: png('b') }], seen).map(s => s.name), ['C']);
+  assert.deepEqual(newSkinsOnly([{ name: 'A', png: png('a') }], seen), []);
 });
 
 test('next due version and publishing', () => {
