@@ -1,0 +1,116 @@
+{
+  "slug": "old-grandpa-skinpack",
+  "name": "Old Grandpa Skinpack",
+  "packName": "Opa Skin Pack",
+  "summary": "These are grandpas. It seems like there is more than just old stories behind those wrinkled smiles ...",
+  "legend": "Nobody in the village remembers the grandpas arriving. They were just there one morning, sitting on the bench by the well as if they'd been waiting for a hundred years. Opa Herbert wears a teal shirt that looks a lot like someone else's, and he won't say where he got it. Opa Guenther strokes his thick grey beard and tells stories about strongholds that aren't on any map. Opa Friedrich just watches the horizon with pale blue eyes, like he's counting the sunsets he has left. At night their lanterns stay lit long after the villagers have gone to sleep. Sometimes you can hear them laughing about the old days, back before the first creeper ever hissed. Some people say they built this world. Others say they're still guarding something underneath it. Every winter, one more chair turns up by the fire...",
+  "altNames": [
+    "Grandpas of the Overworld",
+    "The Opa Club"
+  ],
+  "cfProjectId": 1497764,
+  "source": "Grandpa Skins",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "opa_classic.png",
+          "name": "Opa Herbert",
+          "slim": false,
+          "story": "Opa Herbert wears a teal shirt and purple trousers and swears he dressed like that before any hero ever spawned."
+        },
+        {
+          "file": "opa_bald.png",
+          "name": "Opa Clarence",
+          "slim": false,
+          "story": "Opa Clarence has a bald head, grey tufts, a dark beard and a rust-brown shirt, and he remembers every block he ever mined."
+        },
+        {
+          "file": "opa_bushy.png",
+          "name": "Opa Friedrich",
+          "slim": false,
+          "story": "Opa Friedrich has bushy white hair, pale blue eyes and a green shirt, and he stares at the horizon like he's expecting someone."
+        },
+        {
+          "file": "opa_thin.png",
+          "name": "Opa Takeshi",
+          "slim": false,
+          "story": "Opa Takeshi has thinning grey hair and a quiet olive-brown tunic, and he speaks rarely, but every word lands like a stone."
+        },
+        {
+          "file": "opa_beard.png",
+          "name": "Opa Guenther",
+          "slim": false,
+          "story": "Opa Guenther strokes his great grey beard in his red shirt and tells tales of strongholds no map has ever shown."
+        }
+      ],
+      "mcpack": "Opa_Skin_Pack.mcpack",
+      "status": "published",
+      "note": "The first five grandpas take their seats by the village well: Herbert, Clarence, Friedrich, Takeshi and Guenther.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7828553,
+      "publishedAt": "2026-03-28T12:10:03.023Z"
+    },
+    {
+      "stage": "U1",
+      "folder": "U2",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "opa_gunter.png",
+          "name": "Opa Gunter",
+          "slim": false,
+          "story": "Opa Gunter has white hair, rosy cheeks and purple overalls with a teal collar, and he smiles like he knows your secrets."
+        },
+        {
+          "file": "opa_heinz.png",
+          "name": "Opa Heinz",
+          "slim": false,
+          "story": "Opa Heinz wears a brown jacket, grey trousers and a neat grey moustache, and he still walks the old roads every dawn."
+        },
+        {
+          "file": "opa_leopold.png",
+          "name": "Opa Leopold",
+          "slim": false,
+          "story": "Opa Leopold hides behind dark goggles and a full white beard, and his green robe with its golden collar smells of potions."
+        },
+        {
+          "file": "opa_walter.png",
+          "name": "Opa Walter",
+          "slim": false,
+          "story": "Opa Walter shows up every winter in his red snowflake sweater, cheeks rosy, with presents nobody remembers wishing for."
+        }
+      ],
+      "mcpack": "OpasPack.mcpack",
+      "status": "due",
+      "note": "When winter came, four more chairs turned up by the fire. Gunter, Heinz, Leopold and Walter join the circle, bringing goggles, glasses and one very festive sweater.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.120",
+    "1.21.122",
+    "1.21.121",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo of a blocky Minecraft-style elderly grandpa figure with grey hair, a big bushy grey beard and moustache, green eyes, a red shirt and dark trousers, in a warm dramatic rim light like a lantern glow, against a dark navy background, pixel-art textures, cinematic lighting, no text",
+  "coverPrompt": "Wide cinematic cover showing three blocky Minecraft-style grandpa figures side by side: on the left, a grandpa with grey hair, green eyes, a teal shirt and purple trousers; in the middle, a grandpa with white bushy hair, blue eyes, a grey moustache, a green shirt and dark brown trousers; on the right, a grandpa with white hair, rosy cheeks, a grey moustache, a red Christmas sweater with white snowflake patterns and grey trousers. They stand in a cozy Minecraft village at sunset with warm lanterns and a wooden bench. Big stylised blocky title text reads \"Old Grandpa Skinpack\""
+}

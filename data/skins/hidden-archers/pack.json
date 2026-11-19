@@ -1,0 +1,116 @@
+{
+  "slug": "hidden-archers",
+  "name": "Hidden Archers",
+  "packName": "Hidden Archer Pack",
+  "summary": "These are hooded archers. It seems like their glowing eyes see far more than just the target ...",
+  "legend": "No one sees the Hidden Archers arrive. Travellers only notice a single glowing slit in the dark beneath a hood, and then the trees go quiet. The oldest tales talk about the Crimson Shadow Archer, wrapped in blood-red hood and iron-grey sleeves. He walked beside the Emerald Forest Archer, whose green eye shone through the leaves like a firefly. Later, others came out of places no map shows. The Frost Shadow Archer brought a cold cyan stare down from the glaciers. From the dunes came the Desert Sand Archer, a gold figure with one burning amber eye. Every hood hides a different light, and every light belongs to a different land. The tales agree on just one thing: the archers keep watching even when the hood is empty. And somewhere past the horizon, more eyes are opening ...",
+  "altNames": [
+    "Archers of the Veiled Eye",
+    "Hooded Watchers"
+  ],
+  "cfProjectId": 1510695,
+  "source": "Hidden Archers",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "Crimson Shadow and Emerald Forest",
+      "skins": [
+        {
+          "file": "crimson_shadow_archer.png",
+          "name": "Crimson Shadow Archer",
+          "slim": false,
+          "story": "The first to wear the hood, the Crimson Shadow Archer moves in blood-red and iron-grey, and his pale eye is the last thing his enemies see."
+        },
+        {
+          "file": "emerald_forest_archer.png",
+          "name": "Emerald Forest Archer",
+          "slim": false,
+          "story": "Wrapped in green hood and worn leather, the Emerald Forest Archer becomes part of the woods, and only a faint green eye gives her away."
+        }
+      ],
+      "mcpack": "HiddenArcher_Pack.mcpack",
+      "status": "published",
+      "note": "The first two hoods appear: the Crimson Shadow Archer and the Emerald Forest Archer step out of the treeline, one red as blood and one green as moss.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7909011,
+      "publishedAt": "2026-04-11T08:27:46.653Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "midnight_void_archer.png",
+          "name": "Midnight Void Archer",
+          "slim": false,
+          "story": "Born from purple-black nothing, the Midnight Void Archer waits in the dark with pale lavender hands and an eye like a dying star."
+        },
+        {
+          "file": "desert_sand_archer.png",
+          "name": "Desert Sand Archer",
+          "slim": false,
+          "story": "Gold as the dunes at noon, the Desert Sand Archer crosses the desert unseen, and one amber eye burns beneath the hood."
+        },
+        {
+          "file": "frost_shadow_archer.png",
+          "name": "Frost Shadow Archer",
+          "slim": false,
+          "story": "The Frost Shadow Archer comes down from the glaciers in ice-blue armour, and his cold cyan eye can freeze a hunter in place."
+        }
+      ],
+      "mcpack": "HiddenArcher_Pack_Vol2.mcpack",
+      "status": "due",
+      "note": "Three new eyes open far from the forest: the Midnight Void Archer, the Desert Sand Archer and the Frost Shadow Archer join the watch.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "toxic_shadow_archer.png",
+          "name": "Toxic Shadow Archer",
+          "slim": false,
+          "story": "Covered in poison-green moss, the Toxic Shadow Archer stalks the swamps, and his yellow eye glows like venom in the mist."
+        },
+        {
+          "file": "dusk_ember_archer.png",
+          "name": "Dusk Ember Archer",
+          "slim": false,
+          "story": "Copper-red like the last light of sunset, the Dusk Ember Archer hunts at twilight, and her amber eye glows like a coal that won't go out."
+        }
+      ],
+      "mcpack": "HiddenArcher_Pack_Vol3.mcpack",
+      "status": "due",
+      "note": "Two more come out of the swamp mist and the fading sunset: the Toxic Shadow Archer and the Dusk Ember Archer.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.20",
+    "1.21.43",
+    "1.21",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style hooded archer seen from the front, deep blue pixelated hood and shoulder pauldrons, pale blue-white gloves, slate-blue armoured tunic, one narrow horizontal eye slit glowing bright cyan from the shadow of the hood, cyan rim light and faint frost particles, dramatic lighting, dark navy background, no text",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style hooded archers standing side by side: on the left a red-hooded archer with red shoulder pauldrons, grey sleeves, a dark grey tunic with a red belt and a white glowing eye slit; in the centre a gold-sand hooded archer with gold gloves and a glowing amber-orange eye; on the right a blue-hooded archer with pale blue gloves and a glowing cyan eye. Misty twilight forest with distant dunes and icy peaks, drifting embers and fog, dramatic rim lighting. Large stylised title letters reading \"Hidden Archers\" across the top"
+}

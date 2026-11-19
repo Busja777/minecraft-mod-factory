@@ -1,0 +1,134 @@
+{
+  "slug": "medival-rome",
+  "name": "Medival Rome",
+  "packName": "Roman Warriors",
+  "summary": "These are Roman warriors. It seems like the legion never stopped marching, even after Rome fell ...",
+  "legend": "When the last torches of the Colosseum gutter out, the arena does not fall silent. Something still marches through the sand. The Roman Centurion walks first, his gold plate catching moonlight that should not exist, a red crest burning at his temple. Behind him the Murmillo Gladiator lowers a golden visor over wide, unblinking eyes, a scar on his bare chest that never healed. And from the shadow of the senate steps, the Roman General watches in gold and imperial purple, a white plume stirring though no wind blows. Scholars say Rome fell centuries ago. The soldiers never received the order. Each night their ranks grow: legionaries in striped iron, guards in silver and gold. Listen at the gates long enough and you will hear the horn, and a voice asking whether you will take up the shield ...",
+  "altNames": [
+    "Legions of the Eternal City",
+    "Sands of the Colosseum"
+  ],
+  "cfProjectId": 1512775,
+  "source": "Medival Rome",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "soldiers, gladiator & general",
+      "skins": [
+        {
+          "file": "roman_centurion.png",
+          "name": "Roman Centurion",
+          "slim": false,
+          "story": "The Roman Centurion still leads the march, gold checkered plate gleaming over a red tunic, a red crest burning at his temple."
+        },
+        {
+          "file": "roman_legionary.png",
+          "name": "Roman Legionary",
+          "slim": false,
+          "story": "The Roman Legionary wears striped iron bands and a red-crested dark helmet, a soldier who never heard the order to stand down."
+        },
+        {
+          "file": "murmillo_gladiator.png",
+          "name": "Murmillo Gladiator",
+          "slim": false,
+          "story": "The Murmillo Gladiator hides beneath a golden brimmed helmet, bare-chested and scarred, his gold arm guard raised for a fight that never ends."
+        },
+        {
+          "file": "praetorian_guard.png",
+          "name": "Praetorian Guard",
+          "slim": false,
+          "story": "The Praetorian Guard, grey-bearded in silver and white robes, wears the golden emblem and purple sash of an emperor long since dust."
+        },
+        {
+          "file": "roman_general.png",
+          "name": "Roman General",
+          "slim": false,
+          "story": "The Roman General stands in gold armour and imperial purple, a white plume stirring on his helmet although no wind blows."
+        }
+      ],
+      "mcpack": "Roman_Warriors.mcpack",
+      "status": "published",
+      "note": "The legion rises from the sand: the Roman Centurion, Roman Legionary, Murmillo Gladiator, Praetorian Guard and Roman General answer the first horn.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7919958,
+      "publishedAt": "2026-04-13T08:29:41.743Z"
+    },
+    {
+      "stage": "U1",
+      "folder": "U2",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "retiarius_gladiator.png",
+          "name": "Retiarius Gladiator",
+          "slim": false,
+          "story": "The Retiarius Gladiator fights with no helmet at all, bearded and bare-chested, trusting only the golden guard on his shoulder."
+        },
+        {
+          "file": "roman_eques.png",
+          "name": "Roman Eques",
+          "slim": false,
+          "story": "The Roman Eques rides out of the mist in a steel helmet, gold-scaled armour and red tunic, hoofbeats echoing where no horse remains."
+        }
+      ],
+      "mcpack": "Roman_Warriors_V1_1.mcpack",
+      "status": "due",
+      "note": "The arena gates creak open again: the bare-chested Retiarius Gladiator steps onto the sand, while the gold-scaled Roman Eques rides in from the mist.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "folder": "U3",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "thraex_gladiator.png",
+          "name": "Thraex Gladiator",
+          "slim": false,
+          "story": "The Thraex Gladiator stares through the slit of a golden helmet crowned with a purple crest, bare-chested and armed in striped gold."
+        },
+        {
+          "file": "roman_auxiliary.png",
+          "name": "Roman Auxiliary",
+          "slim": false,
+          "story": "The Roman Auxiliary, a foreigner in grey chainmail and an iron helmet marked with gold, swore an oath to Rome that outlived Rome."
+        }
+      ],
+      "mcpack": "Roman_Warriors_V1_2.mcpack",
+      "status": "due",
+      "note": "Purple-crested and golden-visored, the Thraex Gladiator joins the games, and the Roman Auxiliary marches in chainmail to keep an oath Rome forgot.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.2",
+    "1.21.20",
+    "1.20.1",
+    "1.18.31",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a blocky Minecraft-style Murmillo gladiator, a golden helmet with a wide brim shading big white cartoon eyes with black pupils, bare tan chest with a small scar, a golden striped arm guard on one arm, a white loincloth with a gold belt buckle, golden striped greaves. Dramatic warm golden rim light and sheen on the metal, drifting arena dust, deep dark navy background, centred heroic pose, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style Roman warriors side by side with big white cartoon eyes and black pupils. Left: Roman Centurion in a gold helmet with a red side crest, checkered gold chest armour, red tunic legs and gold greaves. Centre: Murmillo Gladiator in a wide-brimmed gold helmet, bare tan chest with a scar, a gold striped arm guard, white loincloth and gold greaves. Right: Roman General in a gold helmet with a white plume, gold armour, purple cuffs and purple legs. Behind them, a moonlit ruined Colosseum with torches and drifting sand, warm gold light against deep night blue. Big stylised Roman stone-carved gold letters reading \"MEDIVAL ROME\" across the top."
+}

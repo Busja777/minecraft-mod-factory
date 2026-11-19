@@ -27,6 +27,9 @@ test('an update changelog opens with a one-liner of the new skins and their stor
   assert.match(cl, /- Cursed Marionette\n/);
   assert.match(cl, /!\[V1\.2 skins\]\(https:\/\/x\/v1\.2\.png\)/);
   assert.doesNotMatch(changelogFor({ version: '1.0', skins: [{ name: 'A' }] }), /join the pack/);
+  const long = changelogFor({ version: '1.3', skins: [{ name: 'SHINKI (魂鬼) — Sealed' }, { name: 'SHINKI (魂鬼) — Ascended' }, { name: 'RYUJIN (龍神) — Sealed' }] });
+  assert.match(long, /3 new skins join the pack: SHINKI \(魂鬼\) and RYUJIN \(龍神\)\./, 'one-liner uses short names, each once');
+  assert.match(long, /- SHINKI \(魂鬼\) — Ascended/, 'the list keeps the full names');
 });
 
 test('next due version and publishing', () => {
@@ -98,4 +101,13 @@ test('changelog carries the screenshots of the new skins', () => {
   const cl = changelogFor({ version: '1.3', skins: [{ name: 'SHINKI' }] }, { imageUrls: ['https://x/v1.3-skins.png'] });
   assert.match(cl, /!\[V1\.3 skins\]\(https:\/\/x\/v1\.3-skins\.png\)/);
   assert.doesNotMatch(changelogFor({ version: '1.3', skins: [{ name: 'SHINKI' }] }), /!\[/);
+});
+
+test('stages sharing one .mcpack name are stored side by side; gaps in U-numbers can be closed', async () => {
+  const { uniqueMcpackName, renumberStages } = await import('../scripts/lib/skinpacks.js');
+  const taken = new Set();
+  assert.equal(uniqueMcpackName('Arabic_Medieval_Skins.mcpack', '1.0', taken), 'Arabic_Medieval_Skins.mcpack');
+  assert.equal(uniqueMcpackName('Arabic_Medieval_Skins.mcpack', '1.1', taken), 'Arabic_Medieval_Skins_V1_1.mcpack');
+  assert.equal(uniqueMcpackName('arabic_medieval_skins.MCPACK', '1.2', taken), 'arabic_medieval_skins_V1_2.MCPACK');
+  assert.deepEqual(renumberStages([{ stage: 'V1' }, { stage: 'U2' }, { stage: 'U4' }]).map(s => `${s.stage}${s.folderStage ? `<${s.folderStage}` : ''}`), ['V1', 'U1<U2', 'U2<U4']);
 });

@@ -1,0 +1,189 @@
+{
+  "slug": "black-and-yellow",
+  "name": "Black & Yellow",
+  "packName": "Black and Yellow Skin Pack 6",
+  "summary": "These are striped hive warriors in black and gold. Some say the humming you hear isn't coming from bees...",
+  "legend": "Long before the first torch was lit, a hive was buried beneath the deepslate: black as obsidian, veined with molten gold. Those who found it never came back the same. The Yellow Shadow walked out first, a black spiral burned into his golden helm. The Bumblebee Warrior followed, striped like the hive itself and humming with a sound no bee should make. Then came the Hazmat Ghost, whose single green eye was the only colour that was never gold. Miners say the hive still hums at night, and every few moons another striped figure climbs into the sunlight. Some wear crowns, some wear masks, and some carry a lightning bolt over their heart. Nobody knows who commands them. But lately the humming has grown louder, as if the Queen herself is about to wake...",
+  "altNames": [
+    "Hive of the Black Sun",
+    "Gold and Shadow Swarm"
+  ],
+  "cfProjectId": 1506175,
+  "source": "Black and Yellow",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "01_yellow_shadow.png",
+          "name": "Yellow Shadow",
+          "slim": false,
+          "story": "The first to leave the hive, Yellow Shadow wears a black spiral on his golden helm and stripes of gold down his dark legs."
+        },
+        {
+          "file": "02_bumblebee_warrior.png",
+          "name": "Bumblebee Warrior",
+          "slim": false,
+          "story": "Wrapped in yellow and black stripes from head to toe, the Bumblebee Warrior watches through a black visor with burning yellow eyes."
+        },
+        {
+          "file": "03_hazmat_ghost.png",
+          "name": "Hazmat Ghost",
+          "slim": false,
+          "story": "Hazard stripes slash across the Hazmat Ghost's black suit, and his single green eye is the only thing in the hive that isn't gold."
+        },
+        {
+          "file": "04_cyber_hornet.png",
+          "name": "Cyber Hornet",
+          "slim": false,
+          "story": "A blazing yellow grid frames the Cyber Hornet's dark checkered body, like a hive cell drawn in pure light."
+        },
+        {
+          "file": "05_golden_reaper.png",
+          "name": "Golden Reaper",
+          "slim": false,
+          "story": "The Golden Reaper sees everything through one huge white eye set in a golden mask above his black-and-gold robe."
+        },
+        {
+          "file": "06_thunder_knight.png",
+          "name": "Thunder Knight",
+          "slim": false,
+          "story": "Behind his grey visor the Thunder Knight stays silent, but the yellow lightning bolt on his black chest never stops crackling."
+        }
+      ],
+      "mcpack": "Black_and_Yellow_Skin_Pack_6.mcpack",
+      "status": "published",
+      "note": "The hive opens for the first time: Yellow Shadow, Bumblebee Warrior, Hazmat Ghost, Cyber Hornet, Golden Reaper and Thunder Knight step into the light.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7884193,
+      "publishedAt": "2026-04-06T10:36:29.850Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "07_yellow_dragon.png",
+          "name": "Yellow Dragon",
+          "slim": false,
+          "story": "Covered in checkered golden scales, the Yellow Dragon leaves scorch marks wherever her glowing orange claws touch the ground."
+        },
+        {
+          "file": "08_black_pharaoh.png",
+          "name": "Black Pharaoh",
+          "slim": false,
+          "story": "The Black Pharaoh rules from a golden headdress and chestplate, but his arms and legs are wrapped in the hive's dark stone."
+        },
+        {
+          "file": "09_wasp_agent.png",
+          "name": "Wasp Agent",
+          "slim": false,
+          "story": "Under her black hood the Wasp Agent watches with one wide eye, gold cuffs and buttons gleaming on her dark coat."
+        }
+      ],
+      "mcpack": "Black_and_Yellow_Skin_Pack_9.mcpack",
+      "status": "published",
+      "note": "Deeper chambers crack open, releasing the scaled Yellow Dragon, the gilded Black Pharaoh and the hooded Wasp Agent.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 8009033,
+      "publishedAt": "2026-04-29T09:36:43.240Z"
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "10_yellow_witch.png",
+          "name": "Yellow Witch",
+          "slim": false,
+          "story": "A yellow band circles the Yellow Witch's dark hood, and her one green eye knows which honey cures and which one curses."
+        },
+        {
+          "file": "11_swarm_queen.png",
+          "name": "Swarm Queen",
+          "slim": false,
+          "story": "With huge golden compound eyes and a body ringed in black and yellow, the Swarm Queen hears every wing in the hive."
+        },
+        {
+          "file": "12_gold_samurai.png",
+          "name": "Gold Samurai",
+          "slim": false,
+          "story": "The Gold Samurai keeps one yellow eye open beneath his grey kabuto, a golden crest glowing on his dark chest."
+        }
+      ],
+      "mcpack": "Black_and_Yellow_Skin_Pack_12.mcpack",
+      "status": "due",
+      "note": "The humming grows louder as the Swarm Queen wakes, guarded by the Yellow Witch and the one-eyed Gold Samurai.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "13_space_pilot.png",
+          "name": "Space Pilot",
+          "slim": false,
+          "story": "Behind a golden visor and a glowing chest light, the Space Pilot searches the stars for the hive's lost sister swarm."
+        },
+        {
+          "file": "14_yellow_jester.png",
+          "name": "Yellow Jester",
+          "slim": false,
+          "story": "The Yellow Jester grins through a white slit in his golden mask, his black-and-gold checkered suit hiding every trick."
+        },
+        {
+          "file": "15_hornet_biker.png",
+          "name": "Hornet Biker",
+          "slim": false,
+          "story": "Yellow racing stripes run down the Hornet Biker's grey suit, and his round golden visor glows like a headlight in the tunnels."
+        },
+        {
+          "file": "16_venom_striker.png",
+          "name": "Venom Striker",
+          "slim": false,
+          "story": "A golden sun burns on the Venom Striker's grey chest, and his single yellow eye marks whoever he stings next."
+        }
+      ],
+      "mcpack": "Black_and_Yellow_Skin_Pack_16.mcpack",
+      "status": "due",
+      "note": "The swarm spreads beyond the hive: Space Pilot, Yellow Jester, Hornet Biker and Venom Striker join the black-and-gold ranks.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.20",
+    "1.21",
+    "1.21.120",
+    "1.21.122",
+    "1.21.121",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style figure, the Venom Striker: dark grey cube helmet with one glowing yellow eye and a black pupil, a glowing golden sun emblem on a dark grey chest, arms and legs in black and gold stripes, strong golden glow and rim light, floating dust like pollen, deep black-navy background, dramatic and moody, no text",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures side by side: left, the Bumblebee Warrior with a golden cube head, black visor slit and yellow eyes, black-outlined body in thick yellow and black stripes; center, the Thunder Knight with a dark grey helmet and grey visor, yellow shoulders and a glowing yellow lightning bolt on a black chest, legs striped black and gold; right, the Golden Reaper with a gold cube head holding one white cyclops eye with a black pupil, black body edged in gold. Background: a huge underground hive of black hexagons with glowing molten-gold veins, drifting golden sparks, dramatic lighting. Big stylised bold letters across the top reading \"Black & Yellow\", in glossy gold with black outlines and hazard-stripe accents"
+}

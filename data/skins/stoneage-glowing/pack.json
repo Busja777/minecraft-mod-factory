@@ -1,0 +1,210 @@
+{
+  "slug": "stoneage-glowing",
+  "name": "StoneAge Glowing",
+  "packName": "Glow Steinzeit Pack",
+  "summary": "These are glowing stone-age warriors. It seems like there is more than just fire burning inside their armour ...",
+  "legend": "Long before the first torch was lit, the tribes of the deep valley wore armour of black stone, and the stone remembered every fire it had ever touched. When night fell, the cracks began to glow. The Feuer-Jaeger carried the orange heat of the first hunt in his seams, while the Mond-Schamane drank the cold cyan light of the moon until it ran through his veins like water. The elders whispered that the glow was a gift, but the Geister Krieger knew better: behind his violet visor he could hear the stone speaking, counting down to something buried beneath the valley. Each new moon, another warrior wakes with a colour no one has seen before. And somewhere under the ash, the oldest light of all is still waiting to be found ...",
+  "altNames": [
+    "Glowstone Tribes",
+    "Neon Stone Age Warriors"
+  ],
+  "cfProjectId": 1509298,
+  "source": "Glowing Stoneage",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "feuer_jaeger.png",
+          "name": "Feuer-Jaeger",
+          "slim": false,
+          "story": "The Feuer-Jaeger hunts by night, the orange heat of the first campfire still smouldering in the cracks of his black stone armour."
+        },
+        {
+          "file": "mond_schamane.png",
+          "name": "Mond-Schamane",
+          "slim": false,
+          "story": "The Mond-Schamane drank moonlight until it froze into cyan veins that now trace every edge of his armour."
+        }
+      ],
+      "mcpack": "GlowStoneAgePack.mcpack",
+      "status": "published",
+      "note": "The stone first awakens: Feuer-Jaeger and Mond-Schamane rise with orange fire and cyan moonlight.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7900431,
+      "publishedAt": "2026-04-09T17:15:14.013Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "blitz_haeuptling.png",
+          "name": "BLITZ HAEUPTLING",
+          "slim": false,
+          "story": "BLITZ HAEUPTLING rules the tribe with yellow lightning crackling across his mask and shoulders, a chief struck by the storm and left standing."
+        },
+        {
+          "file": "blut_schamane.png",
+          "name": "BLUT SCHAMANE",
+          "slim": false,
+          "story": "BLUT SCHAMANE paints his oaths in glowing red, and the stone drinks every one of them."
+        },
+        {
+          "file": "geister_krieger.png",
+          "name": "GEISTER KRIEGER",
+          "slim": false,
+          "story": "Behind a solid violet visor, GEISTER KRIEGER hears the voices of fallen warriors whispering through the purple seams of his armour."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new warriors join the tribe: the yellow-lit BLITZ HAEUPTLING, the blood-red BLUT SCHAMANE and the violet-visored GEISTER KRIEGER.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "eis_jaeger.png",
+          "name": "EIS JAEGER",
+          "slim": false,
+          "story": "EIS JAEGER stalks the frozen ridges, his pale ice-blue visor glinting like a glacier at dawn."
+        },
+        {
+          "file": "gift_hexer.png",
+          "name": "GIFT HEXER",
+          "slim": false,
+          "story": "GIFT HEXER brews his venom in the swamps, and its toxic green glow now seeps from every joint of his armour."
+        },
+        {
+          "file": "schatten_wolf.png",
+          "name": "SCHATTEN WOLF",
+          "slim": false,
+          "story": "SCHATTEN WOLF moves unseen through the night, only his bone-white markings betraying the hunter inside the shadow."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "From ice, swamp and shadow come EIS JAEGER, GIFT HEXER and SCHATTEN WOLF, glowing pale blue, toxic green and bone white.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "donner_baer.png",
+          "name": "DONNER BAER",
+          "slim": false,
+          "story": "DONNER BAER walks with the weight of thunder, deep blue light rumbling beneath his heavy stone plates."
+        },
+        {
+          "file": "lava_priesterin.png",
+          "name": "LAVA PRIESTERIN",
+          "slim": false,
+          "story": "LAVA PRIESTERIN tends the sacred fire pits, glowing magenta runes burning across her mask and armour."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Thunder and lava answer the call: deep blue DONNER BAER and magenta LAVA PRIESTERIN step out of the night.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "",
+      "skins": [
+        {
+          "file": "ash_walker.png",
+          "name": "ASH WALKER",
+          "slim": false,
+          "story": "ASH WALKER rose from a burnt-out village, scattered orange embers still flickering through his cracked black armour."
+        },
+        {
+          "file": "storm_serpent.png",
+          "name": "STORM SERPENT",
+          "slim": false,
+          "story": "STORM SERPENT coils through rain and river, teal-green light rippling along his armour like scales in lightning."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Wanderers from beyond the valley arrive: ember-speckled ASH WALKER and teal STORM SERPENT.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U5",
+      "version": "1.5",
+      "title": "",
+      "skins": [
+        {
+          "file": "bone_oracle.png",
+          "name": "BONE ORACLE",
+          "slim": false,
+          "story": "BONE ORACLE reads the future in old bones, her silver-white glow as pale as the skulls she listens to."
+        },
+        {
+          "file": "ember_witch.png",
+          "name": "EMBER WITCH",
+          "slim": false,
+          "story": "EMBER WITCH weaves curses from dying sparks, red-orange flames crawling across every plate of her armour."
+        },
+        {
+          "file": "void_hunter.png",
+          "name": "VOID HUNTER",
+          "slim": false,
+          "story": "VOID HUNTER came back from the darkness beneath the valley, deep purple light pulsing where his heart should be."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The oldest secrets surface with the silver BONE ORACLE, the fiery EMBER WITCH and the purple VOID HUNTER.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.2",
+    "1.21.82",
+    "1.20.1",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style stone-age shaman in pitch-black segmented stone armour, glowing cyan light lines tracing the mask, chest plates, arm edges and boot rims, intense cyan glow radiating into a dark smoky background, dramatic low-angle lighting, faint drifting light particles, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style stone-age warriors standing side by side in pitch-black segmented stone armour: left with glowing orange light lines on mask, chest and boots, center with glowing cyan light lines, right with glowing violet-purple lines and a solid purple visor. Background: a dark prehistoric valley at night with jagged cliffs, a huge pale moon, embers and mist. Big stylised glowing stone-carved title letters reading \"StoneAge Glowing\" across the top."
+}

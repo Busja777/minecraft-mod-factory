@@ -1,0 +1,239 @@
+{
+  "slug": "symbolic-glow",
+  "name": "Symbolic Glow",
+  "packName": "Symbol Glow Skins",
+  "summary": "These are shadows with glowing symbols. It seems like every sign is trying to spell out something...",
+  "legend": "No one remembers when the first of them stepped out of the dark. They are figures made of pure shadow. Each has no face, only two glowing eyes and a single symbol burning on its chest. Symbol Question came first. Its cyan mark asked something nobody could answer. Then Symbol Exclamation arrived, red as a warning, followed by Symbol Plus, whose green cross seemed to promise that more would come. Since then the signs keep appearing in the night: numbers, letters, marks that once lived only on paper. They don't speak. They just stand at the edge of the torchlight and glow, as if they're waiting for someone to read them in the right order. Some say the symbols form a sentence. Others say it's a countdown. And somewhere in the darkness, a new sign is already starting to glow...",
+  "altNames": [
+    "Glyphs in the Dark",
+    "Neon Sigil Shadows"
+  ],
+  "cfProjectId": 1508319,
+  "source": "Symbol Glow Skins",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "skin_question.png",
+          "name": "Symbol Question",
+          "slim": false,
+          "story": "The first shadow to appear: cyan eyes and a cyan question mark that asks what nobody dares to answer."
+        },
+        {
+          "file": "skin_plus.png",
+          "name": "Symbol Plus",
+          "slim": false,
+          "story": "Green eyes, a green cross on its chest, and a quiet promise that there will always be more of them."
+        },
+        {
+          "file": "skin_excl.png",
+          "name": "Symbol Exclamation",
+          "slim": false,
+          "story": "Its red eyes and blazing red exclamation mark are the last warning you get before the dark moves."
+        }
+      ],
+      "mcpack": "SymbolGlowSkins.mcpack",
+      "status": "published",
+      "note": "The first three shadows step out of the dark: Symbol Question in cyan, Symbol Plus in green and Symbol Exclamation in red.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7895504,
+      "publishedAt": "2026-04-08T15:33:11.510Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "skin_div.png",
+          "name": "Symbol Division",
+          "slim": false,
+          "story": "An orange division sign glows on its chest, and wherever it walks, the shadows split in two."
+        },
+        {
+          "file": "skin_inf.png",
+          "name": "Symbol Infinity",
+          "slim": false,
+          "story": "Purple eyes and a purple infinity loop: it has always been here, and it will never leave."
+        },
+        {
+          "file": "skin_pct.png",
+          "name": "Symbol Percent",
+          "slim": false,
+          "story": "Its golden percent sign measures how much of you is still light and how much is shadow."
+        }
+      ],
+      "mcpack": "SymbolGlowSkins_v2.mcpack",
+      "status": "published",
+      "note": "Math starts to glow. An orange Division, a purple Infinity and a golden Percent join the silent line.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 8020640,
+      "publishedAt": "2026-05-01T10:57:03.317Z"
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "skin_hash.png",
+          "name": "Symbol Hash",
+          "slim": false,
+          "story": "A hot-pink hash mark burns on its chest, tagging every place the shadows have already claimed."
+        },
+        {
+          "file": "skin_at.png",
+          "name": "Symbol At",
+          "slim": false,
+          "story": "Sky-blue eyes and a glowing blue @: it always knows exactly where you're standing."
+        },
+        {
+          "file": "skin_star.png",
+          "name": "Symbol Star",
+          "slim": false,
+          "story": "Pale white eyes and a white star on its chest, like a fallen star still glowing faintly in the dark."
+        }
+      ],
+      "mcpack": "SymbolGlowSkins_v3.mcpack",
+      "status": "due",
+      "note": "New marks light up the night: a pink Hash, a sky-blue At and a pale white Star.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "skin_heart.png",
+          "name": "Symbol Heart",
+          "slim": false,
+          "story": "A red heart glows where a real one should beat. It's the only shadow that seems to feel."
+        },
+        {
+          "file": "skin_lightning.png",
+          "name": "Symbol Lightning",
+          "slim": false,
+          "story": "Yellow eyes crackle above a yellow lightning bolt, and the air hums wherever it flickers past."
+        },
+        {
+          "file": "skin_skull.png",
+          "name": "Symbol Skull",
+          "slim": false,
+          "story": "White eyes, a grinning white skull and crossbones: the symbol nobody wants to see glowing behind them."
+        },
+        {
+          "file": "skin_tilde.png",
+          "name": "Symbol Tilde",
+          "slim": false,
+          "story": "A teal tilde ripples across its chest like a wave, and nobody ever sees it walk in a straight line."
+        }
+      ],
+      "mcpack": "SymbolGlowSkins_v4.mcpack",
+      "status": "due",
+      "note": "Four more signs appear at once: a red Heart, a yellow Lightning bolt, a white Skull and a teal Tilde.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "",
+      "skins": [
+        {
+          "file": "skin_pi.png",
+          "name": "Symbol Pi",
+          "slim": false,
+          "story": "Its blue pi sign glows with a number that never ends, and so does its patience."
+        },
+        {
+          "file": "skin_omega.png",
+          "name": "Symbol Omega",
+          "slim": false,
+          "story": "Purple eyes and a violet omega: the symbol of the end, waiting at the back of the line."
+        },
+        {
+          "file": "skin_sqrt.png",
+          "name": "Symbol Sqrt",
+          "slim": false,
+          "story": "A green root sign glows on its chest. It digs down to the hidden source of every mystery."
+        },
+        {
+          "file": "skin_para.png",
+          "name": "Symbol Paragraph",
+          "slim": false,
+          "story": "An orange paragraph mark coils across its chest like a chapter of a story nobody has read yet."
+        }
+      ],
+      "mcpack": "SymbolGlowSkins_v5.mcpack",
+      "status": "due",
+      "note": "Ancient letters wake up. A blue Pi, a purple Omega, a green Sqrt and an orange Paragraph glow from the shadows.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U5",
+      "version": "1.5",
+      "title": "",
+      "skins": [
+        {
+          "file": "skin_diamond.png",
+          "name": "Symbol Diamond",
+          "slim": false,
+          "story": "Cyan eyes and a bright cyan diamond: the clearest, hardest light the shadows have ever carried."
+        },
+        {
+          "file": "skin_arrow.png",
+          "name": "Symbol Arrow",
+          "slim": false,
+          "story": "A lime-green arrow points upward on its chest, showing the way only those who glow may follow."
+        },
+        {
+          "file": "skin_amp.png",
+          "name": "Symbol Amp",
+          "slim": false,
+          "story": "Its pink ampersand links every symbol together, proof that the story is far from over."
+        }
+      ],
+      "mcpack": "SymbolGlowSkins_v6.mcpack",
+      "status": "due",
+      "note": "A cyan Diamond, a lime Arrow and a pink Amp arrive, and the ampersand hints that more signs are still to come.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.20.40",
+    "1.21.2",
+    "1.20.1",
+    "1.20",
+    "1.21",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style humanoid figure made entirely of pitch-black voxels, two small glowing cyan square eyes, and a pixelated glowing cyan question mark on its chest radiating a soft neon glow, dramatic rim light, dark navy-black background, centered composition, no text",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style figures standing side by side, all made of pitch-black voxels with no armour. Left: glowing cyan eyes and a pixelated cyan question mark on the chest. Middle: glowing green eyes and a pixelated green plus sign. Right: glowing red eyes and a pixelated red exclamation mark. Their neon glow lights a dark, misty night scene with faint floating pixel symbols in the background. The title \"SYMBOLIC GLOW\" sits above them in big stylised neon pixel letters."
+}

@@ -29,7 +29,7 @@
   ],
   "maxPendingKits": 5,
   "images": {
-    "model": "gpt-image-2.5-flare",
+    "model": "gpt-image-2.6-flare",
     "logoSize": 400,
     "coverSize": [
       720,

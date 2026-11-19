@@ -3,15 +3,18 @@ import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 import { readMcpack, humanize } from './lib/mcpack.js';
-import { stageToVersion, stageOrder, newSkinsOnly, savePack, packDir, listPacks, loadPack } from './lib/skinpacks.js';
+import { stageToVersion, stageOrder, newSkinsOnly, uniqueMcpackName, renumberStages, savePack, packDir, listPacks, loadPack } from './lib/skinpacks.js';
 import { loadProjects, saveProjects, findProject, newEntry, nextDueDate, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
 import { slugify } from './lib/naming.js';
-import { listFiles, syncPackWithFiles } from './platforms/curseforge-core.js';
+import { listFiles, syncPackWithFiles, downloadFile } from './platforms/curseforge-core.js';
 import { arg } from './lib/github-output.js';
 
 // Imports a local Bedrock skin pack folder (V1/ or root, U1…Un/) into data/skins/<slug>/ and
 // registers it in data/cf-projects.json.
 // node scripts/import-skinpack.js "<folder>" --project <id> --uploaded U1 [--last-upload 2026-04-18] [--name "Glowing Samurai"]
+//   [--skip U3,U4]   leave out stage folders that need a check first (copies, wrong pack)
+//   [--renumber]     number U-folders consecutively (U2 without U1 → U1)
+// With CF_CORE_API_KEY and --project, a V1 that is missing locally is taken from CurseForge (oldest file).
 const argv = process.argv.slice(2);
 const folder = argv[0];
 if (!folder || folder.startsWith('--') || !fs.existsSync(folder)) {
@@ -38,6 +41,18 @@ for (const d of subdirs) {
   if (m) stages.push({ stage: `U${m[1]}`, dir: path.join(folder, d) });
 }
 stages.sort((a, b) => stageOrder(a.stage) - stageOrder(b.stage));
+const skip = new Set(String(arg(argv, '--skip', '')).split(',').map(x => x.trim().toUpperCase()).filter(Boolean));
+for (const st of skip) if (!stages.some(x => x.stage.toUpperCase() === st)) throw new Error(`--skip ${st}: no such stage folder`);
+const kept = stages.filter(x => !skip.has(x.stage.toUpperCase()));
+if (skip.size) warnings.push(`skipped on purpose: ${[...skip].join(', ')}`);
+stages.splice(0, stages.length, ...(argv.includes('--renumber') ? renumberStages(kept) : kept));
+
+// With CF_CORE_API_KEY the upload state comes from CurseForge itself (file names = .mcpack names).
+let cfFiles = null;
+if (process.env.CF_CORE_API_KEY && projectId) {
+  cfFiles = await listFiles(projectId, { key: process.env.CF_CORE_API_KEY });
+  console.log(`CurseForge project ${projectId}: ${cfFiles.length} files (${cfFiles.map(f => f.fileName).join(', ')})`);
+}
 
 async function is64(file) {
   try { const m = await sharp(file).metadata(); return m.width === 64 && m.height === 64; } catch { return false; }
@@ -49,18 +64,28 @@ const previous = listPacks().includes(slug) ? loadPack(slug) : null;
 for (const sub of ['skins', 'mcpack']) fs.rmSync(path.join(dir, sub), { recursive: true, force: true });
 const versions = [];
 const seen = new Set(); // textures of earlier stages, so a cumulative update pack only lists its new skins
+const takenNames = new Set();
 let packName = name;
 
-for (const { stage, dir: sdir, root } of stages) {
+for (const { stage, dir: sdir, root, folderStage } of stages) {
   const version = stageToVersion(stage);
   const files = fs.readdirSync(sdir);
-  const mcpacks = files.filter(f => f.toLowerCase().endsWith('.mcpack'));
+  let mcpacks = files.filter(f => f.toLowerCase().endsWith('.mcpack'));
+  let packSource = mcpacks.length ? path.join(sdir, mcpacks[0]) : null;
+  const loosePngs = files.some(f => f.toLowerCase().endsWith('.png') && !isPreview(f));
+  // V1 missing locally (empty folder): the oldest file on CurseForge is the first release.
+  if (stage === 'V1' && !mcpacks.length && !loosePngs && cfFiles?.length) {
+    const oldest = cfFiles.at(-1);
+    packSource = await downloadFile(oldest);
+    mcpacks = [oldest.fileName];
+    warnings.push(`V1: not in the local folder, taken from CurseForge (${oldest.fileName})`);
+  }
   if (mcpacks.length > 1) warnings.push(`${stage}: ${mcpacks.length} .mcpack files, using ${mcpacks[0]}`);
   let skins = [], title = '', mcpack = null;
   fs.mkdirSync(path.join(dir, 'skins', version), { recursive: true });
 
   if (mcpacks.length) {
-    const read = readMcpack(path.join(sdir, mcpacks[0]));
+    const read = readMcpack(packSource);
     read.issues.forEach(i => warnings.push(`${stage} ${mcpacks[0]}: ${i}`));
     if (stage === 'V1' && read.packTitle) packName = read.packTitle;
     const desc = read.manifest.header?.description || '';
@@ -72,9 +97,11 @@ for (const { stage, dir: sdir, root } of stages) {
       fs.writeFileSync(path.join(dir, 'skins', version, s.texture), s.png);
       skins.push({ file: s.texture, name: s.name, slim: s.slim });
     }
-    mcpack = mcpacks[0];
+    mcpack = uniqueMcpackName(mcpacks[0], version, takenNames);
+    if (mcpack !== mcpacks[0]) warnings.push(`${stage}: ${mcpacks[0]} is also used by an earlier stage, stored as ${mcpack}`);
     fs.mkdirSync(path.join(dir, 'mcpack'), { recursive: true });
-    fs.copyFileSync(path.join(sdir, mcpack), path.join(dir, 'mcpack', mcpack));
+    if (Buffer.isBuffer(packSource)) fs.writeFileSync(path.join(dir, 'mcpack', mcpack), packSource);
+    else fs.copyFileSync(packSource, path.join(dir, 'mcpack', mcpack));
   } else {
     // No .mcpack (e.g. Glowing Stoneage updates): take loose 64x64 PNGs; the pack is built at publish time.
     const pngDir = root && fs.existsSync(path.join(sdir, 'PNG')) ? path.join(sdir, 'PNG') : sdir;
@@ -87,16 +114,10 @@ for (const { stage, dir: sdir, root } of stages) {
     warnings.push(`${stage}: no .mcpack, ${skins.length} loose skins (pack will be built on publish)`);
   }
   if (!skins.length) { warnings.push(`${stage}: no skins found, skipped`); fs.rmSync(path.join(dir, 'skins', version), { recursive: true, force: true }); continue; }
-  versions.push({ stage, version, title, skins, mcpack, status: 'due', note: '', media: [], fileId: null, publishedAt: null });
+  versions.push({ stage, ...(folderStage ? { folder: folderStage } : {}), version, title, skins, mcpack, status: 'due', note: '', media: [], fileId: null, publishedAt: null });
 }
 if (!versions.length) throw new Error(`No skins found in ${folder}`);
 
-// With CF_CORE_API_KEY the upload state comes from CurseForge itself (file names = .mcpack names).
-let cfFiles = null;
-if (process.env.CF_CORE_API_KEY && projectId) {
-  cfFiles = await listFiles(projectId, { key: process.env.CF_CORE_API_KEY });
-  console.log(`CurseForge project ${projectId}: ${cfFiles.length} files (${cfFiles.map(f => f.fileName).join(', ')})`);
-}
 if (uploaded && !cfFiles) {
   const upTo = stageOrder(uploaded);
   for (const v of versions) if (stageOrder(v.stage) <= upTo) Object.assign(v, { status: 'published', publishedAt: lastUpload ? new Date(lastUpload).toISOString() : null });

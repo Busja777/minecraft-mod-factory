@@ -1,0 +1,221 @@
+{
+  "slug": "black-and-white-pvp",
+  "name": "Black & White PVP",
+  "packName": "Shiro to Kuro",
+  "summary": "These are warriors painted in ink. It seems like the white left in them is more than just light ...",
+  "legend": "When the lanterns of the old shrine went out, the ink was all that was left. They say every warrior who walked those halls was painted into the dark with a single brush, black on black, with only a little white left where their spirit still burned. MIKO-NO-YA lights the way with one pale eye. KENSHI-KURAI barely shows at all, except for the cold glow at his wrists and heels as he steps forward. Behind them, YUKI-ONI's icy blue gaze cuts through the night like frost on steel. Nobody knows who holds the brush, or why each figure comes with a different light: snow-blue, bone-white, the warm ivory of fox fire. Duelists who have faced them all say the same thing: the ink isn't dry yet, and new shapes are still forming in the dark...",
+  "altNames": [
+    "Shiro to Kuro: Ink Warriors",
+    "Monochrome Shadow Duelists"
+  ],
+  "cfProjectId": 1513784,
+  "source": "Black & White PVP",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "miko_no_ya.png",
+          "name": "MIKO-NO-YA (巫女の夜) — Night Shrine Maiden",
+          "slim": false,
+          "story": "A shrine maiden behind a grey mask, watching with one white eye while pale lights flicker at her wrists and feet."
+        },
+        {
+          "file": "kenshi_kurai.png",
+          "name": "KENSHI-KURAI (剣士暗) — Dark Swordmaster",
+          "slim": false,
+          "story": "A swordmaster made almost entirely of darkness; you only see the white glow at his wrists and boots once he's already striking."
+        },
+        {
+          "file": "hanko_rei.png",
+          "name": "HANKO-REI (版画霊) — Woodblock Ghost",
+          "slim": false,
+          "story": "A ghost carved from a woodblock print, with grey plated armour and two cold blue-white eyes."
+        }
+      ],
+      "mcpack": "ShiroToKuro_GlowPack.mcpack",
+      "status": "published",
+      "note": "The first strokes of ink: the shrine maiden, the dark swordmaster and the woodblock ghost step out of the dark.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7924783,
+      "publishedAt": "2026-04-14T08:02:13.767Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "karasu_do.png",
+          "name": "KARASU-DO (烏道) — Crow Path Monk",
+          "slim": false,
+          "story": "A monk of the crow path with white slit eyes, a glowing beak and a white soul-orb burning in his chest."
+        },
+        {
+          "file": "yuki_oni.png",
+          "name": "YUKI-ONI (雪鬼) — Snow Demon",
+          "slim": false,
+          "story": "A snow demon whose icy blue eyes and frost-lit armour can freeze a duel before it starts."
+        },
+        {
+          "file": "ronin_kage.png",
+          "name": "RONIN-KAGE (浪人影) — Shadow Ronin",
+          "slim": false,
+          "story": "A masterless shadow under a grey visor band, with only a warm ivory glow below the brim to show he's there."
+        },
+        {
+          "file": "tsuki_mai.png",
+          "name": "TSUKI-MAI (月舞) — Moon Dancer",
+          "slim": false,
+          "story": "A moon dancer in speckled grey with a third white eye on her brow and a silver net woven over her chest."
+        }
+      ],
+      "mcpack": "ShiroToKuro_V1-V2_Complete.mcpack",
+      "status": "due",
+      "note": "Four more figures appear: a crow monk, a snow demon with icy blue eyes, a shadow ronin and a dancer who carries the moon.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "kitsune_bi.png",
+          "name": "KITSUNE-BI (狐火) — Fox Fire Spirit",
+          "slim": false,
+          "story": "A fox spirit lit by warm cream fox fire in her eyes, her mouth and a diamond burning on her chest."
+        },
+        {
+          "file": "tategami.png",
+          "name": "TATEGAMI (立髪) — Mane of Thunder",
+          "slim": false,
+          "story": "A thunder-maned warrior with a storm-grey head and a bright white lightning star crossing his chest."
+        },
+        {
+          "file": "kairyu_sha.png",
+          "name": "KAIRYU-SHA (海龍者) — Sea Dragon Bearer",
+          "slim": false,
+          "story": "A sea dragon bearer in grey scale armour, with pale blue eyes and a ring of tide-blue pearls on his chest."
+        }
+      ],
+      "mcpack": "ShiroToKuro_V1-V3_Complete.mcpack",
+      "status": "due",
+      "note": "The brush picks up new light: cream fox fire, a white thunder star and the blue pearls of the sea dragon.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "shikigami.png",
+          "name": "SHIKIGAMI (式神) — Paper Spirit Summoner",
+          "slim": false,
+          "story": "A summoner tied with a white paper headband, white-eyed, whose grey lattice armour hides folded spirits."
+        },
+        {
+          "file": "kumo_hime.png",
+          "name": "KUMO-HIME (雲姫) — Cloud Princess",
+          "slim": false,
+          "story": "A cloud princess in drifting grey, with pale blue eyes and a circle of glowing raindrops on her chest."
+        }
+      ],
+      "mcpack": "ShiroToKuro_V1-V4_Complete.mcpack",
+      "status": "due",
+      "note": "A paper-spirit summoner and a cloud princess drift into the ink, folded and soft but just as dangerous.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "",
+      "skins": [
+        {
+          "file": "hyakume.png",
+          "name": "HYAKUME (百目) — Hundred Eyes Watcher",
+          "slim": false,
+          "story": "A watcher behind a striped grey face plate whose white eyes never close, with his chest sealed by a black square."
+        },
+        {
+          "file": "tatami_ken.png",
+          "name": "TATAMI-KEN (畳剣) — Weave Blade Duelist",
+          "slim": false,
+          "story": "A duelist in woven dark-olive armour, with soft cream glowing eyes and cream light threaded through the weave."
+        },
+        {
+          "file": "arashi_oka.png",
+          "name": "ARASHI-OKA (嵐丘) — Storm Hill Wanderer",
+          "slim": false,
+          "story": "A storm-hill wanderer in a dark checkered cloak whose pale grey eyes are still on the horizon."
+        }
+      ],
+      "mcpack": "ShiroToKuro_V1-V5_Complete.mcpack",
+      "status": "due",
+      "note": "The hundred-eyed watcher, a woven-blade duelist and a wanderer from the storm hills join the duel.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U5",
+      "version": "1.5",
+      "title": "",
+      "skins": [
+        {
+          "file": "shirogane.png",
+          "name": "SHIROGANE (白金) — White Gold Sovereign",
+          "slim": false,
+          "story": "A sovereign behind a khaki-gold visor, with a bone-ivory light glowing on his chest like a crown of white gold."
+        },
+        {
+          "file": "mugen_kiri.png",
+          "name": "MUGEN-KIRI (無限霧) — Endless Fog Wanderer",
+          "slim": false,
+          "story": "A wanderer hooded in endless fog, showing only two pale eyes and a faint grey grin on his chest."
+        },
+        {
+          "file": "sora_bushi.png",
+          "name": "SORA-BUSHI (空武士) — Sky Warrior",
+          "slim": false,
+          "story": "A sky warrior with a single white visor eye and a white core blazing inside a grey ring on his chest."
+        }
+      ],
+      "mcpack": "ShiroToKuro_V1-V6_Complete.mcpack",
+      "status": "due",
+      "note": "A sovereign of white gold rises, flanked by a fog-hooded wanderer and a sky warrior with a blazing core.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style warrior, KARASU-DO the Crow Path Monk, in pitch-black pixel armour with grey speckled shading, two wide glowing white eye slits, a white glowing beak-like mouth and a bright white orb glowing in the centre of the chest, white light bands at the wrists and white glowing squares on the boots, dramatic rim light and soft white bloom, ink-wash mist swirling, deep dark navy-black background, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style warriors standing side by side in black pixel armour on a misty moonlit Japanese temple courtyard at night, with torii gates and ink-wash mountains fading into the fog. Left: YUKI-ONI with icy pale blue glowing eyes, blue dots on the chest and frosty blue light on the boots. Centre: TATEGAMI with a grey speckled head, white eyes and a bright white X-shaped star glowing on the chest. Right: KITSUNE-BI with warm cream-ivory glowing eyes, a cream diamond on the chest and ivory boot lights. All three have white-lit wrist bands. Strong black-and-white contrast, falling ash, sumi-e ink brush strokes. Above them, the big stylised brush-stroke title \"Black & White PVP\" with a small subtitle \"Shiro to Kuro\"."
+}

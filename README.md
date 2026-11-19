@@ -26,15 +26,19 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 Old packs from the local folder (`V1/`, `U1…Un/`) are imported once; afterwards the evening window releases one prepared version (`Un`) per pack every 22–25 days, mixed with mod updates (one update per evening in total).
 
 ```bash
+# 0. Overview of all projects: what is on CurseForge, what is prepared, the evening schedule
+npm run bestand          # → Output/bestand/BESTAND.md + bestand.csv (folder mapping: data/bestand.json)
 # 1. Import (reads every .mcpack, syncs the upload state from CurseForge via CF_CORE_API_KEY)
 node scripts/import-skinpack.js "/path/to/MCPE/Glowing Samurai" --project 1498885
+#    --skip U3,U4   leave out stage folders that need a check · --renumber   close gaps (U2 without U1)
+#    a V1 missing locally is taken from CurseForge; stages sharing one .mcpack name are stored as <name>_V1_x.mcpack
 # 2. Refresh the project page: Actions → "Skin pack — refresh project page" (pack = slug)
 #    → 3D renders, legend/summary/notes (Claude), logo + cover (ChatGPT), issue with the full kit
 ```
 
 - **Cover:** upload `<Name> Cover.png` under *Media* with the title **MCPEDL** (MCPEDL takes the cover from there), description `<Name> Cover.png`, ★ Feature Media.
 - **Description order:** legend → AI note → skins of V1.0 → one section per update (`Added in V1.2: …` with renders) → install notes. Description and gallery have no API: every update opens an issue with the new section to paste.
-- **Upload:** `config.bedrock.uploadApi` stays `false` until a test upload with the UUID upload token worked on a Bedrock project; until then the issue contains the file link for a manual upload. A manual upload is detected on the next run (file name = `.mcpack` name).
+- **Upload:** `config.bedrock.uploadApi` is `true` since the first API upload on 2026-11-19 (The Last Ninjas V1.2). Every uploaded file contains all skins so far (`scripts/lib/complete-pack.js`). A manual upload is detected on the next run (file name = `.mcpack` name).
 - Renders look like the 3D preview of the skin editor (`Input/minecraft-skin-editor`): same lights, poses and background `#252538`. 4D/custom geometry is not supported.
 - Positions: `node scripts/skin-views.js --pack <slug>` renders every skin in all positions of `tools/skin-render/views.json` and writes `previews/<slug>/index.html` (← → position, ↑ ↓ skin). Apply one with `node scripts/render-skins.js --pack <slug> --view walk --all` (or `--version 1.3 --view fight` for one version); the choice is stored in `pack.json`, default `editor`.
 

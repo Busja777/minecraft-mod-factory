@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { shortName } from './description.js';
 
 // Storage for Bedrock skin packs: data/skins/<slug>/
 //   pack.json   { slug, name, packName, summary, legend, altNames, cfProjectId,
@@ -54,6 +55,22 @@ export function newSkinsOnly(skins, seen = new Set()) {
   return fresh;
 }
 
+// Several stages often ship a file with the same name (Arabic_Medieval_Skins.mcpack in V1 and every
+// U-folder). The first keeps its name (that is the one on CurseForge), later ones get the version
+// appended so they do not overwrite each other in data/skins/<slug>/mcpack/.
+export function uniqueMcpackName(name, version, taken) {
+  if (!taken.has(name.toLowerCase())) { taken.add(name.toLowerCase()); return name; }
+  const unique = name.replace(/(\.mcpack)$/i, `_V${version.replace('.', '_')}$1`);
+  taken.add(unique.toLowerCase());
+  return unique;
+}
+
+// --renumber: U-folders numbered with gaps ("Granpa Skinpack U2" without U1) become U1, U2, … in order.
+export function renumberStages(stages) {
+  let n = 0;
+  return stages.map(s => (s.stage === 'V1' ? s : { ...s, stage: `U${++n}`, folderStage: s.stage }));
+}
+
 export const publishedVersions = pack => pack.versions.filter(v => v.status === 'published');
 export const nextDueVersion = pack => pack.versions.find(v => v.status === 'due') || null;
 export const hasDueVersion = pack => !!nextDueVersion(pack);
@@ -74,7 +91,7 @@ const listNames = names => names.length > 1 ? `${names.slice(0, -1).join(', ')} 
 export function changelogFor(v, { imageUrls = [], total = 0 } = {}) {
   const first = v.version === '1.0';
   const n = v.skins.length;
-  const intro = first ? '' : `${n} new skin${n === 1 ? '' : 's'} ${n === 1 ? 'joins' : 'join'} the pack: ${listNames(v.skins.map(s => s.name))}.\n\n`;
+  const intro = first ? '' : `${n} new skin${n === 1 ? '' : 's'} ${n === 1 ? 'joins' : 'join'} the pack: ${listNames([...new Set(v.skins.map(s => shortName(s.name)))])}.\n\n`;
   const names = v.skins.map(s => `- ${s.story ? `**${s.name}** — ${s.story}` : s.name}`).join('\n');
   const title = v.title ? ` — ${v.title}` : '';
   const images = imageUrls.map(u => `\n![V${v.version} skins](${u})\n`).join('');

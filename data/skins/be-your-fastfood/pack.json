@@ -1,0 +1,162 @@
+{
+  "slug": "be-your-fastfood",
+  "name": "BE YOUR FASTFOOD",
+  "packName": "FastFood Pack",
+  "summary": "These are walking fast-food dishes. It seems like there is more than just sauce inside ...",
+  "legend": "Long after the last restaurant went dark, the night kitchens kept burning. In the alleys between the food stalls, the cooks say, the leftovers learned to stand up. First came Döner, wrapped in pale foil, with stripes of lettuce, tomato and purple onion across his bread-crust face. Behind him marched Pommes, a walking red carton crowned with golden fries, his yellow eyes glowing like hot oil. And at the front, silent and heavy, stood the Cheesy Burger, a golden bun with a body of patty, lettuce and tomato. Nobody knows who cooked them, or why they still smell of smoke and spices. Some say they are only hungry. Others say they are waiting for the rest of the menu to wake up... and every night, the kitchen gets a little louder.",
+  "altNames": [
+    "Night Kitchen Legends",
+    "The Leftover Uprising"
+  ],
+  "cfProjectId": 1500364,
+  "source": "Fastfood Skins",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "doener.png",
+          "name": "Döner",
+          "slim": false,
+          "story": "Döner, the foil-wrapped wanderer, wears stripes of lettuce, tomato and purple onion across his bread-crust face like war paint."
+        },
+        {
+          "file": "pommes.png",
+          "name": "Pommes",
+          "slim": false,
+          "story": "Pommes, the Red Carton, carries a crown of golden fries and watches the alleys with eyes yellow as hot oil."
+        },
+        {
+          "file": "cheesy_burger.png",
+          "name": "Cheesy Burger",
+          "slim": false,
+          "story": "Cheesy Burger, the Golden Bun, hides a heart of brown patty, green lettuce and red tomato beneath his warm crust."
+        }
+      ],
+      "mcpack": "FastFood_Pack.mcpack",
+      "status": "published",
+      "note": "The night kitchen wakes: Döner, Pommes and the Cheesy Burger step out of the smoke for the first time.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7849879,
+      "publishedAt": "2026-03-31T09:24:30.943Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "currywurst.png",
+          "name": "Currywurst",
+          "slim": false,
+          "story": "Currywurst, the Spiced One, drips orange-red sauce flecked with yellow curry, standing on pale sausage legs."
+        },
+        {
+          "file": "fried_rice.png",
+          "name": "Fried Rice",
+          "slim": false,
+          "story": "Fried Rice, the Wok Shadow, wears a fried egg upon his iron-grey head and a coat of rice, peas and carrot."
+        },
+        {
+          "file": "kimchi.png",
+          "name": "Kimchi",
+          "slim": false,
+          "story": "Kimchi, the Fermented Ghost, is pale as cabbage and marked with fiery red chili and a crimson sigil upon her chest."
+        }
+      ],
+      "mcpack": "StreetFood_Pack.mcpack",
+      "status": "published",
+      "note": "Spice drifts through the alleys as Currywurst, Fried Rice and Kimchi join the march.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7968921,
+      "publishedAt": "2026-04-22T20:18:17.877Z"
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "pelmeni.png",
+          "name": "Pelmeni",
+          "slim": false,
+          "story": "Pelmeni, the Dumpling Monk, cloaked in soft cream dough and fresh green herbs, glides silently on white sour-cream legs."
+        },
+        {
+          "file": "pizza.png",
+          "name": "Pizza",
+          "slim": false,
+          "story": "Pizza, the Molten Slice, bubbles with red sauce, white mozzarella and basil above a golden, crunchy crust body."
+        },
+        {
+          "file": "doughnut.png",
+          "name": "Doughnut",
+          "slim": false,
+          "story": "Doughnut, the Sprinkled Trickster, wears pink glaze scattered with rainbow sprinkles over a ring of golden fried dough."
+        },
+        {
+          "file": "kaesekuchen.png",
+          "name": "Kaesekuchen",
+          "slim": false,
+          "story": "Kaesekuchen, the Quiet Baker, crowned with red berry glaze, stands creamy white upon a firm golden crust."
+        }
+      ],
+      "mcpack": "ComfortFood_Pack.mcpack",
+      "status": "due",
+      "note": "The ovens open: Pelmeni, Pizza, Doughnut and Kaesekuchen rise from dough and glaze.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "taco.png",
+          "name": "Taco",
+          "slim": false,
+          "story": "Taco, the Shell Warrior, folds his golden shell around green lettuce, red salsa, white cream and brown meat."
+        },
+        {
+          "file": "ramen.png",
+          "name": "Ramen",
+          "slim": false,
+          "story": "Ramen, the Broth Spirit, burns red as spicy soup, crowned with golden noodles and staring out with green onion eyes."
+        },
+        {
+          "file": "sushi.png",
+          "name": "Sushi",
+          "slim": false,
+          "story": "Sushi, the Salmon Ronin, wears an orange salmon crest on white rice and dark green nori guards upon his arms."
+        }
+      ],
+      "mcpack": "WorldFood_Pack.mcpack",
+      "status": "due",
+      "note": "From distant stalls come Taco, Ramen and Sushi, and the menu grows longer still.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style figure shaped like a cheeseburger: golden sesame-bun head with light highlights, torso layered with a dark brown patty, bright green lettuce and red tomato, golden bun-coloured arms and legs, warm golden rim light and faint steam rising, standing in a dramatic pose against a dark navy night-kitchen background, cinematic lighting, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures side by side in a dark neon-lit street-food alley at night with steam and grill smoke: left, a döner figure with a tan bread head striped green, red and purple, layered bread torso and pale silver-white foil legs; centre, a fries figure with a bright red carton body and legs, a crown of yellow fries on its head, yellow eyes and a yellow waist band; right, a cheeseburger figure with a golden bun head, brown patty, green lettuce and red tomato layers across the chest and golden bun legs. Warm orange and gold glow, big stylised bold letters reading \"BE YOUR FASTFOOD\" across the top."
+}

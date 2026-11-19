@@ -1,0 +1,206 @@
+{
+  "slug": "arabic-knights",
+  "name": "Arabic Knights",
+  "packName": "Arabic Medieval Skins",
+  "summary": "These are Arabic knights. It seems like there is more than steel and silk beneath the veils ...",
+  "legend": "When the desert wind dies at dusk, the old caravan road to Baghdad remembers its keepers. The Abbasid Caliph walks first, his face veiled in white, black robes banded with gold that catch the last of the sun. Behind him comes the Mamluk Warrior, his steel helm and teal sleeves silent, his visor a thin black line that has seen too many sieges. Far to the north, the Seljuk Sultan waits beneath a crown of gold, red robes marked with a golden zigzag and a collar of white fur trimmed in ice blue. Scholars, corsairs and alchemists followed them across the sands, each guarding a secret the dunes could never bury. They say the road is quiet now. But on moonless nights, travellers still hear hooves and see gold glinting behind them, closer than it should be...",
+  "altNames": [
+    "Knights of the Golden Dunes",
+    "Caravan of the Caliphate"
+  ],
+  "cfProjectId": 1511857,
+  "source": "Arabic Knights",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "abbasid_caliph.png",
+          "name": "Abbasid Caliph",
+          "slim": false,
+          "story": "The Abbasid Caliph rules in silence, his face veiled in white, black robes banded with gold, and every word he speaks becomes law."
+        },
+        {
+          "file": "mamluk_warrior.png",
+          "name": "Mamluk Warrior",
+          "slim": false,
+          "story": "The Mamluk Warrior hides behind a steel helm and a black visor slit, his silver plates and teal sleeves tested in a hundred sieges."
+        },
+        {
+          "file": "arab_scholar.png",
+          "name": "Arab Scholar",
+          "slim": false,
+          "story": "The Arab Scholar wears royal blue and gold, a pale blue gem on his chest holding the knowledge of a thousand lost books."
+        }
+      ],
+      "mcpack": "Arabic_Medieval_Skins.mcpack",
+      "status": "published",
+      "note": "The road opens: the Abbasid Caliph, the Mamluk Warrior and the Arab Scholar step out of the dusk to guard the caravan route.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7915021,
+      "publishedAt": "2026-04-12T11:04:15.153Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "bedouin_trader.png",
+          "name": "Bedouin Trader",
+          "slim": false,
+          "story": "Under a red-and-white checkered headscarf, the Bedouin Trader guides his brown-robed caravan through dunes no map has ever described."
+        },
+        {
+          "file": "fatimid_soldier.png",
+          "name": "Fatimid Soldier",
+          "slim": false,
+          "story": "The Fatimid Soldier stands guard in chainmail and a horned steel helm, a green emblem shining on his white tabard."
+        }
+      ],
+      "mcpack": "Arabic_Medieval_Skins_V1_1.mcpack",
+      "status": "due",
+      "note": "Hooves in the sand: the Bedouin Trader leads his caravan in, protected by the chainmail of the Fatimid Soldier.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "moorish_nobleman.png",
+          "name": "Moorish Nobleman",
+          "slim": false,
+          "story": "The Moorish Nobleman walks in magenta and gold, a red jewel glinting on his white turban like a secret kept too long."
+        },
+        {
+          "file": "arab_archer.png",
+          "name": "Arab Archer",
+          "slim": false,
+          "story": "Dressed in sand-coloured robes and leather, the Arab Archer disappears into the desert and never misses his mark."
+        }
+      ],
+      "mcpack": "Arabic_Medieval_Skins_V1_2.mcpack",
+      "status": "due",
+      "note": "From the western palaces comes the Moorish Nobleman in magenta and gold, with the sand-robed Arab Archer watching from the dunes.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "sufi_dervish.png",
+          "name": "Sufi Dervish",
+          "slim": false,
+          "story": "The Sufi Dervish wanders in a brown hood and white veil, spinning stories the wind repeats long after he has gone."
+        },
+        {
+          "file": "barbary_corsair.png",
+          "name": "Barbary Corsair",
+          "slim": false,
+          "story": "With a red bandana and a belt of stolen colourful jewels, the Barbary Corsair laughs at every storm on the sea."
+        },
+        {
+          "file": "ayyubid_general.png",
+          "name": "Ayyubid General",
+          "slim": false,
+          "story": "The Ayyubid General leads from the front, a gold mark on his steel helm and green-and-yellow stripes across his chainmail."
+        }
+      ],
+      "mcpack": "Arabic_Medieval_Skins_V1_3.mcpack",
+      "status": "due",
+      "note": "A wanderer, a pirate and a commander join the road: the Sufi Dervish, the Barbary Corsair and the Ayyubid General.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "",
+      "skins": [
+        {
+          "file": "seljuk_sultan.png",
+          "name": "Seljuk Sultan",
+          "slim": false,
+          "story": "The Seljuk Sultan wears a gold crown and a red robe struck with golden lightning, his white fur collar edged in ice blue."
+        },
+        {
+          "file": "arab_alchemist.png",
+          "name": "Arab Alchemist",
+          "slim": false,
+          "story": "Under a violet crown, the Arab Alchemist stares with cyan eyes, golden stars scattered across his midnight-blue robe."
+        }
+      ],
+      "mcpack": "Arabic_Medieval_Skins_V1_4.mcpack",
+      "status": "due",
+      "note": "Crowns rise in the north: the Seljuk Sultan arrives in red and gold, and the starry robes of the Arab Alchemist hide secrets older than the sand.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U5",
+      "version": "1.5",
+      "title": "",
+      "skins": [
+        {
+          "file": "zanzibar_merchant.png",
+          "name": "Zanzibar Merchant",
+          "slim": false,
+          "story": "The Zanzibar Merchant arrives in white robes and a striped cap, a gold earring gleaming, with spices from beyond the sea."
+        },
+        {
+          "file": "arab_physician.png",
+          "name": "Arab Physician",
+          "slim": false,
+          "story": "In blue robes and a white headband, the Arab Physician carries a leather pouch of remedies that heal more than wounds."
+        }
+      ],
+      "mcpack": "Arabic_Medieval_Skins_V1_5.mcpack",
+      "status": "due",
+      "note": "The road reaches the sea: the Zanzibar Merchant brings spices from distant shores, and the Arab Physician tends to those the desert spared.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.2",
+    "1.21.20",
+    "1.20.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a blocky Minecraft-style Seljuk Sultan figure, gold crown with a red jewel, white beard, red robe with a golden zigzag across the chest, white fur shoulder collar trimmed in bright cyan, chainmail-grey gauntlets, dramatic golden rim light and soft cyan glow, dark navy background with faint drifting desert sand, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style characters side by side. Left: Abbasid Caliph with white turban and white face veil, black robe with gold shoulder bands, gold belt and gold hem. Center: Mamluk Warrior with steel helmet and thin black visor slit, segmented silver chest plate, teal sleeves and teal legs, brown boots. Right: Seljuk Sultan with gold crown and red jewel, white beard, red robe with golden zigzag, white fur collar trimmed in cyan. Background: golden desert dunes at dusk, a distant walled city with domes and minarets, warm sunset sky fading into deep blue. Title text \"Arabic Knights\" in big stylised gold letters with ornate edges at the top."
+}
