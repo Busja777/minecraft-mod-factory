@@ -2,9 +2,12 @@
   "slug": "the-ruins-assassins-skinpack",
   "name": "The Ruins Assassins Skinpack",
   "packName": "Assassin Skin Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are hooded assassins of the ruins. It seems like every glowing mark hides a different oath ...",
+  "legend": "Long before the ruins were ruins, an order of hooded blades guarded the city's secrets. When the walls fell, the order did not. Its members simply stepped into the shadows of broken stone and waited. Travellers whisper of the Shadow Assassin, grey as cold ash, with a single white slash of light across his chest where his oath was carved. Others swear they have seen the Void Assassin, robed in deep violet, the cyan mark on her heart flickering like a dying star. And when dark gold glints between the pillars, it is already too late: the Royal Assassin has chosen his target. Every one of them bears the same diagonal mark, glowing in a colour that belongs to them alone. Nobody knows who gives them that light. But every season, a new glow wakes somewhere in the ruins...",
+  "altNames": [
+    "The Ruins Assassins: Order of the Glowing Mark",
+    "Hooded Blades of the Ruins"
+  ],
   "cfProjectId": 1494411,
   "source": "curseforge",
   "versions": [
@@ -16,22 +19,25 @@
         {
           "file": "assassin_bw.png",
           "name": "Shadow Assassin",
-          "slim": false
+          "slim": false,
+          "story": "The Shadow Assassin moves through ash-grey ruins, unseen, and only the white slash glowing across his chest ever gives him away."
         },
         {
           "file": "assassin_purple.png",
           "name": "Void Assassin",
-          "slim": false
+          "slim": false,
+          "story": "Wrapped in violet robes, the Void Assassin carries a cyan mark that flickers like a star falling into endless dark."
         },
         {
           "file": "assassin_gold.png",
           "name": "Royal Assassin",
-          "slim": false
+          "slim": false,
+          "story": "Once a guard of the fallen throne, the Royal Assassin hides in dark olive robes, his golden mark the last sign of a lost crown."
         }
       ],
       "mcpack": "Assassin_Pack.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The first blades step out of the ruins: the Shadow, Void and Royal Assassins, each carrying the glowing slash of the order.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -46,17 +52,19 @@
         {
           "file": "assassin_red.png",
           "name": "Crimson Assassin",
-          "slim": false
+          "slim": false,
+          "story": "The Crimson Assassin wears blood-red robes and stone-grey bracers, and her scarlet mark burns brightest just before she strikes."
         },
         {
           "file": "assassin_green.png",
           "name": "Forest Assassin",
-          "slim": false
+          "slim": false,
+          "story": "Deep in the overgrown ruins, the Forest Assassin blends into the moss, an emerald mark glowing softly like light through leaves."
         }
       ],
       "mcpack": "Assassin_Pack_v2.mcpack",
       "status": "published",
-      "note": "",
+      "note": "Two new marks wake in the dark. The Crimson Assassin and the Forest Assassin join the order in burning red and mossy green.",
       "media": [
         "media/v1.1-skins.png"
       ],
@@ -71,17 +79,19 @@
         {
           "file": "assassin_blue.png",
           "name": "Ocean Assassin",
-          "slim": false
+          "slim": false,
+          "story": "The Ocean Assassin rose from the drowned halls in robes of deep-sea blue, with a cold azure mark across his heart."
         },
         {
           "file": "assassin_orange.png",
           "name": "Ember Assassin",
-          "slim": false
+          "slim": false,
+          "story": "Clad in burnt-copper robes, the Ember Assassin leaves only smouldering stone behind, her orange mark glowing like a fire that won't die."
         }
       ],
       "mcpack": "Assassin_Pack_v3.mcpack",
       "status": "published",
-      "note": "",
+      "note": "From the drowned halls and the smouldering ashes come the Ocean Assassin and the Ember Assassin. The order keeps growing.",
       "media": [
         "media/v1.2-skins.png"
       ],
@@ -207,5 +217,7 @@
     "26.12",
     "26.20",
     "26.13"
-  ]
+  ],
+  "logoPrompt": "Square logo, single blocky Minecraft-style hooded assassin in deep violet purple robes and hood, face half hidden in hood shadow with dark hair strands, a glowing cyan diagonal slash mark across the chest emitting a dramatic cyan glow, darker purple gloves and boots, pixelated voxel style, dark night background with faint purple mist and crumbling stone silhouettes, rim lighting, no text",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style hooded assassins standing side by side: left, Shadow Assassin in charcoal grey and black robes with a white streak in his hair, brown gloves and boots, a glowing white diagonal slash on his chest; centre, Void Assassin in deep violet purple robes with a glowing cyan diagonal slash on the chest; right, Royal Assassin in dark olive-gold and brown robes with a glowing yellow-gold diagonal slash on the chest. Faces half hidden by hoods. Background of moonlit ancient ruins, broken pillars, drifting fog and embers. Big stylised carved-stone title letters reading \"The Ruins Assassins\" glowing faintly at the top"
 }

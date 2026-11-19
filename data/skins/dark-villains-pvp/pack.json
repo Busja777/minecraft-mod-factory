@@ -2,9 +2,12 @@
   "slug": "dark-villains-pvp",
   "name": "Dark Villains PVP",
   "packName": "Dark Villains PvP",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are ember-veined villains. It seems like the furnace that forged them is still burning ...",
+  "legend": "Long before the first sword was forged, the deep earth kept a furnace no one was meant to find. Twelve warriors found it. They walked in as men and walked out as coal-black shells of armour, grey stone plates bolted to their shoulders, fists and boots, their veins replaced by living embers. Ember Reaver still burns the orange of the first spark. Blood Harbinger glows the crimson of everything he has taken. And Grim Ravager came back wrong, his fire turned violet, as if something on the other side had answered. Each wears the same cracked rune across the face, a brand from the furnace that marks them as its own. Now they hunt the arenas, drawn to the clash of blades like moths to flame. But the furnace was not empty when they arrived... and someone is still feeding it.",
+  "altNames": [
+    "Furnace-Born Villains PvP",
+    "Embers of the Dark Arena"
+  ],
   "cfProjectId": 1519623,
   "source": "curseforge",
   "versions": [
@@ -16,67 +19,79 @@
         {
           "file": "ember_reaver.png",
           "name": "Ember Reaver",
-          "slim": false
+          "slim": false,
+          "story": "The first to leave the furnace, Ember Reaver still carries its original orange spark glowing through the cracks in his black armour."
         },
         {
           "file": "ashen_wraith.png",
           "name": "Ashen Wraith",
-          "slim": false
+          "slim": false,
+          "story": "Ashen Wraith's helm burned pitch black, leaving only red rune-light in the dark to show where his eyes once were."
         },
         {
           "file": "cinder_brute.png",
           "name": "Cinder Brute",
-          "slim": false
+          "slim": false,
+          "story": "Cinder Brute smoulders amber like a coal that refuses to die, and hits just as long as it keeps burning."
         },
         {
           "file": "blood_harbinger.png",
           "name": "Blood Harbinger",
-          "slim": false
+          "slim": false,
+          "story": "Blood Harbinger's helm is stained dark red, and his crimson core glows brighter with every duel he wins."
         },
         {
           "file": "soot_marauder.png",
           "name": "Soot Marauder",
-          "slim": false
+          "slim": false,
+          "story": "Covered in furnace soot from crown to boot, Soot Marauder hides in smoke until his red-orange embers flare."
         },
         {
           "file": "pyre_stalker.png",
           "name": "Pyre Stalker",
-          "slim": false
+          "slim": false,
+          "story": "Pyre Stalker's golden embers flicker like a distant funeral fire, the last thing his prey ever sees."
         },
         {
           "file": "coal_corsair.png",
           "name": "Coal Corsair",
-          "slim": false
+          "slim": false,
+          "story": "A raider of lava seas, Coal Corsair wears a black helm and red sparks taken from every forge he plundered."
         },
         {
           "file": "scorch_bandit.png",
           "name": "Scorch Bandit",
-          "slim": false
+          "slim": false,
+          "story": "Scorch Bandit steals heat itself, his orange glow growing hotter the colder his rivals become."
         },
         {
           "file": "grim_ravager.png",
           "name": "Grim Ravager",
-          "slim": false
+          "slim": false,
+          "story": "Grim Ravager came back wrong; his fire burns violet, as if something beyond the furnace answered his call."
         },
         {
           "file": "molten_duelist.png",
           "name": "Molten Duelist",
-          "slim": false
+          "slim": false,
+          "story": "Molten Duelist bows before every fight, gold embers on his body and a red brand across his face."
         },
         {
           "file": "char_reaver.png",
           "name": "Char Reaver",
-          "slim": false
+          "slim": false,
+          "story": "Char Reaver is Ember Reaver's charred shadow, his red-orange rune burned deeper by a second trip into the flames."
         },
         {
           "file": "rift_slayer.png",
           "name": "Rift Slayer",
-          "slim": false
+          "slim": false,
+          "story": "Rift Slayer's magenta glow leaks from a tear in the furnace wall that nobody else dared to touch."
         }
       ],
       "mcpack": "Dark_Villains_PvP.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The furnace opens and twelve ember-veined villains walk out, from Ember Reaver's orange glow to Rift Slayer's magenta. The arena will never be cold again.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -195,5 +210,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style villain warrior, Grim Ravager, in coal-black dark brown armour with grey stone plates on the shoulders and fists, a cracked glowing violet-purple rune slashing across its face from the crown down past one eye, a glowing violet core on the chest and violet ember specks on arms and legs, dramatic purple glow and drifting embers, pitch-dark smoky background, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style villain warriors standing side by side, all in coal-black dark brown armour with grey stone plates on shoulders, fists and boots and a cracked glowing rune across the face; left Ember Reaver glowing bright orange, centre Grim Ravager glowing violet-purple, right Blood Harbinger glowing deep crimson red with a dark red tinted helm; glowing chest cores and ember specks matching each colour. Background: a vast underground furnace cavern with lava rivers, smoke and floating sparks under a dark navy sky. Big stylised molten-metal letters reading \"DARK VILLAINS PvP\" across the top."
 }

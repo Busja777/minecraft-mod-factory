@@ -2,9 +2,12 @@
   "slug": "urban-teen-pack",
   "name": "Urban Teen Pack",
   "packName": "Urban Teen Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are urban teens in cosy sweaters. It seems like there is more than just style behind every colour ...",
+  "legend": "They say the city has a secret dress code. Each autumn evening, when the streetlights flicker on, a crew of teens shows up at the corner of Fifth and Nowhere, every one of them in a chunky ribbed sweater of a single colour. Violet Royal always gets there first, a pink blossom tucked into her pale hair. Cyber Neon leans on the wall in midnight navy, with cyan hair that looks almost electric under the lamps. Midnight Queen arrives last, all in black except for the gold band in her hair. Nobody knows who picks the colours, or why each one matches the stripe on their white sneakers. Last night, though, somebody spotted a new set of footprints heading toward the skate park...",
+  "altNames": [
+    "Streetwise Sweater Crew",
+    "City Corner Teens"
+  ],
   "cfProjectId": 1520582,
   "source": "curseforge",
   "versions": [
@@ -16,67 +19,79 @@
         {
           "file": "VioletRoyal.png",
           "name": "Violet Royal",
-          "slim": false
+          "slim": false,
+          "story": "Violet Royal rules the corner in a regal purple sweater, with pink eyes and a pink blossom pinned in her cream hair."
         },
         {
           "file": "SunsetKid.png",
           "name": "Sunset Kid",
-          "slim": false
+          "slim": false,
+          "story": "Sunset Kid's orange hair, golden headband and blazing orange sweater make him look like the last hour of daylight."
         },
         {
           "file": "MidnightQueen.png",
           "name": "Midnight Queen",
-          "slim": false
+          "slim": false,
+          "story": "Dressed all in black with a gold band and pink gem in her hair, Midnight Queen owns the city after dark."
         },
         {
           "file": "MintFresh.png",
           "name": "Mint Fresh",
-          "slim": false
+          "slim": false,
+          "story": "Mint Fresh pairs mint hair and mint trousers with a cream sweater, always looking like the first cool morning of autumn."
         },
         {
           "file": "RoseBlossom.png",
           "name": "Rose Blossom",
-          "slim": false
+          "slim": false,
+          "story": "Rose Blossom wears pink flowers in her pale hair, a soft pink sweater and spotless white trousers wherever she goes."
         },
         {
           "file": "CyberNeon.png",
           "name": "Cyber Neon",
-          "slim": false
+          "slim": false,
+          "story": "Cyber Neon has cyan hair, cyan eyes and a navy sweater, with dark sneakers that carry a cyan stripe like a signal."
         },
         {
           "file": "CocoaDream.png",
           "name": "Cocoa Dream",
-          "slim": false
+          "slim": false,
+          "story": "Cocoa Dream drifts through the streets in warm tan and deep brown, as calm and cosy as a cup of hot chocolate."
         },
         {
           "file": "LemonGlow.png",
           "name": "Lemon Glow",
-          "slim": false
+          "slim": false,
+          "story": "Blue-eyed Lemon Glow wears a sunny yellow sweater, a golden headband and blue jeans, and brightens every grey street."
         },
         {
           "file": "SageWisdom.png",
           "name": "Sage Wisdom",
-          "slim": false
+          "slim": false,
+          "story": "Sage Wisdom wears a green band in his dark hair and a muted sage sweater, and quietly knows every shortcut in town."
         },
         {
           "file": "LilacDream.png",
           "name": "Lilac Dream",
-          "slim": false
+          "slim": false,
+          "story": "Lilac Dream has silver hair and lilac eyes, and her pale purple sweater and sneakers make her look half asleep and half magic."
         },
         {
           "file": "CrimsonRose.png",
           "name": "Crimson Rose",
-          "slim": false
+          "slim": false,
+          "story": "Crimson Rose has dark red hair, a bold red sweater and black trousers, and nobody forgets her once they've seen her."
         },
         {
           "file": "PeachGlow.png",
           "name": "Peach Glow",
-          "slim": false
+          "slim": false,
+          "story": "Peach Glow has light blonde hair, blue eyes and a soft peach sweater, and brings warmth to the coldest street corner."
         }
       ],
       "mcpack": "UrbanTeens.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The corner crew gathers for the first time: twelve teens, each in a signature ribbed sweater with a matching stripe on white sneakers. The streetlights are on, and the city's secret dress code begins.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -203,5 +218,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style teen with pale cream hair, a pink flower headband and pink eyes, wearing a chunky ribbed purple sweater, black trousers and white sneakers with a small purple stripe. A soft violet rim light outlines the figure against a dark navy-black urban night background with blurred streetlights. Dramatic lighting, crisp voxel detail, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style teens standing side by side on a city street at dusk. On the left, a girl with cream hair and a pink flower headband in a ribbed purple sweater and black trousers. In the middle, a teen with cyan hair and cyan eyes in a navy sweater and black trousers, with cyan stripes on dark sneakers. On the right, a dark-skinned girl with black hair and a gold band with a pink gem, wearing an all-black sweater and trousers. Behind them are warm streetlights, brick walls and a purple-orange sky. Across the top, the title \"Urban Teen Pack\" in big, bold graffiti-style letters."
 }

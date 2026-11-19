@@ -2,9 +2,12 @@
   "slug": "crusaders-pack",
   "name": "Crusaders Pack",
   "packName": "Crusaders",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are crusaders sworn to old oaths. It seems like their vows guard something darker than a holy war ...",
+  "legend": "When the bells of the last fortress fell silent, the dust on the road to the Holy City did not settle. Travellers still speak of a Templar Knight in a silver great helm, a red cross burning on his white surcoat, who walks the walls at dusk and never lifts his visor. Beside him rides a Crusader King whose golden crown is fused to his helm, his crimson banner bearing a sun no herald can name. And in the shadows of the citadel, a Hashshashin wrapped in white linen watches them both, waiting for an order that was given centuries ago. They swore oaths to different masters, yet each guards the same sealed gate beneath the old keep. No one remembers what lies behind it. But lately, the gate has started to open.",
+  "altNames": [
+    "Oaths of the Holy Road",
+    "Knights of the Sealed Gate"
+  ],
   "cfProjectId": 1503139,
   "source": "curseforge",
   "versions": [
@@ -16,17 +19,19 @@
         {
           "file": "templar_knight.png",
           "name": "Templar Knight",
-          "slim": false
+          "slim": false,
+          "story": "A silent Templar behind a black-slit silver helm, his red cross the last thing many enemies ever see on the walls."
         },
         {
           "file": "malta_knight.png",
           "name": "Knight of Malta",
-          "slim": false
+          "slim": false,
+          "story": "The Knight of Malta wears a golden cross across his helm and a red-and-white star of the Hospital, healing allies and burying foes."
         }
       ],
       "mcpack": "Kreuzritter_v3.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The first oaths are sworn: the Templar Knight and the Knight of Malta take up their posts on the walls.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -41,37 +46,43 @@
         {
           "file": "teutonic_knight.png",
           "name": "Teutonic Knight",
-          "slim": false
+          "slim": false,
+          "story": "From the frozen north came the Teutonic Knight, steel-helmed, white-robed, a stark black cross on his chest and no mercy in his march."
         },
         {
           "file": "santiago_knight.png",
           "name": "Knight of Santiago",
-          "slim": false
+          "slim": false,
+          "story": "The Knight of Santiago rides in bronze-dark mail, his white tabard split by a red sword-cross forged for the pilgrim road."
         },
         {
           "file": "sergeant.png",
           "name": "Crusader Sergeant",
-          "slim": false
+          "slim": false,
+          "story": "A bearded Crusader Sergeant in a nasal helm and brown tabard, red stripe down his chest, who held the gate when knights fled."
         },
         {
           "file": "saracen.png",
           "name": "Saracen",
-          "slim": false
+          "slim": false,
+          "story": "The Saracen in a cream head wrap and teal robe, gold at his waist, knows every well and secret path of the desert."
         },
         {
           "file": "crusader_king.png",
           "name": "Crusader King",
-          "slim": false
+          "slim": false,
+          "story": "The Crusader King, his crown fused to a golden helm, wears a red surcoat bearing a golden sun that no herald can name."
         },
         {
           "file": "assassin.png",
           "name": "Hashshashin",
-          "slim": false
+          "slim": false,
+          "story": "The Hashshashin hides in white linen and dark robes bound by a red sash, only his brown eyes revealing he is already near."
         }
       ],
       "mcpack": "Kreuzritter_8er_Pack.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The road grows crowded: the Teutonic Knight, Knight of Santiago, Crusader Sergeant, Saracen, Crusader King and the shadowy Hashshashin arrive at the sealed gate.",
       "media": [
         "media/v1.1-skins.png"
       ],
@@ -195,5 +206,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo, a blocky Minecraft-style Crusader King: golden great helm with a crown rim and a thin black visor slit, red surcoat with a large golden diamond-shaped emblem, gold-tinted checkered chainmail on arms and legs, gold gauntlets, standing heroically, dramatic warm golden rim light, torch embers drifting, deep dark background, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures side by side: left, a Templar Knight with a silver great helm with black visor slit, white surcoat with a red diamond cross and brown belt with gold buckle, grey checkered chainmail; centre, a Crusader King with a golden crowned helm, red surcoat with a golden diamond emblem and gold-tinted mail; right, a Hashshashin in a white head wrap showing only brown eyes, dark brown-black robes with a red sash. Background: a desert fortress at sunset, dust and torchlight, crimson banners on stone walls. Big stylised medieval title letters reading \"Crusaders\"."
 }

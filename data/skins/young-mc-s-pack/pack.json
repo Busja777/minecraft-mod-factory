@@ -2,9 +2,12 @@
   "slug": "young-mc-s-pack",
   "name": "Young MC's Pack",
   "packName": "Fresh Youth Slim Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are fresh street kids. It seems like there is more than just style stitched into their hoodies ...",
+  "legend": "Nobody knows who first started the crew. One night the city's group chat just lit up with a single photo: a kid in a black hoodie and dark jeans, standing under a broken streetlamp. They call him Midnight Hoodie, and wherever he walks, others show up. Street Gold came next, the gold chevron on his black tee pointing somewhere nobody else could see. Then the lights in the old arcade flickered, and two new faces stepped out of the static: Cyber Pink with magenta marks across her cheeks, and Toxic Lime with neon-green stripes that glow brighter after dark. They don't post. They don't explain. They just leave fresh sneaker prints at the edge of town. And every season, the crew gets a little bigger. Who's next to get the call?",
+  "altNames": [
+    "Fresh Youth Crew",
+    "Young MC Street Fits"
+  ],
   "cfProjectId": 1493433,
   "source": "curseforge",
   "versions": [
@@ -16,72 +19,85 @@
         {
           "file": "Midnight_Hoodie.png",
           "name": "Midnight Hoodie",
-          "slim": true
+          "slim": true,
+          "story": "The first of the crew, brown-haired and silent, his black hoodie and navy jeans blending into every midnight street."
         },
         {
           "file": "Neon_Drip.png",
           "name": "Neon Drip",
-          "slim": true
+          "slim": true,
+          "story": "Bright green shirt, black pants, spotless white sneakers: Neon Drip is the one you spot first in any crowd."
         },
         {
           "file": "Pastel_Dream.png",
           "name": "Pastel Dream",
-          "slim": true
+          "slim": true,
+          "story": "Pink hair, lavender top and icy pastel pants, Pastel Dream drifts through town like she stepped out of a soft daydream."
         },
         {
           "file": "Skater_Red.png",
           "name": "Skater Red",
-          "slim": true
+          "slim": true,
+          "story": "Red cap, white tee, blue jeans and red kicks, Skater Red was born on the half-pipe and never left."
         },
         {
           "file": "Shadow_Tech.png",
           "name": "Shadow Tech",
-          "slim": true
+          "slim": true,
+          "story": "Dressed in deep purple-black from head to toe, Shadow Tech knows every dark corner of the city's wiring."
         },
         {
           "file": "Ocean_Wave.png",
           "name": "Ocean Wave",
-          "slim": true
+          "slim": true,
+          "story": "Blue hair, teal shirt and bright white pants, Ocean Wave rolls in calm and leaves everyone a little cooler."
         },
         {
           "file": "Fire_Fit.png",
           "name": "Fire Fit",
-          "slim": true
+          "slim": true,
+          "story": "Orange hair and a blazing orange shirt over black pants, Fire Fit heats up any block he walks onto."
         },
         {
           "file": "Arctic_Drip.png",
           "name": "Arctic Drip",
-          "slim": true
+          "slim": true,
+          "story": "White hair, icy white shirt and grey pants, Arctic Drip keeps his cool even when the whole crew gets loud."
         },
         {
           "file": "Forest_Chill.png",
           "name": "Forest Chill",
-          "slim": true
+          "slim": true,
+          "story": "Dark green hair, green shirt and earthy brown pants, Forest Chill smells faintly of pine and never rushes anything."
         },
         {
           "file": "Sunset_Glow.png",
           "name": "Sunset Glow",
-          "slim": true
+          "slim": true,
+          "story": "Copper hair and a coral shirt over black pants, Sunset Glow only shows up when the sky turns orange."
         },
         {
           "file": "Street_Gold.png",
           "name": "Street Gold",
-          "slim": true
+          "slim": true,
+          "story": "Gold-banded cap and a yellow chevron on his black tee, Street Gold always points the crew where to go next."
         },
         {
           "file": "Violet_Storm.png",
           "name": "Violet Storm",
-          "slim": true
+          "slim": true,
+          "story": "Purple hair, purple shirt and matching purple shoes, Violet Storm rolls in fast and leaves the air buzzing."
         },
         {
           "file": "Crimson_Edge.png",
           "name": "Crimson Edge",
-          "slim": true
+          "slim": true,
+          "story": "Red hair, red shirt, black pants: Crimson Edge walks the sharpest line between cool and trouble."
         }
       ],
       "mcpack": "Fresh_Youth_Slim_Pack_v4.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The crew assembles: thirteen fresh street fits, from Midnight Hoodie to Crimson Edge, step out under the city lights for the first time.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -96,22 +112,25 @@
         {
           "file": "Cyber_Pink.png",
           "name": "Cyber Pink",
-          "slim": true
+          "slim": true,
+          "story": "Magenta from head to toe with hot-pink marks across her face, Cyber Pink came out of the arcade's static."
         },
         {
           "file": "Desert_Tan.png",
           "name": "Desert Tan",
-          "slim": true
+          "slim": true,
+          "story": "Sand-coloured and striped in brown, Desert Tan wandered in from the dunes beyond town carrying sun-baked secrets."
         },
         {
           "file": "Toxic_Lime.png",
           "name": "Toxic Lime",
-          "slim": true
+          "slim": true,
+          "story": "Dark green fit, neon lime stripes on face and arms, pale cyan eyes: Toxic Lime glows brighter the darker it gets."
         }
       ],
       "mcpack": "Fresh_Youth_Slim_Pack_v5.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The arcade lights flicker and three newcomers arrive: glowing Cyber Pink, sun-baked Desert Tan and neon Toxic Lime.",
       "media": [
         "media/v1.1-skins.png"
       ],
@@ -227,5 +246,7 @@
     "26.0.02",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style teen figure in a dark green outfit, neon lime glowing stripes across the face and down the arms, a glowing lime cross on the chest, pale cyan eyes, short dark green hair, dramatic neon-green rim light and soft glow haze, dark navy-black background, centered, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style teen figures side by side on a rainy night street with neon signs and wet reflective pavement. Left: Cyber Pink, deep magenta outfit with hot-pink glowing marks across the face, a pink cross on the chest and pink cuff stripes. Center: Street Gold, darker skin, black tee with a glowing yellow chevron, black pants, yellow-gold cap. Right: Toxic Lime, dark green outfit with neon lime glowing face stripes, lime chest cross and lime arm stripes. Above them, the title \"Young MC's Pack\" in big bold stylised graffiti letters."
 }

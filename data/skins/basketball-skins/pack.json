@@ -2,9 +2,12 @@
   "slug": "basketball-skins",
   "name": "Basketball skins",
   "packName": "Basketball Skin Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are midnight ballers. It seems like the old court is choosing its players, and it isn't done yet ...",
+  "legend": "When the city sleeps, the old gym at the end of the street still hums. The floorboards creak, the scoreboard flickers, and a ball bounces where nobody stands. Players say the court picks who it wants. First it chose the Court Rookie, a bearded kid in a cream jersey with a purple 23 who never misses a free throw after midnight. Then came the Purple Hoops Star, a golden 24 shining under the dead lights and one purple sleeve pulled tight like a promise. Out on the cracked blacktop, the Blacktop Legend waits in black and gold, a crimson emblem on his chest and a chain that catches the moonlight. Nobody knows who keeps score. The buzzer hasn't sounded yet... and the bench keeps filling up.",
+  "altNames": [
+    "Hardwood Legends",
+    "Buzzer Beater Crew"
+  ],
   "cfProjectId": 1535492,
   "source": "curseforge",
   "versions": [
@@ -16,22 +19,25 @@
         {
           "file": "court_rookie.png",
           "name": "Court Rookie",
-          "slim": false
+          "slim": false,
+          "story": "A bearded newcomer in a cream jersey with a purple 23 and purple sneakers, still learning why the ball always finds his hands."
         },
         {
           "file": "purple_hoops_star.png",
           "name": "Purple Hoops Star",
-          "slim": false
+          "slim": false,
+          "story": "Golden 24 jersey, one purple sleeve, black-and-white kicks: the star who scores from anywhere and never says where he learned it."
         },
         {
           "file": "blacktop_legend.png",
           "name": "Blacktop Legend",
-          "slim": false
+          "slim": false,
+          "story": "In a black jersey with a crimson emblem, gold trim and a gold chain, the bearded king of the blacktop has never lost after dark."
         }
       ],
       "mcpack": "Basketball_Skin_Pack_Bedrock.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The doors of the old gym creak open, and the Court Rookie, the Purple Hoops Star and the Blacktop Legend step onto the floor for the first game of the night.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -165,5 +171,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo: a blocky Minecraft-style basketball player with dark brown skin, short black hair and a black beard, wearing a black jersey with a crimson-and-gold circular C emblem on the chest, gold trim on the collar and shorts, a gold chain, black shorts and black sneakers with gold accents. He holds an orange basketball. Dramatic warm gold rim light and a soft spotlight from above, dark empty gym background with faint court lines, cinematic, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style basketball players standing side by side on a moody night court lit by flickering arena lights. Left: bearded player with dark brown skin in a cream/pale gold jersey with a purple number 23, purple trim, a white arm sleeve on one arm, pale gold shorts and purple sneakers. Center: player with brown skin in a bright yellow-gold jersey with a white number 24, one purple sleeve, purple trim on the shorts, black-and-white sneakers. Right: bearded player with dark brown skin and black hair in a black jersey with a crimson-and-gold C emblem, gold trim, a gold chain, black shorts and black sneakers with gold accents. Background: an old gym opening onto a cracked outdoor blacktop under the moon, a hoop and scoreboard glowing faintly. Big stylised title text \"BASKETBALL SKINS\" in bold sporty letters at the top."
 }

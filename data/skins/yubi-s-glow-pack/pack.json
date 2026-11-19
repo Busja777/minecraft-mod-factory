@@ -2,9 +2,12 @@
   "slug": "yubi-s-glow-pack",
   "name": "Yubi's Glow Pack",
   "packName": "Glow Skins Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are glowing warriors of the dark. It seems like something more than light is burning inside ...",
+  "legend": "When the last lantern of the city went dark, the shadows did not stay empty. Figures in armour as black as a moonless sky began to walk the rooftops, lit only by the light trapped inside them. Phantom Cyan moves first, four cold teal eyes burning through the night. Behind it, KitsuneGold follows a trail of golden light, and NeonShogun watches from beneath a crimson crest, a red ember blazing on his brow. No one knows who forged the suits, or why each one glows a different colour. Some say the light is a warning. Others say it is a heartbeat. But every night, another glow appears in the dark... and it is getting closer.",
+  "altNames": [
+    "Glow Shadows: Neon Warriors",
+    "Yubi's Neon Night Legends"
+  ],
   "cfProjectId": 1495240,
   "source": "curseforge",
   "versions": [
@@ -16,22 +19,25 @@
         {
           "file": "glow_phantom.png",
           "name": "Phantom Cyan",
-          "slim": false
+          "slim": false,
+          "story": "Phantom Cyan slips through the dark unseen, betrayed only by four teal eyes and cold cyan circuits tracing its black armour."
         },
         {
           "file": "glow_voltage.png",
           "name": "Voltage Pink",
-          "slim": false
+          "slim": false,
+          "story": "Voltage Pink carries a storm inside; her slit visor and hot-pink circuits crackle brighter whenever danger draws near."
         },
         {
           "file": "glow_sentinel.png",
           "name": "Sentinel Orange",
-          "slim": false
+          "slim": false,
+          "story": "Sentinel Orange guards the gate, its amber visor band sweeping the night while orange lines smoulder like embers along its armour."
         }
       ],
       "mcpack": "Glow_Skins_Pack.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The first three lights wake in the darkness: Phantom Cyan, Voltage Pink and Sentinel Orange step out with burning visors and glowing circuits.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -46,32 +52,37 @@
         {
           "file": "glow_kitsune.png",
           "name": "KitsuneGold",
-          "slim": false
+          "slim": false,
+          "story": "KitsuneGold, the fox spirit, stares with slanted golden eyes, a glowing gold sash slung across her shadowed chest."
         },
         {
           "file": "glow_ronin.png",
           "name": "StormRonin",
-          "slim": false
+          "slim": false,
+          "story": "StormRonin wanders masterless beneath a pale blue headband, ice-blue chevrons flickering across his chest like lightning."
         },
         {
           "file": "glow_wraith.png",
           "name": "VoidWraith",
-          "slim": false
+          "slim": false,
+          "story": "VoidWraith is barely holding together, its black body crumbling into drifting shards speckled with toxic green sparks."
         },
         {
           "file": "glow_shogun.png",
           "name": "NeonShogun",
-          "slim": false
+          "slim": false,
+          "story": "NeonShogun rules beneath a dark red crest, a crimson ember on his brow and golden eyes judging all who kneel."
         },
         {
           "file": "glow_marionette.png",
           "name": "CursedMarionette",
-          "slim": false
+          "slim": false,
+          "story": "CursedMarionette wears a pale white mask, grey strings hanging down its black body, still waiting for the hand that pulls them."
         }
       ],
       "mcpack": "Yubis_Glow_Pack_Vol2.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The glow spreads to a forgotten shadow realm: KitsuneGold, StormRonin, VoidWraith, NeonShogun and CursedMarionette rise from the dark. Spirits, ronin and a puppet without a master now walk among the lights.",
       "media": [
         "media/v1.1-skins.png"
       ],
@@ -194,5 +205,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style figure in matte pitch-black armour and hood, four glowing teal-cyan eye pixels, thin cyan circuit lines glowing across the chest and a cyan stripe on the boots, dramatic neon cyan rim light and soft bloom, dark near-black background with faint mist, centered, high contrast, no text",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures standing side by side in matte black armour: left with glowing teal-cyan eyes and cyan circuit lines, centre with a hot-pink slit visor and pink circuit lines, right with a glowing orange visor band and orange circuit lines, each with matching glowing boot stripes; night-time rooftop cityscape with dark fog and neon reflections; big stylised glowing title text \"Yubi's Glow Pack\" across the top"
 }

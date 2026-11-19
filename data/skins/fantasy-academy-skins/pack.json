@@ -2,9 +2,12 @@
   "slug": "fantasy-academy-skins",
   "name": "Fantasy Academy Skins",
   "packName": "Fantasy Academy Students",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are academy students in four house colours. It seems like there is more than homework hidden in these halls ...",
+  "legend": "Beyond the last signpost of the overworld stands an academy that only appears when its four house banners are raised. Emberfell keeps its fires in crimson and gold, Stormleaf studies the winds in deep navy, Verdanthold tends the green halls, and Moonvein reads the silver stars. Each autumn the gates open for a new class. The Ember Apprentice arrives with a flame stitched over her heart, the Storm Scholar pushes up his dark spectacles before the first bell, and the Moon Seer walks the corridors blindfolded, yet never misses a step. The teachers say the houses were founded to keep something asleep beneath the library. The students say the cellars hum at night. Nobody agrees on which story is true, but every year one more door in the academy is found unlocked...",
+  "altNames": [
+    "Fantasy Academy: The Four Houses",
+    "Emberfell, Stormleaf & Moonvein Academy"
+  ],
   "cfProjectId": 1523336,
   "source": "curseforge",
   "versions": [
@@ -16,57 +19,67 @@
         {
           "file": "EmberApprentice.png",
           "name": "Ember Apprentice — Emberfell House",
-          "slim": false
+          "slim": false,
+          "story": "A ginger-haired first-year of Emberfell whose red-and-gold robe bears an orange flame that warms whenever she gets an answer right."
         },
         {
           "file": "EmberDuelist.png",
           "name": "Ember Duelist — Emberfell House",
-          "slim": false
+          "slim": false,
+          "story": "Green-eyed and quick, this Emberfell duelist wears a dark vest under crimson, its gold sigil marking every challenge he has never lost."
         },
         {
           "file": "EmberFirekeeper.png",
           "name": "Ember Firekeeper — Emberfell House",
-          "slim": false
+          "slim": false,
+          "story": "With amber eyes and a crimson hood, the Firekeeper tends Emberfell's oldest hearth, the one the teachers say must never go out."
         },
         {
           "file": "StormScholar.png",
           "name": "Storm Scholar — Stormleaf House",
-          "slim": false
+          "slim": false,
+          "story": "Behind dark spectacles and deep navy robes, Stormleaf's scholar has read every book in the library except the one that is locked."
         },
         {
           "file": "StormSkyfarer.png",
           "name": "Storm Skyfarer — Stormleaf House",
-          "slim": false
+          "slim": false,
+          "story": "A blonde Stormleaf student in steel-blue robes who claims the winds above the towers whisper the next day's exam questions."
         },
         {
           "file": "VerdantHerbalist.png",
           "name": "Verdant Herbalist — Verdanthold House",
-          "slim": false
+          "slim": false,
+          "story": "This green-eyed Verdanthold herbalist stitched a pale leaf onto her robe, grown from a seed nobody else could make sprout."
         },
         {
           "file": "VerdantWarden.png",
           "name": "Verdant Warden — Verdanthold House",
-          "slim": false
+          "slim": false,
+          "story": "Gold pauldrons on forest-green robes mark Verdanthold's warden, who patrols the greenhouses after curfew and never explains why."
         },
         {
           "file": "MoonEnchantress.png",
           "name": "Moon Enchantress — Moonvein House",
-          "slim": false
+          "slim": false,
+          "story": "White-haired and violet-eyed, Moonvein's enchantress wears purple and a golden rune that faintly hums when the moon rises."
         },
         {
           "file": "MoonSeer.png",
           "name": "Moon Seer — Moonvein House",
-          "slim": false
+          "slim": false,
+          "story": "Blindfolded in silver with a violet glyph, the Moon Seer sees more of the academy's secrets than anyone with open eyes."
         },
         {
           "file": "StarlightNovice.png",
           "name": "Starlight Novice — Moonvein House",
-          "slim": false
+          "slim": false,
+          "story": "The palest of Moonvein, this ice-eyed novice in white and sky-blue robes carries a golden star that appeared on her first night."
         }
       ],
       "mcpack": "FantasyAcademy_Skinpack.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The gates open and the first class arrives: students of Emberfell, Stormleaf, Verdanthold and Moonvein take their places in the halls. Keep an eye on the doors, because not all of them will stay locked.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -188,5 +201,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style student character, the Moon Seer: dark skin, short black hair, silver blindfold marked with a glowing violet glyph, lavender academy robe with white front panel and purple emblem. Dramatic soft violet magical glow around the figure, floating star motes, deep dark navy background, centred composition, crisp voxel style, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style academy students standing side by side: left, the Ember Apprentice with ginger hair and a red robe with gold trim and an orange flame emblem; centre, the Storm Scholar with brown hair, black spectacles and a navy blue robe with white stripes; right, the Moon Enchantress with white hair, violet eyes and a purple robe with a white front and yellow emblem. Behind them a towering fantasy academy castle at dusk, four house banners in red, blue, green and purple, glowing windows and drifting magical sparks. Title text \"Fantasy Academy\" in big stylised golden fantasy letters across the top."
 }

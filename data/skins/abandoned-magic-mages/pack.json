@@ -2,9 +2,12 @@
   "slug": "abandoned-magic-mages",
   "name": "Abandoned Magic Mages",
   "packName": "Mystical Mages Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are abandoned mages. Their robes are empty, but something inside them still glows ...",
+  "legend": "Long after the last bell rang in the tower, the lanterns kept burning. No one remembers who taught there, only that the robes were never taken down from their hooks. Travellers say the robes walk now, dark as soot and lit from within by whatever spell their owners left unfinished. Frostweaver drifts through the cold halls with ice-blue light pooling in its palms. Ember Oracle smoulders in the cellars, reading futures in orange sparks. Somewhere beneath the library, the violet eyes of the Void Prophet keep watching a door no one else can see. The mages are gone, but their magic is not. And lately, more lights have begun to wake in the empty windows...",
+  "altNames": [
+    "Hollow Tower Mages",
+    "Glowrobe Sorcerers"
+  ],
   "cfProjectId": 1505098,
   "source": "curseforge",
   "versions": [
@@ -16,32 +19,37 @@
         {
           "file": "mage_frost.png",
           "name": "Frostweaver",
-          "slim": false
+          "slim": false,
+          "story": "A shadow-robed weaver of frost whose ice-blue eyes and palms still glow with the last winter spell of the tower."
         },
         {
           "file": "mage_ember.png",
           "name": "Ember Oracle",
-          "slim": false
+          "slim": false,
+          "story": "Robed in charred red-brown, the Ember Oracle reads the future in orange sparks smouldering across its chest and hands."
         },
         {
           "file": "mage_void.png",
           "name": "Void Prophet",
-          "slim": false
+          "slim": false,
+          "story": "Wrapped in deep purple darkness, the Void Prophet stares through violet eyes at a door no one else can see."
         },
         {
           "file": "mage_nature.png",
           "name": "Nature Sage",
-          "slim": false
+          "slim": false,
+          "story": "A moss-dark sage whose green glow winds across its chest like a living vine, still tending the overgrown tower gardens."
         },
         {
           "file": "mage_storm.png",
           "name": "Storm Archon",
-          "slim": false
+          "slim": false,
+          "story": "Clad in midnight navy, the Storm Archon bears a crackling blue lightning bolt down its chest and thunder in its hands."
         }
       ],
       "mcpack": "Mystical_Mages_Pack.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The first five robes stir in the abandoned tower. Frostweaver, Ember Oracle, Void Prophet, Nature Sage and Storm Archon wake up, each glowing with its own lost element.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -56,27 +64,31 @@
         {
           "file": "mage_earth.png",
           "name": "Earth Warden",
-          "slim": false
+          "slim": false,
+          "story": "Dark as buried soil, the Earth Warden guards the tower's foundations, amber light burning in its eyes, heart and fists."
         },
         {
           "file": "mage_tide.png",
           "name": "Tide Caller",
-          "slim": false
+          "slim": false,
+          "story": "A deep-teal summoner whose cyan glow rises and falls like the tide it still calls through flooded corridors."
         },
         {
           "file": "mage_ash.png",
           "name": "Ash Prophet",
-          "slim": false
+          "slim": false,
+          "story": "Charcoal-black and pale-eyed, the Ash Prophet glows a ghostly grey, foretelling what remains once every fire burns out."
         },
         {
           "file": "mage_rune.png",
           "name": "Rune Forger",
-          "slim": false
+          "slim": false,
+          "story": "In crimson-dark robes, the Rune Forger still hammers forgotten runes with fists that glow forge-orange."
         }
       ],
       "mcpack": "Mystical_Mages_Pack_v2.mcpack",
       "status": "published",
-      "note": "",
+      "note": "Four more lights flicker on in the lower halls as Earth Warden, Tide Caller, Ash Prophet and Rune Forger rise from the forgotten workshops.",
       "media": [
         "media/v1.1-skins.png"
       ],
@@ -203,5 +215,7 @@
     "26.12",
     "26.20",
     "26.13"
-  ]
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style mage figure in near-black navy robes, glowing ice-blue eyes, an ice-blue glowing core on the chest and bright ice-blue light pooling in both hands, scattered small frost-blue glowing pixels on the robe, dramatic rim light and soft blue haze, pitch-dark background, centered composition, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style mages standing side by side in the ruined hall of an abandoned magic tower at night. Left: Ember Oracle in dark reddish-brown robes with glowing orange eyes, chest sparks and hands. Center: Void Prophet in deep purple-black robes with glowing violet eyes, chest and hands. Right: Frostweaver in near-black navy robes with glowing ice-blue eyes, chest core and hands. Broken bookshelves, cracked arched windows with moonlight, floating dust, coloured glow reflecting on the stone floor. Big stylised glowing letters at the top reading \"Abandoned Magic Mages\"."
 }

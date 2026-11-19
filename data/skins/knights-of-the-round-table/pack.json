@@ -2,9 +2,12 @@
   "slug": "knights-of-the-round-table",
   "name": "Knights of the Round Table",
   "packName": "Knights of the Round Table",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are the knights of Camelot. It seems like the table remembers more than their oaths ...",
+  "legend": "Long before the stone remembered its name, a round table stood in the halls of Camelot, and no seat at it was higher than another. King Arthur sat there beneath a golden crown, his royal blue mantle marked with a cross of gold, his blue eyes fixed on a kingdom he had sworn to hold together. At his side stood Sir Lancelot in steel and crimson, a white cross across his chest and a secret hidden behind his quiet smile. And at the far end, in white robes and gold, sat young Sir Galahad, the only knight whose green eyes never seemed to look away from something no one else could see. The candles burned low. Then one seat at the table, empty for a hundred years, began to whisper a name...",
+  "altNames": [
+    "Legends of Camelot",
+    "The Round Table Oath"
+  ],
   "cfProjectId": 1533648,
   "source": "curseforge",
   "versions": [
@@ -16,22 +19,25 @@
         {
           "file": "king_arthur.png",
           "name": "King Arthur",
-          "slim": false
+          "slim": false,
+          "story": "The crowned king in royal blue and gold, whose blue eyes hold Camelot together with nothing but an oath and a cross of gold."
         },
         {
           "file": "sir_lancelot.png",
           "name": "Sir Lancelot",
-          "slim": false
+          "slim": false,
+          "story": "The greatest blade of Camelot, clad in grey steel and crimson with a white cross, who smiles like a man keeping a secret."
         },
         {
           "file": "sir_galahad.png",
           "name": "Sir Galahad",
-          "slim": false
+          "slim": false,
+          "story": "The youngest knight, robed in white and gold with a red cross, whose green eyes seem to watch something only he can see."
         }
       ],
       "mcpack": "Knights_of_the_Round_Table(2).mcpack",
       "status": "published",
-      "note": "",
+      "note": "The Round Table is called to order: King Arthur, Sir Lancelot and Sir Galahad take their seats in Camelot. One chair still waits, empty.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -153,5 +159,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style figure of King Arthur: golden crown with a red jewel, brown beard, blue eyes, royal blue tunic with a golden cross emblem, gold shoulder plates and gold belt, blue trousers, grey boots. He stands heroically, lit by warm golden candlelight with a dramatic gold rim light, dark navy background with faint drifting embers, no text.",
+  "coverPrompt": "Wide cinematic cover with three blocky Minecraft-style knights side by side. Left: King Arthur with a golden crown and red jewel, brown beard, blue eyes, royal blue tunic with a gold cross, gold shoulder plates and belt, grey boots. Centre: Sir Lancelot with a grey steel cap with a red stripe, brown moustache, red surcoat with a white cross, grey plate armour, red bands on his legs, dark brown boots. Right: Sir Galahad with a gold circlet and red jewel, green eyes, white robe with a red cross, gold shoulder plates, belt and boots. Behind them is a candlelit Camelot hall with a huge round wooden table, banners and warm golden light. Big stylised medieval golden letters at the top read \"Knights of the Round Table\"."
 }

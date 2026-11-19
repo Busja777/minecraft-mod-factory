@@ -2,9 +2,12 @@
   "slug": "cyber-runners",
   "name": "Cyber Runners",
   "packName": "Cyber Runners",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "These are neon couriers in black armour. It seems like there is more than data behind their glowing visors ...",
+  "legend": "When the city's grid goes dark at midnight, the Cyber Runners come out. They are couriers in matte black armour, and each helmet is split by a single burning visor. They carry data no network dares to hold. Glitch Runner leads the pack, with cyan light bleeding through magenta seams. Void Hacker follows in violet and electric yellow, slipping through firewalls like smoke. Behind them, Data Ghost flickers red and white, there one frame and gone the next. No one knows who sends the packages, or who receives them. The checkered panels on their arms hum with code no one has cracked. Rumour says the runners never stop, because something is chasing them through the wires. And tonight, for the first time, the signal behind them is getting closer...",
+  "altNames": [
+    "Neon Couriers of the Grid",
+    "Midnight Data Runners"
+  ],
   "cfProjectId": 1522453,
   "source": "curseforge",
   "versions": [
@@ -16,57 +19,67 @@
         {
           "file": "glitch_runner.png",
           "name": "Glitch Runner",
-          "slim": false
+          "slim": false,
+          "story": "The pack's leader, whose cyan visor stutters through magenta seams, never runs the same route twice."
         },
         {
           "file": "neon_sprint.png",
           "name": "Neon Sprint",
-          "slim": false
+          "slim": false,
+          "story": "A blur of toxic green inside hot-pink frames, Neon Sprint delivers before the message has even been sent."
         },
         {
           "file": "void_hacker.png",
           "name": "Void Hacker",
-          "slim": false
+          "slim": false,
+          "story": "Violet code glows behind electric yellow plating as Void Hacker slips through firewalls like smoke."
         },
         {
           "file": "pulse_courier.png",
           "name": "Pulse Courier",
-          "slim": false
+          "slim": false,
+          "story": "Wrapped in ice-blue trim, Pulse Courier carries packets that beat like an orange heart behind the visor."
         },
         {
           "file": "data_ghost.png",
           "name": "Data Ghost",
-          "slim": false
+          "slim": false,
+          "story": "Red-framed and flickering white, Data Ghost shows up in one frame and is gone in the next."
         },
         {
           "file": "quantum_jumper.png",
           "name": "Quantum Jumper",
-          "slim": false
+          "slim": false,
+          "story": "Deep blue light pulses inside lime-green armour; Quantum Jumper lands on rooftops he never seemed to leap toward."
         },
         {
           "file": "firewall_breaker.png",
           "name": "Firewall Breaker",
-          "slim": false
+          "slim": false,
+          "story": "Crimson visor burning inside a cyan frame, Firewall Breaker smashes through every barrier the city builds."
         },
         {
           "file": "circuit_phantom.png",
           "name": "Circuit Phantom",
-          "slim": false
+          "slim": false,
+          "story": "Gold circuits shimmer beneath violet plating, tracing paths that vanish once the Phantom has passed."
         },
         {
           "file": "static_striker.png",
           "name": "Static Striker",
-          "slim": false
+          "slim": false,
+          "story": "Silver-grey static crackles behind a cobalt-blue frame, scrambling every camera Static Striker runs past."
         },
         {
           "file": "binary_blade.png",
           "name": "Binary Blade",
-          "slim": false
+          "slim": false,
+          "story": "Hot-pink edges and green ones-and-zeros flash across Binary Blade's armour, sharp enough to split a signal in two."
         }
       ],
       "mcpack": "Cyber_Runners.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The grid goes dark and the first ten Cyber Runners light up the night, each visor glowing with its own stolen colour. Their first delivery has begun.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -190,5 +203,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style cyber courier in matte black armour, boxy helmet framed in hot magenta with a wide glowing cyan stripe visor, cyan checkered side panel on the helmet, cyan and magenta light strips on chest, arms and boots, dramatic neon glow and rim light, dark navy background with faint digital haze, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style cyber runners side by side in matte black armour with boxy helmets and stripe visors. Left: magenta frame with a glowing cyan visor and cyan lights. Centre: electric yellow frame with a glowing purple visor and purple lights. Right: red frame with a glowing white-grey visor and silver lights. Checkered neon panels on their arms. Rainy cyberpunk city rooftops at night with neon signs and data streams behind them. Big stylised glowing neon title letters reading \"Cyber Runners\"."
 }

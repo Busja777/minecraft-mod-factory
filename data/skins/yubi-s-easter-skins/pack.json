@@ -2,9 +2,12 @@
   "slug": "yubi-s-easter-skins",
   "name": "Yubi's Easter Skins",
   "packName": "Easter Skin Pack",
-  "summary": "",
-  "legend": "",
-  "altNames": [],
+  "summary": "Pastel bunnies, fluffy chicks and a knight made of chocolate. Something sweet is hiding in the spring meadow ...",
+  "legend": "Every spring, when the last frost melts off the meadow, something stirs beneath the hills. Villagers wake to find painted eggs on their doorsteps and soft pawprints leading into the morning mist. Some say the Easter Bunny, wrapped in a white hood with pink-lined ears, hops ahead of the dawn to hide each egg before anyone can see. Close behind trots the Baby Chick, a fluffy yellow shadow with a bright orange beak who never quite finds the eggs it's meant to guard. But the oldest tale is about the Chocolate Knight, sealed in dark cocoa armour trimmed with gold and set with candy-coloured gems, who keeps watch over the sweetest treasure in the land. Nobody knows what he's protecting. And this year, the Spring Fairy has been whispering that the hunt is only beginning...",
+  "altNames": [
+    "Yubi's Springtime Egg Hunt",
+    "Bunnies, Chicks and Chocolate"
+  ],
   "cfProjectId": 1496747,
   "source": "curseforge",
   "versions": [
@@ -16,27 +19,31 @@
         {
           "file": "easter_bunny.png",
           "name": "Easter Bunny",
-          "slim": false
+          "slim": false,
+          "story": "The Easter Bunny wears a white hood with pink-lined ears, a lavender shirt and soft blue trousers, and hides every egg before dawn."
         },
         {
           "file": "baby_chick.png",
           "name": "Baby Chick",
-          "slim": false
+          "slim": false,
+          "story": "The Baby Chick is a fluffy yellow hatchling with an orange beak and white collar who keeps waddling after eggs it was meant to guard."
         },
         {
           "file": "chocolate_knight.png",
           "name": "Chocolate Knight",
-          "slim": false
+          "slim": false,
+          "story": "The Chocolate Knight is sealed in cocoa armour bound with gold and set with pink, mint and lavender candy gems, guarding the sweetest treasure."
         },
         {
           "file": "spring_fairy.png",
           "name": "Spring Fairy",
-          "slim": false
+          "slim": false,
+          "story": "With a flower crown in her hair, a pink blouse and green overalls, the Spring Fairy wakes the meadow and whispers what comes next."
         }
       ],
       "mcpack": "Easter_Skin_Pack.mcpack",
       "status": "published",
-      "note": "",
+      "note": "The frost melts and the first four arrive: the Easter Bunny, the Baby Chick, the Chocolate Knight and the Spring Fairy. Pawprints are already showing up in the morning mist.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -200,5 +207,7 @@
     "26.0",
     "26.3",
     "26.10"
-  ]
+  ],
+  "logoPrompt": "Square logo: a blocky Minecraft-style Chocolate Knight figure in dark brown cocoa-textured armour with shiny gold bands across the chest, waist and helmet visor, decorated with pastel candy gems in pink, mint green and lavender, standing heroically with a warm golden glow around the gold trim and soft pastel sparkles, dark navy background, dramatic lighting, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style characters side by side in a misty spring meadow at sunrise, with pastel painted eggs hidden in the grass and blossoming trees behind them. Left: the Easter Bunny in a white bunny hood with pink-lined ears and a pink face, a lavender top and light blue trousers. Centre: the Chocolate Knight in dark brown chocolate armour with gold bands and pink, mint green and lavender candy gems. Right: the Baby Chick in a bright yellow chick costume with an orange beak, white collar and orange legs. Soft golden-pink light. Big stylised pastel letters across the top read \"Yubi's Easter Skins\"."
 }
