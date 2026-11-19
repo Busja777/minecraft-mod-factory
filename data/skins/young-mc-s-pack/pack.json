@@ -117,6 +117,108 @@
       ],
       "fileId": 7927322,
       "publishedAt": "2026-04-14T20:08:20.487Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Back to School Fits",
+      "skins": [
+        {
+          "file": "cherry_varsity.png",
+          "name": "Cherry Varsity",
+          "slim": true,
+          "story": "She cheers louder than anyone in the bleachers, so the school gave her a cherry varsity jacket with a cream star on the chest to prove it."
+        },
+        {
+          "file": "mocha_beats.png",
+          "name": "Mocha Beats",
+          "slim": true,
+          "story": "He walks to class with his mint headphones on and his knit sleeves pulled over his hands, nodding along to beats only he can hear."
+        },
+        {
+          "file": "plaid_wrap.png",
+          "name": "Plaid Wrap",
+          "slim": true,
+          "story": "She never actually wears her green flannel, she just knots it around her waist and pushes up her round glasses whenever she has a better idea."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The first bell rings and the crew shows up in their best school-day layers: a cherry varsity jacket, a cosy knit with big headphones and a green flannel tied around the waist.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Skatepark Summer",
+      "skins": [
+        {
+          "file": "checker_flip.png",
+          "name": "Checker Flip",
+          "slim": true,
+          "story": "He has landed exactly one kickflip in his life, but he wears his teal cap backwards and his checker shoes like he lands them every day."
+        },
+        {
+          "file": "tie_dye_sky.png",
+          "name": "Tie-Dye Sky",
+          "slim": true,
+          "story": "He dyed the shirt himself in the backyard and swears the spiral is a map of the sky on the night he got his first skateboard."
+        },
+        {
+          "file": "peach_overalls.png",
+          "name": "Peach Overalls",
+          "slim": true,
+          "story": "She keeps one strap undone on purpose, twists her pink hair into two space buns and paints daisies on everybody's skateboard."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "School is out and the crew takes over the skatepark: a kickflip kid in checkerboard shoes, a tie-dye dreamer with sunglasses in his hair and an overall girl with pink space buns.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "After Dark Drip",
+      "skins": [
+        {
+          "file": "frost_puffer.png",
+          "name": "Frost Puffer",
+          "slim": true,
+          "story": "She zips her ice-blue puffer up to her chin the moment the sun goes down and never leaves the house without her navy pompom beanie."
+        },
+        {
+          "file": "night_runner.png",
+          "name": "Night Runner",
+          "slim": true,
+          "story": "He runs the same loop around the block every night, and his reflective stripes flash in the headlights like a tiny comet."
+        },
+        {
+          "file": "retro_breaker.png",
+          "name": "Retro Breaker",
+          "slim": true,
+          "story": "His windbreaker is louder than his music, three colours crashing across it, and his yellow bucket hat has never once seen rain."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the streetlights come on, the crew heads out in their night fits: an ice-blue puffer with a pompom beanie, a runner with reflective stripes and a colour-block windbreaker under a bucket hat.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
