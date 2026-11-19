@@ -77,6 +77,108 @@
       ],
       "fileId": 7956417,
       "publishedAt": "2026-04-20T15:08:36.617Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Circuit City",
+      "skins": [
+        {
+          "file": "bass_pulse.png",
+          "name": "Bass Pulse",
+          "slim": false,
+          "story": "She plays the last club in the city every night, and the cyan beat in her headphones keeps the whole district's lights pulsing."
+        },
+        {
+          "file": "circuit_hacker.png",
+          "name": "Circuit Hacker",
+          "slim": false,
+          "story": "He hides under a lime-lit hood and draws a new circuit on his own chest every time he breaks into a system."
+        },
+        {
+          "file": "screen_droid.png",
+          "name": "Screen Droid",
+          "slim": false,
+          "story": "An old city patrol droid whose blue screen face still smiles at everyone, powered by the hex reactor humming in its chest."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Yubi's glow spills into the city at night: a DJ whose headphones never go quiet, a hacker who reads the wires like a book and a droid with a smile on its screen.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Glowing Wilds",
+      "skins": [
+        {
+          "file": "moth_queen.png",
+          "name": "Moth Queen",
+          "slim": true,
+          "story": "She rules the night sky over the marshes, and every lamp in the world pulls at her violet wings."
+        },
+        {
+          "file": "deep_angler.png",
+          "name": "Deep Angler",
+          "slim": false,
+          "story": "It hunts in the darkest trench of the ocean, where its golden lure is the only light anyone ever follows."
+        },
+        {
+          "file": "antler_warden.png",
+          "name": "Antler Warden",
+          "slim": false,
+          "story": "A forest spirit in a bone mask who carries the glowing tree of the old woods on his chest wherever he walks."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Far from the city lights, the wild things glow on their own: a moth queen, a hunter from the deep sea and the warden of the old forest.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Signals from Orbit",
+      "skins": [
+        {
+          "file": "orbit_keeper.png",
+          "name": "Orbit Keeper",
+          "slim": false,
+          "story": "He winds the paths of the planets every night, and a golden ring still circles his head from the last one he tamed."
+        },
+        {
+          "file": "static_glitch.png",
+          "name": "Static Glitch",
+          "slim": false,
+          "story": "Born from a corrupted satellite signal, it flickers between red and cyan and never stands in one place for long."
+        },
+        {
+          "file": "star_diver.png",
+          "name": "Star Diver",
+          "slim": false,
+          "story": "Her capsule crashed in the night, but the coral lights of her helmet still glow, calling home through the dark."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Strange signals reach the ground from far above: a keeper of the planets, a broken broadcast that learned to walk and a diver who fell from the stars.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

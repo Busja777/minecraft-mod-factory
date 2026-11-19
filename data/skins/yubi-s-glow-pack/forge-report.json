@@ -1,0 +1,115 @@
+{
+  "pack": "yubi-s-glow-pack",
+  "style": "glow",
+  "at": "2026-11-19T22:58:40.459Z",
+  "versions": [
+    {
+      "version": "1.2",
+      "title": "Circuit City",
+      "skins": [
+        {
+          "name": "Bass Pulse",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Phantom Cyan (6/6)",
+          "black": 0.84,
+          "neon": 0.111,
+          "overlayTransparent": 0.77
+        },
+        {
+          "name": "Circuit Hacker",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Phantom Cyan (6/6)",
+          "black": 0.85,
+          "neon": 0.101,
+          "overlayTransparent": 0.68
+        },
+        {
+          "name": "Screen Droid",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Voltage Pink (5/6)",
+          "black": 0.84,
+          "neon": 0.102,
+          "overlayTransparent": 0.72
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "Glowing Wilds",
+      "skins": [
+        {
+          "name": "Moth Queen",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Phantom Cyan (6/6)",
+          "black": 0.85,
+          "neon": 0.101,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Deep Angler",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Screen Droid (5/6)",
+          "black": 0.85,
+          "neon": 0.094,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Antler Warden",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "VoidWraith (5/6)",
+          "black": 0.85,
+          "neon": 0.113,
+          "overlayTransparent": 0.79
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "Signals from Orbit",
+      "skins": [
+        {
+          "name": "Orbit Keeper",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Screen Droid (5/6)",
+          "black": 0.85,
+          "neon": 0.093,
+          "overlayTransparent": 0.77
+        },
+        {
+          "name": "Static Glitch",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Phantom Cyan (6/6)",
+          "black": 0.82,
+          "neon": 0.122,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Star Diver",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Voltage Pink (5/6)",
+          "black": 0.83,
+          "neon": 0.12,
+          "overlayTransparent": 0.75
+        }
+      ]
+    }
+  ]
+}
