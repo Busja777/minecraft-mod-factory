@@ -82,6 +82,108 @@
       ],
       "fileId": 7959952,
       "publishedAt": "2026-04-21T09:02:16.457Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Skate Park Squad",
+      "skins": [
+        {
+          "file": "cobalt_kick.png",
+          "name": "Cobalt Kick",
+          "slim": false,
+          "story": "Cobalt Kick wears his red cap backwards and his hoodie strings uneven, and he still lands every kickflip first try."
+        },
+        {
+          "file": "olive_drift.png",
+          "name": "Olive Drift",
+          "slim": false,
+          "story": "Olive Drift keeps a mustard beanie over the ginger hair and an olive bomber zipped open, cruising wherever the wind goes."
+        },
+        {
+          "file": "berry_beats.png",
+          "name": "Berry Beats",
+          "slim": false,
+          "story": "Berry Beats sings along with her eyes closed, berry headphones on and an equalizer tee that jumps to every song."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new teens roll in from the skate park with a backwards cap, a knit beanie and a pair of headphones that never come off.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Sunny Side Street",
+      "skins": [
+        {
+          "file": "denim_daisy.png",
+          "name": "Denim Daisy",
+          "slim": false,
+          "story": "Denim Daisy ties her braids with daisy clips and keeps a daisy patch on her overall pocket all summer long."
+        },
+        {
+          "file": "coral_wave.png",
+          "name": "Coral Wave",
+          "slim": false,
+          "story": "Coral Wave lets her honey waves fall from under a cream bucket hat and wears a coral crop top with a little wave print."
+        },
+        {
+          "file": "tangerine_track.png",
+          "name": "Tangerine Track",
+          "slim": false,
+          "story": "Tangerine Track runs the whole block in a bright tracksuit, a white sweatband holding back his afro."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Summer hits the block: daisy braids and denim overalls, a coral crop top under a bucket hat and a tangerine tracksuit ready to race.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "After Dark Arcade",
+      "skins": [
+        {
+          "file": "plum_varsity.png",
+          "name": "Plum Varsity",
+          "slim": false,
+          "story": "Plum Varsity wears round glasses and a plum letter jacket, top of the class and first in line at the arcade."
+        },
+        {
+          "file": "frost_puff.png",
+          "name": "Frost Puff",
+          "slim": false,
+          "story": "Frost Puff zips her ice-blue puffer up to the chin, her pink bob tucked inside a fluffy white hood."
+        },
+        {
+          "file": "jade_pixel.png",
+          "name": "Jade Pixel",
+          "slim": false,
+          "story": "Jade Pixel carries a crossbody bag full of arcade tokens, with jade tips on a shaggy wolf cut and a pixel heart pinned to the jacket."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the street lights come on, the crew heads to the arcade in a letter jacket, a frosty puffer and a colour-block windbreaker.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
