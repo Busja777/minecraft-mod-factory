@@ -52,6 +52,108 @@
       ],
       "fileId": 8097662,
       "publishedAt": "2026-05-16T09:51:47.950Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Lights Out",
+      "skins": [
+        {
+          "file": "starry_nightcap.png",
+          "name": "Starry Nightcap",
+          "slim": false,
+          "story": "She falls asleep counting the yellow stars on her midnight pyjamas, and the pompom of her nightcap always ends up on her ear."
+        },
+        {
+          "file": "mint_stripe_pyjamas.png",
+          "name": "Mint Stripe Pyjamas",
+          "slim": false,
+          "story": "He has worn his mint striped pyjamas for three lazy days in a row, and his bed hair has stopped listening to the comb."
+        },
+        {
+          "file": "counting_sheep.png",
+          "name": "Counting Sheep",
+          "slim": false,
+          "story": "She counts sheep every night until she is the sheep, curled up in a woolly onesie with floppy grey ears."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The lamps go off and three new sleepyheads shuffle into the pack: a stargazer in a drooping nightcap, a very tired pyjama fan and a little sheep who counts herself to sleep.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Snow Day Knits",
+      "skins": [
+        {
+          "file": "fair_isle_snowflake.png",
+          "name": "Fair Isle Snowflake",
+          "slim": false,
+          "story": "He was the first one out in the snow this morning, and his teal Fair Isle jumper still has a snowflake on the chest to prove it."
+        },
+        {
+          "file": "reindeer_jumper.png",
+          "name": "Reindeer Jumper",
+          "slim": false,
+          "story": "His grandma knitted a reindeer on his jumper and two antlers on his hood, and he has refused to take either off since."
+        },
+        {
+          "file": "hot_cocoa_argyle.png",
+          "name": "Hot Cocoa Argyle",
+          "slim": false,
+          "story": "He drinks his hot cocoa so fast that he always wears a chocolate moustache under his fluffy earmuffs."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "School is snowed in, so the sleepers pull out their warmest winter knits: a Fair Isle jumper with a pompom beanie, a reindeer jumper with antlers and an argyle sweater with fluffy earmuffs.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "Sweet Dreams Club",
+      "skins": [
+        {
+          "file": "patchwork_quilt.png",
+          "name": "Patchwork Quilt",
+          "slim": false,
+          "story": "She never got out of bed this winter, so her grandma simply stitched her favourite quilt into a hood and a onesie."
+        },
+        {
+          "file": "sleepy_panda.png",
+          "name": "Sleepy Panda",
+          "slim": false,
+          "story": "He sleeps twenty hours a day in his panda onesie and still wakes up smiling, already looking forward to the next nap."
+        },
+        {
+          "file": "sweetheart_cardigan.png",
+          "name": "Sweetheart Cardigan",
+          "slim": false,
+          "story": "She knitted her pink cardigan heart by heart, and whenever she thinks of her warm bed her eyes turn into hearts too."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The sleepers start a club for the best naps in the world: one wrapped in a patchwork quilt, a panda who snores in bubbles and a dreamer in a heart cardigan.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
