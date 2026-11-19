@@ -82,6 +82,108 @@
       ],
       "fileId": 8109633,
       "publishedAt": "2026-05-18T16:44:07.213Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "The Hooded Circle",
+      "skins": [
+        {
+          "file": "moonveil_hermit.png",
+          "name": "Moonveil Hermit",
+          "slim": false,
+          "story": "She hid in the empty observatory for a hundred nights, and now the pale crescent she prayed to shines on her own chest."
+        },
+        {
+          "file": "bloodthorn_hexer.png",
+          "name": "Bloodthorn Hexer",
+          "slim": false,
+          "story": "He traded his voice for a curse, so he hides his mouth behind a crimson veil and lets the thorns on his chest speak for him."
+        },
+        {
+          "file": "venom_mystic.png",
+          "name": "Venom Mystic",
+          "slim": false,
+          "story": "The serpents of the flooded cellar taught her their language, and the fangs on her cobra hood are the only thing they asked for in return."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the academy fell silent, three mages pulled up their hoods and kept practising in the dark: a hermit of the moon, a hexer of blood and a mystic who speaks with serpents.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Crowns of the Fallen Tower",
+      "skins": [
+        {
+          "file": "starfall_archmage.png",
+          "name": "Starfall Archmage",
+          "slim": false,
+          "story": "He mapped every star from the top of the fallen tower, and the ones that fell from the sky now shine on the hat he pulls low over his golden eyes."
+        },
+        {
+          "file": "solar_magus.png",
+          "name": "Solar Magus",
+          "slim": false,
+          "story": "The last keeper of the sun hall wears a golden circlet that still holds one morning of light, and he spends it a ray at a time."
+        },
+        {
+          "file": "crystal_enchantress.png",
+          "name": "Crystal Enchantress",
+          "slim": false,
+          "story": "She slept too long beside the tower’s power crystal, and when she woke, magenta shards had grown from her brow like a crown."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "High in the broken tower, three masters still wear the marks of their rank: a star-hatted archmage, a magus crowned with the sun and an enchantress grown out of crystal.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Echoes of the Empty Academy",
+      "skins": [
+        {
+          "file": "wisp_warden.png",
+          "name": "Wisp Warden",
+          "slim": false,
+          "story": "He died keeping the lanterns lit, and now his spectral halo and the lantern at his belt are the only lights that walk the empty corridors at night."
+        },
+        {
+          "file": "bonecrown_necromancer.png",
+          "name": "Bonecrown Necromancer",
+          "slim": false,
+          "story": "Crowned with the bones of the old headmasters, he keeps the crypt under the academy and lets no student rest until the lessons are finished."
+        },
+        {
+          "file": "gale_dervish.png",
+          "name": "Gale Dervish",
+          "slim": false,
+          "story": "She spins through the shattered windows of the academy, and the pale blue wind wrapped around her head never once touches the ground."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Not everyone left the academy: a spirit still lights the halls, a necromancer guards the crypt below and a dervish rides the wind through the broken windows.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
