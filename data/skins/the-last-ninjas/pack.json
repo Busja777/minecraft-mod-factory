@@ -105,6 +105,102 @@
       "publishedAt": "2026-11-19T18:05:43.110Z",
       "changelog": "## V1.2\n\n2 new skins join the pack: Neon Shogun and Cursed Marionette.\n\nA Neon Shogun in gold armour with a crimson seal on his chest has come to claim the fallen. A pale Cursed Marionette with white doll eyes follows close behind.\n\nNew skins:\n- **Neon Shogun** — The new lord of the lost, gold-trimmed armour and a crimson seal burning on his chest, gathering every fallen ninja under one banner.\n- **Cursed Marionette** — A pale puppet with mismatched white eyes that walks beside the Shogun, moving without anyone pulling its strings.\n\nThis download contains all 8 skins of the pack, so new players get everything in one file.\n\n![V1.2 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/the-last-ninjas/media/v1.2-skins.png)\n",
       "manual": false
+    },
+    {
+      "stage": "F1",
+      "version": "1.3",
+      "title": "The Shogun's Guard",
+      "skins": [
+        {
+          "file": "sakura_blade.png",
+          "name": "Sakura Blade",
+          "slim": false,
+          "story": "She trained under the cherry trees that burned with the dojo, and her blade still leaves pink petals of light in the air."
+        },
+        {
+          "file": "iron_lantern.png",
+          "name": "Iron Lantern",
+          "slim": false,
+          "story": "He carries the last flame of the dojo inside his chest, a ring of amber light that guides the lost through the dark."
+        },
+        {
+          "file": "tide_walker.png",
+          "name": "Tide Walker",
+          "slim": false,
+          "story": "Nobody hears him coming; the blue light just rises around your feet like water, and then he is already behind you."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The Neon Shogun does not walk alone any more: three guards answer his banner, a pink blade, a lantern bearer and a ninja who moves like the tide.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.4",
+      "title": "Ashes of the Dojo",
+      "skins": [
+        {
+          "file": "ember_monk.png",
+          "name": "Ember Monk",
+          "slim": false,
+          "story": "He kneels in the ruins every night, and the prayer beads on his chest glow brighter with each name he remembers."
+        },
+        {
+          "file": "thunder_fang.png",
+          "name": "Thunder Fang",
+          "slim": false,
+          "story": "Half ninja, half storm beast, he bares lime-green fangs and strikes before the thunder can reach your ears."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Two students come back from the ashes: a monk who never stopped praying and a beast that learned to hunt with lightning.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.5",
+      "title": "The Last Light",
+      "skins": [
+        {
+          "file": "eclipse_shogun.png",
+          "name": "Eclipse Shogun",
+          "slim": false,
+          "story": "The Neon Shogun’s rival, crowned in violet, who swallowed the moon and wears its hollow light as eyes."
+        },
+        {
+          "file": "mirror_ghost.png",
+          "name": "Mirror Ghost",
+          "slim": false,
+          "story": "Look into its pale silver visor and you see yourself, a moment before it vanishes and leaves only scattered stars."
+        },
+        {
+          "file": "crimson_oath.png",
+          "name": "Crimson Oath",
+          "slim": false,
+          "story": "He swore to protect the last students with his life, and the red threads of that oath run from his heart to his hands."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the night is darkest, three final lights appear: an eclipse shogun, a ghost made of mirrors and a knight bound by a crimson oath.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

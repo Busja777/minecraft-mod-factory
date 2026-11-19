@@ -1,0 +1,68 @@
+{
+  "slug": "cosy-sleeper",
+  "name": "Cosy Sleeper",
+  "packName": "WollPulli Varianten v2",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1544656,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "Rot.png",
+          "name": "Roter Wollpulli 😄",
+          "slim": false
+        },
+        {
+          "file": "Blau.png",
+          "name": "Blauer Wollpulli 😎",
+          "slim": false
+        },
+        {
+          "file": "Gruen.png",
+          "name": "Gruener Wollpulli 😮",
+          "slim": false
+        },
+        {
+          "file": "Gelb.png",
+          "name": "Gelber Wollpulli 😴",
+          "slim": false
+        },
+        {
+          "file": "Lila.png",
+          "name": "Lila Wollpulli 😢",
+          "slim": false
+        },
+        {
+          "file": "Orange.png",
+          "name": "Oranger Wollpulli 😠",
+          "slim": false
+        }
+      ],
+      "mcpack": "WollPulli_Varianten_v2.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 8097662,
+      "publishedAt": "2026-05-16T09:51:47.950Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10",
+    "26.11",
+    "26.12",
+    "26.20",
+    "26.13"
+  ]
+}

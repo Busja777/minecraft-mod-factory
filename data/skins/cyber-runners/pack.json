@@ -1,0 +1,92 @@
+{
+  "slug": "cyber-runners",
+  "name": "Cyber Runners",
+  "packName": "Cyber Runners",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1522453,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "glitch_runner.png",
+          "name": "Glitch Runner",
+          "slim": false
+        },
+        {
+          "file": "neon_sprint.png",
+          "name": "Neon Sprint",
+          "slim": false
+        },
+        {
+          "file": "void_hacker.png",
+          "name": "Void Hacker",
+          "slim": false
+        },
+        {
+          "file": "pulse_courier.png",
+          "name": "Pulse Courier",
+          "slim": false
+        },
+        {
+          "file": "data_ghost.png",
+          "name": "Data Ghost",
+          "slim": false
+        },
+        {
+          "file": "quantum_jumper.png",
+          "name": "Quantum Jumper",
+          "slim": false
+        },
+        {
+          "file": "firewall_breaker.png",
+          "name": "Firewall Breaker",
+          "slim": false
+        },
+        {
+          "file": "circuit_phantom.png",
+          "name": "Circuit Phantom",
+          "slim": false
+        },
+        {
+          "file": "static_striker.png",
+          "name": "Static Striker",
+          "slim": false
+        },
+        {
+          "file": "binary_blade.png",
+          "name": "Binary Blade",
+          "slim": false
+        }
+      ],
+      "mcpack": "Cyber_Runners.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7971114,
+      "publishedAt": "2026-04-23T08:13:24.643Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.18.2",
+    "1.21.81",
+    "1.18",
+    "1.18.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "1.21.72",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ]
+}

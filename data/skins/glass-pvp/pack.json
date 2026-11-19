@@ -1,0 +1,54 @@
+{
+  "slug": "glass-pvp",
+  "name": "GLASS PVP",
+  "packName": "Mod Glow Pack",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1516459,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "ae2_drone.png",
+          "name": "AE2 DRONE",
+          "slim": false
+        },
+        {
+          "file": "botania_mana.png",
+          "name": "BOTANIA MANA",
+          "slim": false
+        },
+        {
+          "file": "slime_glow.png",
+          "name": "SLIME GLOW",
+          "slim": false
+        }
+      ],
+      "mcpack": "ModGlowPack_v2.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7939115,
+      "publishedAt": "2026-04-17T09:25:09.643Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.20.40",
+    "1.21.2",
+    "1.21.93",
+    "1.20.1",
+    "1.21.100",
+    "1.21",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ]
+}

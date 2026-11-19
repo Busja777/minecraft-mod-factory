@@ -1,0 +1,90 @@
+{
+  "slug": "fantasy-academy-skins",
+  "name": "Fantasy Academy Skins",
+  "packName": "Fantasy Academy Students",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1523336,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "EmberApprentice.png",
+          "name": "Ember Apprentice — Emberfell House",
+          "slim": false
+        },
+        {
+          "file": "EmberDuelist.png",
+          "name": "Ember Duelist — Emberfell House",
+          "slim": false
+        },
+        {
+          "file": "EmberFirekeeper.png",
+          "name": "Ember Firekeeper — Emberfell House",
+          "slim": false
+        },
+        {
+          "file": "StormScholar.png",
+          "name": "Storm Scholar — Stormleaf House",
+          "slim": false
+        },
+        {
+          "file": "StormSkyfarer.png",
+          "name": "Storm Skyfarer — Stormleaf House",
+          "slim": false
+        },
+        {
+          "file": "VerdantHerbalist.png",
+          "name": "Verdant Herbalist — Verdanthold House",
+          "slim": false
+        },
+        {
+          "file": "VerdantWarden.png",
+          "name": "Verdant Warden — Verdanthold House",
+          "slim": false
+        },
+        {
+          "file": "MoonEnchantress.png",
+          "name": "Moon Enchantress — Moonvein House",
+          "slim": false
+        },
+        {
+          "file": "MoonSeer.png",
+          "name": "Moon Seer — Moonvein House",
+          "slim": false
+        },
+        {
+          "file": "StarlightNovice.png",
+          "name": "Starlight Novice — Moonvein House",
+          "slim": false
+        }
+      ],
+      "mcpack": "FantasyAcademy_Skinpack.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7976185,
+      "publishedAt": "2026-04-24T07:10:22.420Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.20.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.19.10",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ]
+}

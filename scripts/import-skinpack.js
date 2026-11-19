@@ -1,5 +1,6 @@
 import './lib/load-secrets.js';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import sharp from 'sharp';
 import { readMcpack, humanize } from './lib/mcpack.js';
@@ -15,12 +16,30 @@ import { arg } from './lib/github-output.js';
 //   [--skip U3,U4]   leave out stage folders that need a check first (copies, wrong pack)
 //   [--renumber]     number U-folders consecutively (U2 without U1 → U1)
 // With CF_CORE_API_KEY and --project, a V1 that is missing locally is taken from CurseForge (oldest file).
+// node scripts/import-skinpack.js --from-curseforge --project <id> --name "<CF name>"
+//   builds the stages from the files on CurseForge (oldest = V1, then U1, U2, …) — for packs whose
+//   local folder is missing or older than what is online.
 const argv = process.argv.slice(2);
-const folder = argv[0];
+let folder = argv[0];
+if (folder === '--from-curseforge') folder = await folderFromCurseForge();
 if (!folder || folder.startsWith('--') || !fs.existsSync(folder)) {
   throw new Error('Usage: node scripts/import-skinpack.js "<folder>" --project <id> --uploaded <V1|Un> [--last-upload YYYY-MM-DD] [--name "<CF name>"]');
 }
 const name = arg(argv, '--name', path.basename(path.resolve(folder)));
+
+async function folderFromCurseForge() {
+  const id = Number(arg(argv, '--project'));
+  if (!id || !process.env.CF_CORE_API_KEY) throw new Error('--from-curseforge needs --project <id> and CF_CORE_API_KEY');
+  const files = (await listFiles(id, { key: process.env.CF_CORE_API_KEY })).reverse(); // oldest first
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cf-import-'));
+  for (const [i, f] of files.entries()) {
+    const stage = path.join(dir, i === 0 ? 'V1' : `U${i}`);
+    fs.mkdirSync(stage);
+    fs.writeFileSync(path.join(stage, f.fileName), await downloadFile(f));
+  }
+  console.log(`CurseForge ${id}: ${files.length} files downloaded as V1${files.length > 1 ? ` + U1–U${files.length - 1}` : ''}`);
+  return dir;
+}
 const projectId = arg(argv, '--project') ? Number(arg(argv, '--project')) : null;
 const uploaded = arg(argv, '--uploaded');
 const lastUpload = arg(argv, '--last-upload');
@@ -87,7 +106,8 @@ for (const { stage, dir: sdir, root, folderStage } of stages) {
   if (mcpacks.length) {
     const read = readMcpack(packSource);
     read.issues.forEach(i => warnings.push(`${stage} ${mcpacks[0]}: ${i}`));
-    if (stage === 'V1' && read.packTitle) packName = read.packTitle;
+    // A placeholder title ("pack.name") or none: the CurseForge name is the better pack name.
+    if (stage === 'V1' && read.packTitle && !/^pack\.|\$\{|\|\|/.test(read.packTitle)) packName = read.packTitle;
     const desc = read.manifest.header?.description || '';
     title = desc.includes('—') ? desc.split('—').pop().trim() : '';
     const present = read.skins.filter(s => s.png);
@@ -130,7 +150,8 @@ if (previous) {
   }
 }
 const keep = previous ? Object.fromEntries(['summary', 'legend', 'altNames', 'logoPrompt', 'coverPrompt', 'logoFile', 'coverFile'].filter(k => previous[k] !== undefined).map(k => [k, previous[k]])) : {};
-const pack = { slug, name, packName, summary: '', legend: '', altNames: [], ...keep, cfProjectId: projectId, source: path.basename(path.resolve(folder)), versions };
+const source = argv[0] === '--from-curseforge' ? 'curseforge' : path.basename(path.resolve(folder));
+const pack = { slug, name, packName, summary: '', legend: '', altNames: [], ...keep, cfProjectId: projectId, source, versions };
 if (cfFiles) {
   syncPackWithFiles(pack, cfFiles);
   const unknown = cfFiles.filter(f => !versions.some(v => v.mcpack?.toLowerCase() === f.fileName.toLowerCase()));

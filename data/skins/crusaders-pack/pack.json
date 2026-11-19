@@ -1,0 +1,97 @@
+{
+  "slug": "crusaders-pack",
+  "name": "Crusaders Pack",
+  "packName": "Kreuzritter",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1503139,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "templar_knight.png",
+          "name": "Templer-Ritter",
+          "slim": false
+        },
+        {
+          "file": "malta_knight.png",
+          "name": "Malta-Ritter",
+          "slim": false
+        }
+      ],
+      "mcpack": "Kreuzritter_v3.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7866432,
+      "publishedAt": "2026-04-03T08:01:16.740Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "teutonic_knight.png",
+          "name": "Teutonischer Ritter",
+          "slim": false
+        },
+        {
+          "file": "santiago_knight.png",
+          "name": "Ritter von Santiago",
+          "slim": false
+        },
+        {
+          "file": "sergeant.png",
+          "name": "Kreuzritter-Sergeant",
+          "slim": false
+        },
+        {
+          "file": "saracen.png",
+          "name": "Sarazene",
+          "slim": false
+        },
+        {
+          "file": "crusader_king.png",
+          "name": "Kreuzfahrer-König",
+          "slim": false
+        },
+        {
+          "file": "assassin.png",
+          "name": "Hashshashin",
+          "slim": false
+        }
+      ],
+      "mcpack": "Kreuzritter_8er_Pack.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 8006953,
+      "publishedAt": "2026-04-28T20:21:54.947Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.20",
+    "1.21",
+    "1.21.122",
+    "1.21.121",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ]
+}

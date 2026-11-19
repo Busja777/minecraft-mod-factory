@@ -21,7 +21,7 @@ function fixture({ dueMcpack }) {
   if (dueMcpack) {
     fs.mkdirSync(path.join(dir, 'mcpack'), { recursive: true });
     const png = n => Buffer.from(`png-${n}`);
-    fs.writeFileSync(path.join(dir, 'mcpack', 'Due.mcpack'), buildMcpack({ packName: 'Due', description: 'd', skins: dueMcpack.map(n => ({ name: n, png: png(n) })) }));
+    fs.writeFileSync(path.join(dir, 'mcpack', 'Due.mcpack'), buildMcpack({ packName: 'Due', description: 'd', skins: dueMcpack.map(n => ({ name: n.toUpperCase(), png: png(n) })) }));
     pack.versions[2].mcpack = 'Due.mcpack';
   }
   return { dir, pack, v: pack.versions[2] };
@@ -72,9 +72,10 @@ test('complete packs of the same pack share a stable, valid UUID', () => {
   assert.match(u, /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 });
 
-test('missingSkins compares textures, not names', () => {
-  const buf = buildMcpack({ packName: 'P', description: 'd', skins: [{ name: 'Renamed', png: Buffer.from('x') }] });
-  assert.deepEqual(missingSkins(buf, [{ name: 'X', png: Buffer.from('x') }, { name: 'Y', png: Buffer.from('y') }]).map(s => s.name), ['Y']);
+test('missingSkins finds textures that are missing and skins that were renamed', () => {
+  const buf = buildMcpack({ packName: 'P', description: 'd', skins: [{ name: 'Blitz Haeuptling', png: Buffer.from('x') }, { name: 'Same', png: Buffer.from('z') }] });
+  assert.deepEqual(missingSkins(buf, [{ name: 'Same', png: Buffer.from('z') }, { name: 'Y', png: Buffer.from('y') }]).map(s => s.name), ['Y']);
+  assert.deepEqual(missingSkins(buf, [{ name: 'Lightning Chief', png: Buffer.from('x') }]).map(s => s.name), ['Lightning Chief'], 'a translated name needs a new file');
 });
 
 test('the changelog tells players the download has every skin', () => {

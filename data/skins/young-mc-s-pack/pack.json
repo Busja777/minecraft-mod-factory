@@ -1,0 +1,129 @@
+{
+  "slug": "young-mc-s-pack",
+  "name": "Young MC's Pack",
+  "packName": "Fresh Youth Slim Pack",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1493433,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "Midnight_Hoodie.png",
+          "name": "Midnight Hoodie",
+          "slim": true
+        },
+        {
+          "file": "Neon_Drip.png",
+          "name": "Neon Drip",
+          "slim": true
+        },
+        {
+          "file": "Pastel_Dream.png",
+          "name": "Pastel Dream",
+          "slim": true
+        },
+        {
+          "file": "Skater_Red.png",
+          "name": "Skater Red",
+          "slim": true
+        },
+        {
+          "file": "Shadow_Tech.png",
+          "name": "Shadow Tech",
+          "slim": true
+        },
+        {
+          "file": "Ocean_Wave.png",
+          "name": "Ocean Wave",
+          "slim": true
+        },
+        {
+          "file": "Fire_Fit.png",
+          "name": "Fire Fit",
+          "slim": true
+        },
+        {
+          "file": "Arctic_Drip.png",
+          "name": "Arctic Drip",
+          "slim": true
+        },
+        {
+          "file": "Forest_Chill.png",
+          "name": "Forest Chill",
+          "slim": true
+        },
+        {
+          "file": "Sunset_Glow.png",
+          "name": "Sunset Glow",
+          "slim": true
+        },
+        {
+          "file": "Street_Gold.png",
+          "name": "Street Gold",
+          "slim": true
+        },
+        {
+          "file": "Violet_Storm.png",
+          "name": "Violet Storm",
+          "slim": true
+        },
+        {
+          "file": "Crimson_Edge.png",
+          "name": "Crimson Edge",
+          "slim": true
+        }
+      ],
+      "mcpack": "Fresh_Youth_Slim_Pack_v4.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7799004,
+      "publishedAt": "2026-03-23T10:26:28.780Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "Cyber_Pink.png",
+          "name": "Cyber Pink",
+          "slim": true
+        },
+        {
+          "file": "Desert_Tan.png",
+          "name": "Desert Tan",
+          "slim": true
+        },
+        {
+          "file": "Toxic_Lime.png",
+          "name": "Toxic Lime",
+          "slim": true
+        }
+      ],
+      "mcpack": "Fresh_Youth_Slim_Pack_v5.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7927322,
+      "publishedAt": "2026-04-14T20:08:20.487Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.82",
+    "26.0.02",
+    "26.3",
+    "26.10"
+  ]
+}

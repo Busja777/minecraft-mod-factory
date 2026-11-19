@@ -1,0 +1,98 @@
+{
+  "slug": "zombiefarmer-gang-skinpack",
+  "name": "Zombiefarmer Gang Skinpack",
+  "packName": "Zombie Farmer Skin Pack",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1491614,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "zf_gruen.png",
+          "name": "Zombiefarmer Gruen",
+          "slim": false
+        },
+        {
+          "file": "zf_eis.png",
+          "name": "Zombiefarmer Eis",
+          "slim": false
+        },
+        {
+          "file": "zf_wuerste.png",
+          "name": "Zombiefarmer Wuerste",
+          "slim": false
+        },
+        {
+          "file": "zf_wasser.png",
+          "name": "Zombiefarmer Wasser",
+          "slim": false
+        },
+        {
+          "file": "zf_skelett.png",
+          "name": "Zombiefarmer Skelett",
+          "slim": false
+        },
+        {
+          "file": "zf_krieger.png",
+          "name": "Zombiefarmer Schwarzer Krieger",
+          "slim": false
+        }
+      ],
+      "mcpack": "Zombie_Farmer_Pack.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7789232,
+      "publishedAt": "2026-03-21T11:58:17.047Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "zf_feuer.png",
+          "name": "Zombie Farmer Fire",
+          "slim": false
+        },
+        {
+          "file": "zf_pilz.png",
+          "name": "Zombie Farmer Mushroom",
+          "slim": false
+        },
+        {
+          "file": "zf_wueste.png",
+          "name": "Zombie Farmer Desert",
+          "slim": false
+        }
+      ],
+      "mcpack": "Zombie_Farmer_Pack_Complete.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7922736,
+      "publishedAt": "2026-04-13T20:22:40.087Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.20.1",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ]
+}

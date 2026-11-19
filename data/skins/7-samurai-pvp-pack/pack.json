@@ -1,0 +1,111 @@
+{
+  "slug": "7-samurai-pvp-pack",
+  "name": ".7 Samurai PVP PACK",
+  "packName": "7 Samurai",
+  "summary": "",
+  "legend": "",
+  "altNames": [],
+  "cfProjectId": 1502094,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "kage_shadow.png",
+          "name": "Kage Shadow",
+          "slim": false
+        },
+        {
+          "file": "ryuu_dragon.png",
+          "name": "Ryuu Dragon",
+          "slim": false
+        },
+        {
+          "file": "midori_forest.png",
+          "name": "Midori Forest",
+          "slim": false
+        },
+        {
+          "file": "arashi_storm.png",
+          "name": "Arashi Storm",
+          "slim": false
+        },
+        {
+          "file": "tsubaki_blossom.png",
+          "name": "Tsubaki Blossom",
+          "slim": false
+        },
+        {
+          "file": "tetsu_iron.png",
+          "name": "Tetsu Iron",
+          "slim": false
+        },
+        {
+          "file": "kaen_void.png",
+          "name": "Kaen Void",
+          "slim": false
+        }
+      ],
+      "mcpack": "7Samurai.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7860098,
+      "publishedAt": "2026-04-02T06:57:39.840Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "oni_demon.png",
+          "name": "Oni Demon",
+          "slim": false
+        },
+        {
+          "file": "shiroi_ghost.png",
+          "name": "Shiroi Ghost",
+          "slim": false
+        },
+        {
+          "file": "raijin_thunder.png",
+          "name": "Raijin Thunder",
+          "slim": false
+        },
+        {
+          "file": "kuroi_shogun.png",
+          "name": "Kuroi Shogun",
+          "slim": false
+        }
+      ],
+      "mcpack": "7Samurai_UpgradePack.mcpack",
+      "status": "published",
+      "note": "",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7979149,
+      "publishedAt": "2026-04-24T20:14:06.177Z"
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.2",
+    "1.20.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ]
+}

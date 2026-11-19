@@ -1,0 +1,105 @@
+{
+  "pack": "iron-sanguine-knight-s-skinpack",
+  "style": "accent",
+  "at": "2026-11-19T22:47:16.127Z",
+  "versions": [
+    {
+      "version": "1.3",
+      "title": "Order of the Frost",
+      "skins": [
+        {
+          "name": "Frost Warden",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Purple Epic Knight (6/6)",
+          "black": 0,
+          "neon": 0.54,
+          "overlayTransparent": 0.77
+        },
+        {
+          "name": "Rime Lancer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Purple Epic Knight (6/6)",
+          "black": 0,
+          "neon": 0.494,
+          "overlayTransparent": 0.81
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "The Emerald Vow",
+      "skins": [
+        {
+          "name": "Jade Sentinel",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Frost Warden (5/6)",
+          "black": 0,
+          "neon": 0.123,
+          "overlayTransparent": 0.77
+        },
+        {
+          "name": "Thorn Knight",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Frost Warden (5/6)",
+          "black": 0.01,
+          "neon": 0.028,
+          "overlayTransparent": 0.86
+        },
+        {
+          "name": "Rose Paladin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Fire Knight (5/6)",
+          "black": 0,
+          "neon": 0.57,
+          "overlayTransparent": 0.77
+        }
+      ]
+    },
+    {
+      "version": "1.5",
+      "title": "Night Watch",
+      "skins": [
+        {
+          "name": "Obsidian Guard",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Frost Warden (5/6)",
+          "black": 0.04,
+          "neon": 0.142,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Sun Herald",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Frost Warden (5/6)",
+          "black": 0,
+          "neon": 0.602,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Storm Knight",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Blue Knight (5/6)",
+          "black": 0,
+          "neon": 0.109,
+          "overlayTransparent": 0.77
+        }
+      ]
+    }
+  ]
+}
