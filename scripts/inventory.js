@@ -8,7 +8,8 @@ import { listPacks, loadPack } from './lib/skinpacks.js';
 import { loadProjects } from './lib/cf-projects.js';
 import { listFiles } from './platforms/curseforge-core.js';
 import { classify, simulateSchedule, renderMarkdown, toCsv } from './lib/inventory.js';
-import { renderPage } from './lib/inventory-page.js';
+import { renderPage, renderPreview } from './lib/inventory-page.js';
+import { packDir } from './lib/skinpacks.js';
 import { arg } from './lib/github-output.js';
 
 // Stock overview of every CurseForge project of the account: what is on CurseForge, what is
@@ -94,6 +95,17 @@ fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'BESTAND.md'), renderMarkdown({ rows, schedule, localOnly, now }));
 fs.writeFileSync(path.join(outDir, 'bestand.csv'), toCsv(rows));
 fs.writeFileSync(path.join(outDir, 'bestand.html'), renderPage({ rows, schedule, localOnly, decisions: mapping.decisions || [], now }));
+// Preview page with copies of the render rows next to it (Output/ is not in git).
+const imgDir = path.join(outDir, 'vorschau-bilder');
+fs.mkdirSync(imgDir, { recursive: true });
+const imageFor = (pack, v) => {
+  const src = v.media?.[0] && path.join(packDir(pack.slug), v.media[0]);
+  if (!src || !fs.existsSync(src)) return null;
+  const name = `${pack.slug}-v${v.version}.png`;
+  fs.copyFileSync(src, path.join(imgDir, name));
+  return `vorschau-bilder/${name}`;
+};
+fs.writeFileSync(path.join(outDir, 'vorschau.html'), renderPreview({ packs: Object.values(packs), imageFor, now }));
 const count = g => rows.filter(r => r.group === g).length;
 console.log(`✓ ${rows.length} Projekte: A ${count('A')} · B ${count('B')} · Resource Packs ${count('RP')} · Java ${count('Java')} · ${localOnly.length} lokale Ordner ohne Projekt`);
-console.log(`  ${schedule.length} Updates im Fahrplan → ${path.relative(process.cwd(), outDir)}/bestand.html (Übersicht), BESTAND.md, bestand.csv`);
+console.log(`  ${schedule.length} Updates im Fahrplan → ${path.relative(process.cwd(), outDir)}/bestand.html (Übersicht), vorschau.html (alle Skins), BESTAND.md, bestand.csv`);

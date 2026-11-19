@@ -15,32 +15,32 @@
       "skins": [
         {
           "file": "zf_gruen.png",
-          "name": "Zombiefarmer Gruen",
+          "name": "Zombie Farmer Green",
           "slim": false
         },
         {
           "file": "zf_eis.png",
-          "name": "Zombiefarmer Eis",
+          "name": "Zombie Farmer Ice",
           "slim": false
         },
         {
           "file": "zf_wuerste.png",
-          "name": "Zombiefarmer Wuerste",
+          "name": "Zombie Farmer Sausage",
           "slim": false
         },
         {
           "file": "zf_wasser.png",
-          "name": "Zombiefarmer Wasser",
+          "name": "Zombie Farmer Water",
           "slim": false
         },
         {
           "file": "zf_skelett.png",
-          "name": "Zombiefarmer Skelett",
+          "name": "Zombie Farmer Skeleton",
           "slim": false
         },
         {
           "file": "zf_krieger.png",
-          "name": "Zombiefarmer Schwarzer Krieger",
+          "name": "Zombie Farmer Black Warrior",
           "slim": false
         }
       ],

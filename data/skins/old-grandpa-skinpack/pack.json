@@ -1,9 +1,9 @@
 {
   "slug": "old-grandpa-skinpack",
   "name": "Old Grandpa Skinpack",
-  "packName": "Opa Skin Pack",
+  "packName": "Grandpa Skin Pack",
   "summary": "These are grandpas. It seems like there is more than just old stories behind those wrinkled smiles ...",
-  "legend": "Nobody in the village remembers the grandpas arriving. They were just there one morning, sitting on the bench by the well as if they'd been waiting for a hundred years. Opa Herbert wears a teal shirt that looks a lot like someone else's, and he won't say where he got it. Opa Guenther strokes his thick grey beard and tells stories about strongholds that aren't on any map. Opa Friedrich just watches the horizon with pale blue eyes, like he's counting the sunsets he has left. At night their lanterns stay lit long after the villagers have gone to sleep. Sometimes you can hear them laughing about the old days, back before the first creeper ever hissed. Some people say they built this world. Others say they're still guarding something underneath it. Every winter, one more chair turns up by the fire...",
+  "legend": "Nobody in the village remembers the grandpas arriving. They were just there one morning, sitting on the bench by the well as if they'd been waiting for a hundred years. Grandpa Herbert wears a teal shirt that looks a lot like someone else's, and he won't say where he got it. Grandpa Gunther strokes his thick grey beard and tells stories about strongholds that aren't on any map. Grandpa Friedrich just watches the horizon with pale blue eyes, like he's counting the sunsets he has left. At night their lanterns stay lit long after the villagers have gone to sleep. Sometimes you can hear them laughing about the old days, back before the first creeper ever hissed. Some people say they built this world. Others say they're still guarding something underneath it. Every winter, one more chair turns up by the fire...",
   "altNames": [
     "Grandpas of the Overworld",
     "The Opa Club"
@@ -18,33 +18,33 @@
       "skins": [
         {
           "file": "opa_classic.png",
-          "name": "Opa Herbert",
+          "name": "Grandpa Herbert",
           "slim": false,
-          "story": "Opa Herbert wears a teal shirt and purple trousers and swears he dressed like that before any hero ever spawned."
+          "story": "Grandpa Herbert wears a teal shirt and purple trousers and swears he dressed like that before any hero ever spawned."
         },
         {
           "file": "opa_bald.png",
-          "name": "Opa Clarence",
+          "name": "Grandpa Clarence",
           "slim": false,
-          "story": "Opa Clarence has a bald head, grey tufts, a dark beard and a rust-brown shirt, and he remembers every block he ever mined."
+          "story": "Grandpa Clarence has a bald head, grey tufts, a dark beard and a rust-brown shirt, and he remembers every block he ever mined."
         },
         {
           "file": "opa_bushy.png",
-          "name": "Opa Friedrich",
+          "name": "Grandpa Friedrich",
           "slim": false,
-          "story": "Opa Friedrich has bushy white hair, pale blue eyes and a green shirt, and he stares at the horizon like he's expecting someone."
+          "story": "Grandpa Friedrich has bushy white hair, pale blue eyes and a green shirt, and he stares at the horizon like he's expecting someone."
         },
         {
           "file": "opa_thin.png",
-          "name": "Opa Takeshi",
+          "name": "Grandpa Takeshi",
           "slim": false,
-          "story": "Opa Takeshi has thinning grey hair and a quiet olive-brown tunic, and he speaks rarely, but every word lands like a stone."
+          "story": "Grandpa Takeshi has thinning grey hair and a quiet olive-brown tunic, and he speaks rarely, but every word lands like a stone."
         },
         {
           "file": "opa_beard.png",
-          "name": "Opa Guenther",
+          "name": "Grandpa Gunther",
           "slim": false,
-          "story": "Opa Guenther strokes his great grey beard in his red shirt and tells tales of strongholds no map has ever shown."
+          "story": "Grandpa Gunther strokes his great grey beard in his red shirt and tells tales of strongholds no map has ever shown."
         }
       ],
       "mcpack": "Opa_Skin_Pack.mcpack",
@@ -64,27 +64,27 @@
       "skins": [
         {
           "file": "opa_gunter.png",
-          "name": "Opa Gunter",
+          "name": "Grandpa Gunter",
           "slim": false,
-          "story": "Opa Gunter has white hair, rosy cheeks and purple overalls with a teal collar, and he smiles like he knows your secrets."
+          "story": "Grandpa Gunter has white hair, rosy cheeks and purple overalls with a teal collar, and he smiles like he knows your secrets."
         },
         {
           "file": "opa_heinz.png",
-          "name": "Opa Heinz",
+          "name": "Grandpa Heinz",
           "slim": false,
-          "story": "Opa Heinz wears a brown jacket, grey trousers and a neat grey moustache, and he still walks the old roads every dawn."
+          "story": "Grandpa Heinz wears a brown jacket, grey trousers and a neat grey moustache, and he still walks the old roads every dawn."
         },
         {
           "file": "opa_leopold.png",
-          "name": "Opa Leopold",
+          "name": "Grandpa Leopold",
           "slim": false,
-          "story": "Opa Leopold hides behind dark goggles and a full white beard, and his green robe with its golden collar smells of potions."
+          "story": "Grandpa Leopold hides behind dark goggles and a full white beard, and his green robe with its golden collar smells of potions."
         },
         {
           "file": "opa_walter.png",
-          "name": "Opa Walter",
+          "name": "Grandpa Walter",
           "slim": false,
-          "story": "Opa Walter shows up every winter in his red snowflake sweater, cheeks rosy, with presents nobody remembers wishing for."
+          "story": "Grandpa Walter shows up every winter in his red snowflake sweater, cheeks rosy, with presents nobody remembers wishing for."
         }
       ],
       "mcpack": "OpasPack.mcpack",

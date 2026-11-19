@@ -182,3 +182,47 @@ ${decide}
 </div>
 `;
 }
+
+// Preview of every pack with prepared versions: render row, note and story per skin. Forged versions
+// (drawn by the skin forge, not by the operator) are marked. imageFor(pack, version) → relative URL or null.
+export function renderPreview({ packs, imageFor, now = new Date() }) {
+  const list = packs.filter(p => p.versions.some(v => v.status === 'due')).sort((a, b) => a.name.localeCompare(b.name));
+  const forgedTotal = list.reduce((n, p) => n + p.versions.filter(v => v.forged).reduce((m, v) => m + v.skins.length, 0), 0);
+  const section = p => {
+    const due = p.versions.filter(v => v.status === 'due');
+    const versions = p.versions.map(v => {
+      const img = imageFor(p, v);
+      const tag = v.status !== 'due' ? '<span class="tag pub">schon oben</span>' : v.forged ? '<span class="tag forged">neu gezeichnet</span>' : '<span class="tag due">aus deinem Ordner</span>';
+      return `<div class="v ${v.status === 'due' ? 'is-due' : 'is-pub'}">
+  <div class="vh"><b>V${esc(v.version)}</b> ${tag}${v.title ? ` <span class="muted">${esc(v.title)}</span>` : ''}</div>
+  ${img ? `<img src="${esc(img)}" alt="V${esc(v.version)}" loading="lazy">` : ''}
+  ${v.note && v.status === 'due' ? `<p class="note">${esc(v.note)}</p>` : ''}
+  ${v.status === 'due' ? `<ul>${v.skins.map(s => `<li><b>${esc(s.name)}</b>${s.story ? ` – ${esc(s.story)}` : ''}</li>`).join('')}</ul>` : ''}
+</div>`;
+    }).join('\n');
+    return `<section id="${esc(p.slug)}"><h2>${esc(p.name)} <small>${due.length} Update${due.length === 1 ? '' : 's'} bereit</small></h2>
+${p.summary ? `<p class="muted">${esc(p.summary)}</p>` : ''}
+${versions}</section>`;
+  };
+  return `<title>Skin-Vorschau</title>
+<style>
+:root{--bg:#f2f4f1;--card:#fff;--ink:#1c2420;--muted:#5e6a64;--line:#d9dfda;--due:#2f7d5b;--forged:#7a4fd0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141916;--card:#1d2420;--ink:#e6ece8;--muted:#9aa8a0;--line:#2f3833;--due:#6cc497;--forged:#b69cff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141916;--card:#1d2420;--ink:#e6ece8;--muted:#9aa8a0;--line:#2f3833;--due:#6cc497;--forged:#b69cff;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;margin:0}
+main{max-width:980px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav{font-size:13px;line-height:1.9}nav a{color:inherit}
+section{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:16px 0}
+h1{margin:6px 0}h2{margin:0 0 4px}h2 small{font-weight:400;color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}.v{border-top:1px solid var(--line);padding:10px 0}.is-pub{opacity:.7}
+.v img{max-width:100%;border-radius:6px;display:block;margin:6px 0}
+.tag{font-size:12px;padding:1px 8px;border-radius:9px;color:#fff}.tag.pub{background:var(--muted)}.tag.due{background:var(--due)}.tag.forged{background:var(--forged)}
+.note{margin:4px 0}ul{margin:4px 0 0;padding-left:20px}
+</style>
+<main><h1>Skin-Vorschau</h1>
+<p class="muted">Stand ${esc(now.toISOString().slice(0, 10))} · ${list.length} Packs mit vorbereiteten Updates · ${forgedTotal} Skins neu gezeichnet (lila markiert)</p>
+<nav>${list.map(p => `<a href="#${esc(p.slug)}">${esc(p.name)}</a>`).join(' · ')}</nav>
+${list.map(section).join('\n')}
+</main>
+`;
+}

@@ -3,7 +3,7 @@
   "name": "BE YOUR FASTFOOD",
   "packName": "FastFood Pack",
   "summary": "These are walking fast-food dishes. It seems like there is more than just sauce inside ...",
-  "legend": "Long after the last restaurant went dark, the night kitchens kept burning. In the alleys between the food stalls, the cooks say, the leftovers learned to stand up. First came Döner, wrapped in pale foil, with stripes of lettuce, tomato and purple onion across his bread-crust face. Behind him marched Pommes, a walking red carton crowned with golden fries, his yellow eyes glowing like hot oil. And at the front, silent and heavy, stood the Cheesy Burger, a golden bun with a body of patty, lettuce and tomato. Nobody knows who cooked them, or why they still smell of smoke and spices. Some say they are only hungry. Others say they are waiting for the rest of the menu to wake up... and every night, the kitchen gets a little louder.",
+  "legend": "Long after the last restaurant went dark, the night kitchens kept burning. In the alleys between the food stalls, the cooks say, the leftovers learned to stand up. First came Doner Kebab, wrapped in pale foil, with stripes of lettuce, tomato and purple onion across his bread-crust face. Behind him marched Fries, a walking red carton crowned with golden fries, his yellow eyes glowing like hot oil. And at the front, silent and heavy, stood the Cheesy Burger, a golden bun with a body of patty, lettuce and tomato. Nobody knows who cooked them, or why they still smell of smoke and spices. Some say they are only hungry. Others say they are waiting for the rest of the menu to wake up... and every night, the kitchen gets a little louder.",
   "altNames": [
     "Night Kitchen Legends",
     "The Leftover Uprising"
@@ -18,15 +18,15 @@
       "skins": [
         {
           "file": "doener.png",
-          "name": "Döner",
+          "name": "Doner Kebab",
           "slim": false,
-          "story": "Döner, the foil-wrapped wanderer, wears stripes of lettuce, tomato and purple onion across his bread-crust face like war paint."
+          "story": "Doner Kebab, the foil-wrapped wanderer, wears stripes of lettuce, tomato and purple onion across his bread-crust face like war paint."
         },
         {
           "file": "pommes.png",
-          "name": "Pommes",
+          "name": "Fries",
           "slim": false,
-          "story": "Pommes, the Red Carton, carries a crown of golden fries and watches the alleys with eyes yellow as hot oil."
+          "story": "Fries, the Red Carton, carries a crown of golden fries and watches the alleys with eyes yellow as hot oil."
         },
         {
           "file": "cheesy_burger.png",
@@ -37,7 +37,7 @@
       ],
       "mcpack": "FastFood_Pack.mcpack",
       "status": "published",
-      "note": "The night kitchen wakes: Döner, Pommes and the Cheesy Burger step out of the smoke for the first time.",
+      "note": "The night kitchen wakes: Doner Kebab, Fries and the Cheesy Burger step out of the smoke for the first time.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -102,14 +102,14 @@
         },
         {
           "file": "kaesekuchen.png",
-          "name": "Kaesekuchen",
+          "name": "Cheesecake",
           "slim": false,
-          "story": "Kaesekuchen, the Quiet Baker, crowned with red berry glaze, stands creamy white upon a firm golden crust."
+          "story": "Cheesecake, the Quiet Baker, crowned with red berry glaze, stands creamy white upon a firm golden crust."
         }
       ],
       "mcpack": "ComfortFood_Pack.mcpack",
       "status": "due",
-      "note": "The ovens open: Pelmeni, Pizza, Doughnut and Kaesekuchen rise from dough and glaze.",
+      "note": "The ovens open: Pelmeni, Pizza, Doughnut and Cheesecake rise from dough and glaze.",
       "media": [
         "media/v1.2-skins.png"
       ],

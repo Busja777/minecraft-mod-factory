@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs';
 import { classify, simulateSchedule, renderMarkdown, toCsv } from '../scripts/lib/inventory.js';
-import { renderPage } from '../scripts/lib/inventory-page.js';
+import { renderPage, renderPreview } from '../scripts/lib/inventory-page.js';
 
 const now = new Date('2026-11-19T18:00:00Z');
 const skin = (id, name, downloads = 100) => ({ id, name, classId: 6925, gameId: 78022, downloadCount: downloads });
@@ -99,4 +99,19 @@ test('overview page: open decisions first, every pack with its planned evenings,
   assert.match(html, /V1\.2<small>13\.12\.<\/small>/);
   assert.match(html, /&lt;Ninja&gt;[\s\S]*alles oben/);
   assert.match(html, /<h3>Dezember 2026/);
+});
+
+test('preview page marks forged skins and lists every due skin with its story', () => {
+  const packs = [{ slug: 'p', name: 'P & Co', versions: [
+    { version: '1.0', status: 'published', skins: [{ name: 'Old' }] },
+    { version: '1.1', status: 'due', note: 'From the folder.', skins: [{ name: 'Folder Skin', story: 'Drawn by hand.' }], media: ['media/v1.1-skins.png'] },
+    { version: '1.2', status: 'due', forged: true, skins: [{ name: 'New <One>', story: 'Drawn by the forge.' }] }
+  ] }, { slug: 'q', name: 'Nothing due', versions: [{ version: '1.0', status: 'published', skins: [] }] }];
+  const html = renderPreview({ packs, imageFor: (p, v) => (v.media ? `img/${p.slug}-${v.version}.png` : null), now: new Date('2026-11-20T00:00:00Z') });
+  assert.match(html, /1 Packs mit vorbereiteten Updates · 1 Skins neu gezeichnet/);
+  assert.match(html, /tag forged">neu gezeichnet[\s\S]*New &lt;One&gt;<\/b> – Drawn by the forge\./);
+  assert.match(html, /tag due">aus deinem Ordner/);
+  assert.match(html, /src="img\/p-1\.1\.png"/);
+  assert.doesNotMatch(html, /Nothing due/);
+  assert.match(html, /P &amp; Co/);
 });

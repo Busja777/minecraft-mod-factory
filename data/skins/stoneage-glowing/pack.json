@@ -1,7 +1,7 @@
 {
   "slug": "stoneage-glowing",
   "name": "StoneAge Glowing",
-  "packName": "Glow Steinzeit Pack",
+  "packName": "Glow Stone Age Pack",
   "summary": "These are glowing stone-age warriors. It seems like there is more than just fire burning inside their armour ...",
   "legend": "Long before the first torch was lit, the tribes of the deep valley wore armour of black stone, and the stone remembered every fire it had ever touched. When night fell, the cracks began to glow. The Feuer-Jaeger carried the orange heat of the first hunt in his seams, while the Mond-Schamane drank the cold cyan light of the moon until it ran through his veins like water. The elders whispered that the glow was a gift, but the Geister Krieger knew better: behind his violet visor he could hear the stone speaking, counting down to something buried beneath the valley. Each new moon, another warrior wakes with a colour no one has seen before. And somewhere under the ash, the oldest light of all is still waiting to be found ...",
   "altNames": [
@@ -18,20 +18,20 @@
       "skins": [
         {
           "file": "feuer_jaeger.png",
-          "name": "Feuer-Jaeger",
+          "name": "Fire Hunter",
           "slim": false,
-          "story": "The Feuer-Jaeger hunts by night, the orange heat of the first campfire still smouldering in the cracks of his black stone armour."
+          "story": "The Fire Hunter hunts by night, the orange heat of the first campfire still smouldering in the cracks of his black stone armour."
         },
         {
           "file": "mond_schamane.png",
-          "name": "Mond-Schamane",
+          "name": "Moon Shaman",
           "slim": false,
-          "story": "The Mond-Schamane drank moonlight until it froze into cyan veins that now trace every edge of his armour."
+          "story": "The Moon Shaman drank moonlight until it froze into cyan veins that now trace every edge of his armour."
         }
       ],
       "mcpack": "GlowStoneAgePack.mcpack",
       "status": "published",
-      "note": "The stone first awakens: Feuer-Jaeger and Mond-Schamane rise with orange fire and cyan moonlight.",
+      "note": "The stone first awakens: Fire Hunter and Moon Shaman rise with orange fire and cyan moonlight.",
       "media": [
         "media/v1.0-skins.png"
       ],
@@ -45,26 +45,26 @@
       "skins": [
         {
           "file": "blitz_haeuptling.png",
-          "name": "BLITZ HAEUPTLING",
+          "name": "Lightning Chief",
           "slim": false,
-          "story": "BLITZ HAEUPTLING rules the tribe with yellow lightning crackling across his mask and shoulders, a chief struck by the storm and left standing."
+          "story": "Lightning Chief rules the tribe with yellow lightning crackling across his mask and shoulders, a chief struck by the storm and left standing."
         },
         {
           "file": "blut_schamane.png",
-          "name": "BLUT SCHAMANE",
+          "name": "Blood Shaman",
           "slim": false,
-          "story": "BLUT SCHAMANE paints his oaths in glowing red, and the stone drinks every one of them."
+          "story": "Blood Shaman paints his oaths in glowing red, and the stone drinks every one of them."
         },
         {
           "file": "geister_krieger.png",
-          "name": "GEISTER KRIEGER",
+          "name": "Spirit Warrior",
           "slim": false,
-          "story": "Behind a solid violet visor, GEISTER KRIEGER hears the voices of fallen warriors whispering through the purple seams of his armour."
+          "story": "Behind a solid violet visor, Spirit Warrior hears the voices of fallen warriors whispering through the purple seams of his armour."
         }
       ],
       "mcpack": null,
       "status": "due",
-      "note": "Three new warriors join the tribe: the yellow-lit BLITZ HAEUPTLING, the blood-red BLUT SCHAMANE and the violet-visored GEISTER KRIEGER.",
+      "note": "Three new warriors join the tribe: the yellow-lit Lightning Chief, the blood-red Blood Shaman and the violet-visored Spirit Warrior.",
       "media": [
         "media/v1.1-skins.png"
       ],
@@ -78,26 +78,26 @@
       "skins": [
         {
           "file": "eis_jaeger.png",
-          "name": "EIS JAEGER",
+          "name": "Ice Hunter",
           "slim": false,
-          "story": "EIS JAEGER stalks the frozen ridges, his pale ice-blue visor glinting like a glacier at dawn."
+          "story": "Ice Hunter stalks the frozen ridges, his pale ice-blue visor glinting like a glacier at dawn."
         },
         {
           "file": "gift_hexer.png",
-          "name": "GIFT HEXER",
+          "name": "Venom Hexer",
           "slim": false,
-          "story": "GIFT HEXER brews his venom in the swamps, and its toxic green glow now seeps from every joint of his armour."
+          "story": "Venom Hexer brews his venom in the swamps, and its toxic green glow now seeps from every joint of his armour."
         },
         {
           "file": "schatten_wolf.png",
-          "name": "SCHATTEN WOLF",
+          "name": "Shadow Wolf",
           "slim": false,
-          "story": "SCHATTEN WOLF moves unseen through the night, only his bone-white markings betraying the hunter inside the shadow."
+          "story": "Shadow Wolf moves unseen through the night, only his bone-white markings betraying the hunter inside the shadow."
         }
       ],
       "mcpack": null,
       "status": "due",
-      "note": "From ice, swamp and shadow come EIS JAEGER, GIFT HEXER and SCHATTEN WOLF, glowing pale blue, toxic green and bone white.",
+      "note": "From ice, swamp and shadow come Ice Hunter, Venom Hexer and Shadow Wolf, glowing pale blue, toxic green and bone white.",
       "media": [
         "media/v1.2-skins.png"
       ],
@@ -111,20 +111,20 @@
       "skins": [
         {
           "file": "donner_baer.png",
-          "name": "DONNER BAER",
+          "name": "Thunder Bear",
           "slim": false,
-          "story": "DONNER BAER walks with the weight of thunder, deep blue light rumbling beneath his heavy stone plates."
+          "story": "Thunder Bear walks with the weight of thunder, deep blue light rumbling beneath his heavy stone plates."
         },
         {
           "file": "lava_priesterin.png",
-          "name": "LAVA PRIESTERIN",
+          "name": "Lava Priestess",
           "slim": false,
-          "story": "LAVA PRIESTERIN tends the sacred fire pits, glowing magenta runes burning across her mask and armour."
+          "story": "Lava Priestess tends the sacred fire pits, glowing magenta runes burning across her mask and armour."
         }
       ],
       "mcpack": null,
       "status": "due",
-      "note": "Thunder and lava answer the call: deep blue DONNER BAER and magenta LAVA PRIESTERIN step out of the night.",
+      "note": "Thunder and lava answer the call: deep blue Thunder Bear and magenta Lava Priestess step out of the night.",
       "media": [
         "media/v1.3-skins.png"
       ],
@@ -138,20 +138,20 @@
       "skins": [
         {
           "file": "ash_walker.png",
-          "name": "ASH WALKER",
+          "name": "Ash Walker",
           "slim": false,
-          "story": "ASH WALKER rose from a burnt-out village, scattered orange embers still flickering through his cracked black armour."
+          "story": "Ash Walker rose from a burnt-out village, scattered orange embers still flickering through his cracked black armour."
         },
         {
           "file": "storm_serpent.png",
-          "name": "STORM SERPENT",
+          "name": "Storm Serpent",
           "slim": false,
-          "story": "STORM SERPENT coils through rain and river, teal-green light rippling along his armour like scales in lightning."
+          "story": "Storm Serpent coils through rain and river, teal-green light rippling along his armour like scales in lightning."
         }
       ],
       "mcpack": null,
       "status": "due",
-      "note": "Wanderers from beyond the valley arrive: ember-speckled ASH WALKER and teal STORM SERPENT.",
+      "note": "Wanderers from beyond the valley arrive: ember-speckled Ash Walker and teal Storm Serpent.",
       "media": [
         "media/v1.4-skins.png"
       ],
@@ -165,26 +165,26 @@
       "skins": [
         {
           "file": "bone_oracle.png",
-          "name": "BONE ORACLE",
+          "name": "Bone Oracle",
           "slim": false,
-          "story": "BONE ORACLE reads the future in old bones, her silver-white glow as pale as the skulls she listens to."
+          "story": "Bone Oracle reads the future in old bones, her silver-white glow as pale as the skulls she listens to."
         },
         {
           "file": "ember_witch.png",
-          "name": "EMBER WITCH",
+          "name": "Ember Witch",
           "slim": false,
-          "story": "EMBER WITCH weaves curses from dying sparks, red-orange flames crawling across every plate of her armour."
+          "story": "Ember Witch weaves curses from dying sparks, red-orange flames crawling across every plate of her armour."
         },
         {
           "file": "void_hunter.png",
-          "name": "VOID HUNTER",
+          "name": "Void Hunter",
           "slim": false,
-          "story": "VOID HUNTER came back from the darkness beneath the valley, deep purple light pulsing where his heart should be."
+          "story": "Void Hunter came back from the darkness beneath the valley, deep purple light pulsing where his heart should be."
         }
       ],
       "mcpack": null,
       "status": "due",
-      "note": "The oldest secrets surface with the silver BONE ORACLE, the fiery EMBER WITCH and the purple VOID HUNTER.",
+      "note": "The oldest secrets surface with the silver Bone Oracle, the fiery Ember Witch and the purple Void Hunter.",
       "media": [
         "media/v1.5-skins.png"
       ],

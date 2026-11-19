@@ -1,7 +1,7 @@
 {
   "slug": "cosy-sleeper",
   "name": "Cosy Sleeper",
-  "packName": "WollPulli Varianten v2",
+  "packName": "Cosy Sleeper",
   "summary": "",
   "legend": "",
   "altNames": [],
@@ -15,32 +15,32 @@
       "skins": [
         {
           "file": "Rot.png",
-          "name": "Roter Wollpulli 😄",
+          "name": "Red Wool Sweater",
           "slim": false
         },
         {
           "file": "Blau.png",
-          "name": "Blauer Wollpulli 😎",
+          "name": "Blue Wool Sweater",
           "slim": false
         },
         {
           "file": "Gruen.png",
-          "name": "Gruener Wollpulli 😮",
+          "name": "Green Wool Sweater",
           "slim": false
         },
         {
           "file": "Gelb.png",
-          "name": "Gelber Wollpulli 😴",
+          "name": "Yellow Wool Sweater",
           "slim": false
         },
         {
           "file": "Lila.png",
-          "name": "Lila Wollpulli 😢",
+          "name": "Purple Wool Sweater",
           "slim": false
         },
         {
           "file": "Orange.png",
-          "name": "Oranger Wollpulli 😠",
+          "name": "Orange Wool Sweater",
           "slim": false
         }
       ],
