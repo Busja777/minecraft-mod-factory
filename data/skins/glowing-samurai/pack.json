@@ -221,6 +221,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.5",
+      "title": "The Lantern Road",
+      "skins": [
+        {
+          "file": "tomoshibi_lantern_keeper.png",
+          "name": "TOMOSHIBI (灯火) — Lantern Keeper",
+          "slim": false,
+          "story": "TOMOSHIBI, the Lantern Keeper, carries the first flame of the mountain road inside his chest, a red paper lantern ringed in gold that never burns down."
+        },
+        {
+          "file": "hotaru_firefly_ronin.png",
+          "name": "HOTARU (蛍) — Firefly Ronin",
+          "slim": false,
+          "story": "HOTARU, the Firefly Ronin, walks the road under a wide straw hat, and the fireflies that follow him are the souls of everyone he swore to protect."
+        },
+        {
+          "file": "suigetsu_moon_on_the_water.png",
+          "name": "SUIGETSU (水月) — Moon on the Water",
+          "slim": false,
+          "story": "SUIGETSU, the Moon on the Water, wears a golden crescent on his helm and fights where the river is calm, so every enemy sees two moons before the end."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Once a year the lanterns are lit along the old mountain road, and three samurai who died guarding it walk again: TOMOSHIBI with a burning lantern in his chest, HOTARU under a hat full of fireflies and SUIGETSU with the moon on his helm. When the last lantern goes out, so do they.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

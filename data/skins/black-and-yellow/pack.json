@@ -166,6 +166,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.4",
+      "title": "The Humming Deep",
+      "skins": [
+        {
+          "file": "hive_miner.png",
+          "name": "Hive Miner",
+          "slim": false,
+          "story": "He was the miner who first broke into the hive, and he still wears his golden hard hat, its lamp humming in the same tune as the comb."
+        },
+        {
+          "file": "gold_vein_golem.png",
+          "name": "Gold Vein Golem",
+          "slim": false,
+          "story": "The hive carved its own guardian out of black deepslate, and molten gold still runs through every crack, pooling in a honeycomb heart that never cools."
+        },
+        {
+          "file": "queen_s_herald.png",
+          "name": "Queen's Herald",
+          "slim": false,
+          "story": "The Queen's Herald wears her golden mask and folded glass wings, and when it raises its antennae the whole hive falls silent to listen."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The Queen is awake, and the hive reaches for the surface: a miner who dug one block too deep, a golem carved from the gold-veined deepslate around it and the herald who speaks with the Queen's voice.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

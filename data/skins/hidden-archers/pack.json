@@ -97,6 +97,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.3",
+      "title": "Tide, Blossom and Storm",
+      "skins": [
+        {
+          "file": "tide_shell_archer.png",
+          "name": "Tide Shell Archer",
+          "slim": false,
+          "story": "The Tide Shell Archer rises from the reef in a sea-green hood and a mask of shell scales, and one coral eye glows like a lantern under the waves."
+        },
+        {
+          "file": "blossom_veil_archer.png",
+          "name": "Blossom Veil Archer",
+          "slim": true,
+          "story": "The Blossom Veil Archer drifts down from the valleys in a pink hood and a lace veil, and petals fall wherever her leaf-green eye takes aim."
+        },
+        {
+          "file": "storm_peak_archer.png",
+          "name": "Storm Peak Archer",
+          "slim": false,
+          "story": "The Storm Peak Archer climbs out of the thunderclouds in a slate-blue hood, and a single yellow eye flashes a heartbeat before the lightning arrow lands."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three more eyes open at the edges of the map: the Tide Shell Archer rises from the reef, the Blossom Veil Archer drifts down from the blossom valleys and the Storm Peak Archer climbs out of the thunderclouds.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

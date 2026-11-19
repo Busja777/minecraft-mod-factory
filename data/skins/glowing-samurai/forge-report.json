@@ -1,0 +1,43 @@
+{
+  "pack": "glowing-samurai",
+  "style": "glow",
+  "at": "2026-11-19T23:27:22.792Z",
+  "versions": [
+    {
+      "version": "1.5",
+      "title": "The Lantern Road",
+      "skins": [
+        {
+          "name": "TOMOSHIBI (灯火) — Lantern Keeper",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "RAIJIN — Thunder Samurai (6/6)",
+          "black": 0.89,
+          "neon": 0.064,
+          "overlayTransparent": 0.71
+        },
+        {
+          "name": "HOTARU (蛍) — Firefly Ronin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "RAIJIN — Thunder Samurai (6/6)",
+          "black": 0.91,
+          "neon": 0.066,
+          "overlayTransparent": 0.66
+        },
+        {
+          "name": "SUIGETSU (水月) — Moon on the Water",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "RAIJIN — Thunder Samurai (6/6)",
+          "black": 0.9,
+          "neon": 0.061,
+          "overlayTransparent": 0.66
+        }
+      ]
+    }
+  ]
+}
