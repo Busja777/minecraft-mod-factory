@@ -24,6 +24,7 @@ const allPlans = () => [
   buildSteps({ cmd: 'new', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
   buildSteps({ cmd: 'media', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
   buildSteps({ cmd: 'update', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
+  buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
   buildSteps({ cmd: 'publish', kind: 'mod', id: 'autosort' }, { config, meta })
 ];
 
@@ -126,4 +127,42 @@ test('menu: new projects are published in one run, waiting uploads and media cho
   assert.deepEqual(todo.map(t => `${t.cmd}:${t.id}`), ['publish:autosort', 'update:glowing-samurai', 'publish:neon-ninja']);
   assert.equal(todo[1].version, '1.1');
   assert.deepEqual(more.map(t => `${t.cmd}:${t.id}`), ['media:glowing-samurai', 'media:quickstack']);
+});
+
+test('seite: description then gallery of the newest published version, each ending in a wait for the user', () => {
+  const plan = buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai', parts: { description: true, gallery: true }, version: '1.0' }, { config, pack });
+  const order = plan.steps.map(s => s.target ? `${s.target}${s.arg ? `:${s.arg}` : ''}` : s.action);
+  assert.deepEqual(order, ['manual', 'learnProjectUrl', 'projectTab:Description', 'descriptionEditorType', 'description', 'waitFor',
+    'projectTab:Media', 'addMedia', 'mediaFile', 'editMedia', 'mediaTitle', 'waitFor']);
+  assert.match(step(plan, 'description').value, /^# Glowing Samurai[\s\S]*## How to install/);
+  assert.deepEqual(plan.steps.filter(s => s.action === 'waitFor').map(s => Object.keys(s.until)[0]), ['check', 'gone']);
+  assert.equal(step(plan, 'mediaTitle').value, 'V1.0: RAIJIN');
+  assert.notEqual(step(plan, 'mediaTitle').value, 'MCPEDL', 'the MCPEDL cover is not replaced');
+  assert.deepEqual(plan.page, { version: '1.0', description: true, gallery: true });
+});
+
+test('seite: only the missing part is done, a version without a render gets no gallery steps', () => {
+  const onlyGallery = buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai', version: '1.0', parts: { gallery: true } }, { config, pack });
+  assert.equal(step(onlyGallery, 'description'), undefined);
+  assert.ok(step(onlyGallery, 'mediaFile').value.endsWith(path.join('media', 'v1.0-skins.png')));
+  const noRender = buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai', version: '1.1', parts: { description: true, gallery: true } }, { config, pack });
+  assert.equal(step(noRender, 'mediaFile'), undefined);
+  assert.match(noRender.notes.join(' '), /kein Render-Bild/);
+  assert.throws(() => buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai', version: '1.2' }, { config, pack }), /keine veröffentlichte Version/);
+  assert.throws(() => buildSteps({ cmd: 'seite', kind: 'mod', id: 'autosort' }, { config, meta }), /nur für Skinpacks/);
+});
+
+test('menu: a page follow-up appears after an upload and disappears once CurseForge shows it', () => {
+  const p = makePack();
+  p.versions[1] = { ...p.versions[1], fileId: 99, manual: false };
+  const projects = [{ modId: 'glowing-samurai', kind: 'skinpack', name: 'Glowing Samurai', status: 'published', projectId: 1498885 }];
+  const ids = packs => listTasks({ projects, packs });
+  const open = ids([p]);
+  assert.deepEqual(open.todo.map(t => t.cmd), ['seite']);
+  assert.match(open.todo[0].label, /Seite nachziehen: Glowing Samurai \(Beschreibung V1\.1, Galerie V1\.1\)/);
+  assert.deepEqual(ids([{ ...p, page: { descriptionThrough: '1.1', galleryThrough: '1.0' } }]).todo.map(t => t.label), ['Seite nachziehen: Glowing Samurai (Galerie V1.1)']);
+  assert.deepEqual(ids([{ ...p, page: { descriptionThrough: '1.1', galleryThrough: '1.1' } }]).todo, []);
+  const filled = ids([{ ...p, page: { filled: { version: '1.1' } } }]);
+  assert.deepEqual(filled.todo, []);
+  assert.match(filled.more[0].label, /schon ausgefüllt/);
 });
