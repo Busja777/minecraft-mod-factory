@@ -37,6 +37,108 @@
       ],
       "fileId": 8048244,
       "publishedAt": "2026-05-06T14:07:01.363Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Tip-Off Night",
+      "skins": [
+        {
+          "file": "comet_flyer.png",
+          "name": "Comet Flyer",
+          "slim": false,
+          "story": "The star of the Harbor City Comets jumps so high that the crowd swears his teal sleeve leaves a trail across the rim."
+        },
+        {
+          "file": "frost_guard.png",
+          "name": "Frost Guard",
+          "slim": false,
+          "story": "The point guard of the Glacier Bay Lynx never blinks behind his sport goggles, and his free throws are as cold as the bay in January."
+        },
+        {
+          "file": "canyon_center.png",
+          "name": "Canyon Center",
+          "slim": false,
+          "story": "The bearded giant of the Red Mesa Coyotes plants himself under the basket like a canyon wall, and nothing gets past him."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The new season tips off under the city lights, and three new players walk onto the court: a high-flying dunker, an ice-cold shooter and a centre nobody can move.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Streetball Summer",
+      "skins": [
+        {
+          "file": "park_crossover.png",
+          "name": "Park Crossover",
+          "slim": false,
+          "story": "He learned his crossover on the cracked park court behind his building and still plays there every evening in his mesh tank and gold chain."
+        },
+        {
+          "file": "neon_night_baller.png",
+          "name": "Neon Night Baller",
+          "slim": false,
+          "story": "Under the floodlights of the midnight league his lime-tipped locs and neon jersey are the brightest things on the court."
+        },
+        {
+          "file": "sunset_queen.png",
+          "name": "Sunset Queen",
+          "slim": true,
+          "story": "Nobody has beaten her at the beach court since spring, and she always plays the last game of the day as the sun goes down."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When school is out, the real games move to the park courts: a crossover artist with a gold chain, a night baller with glowing locs and the queen of the sunset court.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "All-Star Weekend",
+      "skins": [
+        {
+          "file": "slam_champion.png",
+          "name": "Slam Champion",
+          "slim": false,
+          "story": "He won the dunk contest three years running, and the league finally gave him a golden crown to wear at every All-Star game."
+        },
+        {
+          "file": "retro_groove_guard.png",
+          "name": "Retro Groove Guard",
+          "slim": false,
+          "story": "He still plays in short shorts, striped tube socks and a big afro, because nobody ever told him the seventies were over."
+        },
+        {
+          "file": "midnight_owl_mascot.png",
+          "name": "Midnight Owl Mascot",
+          "slim": false,
+          "story": "The Midnight Owls never win the title, but their purple owl mascot flips, dances and dunks so well that the fans only come to see him."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The best players of the season meet for one big weekend: the crowned slam champion, a retro guard straight out of the seventies and the owl mascot who steals every show.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
