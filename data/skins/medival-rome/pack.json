@@ -111,6 +111,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.3",
+      "title": "Eagles, Arrows and Steel",
+      "skins": [
+        {
+          "file": "roman_aquilifer.png",
+          "name": "Roman Aquilifer",
+          "slim": false,
+          "story": "The Roman Aquilifer wears a whole lion pelt over his helmet and a golden eagle on his bronze chest, and the legion still marches wherever that eagle points."
+        },
+        {
+          "file": "roman_archer.png",
+          "name": "Roman Archer",
+          "slim": false,
+          "story": "The Roman Archer came from the eastern frontier in a pointed helmet and a green tunic, and the arrows in his quiver have never once missed a torch on the arena wall."
+        },
+        {
+          "file": "secutor_gladiator.png",
+          "name": "Secutor Gladiator",
+          "slim": false,
+          "story": "The Secutor Gladiator hides his whole head in a smooth steel egg with two tiny eye holes, built to chase the net-fighters across the sand without ever being caught."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The horn sounds again over the ruined arena: the lion-cloaked Roman Aquilifer raises the golden eagle, the Roman Archer strings his bow, and the smooth-helmeted Secutor Gladiator hunts across the sand.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

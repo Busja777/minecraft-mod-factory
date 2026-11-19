@@ -1,0 +1,43 @@
+{
+  "pack": "mutants-arrival",
+  "style": "minimal",
+  "at": "2026-11-19T23:27:28.850Z",
+  "versions": [
+    {
+      "version": "1.4",
+      "title": "Webs, Iron and Echoes",
+      "skins": [
+        {
+          "name": "Steve x Spider",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Steve x Chicken (5/6)",
+          "black": 0.1,
+          "neon": 0.104,
+          "overlayTransparent": 0.97
+        },
+        {
+          "name": "Steve x Iron Golem",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Steve x Skeleton (5/6)",
+          "black": 0,
+          "neon": 0.174,
+          "overlayTransparent": 0.98
+        },
+        {
+          "name": "Steve x Warden",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Steve x Enderman (6/6)",
+          "black": 0.06,
+          "neon": 0.116,
+          "overlayTransparent": 0.98
+        }
+      ]
+    }
+  ]
+}

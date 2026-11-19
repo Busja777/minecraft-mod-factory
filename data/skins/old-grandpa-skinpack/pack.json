@@ -95,6 +95,74 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "The Hobby Bench",
+      "skins": [
+        {
+          "file": "grandpa_bernard.png",
+          "name": "Grandpa Bernard",
+          "slim": false,
+          "story": "Grandpa Bernard wears a bucket hat full of fishing lures and a vest with a pocket for every bait, and the fish he caught grows a little bigger every time he tells it."
+        },
+        {
+          "file": "grandpa_alfredo.png",
+          "name": "Grandpa Alfredo",
+          "slim": false,
+          "story": "Grandpa Alfredo grows the biggest tomatoes in the village under his wide straw hat, and his green apron always has one more seed packet in the pocket for you."
+        },
+        {
+          "file": "grandpa_desmond.png",
+          "name": "Grandpa Desmond",
+          "slim": false,
+          "story": "Grandpa Desmond keeps a pencil behind his ear and sawdust in his white beard, and every chair around the well was built by his hands."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Spring brings three more grandpas to the bench by the well, and every one of them brought his hobby along: a fishing rod, a garden trowel and a carpenter's pencil.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Sunday Best",
+      "skins": [
+        {
+          "file": "grandpa_archibald.png",
+          "name": "Grandpa Archibald",
+          "slim": false,
+          "story": "Grandpa Archibald peers through round glasses from under his tweed cap, straightens his red bow tie and corrects your grammar with the kindest smile in the village."
+        },
+        {
+          "file": "grandpa_ramon.png",
+          "name": "Grandpa Ramon",
+          "slim": false,
+          "story": "Grandpa Ramon came back from the seaside with a sunburnt head, dark sunglasses and a flower shirt, and he has refused to wear long trousers ever since."
+        },
+        {
+          "file": "grandpa_seamus.png",
+          "name": "Grandpa Seamus",
+          "slim": false,
+          "story": "Grandpa Seamus keeps watch over the village at night in his old navy peacoat and knitted cap, and the little lantern at his hip has never once gone out."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "On Sundays the grandpas dress up for the village: one in tweed and a bow tie, one in a flower shirt straight from the seaside, and one in his old navy peacoat with a lantern at his hip.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

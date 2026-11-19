@@ -148,6 +148,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.4",
+      "title": "Webs, Iron and Echoes",
+      "skins": [
+        {
+          "file": "steve_x_spider.png",
+          "name": "Steve x Spider",
+          "slim": false,
+          "story": "His dark, bristly half clings to the cave walls at night, and a cluster of red eyes watches you even when the human eye is closed."
+        },
+        {
+          "file": "steve_x_iron_golem.png",
+          "name": "Steve x Iron Golem",
+          "slim": false,
+          "story": "Half of him turned to heavy, vine-wrapped iron, and the villagers sleep easy now because he still carries a red poppy for every child he guards."
+        },
+        {
+          "file": "steve_x_warden.png",
+          "name": "Steve x Warden",
+          "slim": false,
+          "story": "He came up from the deep dark without a left eye at all, and the souls trapped in his chest glow brighter every time you make a sound."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The crater reaches deeper: Steve x Spider climbs out of the caves, Steve x Iron Golem stomps in from the village, and the blind Steve x Warden rises from the deep dark.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

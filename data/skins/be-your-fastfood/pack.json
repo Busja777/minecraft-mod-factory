@@ -148,6 +148,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.4",
+      "title": "The Night Market",
+      "skins": [
+        {
+          "file": "belgian_waffle.png",
+          "name": "Belgian Waffle",
+          "slim": false,
+          "story": "Belgian Waffle, the Grid Knight, wears a crown of whipped cream and a strawberry, and warm syrup still drips down his golden armour of squares."
+        },
+        {
+          "file": "pretzel.png",
+          "name": "Pretzel",
+          "slim": false,
+          "story": "Pretzel, the Twisted Baker, ties his dark glossy dough into a knot across his chest and sheds coarse salt crystals with every heavy step."
+        },
+        {
+          "file": "dango.png",
+          "name": "Dango",
+          "slim": false,
+          "story": "Dango, the Sakura Wanderer, is three sweet rice balls threaded on one wooden skewer, pink, white and green, and blossom petals follow wherever he rolls."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three wanderers drift in from the night markets of distant cities: the gridded Belgian Waffle, the salt-crusted Pretzel and the three-coloured Dango on its wooden skewer.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
