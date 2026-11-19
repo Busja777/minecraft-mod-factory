@@ -87,6 +87,108 @@
       ],
       "fileId": 8115281,
       "publishedAt": "2026-05-19T19:24:53.803Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.3",
+      "title": "Sands of the Fallen City",
+      "skins": [
+        {
+          "file": "sandstorm_assassin.png",
+          "name": "Sandstorm Assassin",
+          "slim": false,
+          "story": "He crosses the dunes with his face wrapped against the wind, and when the sandstorm clears, his target is already gone."
+        },
+        {
+          "file": "scarab_assassin.png",
+          "name": "Scarab Assassin",
+          "slim": false,
+          "story": "Sworn to the golden scarab of the sunken temple, she guards its last chamber from every thief who digs too deep."
+        },
+        {
+          "file": "jackal_assassin.png",
+          "name": "Jackal Assassin",
+          "slim": false,
+          "story": "Behind the golden jackal mask is a hunter who has never once lost a trail in the shifting sand."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Beyond the ruins lies a city buried in sand, and three assassins have walked out of it: a wanderer of the storm, a keeper of the scarab and a hunter in a jackal hood.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.4",
+      "title": "Winter in the Ruins",
+      "skins": [
+        {
+          "file": "frost_assassin.png",
+          "name": "Frost Assassin",
+          "slim": false,
+          "story": "Wrapped in white fur, she waits in the snow so still that the frost grows over her before she strikes."
+        },
+        {
+          "file": "winter_rose_assassin.png",
+          "name": "Winter Rose Assassin",
+          "slim": false,
+          "story": "She leaves a single frozen rose beside every sleeping guard, so the order knows she was there."
+        },
+        {
+          "file": "aurora_assassin.png",
+          "name": "Aurora Assassin",
+          "slim": false,
+          "story": "He only hunts on nights when the northern lights burn green over the ruins, and his sash glows in the same colours."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Snow has fallen on the broken towers, and the order sent three of its coldest blades: a frost hunter, a rose in winter and an assassin who walks under the northern lights.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.5",
+      "title": "Masters of the Ruins",
+      "skins": [
+        {
+          "file": "blood_moon_master.png",
+          "name": "Blood Moon Master",
+          "slim": false,
+          "story": "Horned and scarred, he leads the order on the night of the red moon, when no lantern in the ruins stays lit."
+        },
+        {
+          "file": "venom_master.png",
+          "name": "Venom Master",
+          "slim": false,
+          "story": "Every vial on his bandolier was brewed from a plant that grows only in the darkest cellar of the ruins."
+        },
+        {
+          "file": "hawk_master.png",
+          "name": "Hawk Master",
+          "slim": false,
+          "story": "He watches the ruins from the highest broken tower, and his copper hood is the last thing his prey ever sees."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Only three assassins ever earned the title of master: one who walks under the blood moon, one who brews poison in the ruins and one who hunts from the sky.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
