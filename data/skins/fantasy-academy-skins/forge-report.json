@@ -1,0 +1,115 @@
+{
+  "pack": "fantasy-academy-skins",
+  "style": "clothing",
+  "at": "2026-11-19T23:37:31.475Z",
+  "versions": [
+    {
+      "version": "1.1",
+      "title": "The Staff Room",
+      "skins": [
+        {
+          "name": "Flame Professor — Emberfell House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Apprentice — Emberfell House (5/6)",
+          "black": 0.04,
+          "neon": 0.251,
+          "overlayTransparent": 0.4
+        },
+        {
+          "name": "Storm Librarian — Stormleaf House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Storm Skyfarer — Stormleaf House (4/6)",
+          "black": 0.04,
+          "neon": 0.121,
+          "overlayTransparent": 0.51
+        },
+        {
+          "name": "Moon Astronomer — Moonvein House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Starlight Novice — Moonvein House (5/6)",
+          "black": 0.04,
+          "neon": 0.03,
+          "overlayTransparent": 0.52
+        }
+      ]
+    },
+    {
+      "version": "1.2",
+      "title": "Prefects and Champions",
+      "skins": [
+        {
+          "name": "Ember Duel Champion — Emberfell House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Apprentice — Emberfell House (5/6)",
+          "black": 0.04,
+          "neon": 0.263,
+          "overlayTransparent": 0.66
+        },
+        {
+          "name": "Verdant Prefect — Verdanthold House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Apprentice — Emberfell House (4/6)",
+          "black": 0.04,
+          "neon": 0.493,
+          "overlayTransparent": 0.63
+        },
+        {
+          "name": "Storm Windcaller — Stormleaf House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Storm Librarian — Stormleaf House (4/6)",
+          "black": 0,
+          "neon": 0.302,
+          "overlayTransparent": 0.62
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "Grounds and Cellars",
+      "skins": [
+        {
+          "name": "Verdant Groundskeeper — Verdanthold House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Duelist — Emberfell House (5/6)",
+          "black": 0.04,
+          "neon": 0.031,
+          "overlayTransparent": 0.61
+        },
+        {
+          "name": "Moon Alchemist — Moonvein House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Apprentice — Emberfell House (6/6)",
+          "black": 0.04,
+          "neon": 0.292,
+          "overlayTransparent": 0.62
+        },
+        {
+          "name": "Ember Hearth Cook — Emberfell House",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Duel Champion — Emberfell House (4/6)",
+          "black": 0.04,
+          "neon": 0.694,
+          "overlayTransparent": 0.69
+        }
+      ]
+    }
+  ]
+}
