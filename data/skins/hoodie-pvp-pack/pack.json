@@ -102,6 +102,108 @@
       ],
       "fileId": 7995828,
       "publishedAt": "2026-04-26T17:19:55.340Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Hoods Up",
+      "skins": [
+        {
+          "file": "bandit_shade.png",
+          "name": "Bandit Shade",
+          "slim": false,
+          "story": "Nobody has ever seen what is under the red bandana, only the cold blue eyes above it when he takes your bed."
+        },
+        {
+          "file": "copper_fox.png",
+          "name": "Copper Fox",
+          "slim": false,
+          "story": "He stitched fox ears and a bushy tail onto his hoodie for a joke, and now the whole server is scared of the orange blur in the trees."
+        },
+        {
+          "file": "split_signal.png",
+          "name": "Split Signal",
+          "slim": false,
+          "story": "Half teal, half night: she switches sides of the arena mid-fight and nobody can tell which team she is on."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new fighters pull their hoods up and keep their secrets: a masked raider, a fox with ears on his hood and a hoodie cut clean down the middle.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Suited for Battle",
+      "skins": [
+        {
+          "file": "iron_zip.png",
+          "name": "Iron Zip",
+          "slim": false,
+          "story": "He wears his iron chestplate under an open zip hoodie, pushes the hood back before every duel and still has the scar from the first one he lost."
+        },
+        {
+          "file": "hazard_runner.png",
+          "name": "Hazard Runner",
+          "slim": false,
+          "story": "Strapped into a hazard-orange harness with goggles over his eyes, he is the courier who always gets through the warzone."
+        },
+        {
+          "file": "frost_wrap.png",
+          "name": "Frost Wrap",
+          "slim": false,
+          "story": "She fights in the snow biome with a fur-trimmed hood and a scarf so long it trails behind her like a red flag."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The arena got rougher, so three fighters gear up: iron under the zip, a hazard harness over the hood and a thick knit scarf against the cold.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "Loud Prints",
+      "skins": [
+        {
+          "file": "tie_dye_tempest.png",
+          "name": "Tie-Dye Tempest",
+          "slim": false,
+          "story": "She dyed her hoodie in a bucket of every colour she could craft and fights with a grin as loud as her clothes."
+        },
+        {
+          "file": "twin_blade.png",
+          "name": "Twin Blade",
+          "slim": false,
+          "story": "Two crossed swords on his chest and one down his back: he wears the duel he has never lost."
+        },
+        {
+          "file": "ember_fade.png",
+          "name": "Ember Fade",
+          "slim": false,
+          "story": "His hoodie burns from coal at the shoulders to flame at the hem, and in the shadow of his hood only two embers glow."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Plain hoodies are out: a tie-dye storm, a giant crossed-swords print and a hoodie that fades from coal to flame.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
