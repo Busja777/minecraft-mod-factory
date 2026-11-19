@@ -20,6 +20,15 @@ test('a cumulative update pack only counts skins that no earlier stage had', () 
   assert.deepEqual(newSkinsOnly([{ name: 'A', png: png('a') }], seen), []);
 });
 
+test('an update changelog opens with a one-liner of the new skins and their stories', () => {
+  const cl = changelogFor({ version: '1.2', note: 'N.', skins: [{ name: 'Neon Shogun', story: 'Gathers the lost.' }, { name: 'Cursed Marionette' }] }, { total: 8, imageUrls: ['https://x/v1.2.png'] });
+  assert.match(cl, /2 new skins join the pack: Neon Shogun and Cursed Marionette\./);
+  assert.match(cl, /- \*\*Neon Shogun\*\* — Gathers the lost\./);
+  assert.match(cl, /- Cursed Marionette\n/);
+  assert.match(cl, /!\[V1\.2 skins\]\(https:\/\/x\/v1\.2\.png\)/);
+  assert.doesNotMatch(changelogFor({ version: '1.0', skins: [{ name: 'A' }] }), /join the pack/);
+});
+
 test('next due version and publishing', () => {
   const pack = { slug: 's', versions: [{ version: '1.0', status: 'published', skins: [] }, { version: '1.1', status: 'due', skins: [] }, { version: '1.2', status: 'due', skins: [] }] };
   assert.equal(nextDueVersion(pack).version, '1.1');

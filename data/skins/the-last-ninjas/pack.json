@@ -19,17 +19,20 @@
         {
           "file": "shadow_ninja.png",
           "name": "Shadow Ninja",
-          "slim": false
+          "slim": false,
+          "story": "The first student to vanish, now only a black silhouette traced in thin teal lines that slips away before any torch can find it."
         },
         {
           "file": "oni_ninja.png",
           "name": "Oni Ninja",
-          "slim": false
+          "slim": false,
+          "story": "He swore he would guard the dojo even after death, and two blood-red eyes are the last thing every bandit sees."
         },
         {
           "file": "phantom_ninja.png",
           "name": "Phantom Ninja",
-          "slim": false
+          "slim": false,
+          "story": "Nobody has ever heard his footsteps, only seen a violet shimmer where he stood a moment ago."
         }
       ],
       "mcpack": "GlowNinjaPack.mcpack",
@@ -49,17 +52,20 @@
         {
           "file": "kitsune_ninja.png",
           "name": "Kitsune Ninja",
-          "slim": false
+          "slim": false,
+          "story": "A fox spirit took her in after the fire, and the ember-orange marks on her armour still smoulder like coals."
         },
         {
           "file": "storm_ronin.png",
           "name": "Storm Ronin",
-          "slim": false
+          "slim": false,
+          "story": "A masterless blade who walks inside thunderstorms, his ice-blue sparks crackling a heartbeat before he strikes."
         },
         {
           "file": "void_wraith.png",
           "name": "Void Wraith",
-          "slim": false
+          "slim": false,
+          "story": "Something came back from the dark with him, and the toxic green glow spreads a little further across his body every night."
         }
       ],
       "mcpack": "GlowNinjaPackVol2_Complete.mcpack",
@@ -79,12 +85,14 @@
         {
           "file": "neon_shogun.png",
           "name": "Neon Shogun",
-          "slim": false
+          "slim": false,
+          "story": "The new lord of the lost, gold-trimmed armour and a crimson seal burning on his chest, gathering every fallen ninja under one banner."
         },
         {
           "file": "cursed_marionette.png",
           "name": "Cursed Marionette",
-          "slim": false
+          "slim": false,
+          "story": "A pale puppet with mismatched white eyes that walks beside the Shogun, moving without anyone pulling its strings."
         }
       ],
       "mcpack": "GlowNinjaPackVol3_Complete.mcpack",
