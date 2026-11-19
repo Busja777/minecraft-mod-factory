@@ -1,0 +1,115 @@
+{
+  "pack": "knights-of-the-round-table",
+  "style": "accent",
+  "at": "2026-11-19T23:22:23.749Z",
+  "versions": [
+    {
+      "version": "1.1",
+      "title": "The Grail Quest",
+      "skins": [
+        {
+          "name": "Sir Percival",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "King Arthur (6/6)",
+          "black": 0,
+          "neon": 0.106,
+          "overlayTransparent": 0.84
+        },
+        {
+          "name": "Sir Bors",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "King Arthur (5/6)",
+          "black": 0,
+          "neon": 0.097,
+          "overlayTransparent": 0.83
+        },
+        {
+          "name": "The Fisher King",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sir Galahad (5/6)",
+          "black": 0,
+          "neon": 0.072,
+          "overlayTransparent": 0.85
+        }
+      ]
+    },
+    {
+      "version": "1.2",
+      "title": "The Enchanters of Avalon",
+      "skins": [
+        {
+          "name": "Merlin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "King Arthur (5/6)",
+          "black": 0.05,
+          "neon": 0.077,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Morgan le Fay",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "The Fisher King (4/6)",
+          "black": 0.09,
+          "neon": 0.05,
+          "overlayTransparent": 0.81
+        },
+        {
+          "name": "The Lady of the Lake",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "King Arthur (5/6)",
+          "black": 0,
+          "neon": 0.624,
+          "overlayTransparent": 0.86
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "The New Year Feast",
+      "skins": [
+        {
+          "name": "Sir Gawain",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sir Lancelot (5/6)",
+          "black": 0,
+          "neon": 0.151,
+          "overlayTransparent": 0.81
+        },
+        {
+          "name": "The Green Knight",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sir Percival (5/6)",
+          "black": 0,
+          "neon": 0.105,
+          "overlayTransparent": 0.81
+        },
+        {
+          "name": "Queen Guinevere",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sir Galahad (4/6)",
+          "black": 0,
+          "neon": 0.518,
+          "overlayTransparent": 0.82
+        }
+      ]
+    }
+  ]
+}

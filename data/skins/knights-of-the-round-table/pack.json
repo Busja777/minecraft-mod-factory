@@ -37,6 +37,108 @@
       ],
       "fileId": 8037952,
       "publishedAt": "2026-05-04T13:48:45.607Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "The Grail Quest",
+      "skins": [
+        {
+          "file": "sir_percival.png",
+          "name": "Sir Percival",
+          "slim": false,
+          "story": "Raised in the Welsh woods far from any court, he rode to Camelot with a hunting spear and became one of the three knights to see the Holy Grail."
+        },
+        {
+          "file": "sir_bors.png",
+          "name": "Sir Bors",
+          "slim": false,
+          "story": "Steadfast Sir Bors bears a red bend on ermine, and of the three Grail knights he alone came home to Camelot to tell the tale."
+        },
+        {
+          "file": "the_fisher_king.png",
+          "name": "The Fisher King",
+          "slim": false,
+          "story": "Wounded and unable to ride, the old king of the Grail castle passes his days fishing on the river, waiting for the knight who will ask the right question."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Galahad does not ride alone: Sir Percival from the Welsh woods, steadfast Sir Bors and the wounded Fisher King who keeps the Grail castle join the quest for the Holy Grail.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "The Enchanters of Avalon",
+      "skins": [
+        {
+          "file": "merlin.png",
+          "name": "Merlin",
+          "slim": false,
+          "story": "The old enchanter who foresaw the Round Table long before it was built, his beard white as frost and his robe dark as the night sky he reads."
+        },
+        {
+          "file": "morgan_le_fay.png",
+          "name": "Morgan le Fay",
+          "slim": true,
+          "story": "Arthur's half-sister and Merlin's best pupil, the enchantress of Avalon wears a golden crescent and a gown as green as the isle she rules."
+        },
+        {
+          "file": "the_lady_of_the_lake.png",
+          "name": "The Lady of the Lake",
+          "slim": true,
+          "story": "From beneath the still water of the lake she raised the sword Excalibur for the young king, and one day she will take it back."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Magic comes to Camelot: Merlin the enchanter who raised the boy king, his rival Morgan le Fay, and the Lady of the Lake who gave Arthur the sword Excalibur.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "The New Year Feast",
+      "skins": [
+        {
+          "file": "sir_gawain.png",
+          "name": "Sir Gawain",
+          "slim": false,
+          "story": "The king's nephew answered the Green Knight's challenge, and he still wears the gold pentangle on red and the green girdle he brought back from the Green Chapel."
+        },
+        {
+          "file": "the_green_knight.png",
+          "name": "The Green Knight",
+          "slim": false,
+          "story": "A giant green from beard to boots rode into the New Year feast with a holly bough and a great axe, and offered any knight one free blow."
+        },
+        {
+          "file": "queen_guinevere.png",
+          "name": "Queen Guinevere",
+          "slim": true,
+          "story": "The queen of Camelot loves the month of May, and on the first morning of it she rides out with her court crowned in gold and dressed in rose."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "At the New Year feast a giant all in green rides into the hall of Camelot with a challenge, Sir Gawain rises to answer it, and Queen Guinevere watches from the high table.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
