@@ -104,7 +104,7 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
 </ol>
 
 <div class="cols">
-  <div class="box info"><b>Nach einem automatischen Upload</b><br>Im Menü steht „Seite nachziehen“: Der Helfer füllt Beschreibung und Galerie aus, du klickst <b>Save</b> und <b>Apply</b>.</div>
+  <div class="box info"><b>Nach einem automatischen Upload</b><br>Im Menü steht „Beschreibung nachziehen“: Der Helfer setzt die neue Beschreibung mit den Screenshots ein, du klickst <b>Save</b>. Die Galerie bleibt bei Updates unverändert.</div>
   <div class="box info"><b>Bei neuen Projekten</b><br>Alles läuft in einem Durchgang: General → Description → License (du klickst <b>Create</b>), dann Media (du klickst <b>Apply</b>), dann File (du klickst <b>Add File</b>).</div>
 </div>
 
@@ -114,7 +114,7 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
   <tr><td><code>npm run cf</code></td><td>Menü mit offenen Aufgaben</td></tr>
   <tr><td><code>npm run cf -- publish --skinpack &lt;slug&gt;</code></td><td>Neues Projekt komplett (Create → Media → File)</td></tr>
   <tr><td><code>npm run cf -- media --skinpack &lt;slug&gt;</code></td><td>Nur Cover und Media</td></tr>
-  <tr><td><code>npm run cf -- seite</code></td><td>Beschreibung und Galerie nach einem Upload nachziehen</td></tr>
+  <tr><td><code>npm run cf -- seite</code></td><td>Beschreibung nach einem Upload nachziehen</td></tr>
   <tr><td><code>npm run cf -- update --skinpack &lt;slug&gt;</code></td><td>Update hochladen (mit <code>--version 1.3</code> gezielt)</td></tr>
 </table>
 
@@ -267,13 +267,13 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
   <tr><td>Mods und Skins bauen, Bilder, Texte</td><td>Claude</td><td>In der Sitzung oder über GitHub</td></tr>
   <tr><td>Neues Projekt freigeben (Go)</td><td><b>Du</b>, im Studio</td><td>Nur neue Projekte brauchen Go</td></tr>
   <tr><td>Neues Projekt anlegen (Formular)</td><td>Helfer oder Makro, <b>du</b> klickst Create</td><td>CurseForge hat dafür keine Schnittstelle</td></tr>
-  <tr><td>Cover und Galerie</td><td>Helfer oder Makro, <b>du</b> klickst Apply</td><td>Keine Schnittstelle</td></tr>
-  <tr><td>Beschreibung ändern</td><td>Helfer oder Makro, <b>du</b> speicherst</td><td>Keine Schnittstelle. Nach einem Upload: „Seite nachziehen“ im Helfer.</td></tr>
+  <tr><td>Cover und Galerie</td><td>Helfer oder Makro, <b>du</b> klickst Apply</td><td>Keine Schnittstelle. Bei Skinpacks nur für neue Projekte.</td></tr>
+  <tr><td>Beschreibung ändern</td><td>Helfer oder Makro, <b>du</b> speicherst</td><td>Keine Schnittstelle. Nach einem Upload: „Beschreibung nachziehen“ im Helfer.</td></tr>
   <tr><td>Datei und Changelog eines Updates hochladen</td><td>Automatik (Abend-Lauf)</td><td>Immer das komplette Pack mit allen Skins</td></tr>
   <tr><td>Login, Captcha, 2FA</td><td><b>Immer du</b></td><td>Wird nie umgangen</td></tr>
 </table>
 
-<div class="box info"><b>Seit 19.11.2026 lädt der Abend-Lauf Updates selbst hoch.</b> Erster Upload: The Last Ninjas V1.2. Pro Abend höchstens ein Projekt, pro Projekt alle 22–25 Tage. Jede Datei enthält alle Skins des Packs. Danach wartet nur noch die Projektseite auf dich: „Seite nachziehen“ im Helfer, zwei Klicks.</div>
+<div class="box info"><b>Seit 19.11.2026 lädt der Abend-Lauf Updates selbst hoch.</b> Erster Upload: The Last Ninjas V1.2. Pro Abend höchstens ein Projekt, pro Projekt alle 22–25 Tage. Jede Datei enthält alle Skins des Packs. Danach wartet nur noch die Beschreibung auf dich: „Beschreibung nachziehen“ im Helfer, ein Klick.</div>
 
 <h3>Der Takt</h3>
 <ul>

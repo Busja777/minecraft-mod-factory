@@ -1,7 +1,7 @@
 import { findProject, findUnassigned, kindOf } from '../cf-projects.js';
 import { pickUpdateVersion } from '../macro-bundle.js';
 import { APPROVED } from '../review.js';
-import { pageBehind, behindLabel } from '../page-state.js';
+import { pageBehind } from '../page-state.js';
 
 // Open CurseForge chores for the `npm run cf` menu.
 // projects: data/cf-projects.json · packs: loaded pack.json objects
@@ -29,10 +29,10 @@ export function listTasks({ projects, packs, reviews }) {
     let waiting = null;
     try { waiting = pickUpdateVersion(pack); } catch { /* nothing waiting */ }
     if (waiting) todo.push({ cmd: 'update', kind: 'skinpack', id: pack.slug, projectId, version: waiting.version, label: `Skinpack-Update hochladen: ${pack.name} V${waiting.version}` });
-    // Description and gallery have no API: after an upload the page waits for one helper run.
+    // The description has no API: after an upload it waits for one helper run.
     const behind = pageBehind({ ...pack, cfProjectId: projectId });
     if (behind) {
-      const task = { cmd: 'seite', kind: 'skinpack', id: pack.slug, projectId, version: behind.version, label: `Seite nachziehen: ${pack.name} (${behindLabel(behind)})` };
+      const task = { cmd: 'seite', kind: 'skinpack', id: pack.slug, projectId, version: behind.version, label: `Beschreibung nachziehen: ${pack.name} V${behind.version}` };
       if (behind.filled) more.push({ ...task, label: `${task.label} – schon ausgefüllt, CurseForge zeigt es noch nicht` });
       else todo.push(task);
     }

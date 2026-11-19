@@ -18,9 +18,8 @@ import { listTasks } from './lib/cf-browser/tasks.js';
 import { runSteps, formatSummary } from './lib/cf-browser/runner.js';
 import { URLS } from './lib/cf-browser/selectors.js';
 import { arg } from './lib/github-output.js';
-import sharp from 'sharp';
-import { getDescription, getScreenshots } from './platforms/curseforge-core.js';
-import { pageState, pageBehind, behindLabel, tracksPage } from './lib/page-state.js';
+import { getDescription } from './platforms/curseforge-core.js';
+import { pageState, pageBehind, tracksPage } from './lib/page-state.js';
 
 // CurseForge browser helper: fills in the forms that have no API and stops before the final click.
 //   npm run cf                                   menu with open tasks
@@ -28,7 +27,7 @@ import { pageState, pageBehind, behindLabel, tracksPage } from './lib/page-state
 //   npm run cf -- new    --skinpack <slug> | --mod <id>
 //   npm run cf -- media  --skinpack <slug> | --mod <id>
 //   npm run cf -- update --skinpack <slug> [--version x]
-//   npm run cf -- seite  [--skinpack <slug>]     description + gallery of released updates (all open pages, or one)
+//   npm run cf -- seite  [--skinpack <slug>]     description after an update (all open ones, or one); the gallery is left alone
 //   npm run cf -- login                          log in once (the profile remembers it)
 //   npm run cf -- inspect                        save the structure of open pages (to calibrate selectors.js)
 // Runs your installed Google Chrome, visibly, with its own profile in ~/Library/Application Support/cf-uploader.
@@ -74,19 +73,18 @@ function taskFromArgs() {
   return { cmd: command, kind: slug ? 'skinpack' : 'mod', id: slug || modId, version: arg(argv, '--version'), projectId: Number.isInteger(entry?.projectId) ? entry.projectId : undefined };
 }
 
-// ── Page state (description + gallery have no API) ─────────────────────────────────────────────
+// ── Description state (no API; the gallery only changes for new projects) ─────────────────────────────────────────────
 const savePages = () => { fs.mkdirSync(HOME, { recursive: true }); fs.writeFileSync(PAGES, JSON.stringify(pages, null, 2)); };
 const projectIdOf = pack => { const e = findProject(loadProjects(), pack.slug); return Number.isInteger(e?.projectId) ? e.projectId : pack.cfProjectId; };
 const withPage = pack => ({ ...pack, cfProjectId: projectIdOf(pack), page: pages[pack.slug] });
 
-// Reads description and gallery from CurseForge and remembers how far the page is. Returns the state
+// Reads the description from CurseForge and remembers how far it is. Returns the state
 // or null when it could not be read (no key, offline): then the last known state stays.
 async function syncPage(pack) {
   const key = process.env.CF_CORE_API_KEY, projectId = projectIdOf(pack);
   if (!key || !Number.isInteger(projectId)) return null;
   try {
-    const [html, screenshots] = await Promise.all([getDescription(projectId, { key }), getScreenshots(projectId, { key })]);
-    const state = pageState(pack, { html, screenshots });
+    const state = pageState(pack, { html: await getDescription(projectId, { key }) });
     pages[pack.slug] = { ...state, filled: pages[pack.slug]?.filled, checkedAt: new Date().toISOString() };
     savePages();
     return state;
@@ -101,17 +99,6 @@ async function syncPages(packs) {
   for (const pack of packs) if (tracksPage(pack)) await syncPage(pack);
 }
 
-// CurseForge rejects images of 850 px width or more: wide rows get an 800 px copy in Output/.
-async function galleryImage(pack, v) {
-  const src = v.media?.[0] && path.join(packDir(pack.slug), v.media[0]);
-  if (!src || !fs.existsSync(src)) return null;
-  if ((await sharp(src).metadata()).width <= 800) return src;
-  const out = path.join('Output', pack.slug, `galerie-v${v.version}.png`);
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  await sharp(src).resize({ width: 800 }).toFile(out);
-  return out;
-}
-
 function rememberProjectUrl(found) {
   const template = urlTemplate(found.projectUrl, found.projectId);
   if (template && template !== learned.projectUrl) {
@@ -122,18 +109,17 @@ function rememberProjectUrl(found) {
   }
 }
 
-// "Seite nachziehen": one browser window, every open page in turn. The helper fills description and
-// gallery, the operator clicks Save / Apply, and the result is read back from CurseForge.
+// "Beschreibung nachziehen": one browser window, every open project in turn. The helper fills the
+// description, the operator clicks Save, and the result is read back from CurseForge.
 async function runPages(tasks) {
-  if (!tasks.length) { console.log('\nAlle Projektseiten sind auf dem Stand der letzten Uploads. 🎉\n'); rl.close(); return; }
-  console.log(`\n▶ Seite nachziehen: ${tasks.map(t => t.label.replace(/^Seite nachziehen: /, '')).join(' · ')}\n  Chrome öffnet sich gleich. Bitte nicht in das Fenster klicken, solange Schritte laufen.\n`);
+  if (!tasks.length) { console.log('\nAlle Beschreibungen sind auf dem Stand der letzten Uploads. 🎉\n'); rl.close(); return; }
+  console.log(`\n▶ Beschreibung nachziehen: ${tasks.map(t => t.label.replace(/^Beschreibung nachziehen: /, '')).join(' · ')}\n  Chrome öffnet sich gleich. Bitte nicht in das Fenster klicken, solange Schritte laufen.\n`);
   const context = await openBrowser();
   const page = await pageOf(context);
   for (const task of tasks) {
     const pack = loadPack(task.id);
-    const v = pack.versions.find(x => x.version === task.version);
     let plan;
-    try { plan = buildSteps({ ...task, galleryFile: await galleryImage(pack, v) }, { config, pack: withPage(pack) }); }
+    try { plan = buildSteps(task, { config, pack: withPage(pack) }); }
     catch (e) { console.log(`✗ ${pack.name}: ${e.message}`); continue; }
     console.log(`\n── ${plan.title} ──`);
     const checks = { description: async () => (await syncPage(pack))?.descriptionThrough === plan.page.version };
@@ -144,10 +130,10 @@ async function runPages(tasks) {
     const state = await syncPage(pack);
     const behind = pageBehind(withPage(pack));
     if (!state) console.log('  Ich konnte die Seite nicht zurücklesen (kein CF_CORE_API_KEY?). Beim nächsten Start prüfe ich wieder.');
-    else if (!behind) { delete pages[pack.slug].filled; console.log(`✓ ${pack.name}: Beschreibung und Galerie zeigen V${plan.page.version}.`); }
-    else { pages[pack.slug].filled = { version: plan.page.version, at: new Date().toISOString() }; console.log(`  ${pack.name}: CurseForge zeigt noch nicht alles (${behindLabel(behind)}). Falls du gespeichert hast, erscheint es gleich; ich prüfe beim nächsten Start wieder.`); }
+    else if (!behind) { delete pages[pack.slug].filled; console.log(`✓ ${pack.name}: Die Beschreibung zeigt V${plan.page.version}.`); }
+    else { pages[pack.slug].filled = { version: plan.page.version, at: new Date().toISOString() }; console.log(`  ${pack.name}: CurseForge zeigt die Beschreibung V${behind.version} noch nicht. Falls du gespeichert hast, erscheint sie gleich; ich prüfe beim nächsten Start wieder.`); }
     savePages();
-    if (state && plan.page.description && state.descriptionThrough === plan.page.version) {
+    if (state && state.descriptionThrough === plan.page.version) {
       console.log(state.externalImages
         ? `  Bilder der Beschreibung: ${state.externalImages} werden weiter von GitHub geladen${state.hostedImages ? `, ${state.hostedImages} liegen bei CurseForge` : ''}. Neue Renders erscheinen dort also ohne erneutes Speichern.`
         : `  Bilder der Beschreibung: CurseForge hat alle ${state.hostedImages} Bilder auf den eigenen Server kopiert. Für neue Bilder muss die Seite jedes Mal neu gespeichert werden.`);
@@ -169,7 +155,7 @@ function pageTasks(packs, slug) {
   // Explicit request for an up-to-date page: do the whole page again for the newest published version.
   const latest = pack.versions.filter(v => v.status === 'published').at(-1);
   if (!latest) fail(`${pack.name} hat noch keine veröffentlichte Version.`);
-  return [{ cmd: 'seite', kind: 'skinpack', id: slug, projectId: projectIdOf(pack), version: latest.version, parts: { description: true, gallery: true }, label: `Seite nachziehen: ${pack.name} (komplett, V${latest.version})` }];
+  return [{ cmd: 'seite', kind: 'skinpack', id: slug, projectId: projectIdOf(pack), version: latest.version, label: `Beschreibung nachziehen: ${pack.name} (neu einsetzen, V${latest.version})` }];
 }
 
 async function chooseTask() {
@@ -187,7 +173,7 @@ async function chooseTask() {
   if (waitingForGo) console.log(`\n(${waitingForGo} neue${waitingForGo === 1 ? 's Projekt wartet' : ' Projekte warten'} im Studio auf dein Go: npm run studio)`);
   if (more.length) { console.log('\nWeitere:'); more.forEach((t, i) => console.log(`  ${todo.length + i + 1}) ${t.label}`)); }
   const openPages = todo.filter(t => t.cmd === 'seite').length;
-  if (openPages > 1) console.log(`\n  s) Alle ${openPages} offenen Seiten nacheinander nachziehen`);
+  if (openPages > 1) console.log(`\n  s) Alle ${openPages} offenen Beschreibungen nacheinander nachziehen`);
   console.log('\n  l) Einloggen   i) Seiten für die Kalibrierung speichern   q) Beenden');
   const answer = (await ask('Auswahl:')).trim().toLowerCase();
   if (answer === 's' && openPages > 1) return 'seite';

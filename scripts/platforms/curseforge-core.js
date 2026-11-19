@@ -35,12 +35,6 @@ export async function getDescription(projectId, { key, fetchImpl } = {}) {
   return (await get(`/mods/${projectId}/description`, key, fetchImpl)) || '';
 }
 
-// Gallery of a project: [{ id, title, url }]
-export async function getScreenshots(projectId, { key, fetchImpl } = {}) {
-  const mod = await get(`/mods/${projectId}`, key, fetchImpl);
-  return (mod?.screenshots || []).map(s => ({ id: s.id, title: s.title || '', url: s.url }));
-}
-
 // Marks pack versions as published when CurseForge already has a file with the same .mcpack name.
 export function syncPackWithFiles(pack, files) {
   const byName = new Map(files.map(f => [f.fileName.toLowerCase(), f]));

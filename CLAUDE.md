@@ -25,6 +25,7 @@ Alles liegt in diesem Repo; es gibt keinen zweiten Ordner mehr (früher `~/Deskt
 - Neue Ausgaben gehören in `Output/` (oder den Downloads-Ordner, wenn der Betreiber es so will), nicht verstreut ins Repo oder auf den Schreibtisch.
 
 ## Allgemein
+- Skinpacks: Galerie-Bilder nur beim neuen Projekt (Cover, Titel MCPEDL). Screenshots von Updates gehören in die Beschreibung (und in den Changelog), nie in die Galerie.
 - Texte für den Betreiber auf Deutsch, Du-Form. CurseForge-Texte (Name, Summary, Beschreibung, Changelog) auf Englisch.
 - `npm test` muss grün bleiben. Neue Logik bekommt Tests (`node:test`), Browser-Abläufe einen Fixture-Test (`tests/fixtures/`).
 - Secrets nur in `secrets.env` (wird automatisch geladen, nie ausgeben, nie committen).
