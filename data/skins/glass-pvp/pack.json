@@ -37,6 +37,108 @@
       ],
       "fileId": 7939115,
       "publishedAt": "2026-04-17T09:25:09.643Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "The Glass Arena",
+      "skins": [
+        {
+          "file": "prism_knight.png",
+          "name": "PRISM KNIGHT",
+          "slim": false,
+          "story": "His great helm was cut from a single amber prism, and the sword on his shield glows brighter with every duel he wins."
+        },
+        {
+          "file": "ruby_dragon.png",
+          "name": "RUBY DRAGON",
+          "slim": false,
+          "story": "A young dragon hatched inside a ruby, it still breathes red glass fire and leaves claw marks on every wall of the arena."
+        },
+        {
+          "file": "shard_shark.png",
+          "name": "SHARD SHARK",
+          "slim": false,
+          "story": "It swims through the glass floor of the arena as if it were water, and its grin is made of crystal shards."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The gates of the glass arena open and three new champions step into the rainbow light: an amber knight, a ruby dragon and a shark that bites through crystal.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Moonlight Creatures",
+      "skins": [
+        {
+          "file": "moon_bunny.png",
+          "name": "MOON BUNNY",
+          "slim": false,
+          "story": "She hops from one glass tower to the next under the full moon, and nobody has ever been fast enough to catch her."
+        },
+        {
+          "file": "star_owl.png",
+          "name": "STAR OWL",
+          "slim": false,
+          "story": "The owl keeps watch from the top of the arena all night, and the star on its chest lights the way for lost players."
+        },
+        {
+          "file": "lantern_ghost.png",
+          "name": "LANTERN GHOST",
+          "slim": false,
+          "story": "A friendly ghost who floats through the glass halls at night, holding up its little orange lantern so nobody walks alone."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the moon rises over the arena the glass starts to glow, and three night creatures come out to play: a moon bunny, a star owl and a ghost who carries a lantern.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "The Crystal Throne",
+      "skins": [
+        {
+          "file": "glass_queen.png",
+          "name": "GLASS QUEEN",
+          "slim": false,
+          "story": "She rules the arena from the crystal throne, and the magenta gem in her crown shines on every player who wins with honour."
+        },
+        {
+          "file": "crystal_skull.png",
+          "name": "CRYSTAL SKULL",
+          "slim": false,
+          "story": "Its bones are clear as glass and only its red crystal heart and eyes give it away when it creeps up in the dark."
+        },
+        {
+          "file": "volt_mech.png",
+          "name": "VOLT MECH",
+          "slim": false,
+          "story": "Built to guard the throne room, it charges its battery from the storm above the arena and flashes yellow before every strike."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Deep under the arena stands a throne of glass, and three guardians never leave its side: a queen in a black crown, a skull of pure crystal and a mech that runs on lightning.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
