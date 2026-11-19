@@ -67,9 +67,11 @@ export function markVersionPublished(pack, version, { fileId = null, now = new D
 
 // imageUrls: public URLs of the version's renders. CurseForge moderators want screenshots of the
 // new content in the changelog too (Anleitung_CF), so they are appended as Markdown images.
-export function changelogFor(v, { imageUrls = [] } = {}) {
+// total: number of skins in the uploaded file (all versions up to v), told to players in the changelog.
+export function changelogFor(v, { imageUrls = [], total = 0 } = {}) {
   const names = v.skins.map(s => `- ${s.name}`).join('\n');
   const title = v.title ? ` — ${v.title}` : '';
   const images = imageUrls.map(u => `\n![V${v.version} skins](${u})\n`).join('');
-  return `## V${v.version}${title}\n\n${v.note ? v.note + '\n\n' : ''}${v.version === '1.0' ? 'Skins in this pack' : 'New skins'}:\n${names}\n${images}`;
+  const all = total > v.skins.length ? `\nThis download contains all ${total} skins of the pack, so new players get everything in one file.\n` : '';
+  return `## V${v.version}${title}\n\n${v.note ? v.note + '\n\n' : ''}${v.version === '1.0' ? 'Skins in this pack' : 'New skins'}:\n${names}\n${all}${images}`;
 }
