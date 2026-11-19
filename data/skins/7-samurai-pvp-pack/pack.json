@@ -92,6 +92,108 @@
       ],
       "fileId": 7979149,
       "publishedAt": "2026-04-24T20:14:06.177Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Tide and Moon",
+      "skins": [
+        {
+          "file": "nami_tide.png",
+          "name": "Nami Tide",
+          "slim": false,
+          "story": "He fights the way the sea moves, wave after wave, and his foam-white mask has never been seen dry."
+        },
+        {
+          "file": "tsuki_moon.png",
+          "name": "Tsuki Moon",
+          "slim": false,
+          "story": "She only duels under a full moon, and the silver disc on her helm is the last light her rivals remember."
+        },
+        {
+          "file": "hotaru_firefly.png",
+          "name": "Hotaru Firefly",
+          "slim": false,
+          "story": "Nobody sees him in the dark forest arena until the fireflies on his armour light up all at once."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new samurai step onto the arena at night: a tide warrior with a dorsal-fin crest, a moon guard behind a silver visor and a firefly hunter who glows in the dark.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Ashes of the Mountain",
+      "skins": [
+        {
+          "file": "kazan_volcano.png",
+          "name": "Kazan Volcano",
+          "slim": false,
+          "story": "Every hit he takes only cracks his armour wider, and the lava underneath burns hotter for the next round."
+        },
+        {
+          "file": "kin_gold.png",
+          "name": "Kin Gold",
+          "slim": false,
+          "story": "The golden general laces his armour with crimson cord, one knot for every arena he has won."
+        },
+        {
+          "file": "iwa_stone.png",
+          "name": "Iwa Stone",
+          "slim": false,
+          "story": "A guardian carved from the mountain itself, tied with a sacred rope so he cannot walk away from the fight."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The mountain clan joins the fight: a volcano samurai with lava in his cracks, a golden general in crimson lacing and a stone guardian tied with a sacred rope.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Spirits of the Shrine",
+      "skins": [
+        {
+          "file": "kitsune_fox.png",
+          "name": "Kitsune Fox",
+          "slim": false,
+          "story": "The shrine fox wears a white mask with red markings, and by the time you see her ears move she has already struck."
+        },
+        {
+          "file": "hebi_serpent.png",
+          "name": "Hebi Serpent",
+          "slim": false,
+          "story": "The jade serpent hisses once before every duel, and nobody has ever lasted long enough to hear the second."
+        },
+        {
+          "file": "karasu_crow.png",
+          "name": "Karasu Crow",
+          "slim": false,
+          "story": "The crow samurai drops from the shrine roof with black feathers spread, and his red eyes pick a target before he lands."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three shrine spirits put on armour for the tournament: a white fox in a vermilion mask, a jade serpent with golden fangs and a crow samurai with a sharp orange beak.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
