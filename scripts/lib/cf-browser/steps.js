@@ -3,7 +3,7 @@ import { skinpackKitFields, modKitFields, skinpackUpdateSection, versionImageUrl
 import { changelogFor } from '../skinpacks.js';
 import { pickUpdateVersion } from '../macro-bundle.js';
 import { URLS, PROJECT_ID_IN_URL } from './selectors.js';
-import { pageBehind, latestPublished, galleryTitle } from '../page-state.js';
+import { latestPublished } from '../page-state.js';
 
 // Pure step lists for the CurseForge browser tool, in the order of Input/Anleitung_CF.docx:
 //   Create Project (Choose Game → General → Description → License) → Media → File.
@@ -62,20 +62,8 @@ function descriptionSteps(f) {
   return [
     { title: 'Reiter Description', action: 'click', target: 'projectTab', arg: 'Description' },
     { title: 'Editor auf Markdown', action: 'select', target: 'descriptionEditorType', value: 'Markdown', optional: true },
-    { title: 'Beschreibung (Legende, Skins mit Story, Updates)', action: 'fill', target: 'description', value: f.description.trimEnd() },
+    { title: 'Beschreibung (Legende, Skins mit Story, Updates mit Screenshots)', action: 'fill', target: 'description', value: f.description.trimEnd() },
     { title: 'Warten auf „Save“', action: 'waitFor', value: 'Bitte die Beschreibung prüfen und selbst auf „Save“ klicken. Ich warte, bis CurseForge den neuen Text zeigt …', until: { check: 'description' }, timeout: 90 * 1000 }
-  ];
-}
-
-// Existing project: one more gallery image for an update (the cover titled MCPEDL stays untouched).
-function gallerySteps(file, title) {
-  return [
-    { title: 'Reiter Media', action: 'click', target: 'projectTab', arg: 'Media' },
-    { title: 'Add Media', action: 'click', target: 'addMedia' },
-    { title: `Screenshot (${path.basename(file)})`, action: 'upload', target: 'mediaFile', trigger: 'uploadImageChoice', value: abs(file) },
-    { title: 'Bild bearbeiten (Stift)', action: 'click', target: 'editMedia' },
-    { title: `Titel: ${title}`, action: 'fill', target: 'mediaTitle', value: title },
-    { title: 'Warten auf „Apply“', action: 'waitFor', value: 'Bitte Titel prüfen und selbst auf „Apply“ klicken …', until: { gone: 'mediaTitle' } }
   ];
 }
 
@@ -110,7 +98,7 @@ function skinFile(pack, config, v) {
   };
 }
 
-// task: { cmd: 'new'|'media'|'update'|'publish'|'seite', kind: 'skinpack'|'mod', id, version?, projectId?, parts?, galleryFile? }
+// task: { cmd: 'new'|'media'|'update'|'publish'|'seite', kind: 'skinpack'|'mod', id, version?, projectId? }
 // → { title, steps, clipboard?, notes: [], record?: { version } }
 export function buildSteps(task, { config, pack, meta }) {
   const { cmd, kind } = task;
@@ -145,19 +133,18 @@ export function buildSteps(task, { config, pack, meta }) {
     };
   }
 
+  // Description of an existing project after an update. The gallery is deliberately left alone:
+  // skin packs only get gallery images when the project is new; update screenshots are part of the description.
   if (cmd === 'seite') {
-    if (kind !== 'skinpack') throw new Error('„Seite nachziehen“ gibt es nur für Skinpacks.');
+    if (kind !== 'skinpack') throw new Error('„Beschreibung nachziehen“ gibt es nur für Skinpacks.');
     const v = task.version ? pack.versions.find(x => x.version === task.version) : latestPublished(pack);
     if (!v || v.status !== 'published') throw new Error(`${pack.name} hat keine veröffentlichte Version${task.version ? ` ${task.version}` : ''}.`);
-    // parts: what is still missing on the page; default = both (an explicit call always does the full page).
-    const parts = task.parts || pageBehind({ ...pack, cfProjectId: projectId }) || { description: true, gallery: true };
-    const steps = [openProject(projectId, pack.name), { title: 'Projekt-Adresse merken', action: 'learnProjectUrl', projectId }];
-    if (parts.description) steps.push(...descriptionSteps(f));
-    const image = task.galleryFile || (v.media?.[0] ? `${f.dir}/${v.media[0]}` : null);
-    if (parts.gallery && image) steps.push(...gallerySteps(image, galleryTitle(v)));
-    const notes = ['Die bisherige Beschreibung wird komplett ersetzt. Erst speichern, wenn sie im Feld gut aussieht.'];
-    if (parts.gallery && !image) notes.push(`V${v.version} hat kein Render-Bild für die Galerie (erst: node scripts/render-skins.js --pack ${pack.slug} --version ${v.version}).`);
-    return { title: `Seite nachziehen: ${pack.name} V${v.version}`, steps, notes, page: { version: v.version, description: !!parts.description, gallery: !!(parts.gallery && image) } };
+    return {
+      title: `Beschreibung nachziehen: ${pack.name} V${v.version}`,
+      steps: [openProject(projectId, pack.name), { title: 'Projekt-Adresse merken', action: 'learnProjectUrl', projectId }, ...descriptionSteps(f)],
+      notes: ['Die bisherige Beschreibung wird komplett ersetzt. Erst speichern, wenn sie im Feld gut aussieht.', 'Die Galerie bleibt, wie sie ist: Screenshots von Updates stehen in der Beschreibung.'],
+      page: { version: v.version }
+    };
   }
 
   if (cmd === 'publish') {
