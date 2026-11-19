@@ -8,11 +8,12 @@ import { listPacks, loadPack } from './lib/skinpacks.js';
 import { loadProjects } from './lib/cf-projects.js';
 import { listFiles } from './platforms/curseforge-core.js';
 import { classify, simulateSchedule, renderMarkdown, toCsv } from './lib/inventory.js';
+import { renderPage } from './lib/inventory-page.js';
 import { arg } from './lib/github-output.js';
 
 // Stock overview of every CurseForge project of the account: what is on CurseForge, what is
 // prepared locally, what the evening runs will upload next. Reads only (Core API + local folders).
-// npm run bestand [-- --out Output/bestand]   → BESTAND.md + bestand.csv
+// npm run bestand [-- --out Output/bestand]   → bestand.html (overview page), BESTAND.md, bestand.csv
 const argv = process.argv.slice(2);
 const AUTHOR_ID = 132070502;
 const GAMES = [78022, 432]; // Minecraft Bedrock, Minecraft Java
@@ -92,6 +93,7 @@ const schedule = simulateSchedule({ entries, packs, now, evenings: 150, interval
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'BESTAND.md'), renderMarkdown({ rows, schedule, localOnly, now }));
 fs.writeFileSync(path.join(outDir, 'bestand.csv'), toCsv(rows));
+fs.writeFileSync(path.join(outDir, 'bestand.html'), renderPage({ rows, schedule, localOnly, decisions: mapping.decisions || [], now }));
 const count = g => rows.filter(r => r.group === g).length;
 console.log(`✓ ${rows.length} Projekte: A ${count('A')} · B ${count('B')} · Resource Packs ${count('RP')} · Java ${count('Java')} · ${localOnly.length} lokale Ordner ohne Projekt`);
-console.log(`  ${schedule.length} Updates im Fahrplan, ${path.relative(process.cwd(), outDir)}/BESTAND.md und bestand.csv`);
+console.log(`  ${schedule.length} Updates im Fahrplan → ${path.relative(process.cwd(), outDir)}/bestand.html (Übersicht), BESTAND.md, bestand.csv`);

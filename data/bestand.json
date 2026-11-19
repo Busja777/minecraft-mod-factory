@@ -48,5 +48,12 @@
     "1495552": { "folder": "MCPE/Paintings Easter", "note": "Resource Pack" },
     "1495894": { "folder": "MCPE/Paintings Easter", "note": "Java-Version des Bedrock-Packs" }
   },
+  "decisions": [
+    { "title": "Merge von PR #11.", "text": "Danach startet der Abend-Lauf sofort, als Erstes Old Grandpa V1.1. Glowing Samurai V1.3 rutscht auf etwa den 2.12." },
+    { "title": "Medival Rome U4:", "text": "Der Ordner enthält Ottoman_Warriors (Janitschar, Sipahi). Gehört das zu Rom oder zum Ottoman-Pack? Vorerst weggelassen." },
+    { "title": "Hidden Archers U3:", "text": "exakte Kopie von U2, vorerst weggelassen." },
+    { "title": "StoneAge Glowing:", "text": "Die Skins heißen deutsch (z. B. BLITZ HAEUPTLING). Für CurseForge englisch benennen?" },
+    { "title": "Neue Skins:", "text": "Für die Top-4 ohne Vorrat zeichnen (Iron Sanguine Knight's, .7 Samurai, Ruins Assassins, The Last Ninjas)?" }
+  ],
   "ignore": ["MCPE/Assasines Bed", "MCPE/Standart ORDNER", "MCPE/Skills Für Claude MC", "MCPE/Yubi_Mods Logo etc"]
 }

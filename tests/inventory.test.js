@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs';
 import { classify, simulateSchedule, renderMarkdown, toCsv } from '../scripts/lib/inventory.js';
+import { renderPage } from '../scripts/lib/inventory-page.js';
 
 const now = new Date('2026-11-19T18:00:00Z');
 const skin = (id, name, downloads = 100) => ({ id, name, classId: 6925, gameId: 78022, downloadCount: downloads });
@@ -80,4 +81,22 @@ test('bestand.json names a folder (or null) for every project id and only known 
     assert.ok('folder' in m, id);
     for (const k of Object.keys(m)) assert.ok(['folder', 'note', 'ready'].includes(k), `${id}: ${k}`);
   }
+  for (const d of map.decisions || []) assert.ok(d.title && d.text);
+});
+
+test('overview page: open decisions first, every pack with its planned evenings, names escaped', () => {
+  const now = new Date('2026-11-19T18:00:00Z');
+  const rows = [
+    { ...classify({ project: skin(1, 'Black & White PVP', 9328), files: [file('a', '2026-04-14')], now }), group: 'A', ready: 2, readyVersions: ['1.1', '1.2'] },
+    classify({ project: skin(2, '<Ninja>', 10681), files: [file('a', '2026-11-19')], map: { folder: 'MCPE/Glowing Ninja' }, now })
+  ];
+  const html = renderPage({ rows, schedule: [{ date: '2026-11-19', name: 'Black & White PVP', version: '1.1' }, { date: '2026-12-13', name: 'Black & White PVP', version: '1.2' }], decisions: [{ title: 'Merge', text: 'bitte' }], now });
+  assert.match(html, /^<title>Bestand Yubi_Mods<\/title>/);
+  assert.doesNotMatch(html, /<html|<body|<!doctype/i, 'the publisher adds the skeleton');
+  assert.ok(html.indexOf('Offen bei dir') < html.indexOf('Laufen automatisch'));
+  assert.match(html, /Black &amp; White PVP/);
+  assert.match(html, /class="chip now"[^>]*>V1\.1<small>19\.11\.<\/small>/, 'tonight is highlighted');
+  assert.match(html, /V1\.2<small>13\.12\.<\/small>/);
+  assert.match(html, /&lt;Ninja&gt;[\s\S]*alles oben/);
+  assert.match(html, /<h3>Dezember 2026/);
 });
