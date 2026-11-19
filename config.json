@@ -39,7 +39,7 @@
   "bedrock": {
     "gameEndpoint": "minecraft-bedrock",
     "versionPrefix": "26.",
-    "uploadApi": false,
+    "uploadApi": true,
     "class": "Skins",
     "mainCategory": "Players",
     "additionalCategories": [

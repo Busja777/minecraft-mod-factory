@@ -19,10 +19,16 @@ export function updateHeading(v, kind) {
   return `## Added in ${versionLabel(v.version)}${what ? `: ${what}` : ''}`;
 }
 
+// With stories: one line per skin ("- **Name** — story"); without: the compact "**A** · **B**" row.
+export function skinLines(skins = []) {
+  if (!skins.some(s => s.story)) return skins.map(s => `**${s.name}**`).join(' · ');
+  return skins.map(s => `- **${s.name}**${s.story ? ` — ${s.story}` : ''}`).join('\n');
+}
+
 export function renderUpdateSection(v, kind) {
   const parts = [updateHeading(v, kind)];
   if (v.note) parts.push(v.note);
-  if (kind === 'skinpack' && v.skins?.length) parts.push(v.skins.map(s => `**${s.name}**`).join(' · '));
+  if (kind === 'skinpack' && v.skins?.length) parts.push(skinLines(v.skins));
   for (const url of v.images || []) parts.push(img(url, `${versionLabel(v.version)} preview`));
   return parts.join('\n\n');
 }
@@ -44,7 +50,7 @@ export function renderDescription({ kind, name, legend, versions = [], body = ''
     if (!base) throw new Error(`Skin pack ${name} has no base version`);
     out.push(`## The Skins`);
     if (base.note) out.push(base.note);
-    out.push(base.skins.map(s => `**${s.name}**`).join(' · '));
+    out.push(skinLines(base.skins));
     for (const url of base.images || []) out.push(img(url, `${name} skins`));
   } else {
     if (body) out.push(body.trim());

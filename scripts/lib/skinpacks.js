@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 // Storage for Bedrock skin packs: data/skins/<slug>/
 //   pack.json   { slug, name, packName, summary, legend, altNames, cfProjectId,
@@ -40,6 +41,19 @@ export function stageOrder(stage) {
   return Number(stageToVersion(stage).split('.')[1]);
 }
 
+// Update packs are often cumulative ("…_Complete.mcpack" repeats every earlier skin). Returns only
+// the skins whose texture was not part of an earlier stage and remembers the new ones in `seen`.
+export function newSkinsOnly(skins, seen = new Set()) {
+  const fresh = [];
+  for (const s of skins) {
+    const hash = crypto.createHash('sha1').update(s.png).digest('hex');
+    if (seen.has(hash)) continue;
+    seen.add(hash);
+    fresh.push(s);
+  }
+  return fresh;
+}
+
 export const publishedVersions = pack => pack.versions.filter(v => v.status === 'published');
 export const nextDueVersion = pack => pack.versions.find(v => v.status === 'due') || null;
 export const hasDueVersion = pack => !!nextDueVersion(pack);
@@ -51,11 +65,19 @@ export function markVersionPublished(pack, version, { fileId = null, now = new D
   return v;
 }
 
+const listNames = names => names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0] || '';
+
 // imageUrls: public URLs of the version's renders. CurseForge moderators want screenshots of the
 // new content in the changelog too (Anleitung_CF), so they are appended as Markdown images.
-export function changelogFor(v, { imageUrls = [] } = {}) {
-  const names = v.skins.map(s => `- ${s.name}`).join('\n');
+// total: number of skins in the uploaded file (all versions up to v), told to players in the changelog.
+// Updates open with a one-liner naming the new skins; skins with a story get it on their line.
+export function changelogFor(v, { imageUrls = [], total = 0 } = {}) {
+  const first = v.version === '1.0';
+  const n = v.skins.length;
+  const intro = first ? '' : `${n} new skin${n === 1 ? '' : 's'} ${n === 1 ? 'joins' : 'join'} the pack: ${listNames(v.skins.map(s => s.name))}.\n\n`;
+  const names = v.skins.map(s => `- ${s.story ? `**${s.name}** — ${s.story}` : s.name}`).join('\n');
   const title = v.title ? ` — ${v.title}` : '';
   const images = imageUrls.map(u => `\n![V${v.version} skins](${u})\n`).join('');
-  return `## V${v.version}${title}\n\n${v.note ? v.note + '\n\n' : ''}${v.version === '1.0' ? 'Skins in this pack' : 'New skins'}:\n${names}\n${images}`;
+  const all = total > n ? `\nThis download contains all ${total} skins of the pack, so new players get everything in one file.\n` : '';
+  return `## V${v.version}${title}\n\n${intro}${v.note ? v.note + '\n\n' : ''}${first ? 'Skins in this pack' : 'New skins'}:\n${names}\n${all}${images}`;
 }

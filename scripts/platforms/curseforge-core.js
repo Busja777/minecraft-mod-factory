@@ -35,7 +35,8 @@ export function syncPackWithFiles(pack, files) {
   const byName = new Map(files.map(f => [f.fileName.toLowerCase(), f]));
   const changed = [];
   for (const v of pack.versions) {
-    const f = v.mcpack && byName.get(v.mcpack.toLowerCase());
+    // sourceMcpack: the original file when the release replaced it with a complete pack
+    const f = [v.mcpack, v.sourceMcpack].filter(Boolean).map(n => byName.get(n.toLowerCase())).find(Boolean);
     if (f && v.status !== 'published') changed.push(v.version);
     if (f) Object.assign(v, { status: 'published', fileId: f.id, publishedAt: new Date(f.fileDate).toISOString() });
   }

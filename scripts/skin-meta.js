@@ -17,7 +17,8 @@ const dir = packDir(slug);
 
 const needPackTexts = force || !pack.legend || !pack.summary || !pack.logoPrompt || !pack.coverPrompt;
 const needNotes = pack.versions.filter(v => force || !v.note);
-if (!needPackTexts && !needNotes.length) { console.log(`${slug}: all texts present`); process.exit(0); }
+const needStories = pack.versions.flatMap(v => v.skins).filter(s => force || !s.story);
+if (!needPackTexts && !needNotes.length && !needStories.length) { console.log(`${slug}: all texts present`); process.exit(0); }
 
 const images = pack.versions
   .filter(v => v.media?.[0] && fs.existsSync(path.join(dir, v.media[0])))
@@ -39,6 +40,19 @@ const result = await callTool({
         altNames: { type: 'array', items: { type: 'string' }, description: 'Exactly 2 alternative CurseForge project names, without the words skin, pack, minecraft or version.' },
         logoPrompt: { type: 'string', description: 'Image prompt for a square logo: one character from the pack as a blocky Minecraft-style figure, dramatic glow, dark background, NO text.' },
         coverPrompt: { type: 'string', description: 'Image prompt for a wide cover: 3 characters of the pack side by side as blocky Minecraft-style figures in their exact glow colours, cinematic background, with the title text in big stylised letters.' },
+        stories: {
+          type: 'array',
+          description: 'One entry per requested skin.',
+          items: {
+            type: 'object',
+            properties: {
+              file: { type: 'string' },
+              story: { type: 'string', description: 'ONE English sentence (max 25 words): who this character is, in the voice of the legend, matching the colours in the render.' }
+            },
+            required: ['file', 'story'],
+            additionalProperties: false
+          }
+        },
         notes: {
           type: 'array',
           description: 'One entry per requested version.',
@@ -53,7 +67,7 @@ const result = await callTool({
           }
         }
       },
-      required: ['legend', 'summary', 'altNames', 'logoPrompt', 'coverPrompt', 'notes'],
+      required: ['legend', 'summary', 'altNames', 'logoPrompt', 'coverPrompt', 'stories', 'notes'],
       additionalProperties: false
     }
   },
@@ -64,12 +78,16 @@ const result = await callTool({
 ${versionList}
 
 Write the store texts for its CurseForge page. Look closely at the renders: colours, armour, eyes and glow patterns must match what you see. Keep the tone of the skin names (e.g. Japanese terms with English epithets).
+Write a one-line story for these skins (file → name): ${needStories.map(s => `${s.file} → ${s.name}`).join('; ') || 'none (return an empty list)'}.
 Write notes for these versions: ${needNotes.map(v => v.version).join(', ') || 'none (return an empty list)'}.
 Call the write_pack_texts tool with the result.`
 });
 
 if (needPackTexts) {
   Object.assign(pack, { legend: result.legend.trim(), summary: result.summary.trim(), altNames: result.altNames.slice(0, 2), logoPrompt: result.logoPrompt, coverPrompt: result.coverPrompt });
+}
+for (const { file, story } of result.stories || []) {
+  for (const s of needStories.filter(x => x.file === file)) s.story = story.trim();
 }
 for (const { version, note } of result.notes) {
   const v = pack.versions.find(x => x.version === version.replace(/^V/i, ''));

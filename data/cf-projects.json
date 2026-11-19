@@ -12,5 +12,19 @@
     "updateCount": 0,
     "files": [],
     "game": "bedrock"
+  },
+  {
+    "modId": "the-last-ninjas",
+    "kind": "skinpack",
+    "name": "The Last Ninjas",
+    "cfName": "The Last Ninjas",
+    "projectId": 1503504,
+    "status": "published",
+    "version": "1.1",
+    "lastPublishedAt": "2026-05-05T17:48:38.670Z",
+    "nextUpdateDue": "2026-05-28T17:02:14.751Z",
+    "updateCount": 0,
+    "files": [],
+    "game": "bedrock"
   }
 ]

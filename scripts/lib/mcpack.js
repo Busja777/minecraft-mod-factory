@@ -64,13 +64,14 @@ export function manifestIssues(manifest, skins = []) {
 const locId = name => humanize(name).replace(/[^A-Z0-9]/g, '') || 'Skin';
 
 // Builds a fresh .mcpack with new UUIDs. skins: [{ name, png: Buffer, slim }]
-export function buildMcpack({ packName, description, serializeName, skins, version = [1, 0, 0], minEngine = [1, 16, 0] }) {
+// uuids: { header, module } keeps the pack identity stable, so a newer build replaces the older one in game.
+export function buildMcpack({ packName, description, serializeName, skins, version = [1, 0, 0], minEngine = [1, 16, 0], uuids = {} }) {
   if (!skins?.length) throw new Error('buildMcpack needs at least one skin');
   const ns = serializeName || packName.replace(/[^A-Za-z0-9]/g, '');
   const manifest = {
     format_version: 2,
-    header: { name: packName, description, uuid: crypto.randomUUID(), version, min_engine_version: minEngine },
-    modules: [{ type: 'skin_pack', uuid: crypto.randomUUID(), version }]
+    header: { name: packName, description, uuid: uuids.header || crypto.randomUUID(), version, min_engine_version: minEngine },
+    modules: [{ type: 'skin_pack', uuid: uuids.module || crypto.randomUUID(), version }]
   };
   const used = new Set();
   const entries = skins.map((s, i) => {

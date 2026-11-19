@@ -2,7 +2,7 @@ import './lib/load-secrets.js';
 import fs from 'fs';
 import path from 'path';
 import { loadPack, savePack, packDir, nextDueVersion, markVersionPublished, changelogFor } from './lib/skinpacks.js';
-import { buildMcpack } from './lib/mcpack.js';
+import { ensureCompletePack } from './lib/complete-pack.js';
 import { skinpackUpdateKit, versionImageUrls } from './lib/kit.js';
 import { loadProjects, saveProjects, findProject, markPublished } from './lib/cf-projects.js';
 import { fetchGameVersionCatalog, matchBedrockVersionIds, buildMetadata, uploadFile } from './platforms/curseforge.js';
@@ -10,7 +10,7 @@ import { listFiles, syncPackWithFiles } from './platforms/curseforge-core.js';
 import { setOutputs, arg, flag } from './lib/github-output.js';
 
 // Releases the next due version of a skin pack (run after render-skins.js and skin-meta.js):
-// builds the .mcpack if missing, writes the changelog, uploads to CurseForge Bedrock when
+// makes sure the .mcpack holds every skin so far (builds a complete pack if not), writes the changelog, uploads to CurseForge Bedrock when
 // config.bedrock.uploadApi is on, records the release and writes ./kit-issue.json with the new
 // description section (the description itself has no API).
 // node scripts/skin-release.js --pack <slug> [--dry-run] [--release-type alpha|beta|release]
@@ -36,18 +36,12 @@ if (!v) { console.log(`${slug}: no due version`); setOutputs({ released: 'false'
 if (!v.media?.length) throw new Error(`V${v.version} has no renders — run render-skins.js --pack ${slug} first`);
 if (!v.note) throw new Error(`V${v.version} has no update note — run skin-meta.js --pack ${slug} first`);
 
-if (!v.mcpack) {
-  const skins = v.skins.map(s => ({ ...s, png: fs.readFileSync(path.join(dir, 'skins', v.version, s.file)) }));
-  const fileName = `${pack.packName.replace(/[^A-Za-z0-9]+/g, '_')}_V${v.version.replace('.', '_')}.mcpack`;
-  fs.mkdirSync(path.join(dir, 'mcpack'), { recursive: true });
-  fs.writeFileSync(path.join(dir, 'mcpack', fileName), buildMcpack({
-    packName: `${pack.packName} V${v.version}`, description: v.title || pack.summary, skins,
-    version: [1, Number(v.version.split('.')[1]), 0]
-  }));
-  v.mcpack = fileName;
-  console.log(`Built ${fileName} (${skins.length} skins, new UUIDs)`);
-}
-v.changelog = changelogFor(v, { imageUrls: versionImageUrls(pack, v) });
+// The uploaded file always carries every skin up to this version (new players download only the latest file).
+const complete = ensureCompletePack(pack, v, dir);
+console.log(complete.built
+  ? `Built ${complete.file}: all ${complete.total} skins (${complete.missing} were missing from ${v.sourceMcpack || 'the version'}), stable pack UUID`
+  : `${complete.file} already contains all ${complete.total} skins`);
+v.changelog = changelogFor(v, { imageUrls: versionImageUrls(pack, v), total: complete.total });
 const filePath = path.join(dir, 'mcpack', v.mcpack);
 
 const projects = loadProjects();

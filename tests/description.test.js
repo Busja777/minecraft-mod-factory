@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderDescription, renderUpdateSection, shortName, AI_NOTE } from '../scripts/lib/description.js';
+import { renderDescription, renderUpdateSection, shortName, skinLines, AI_NOTE } from '../scripts/lib/description.js';
 import { logoFileName, coverFileName, slugify, pascalCase, rawUrl, fileBase } from '../scripts/lib/naming.js';
 
 const versions = [
@@ -53,4 +53,12 @@ test('slug, pascal case and raw URLs', () => {
   assert.equal(pascalCase('Glowing Samurai'), 'GlowingSamurai');
   assert.equal(rawUrl('data/skins/a b/Glowing Samurai Cover.png', { repo: 'o/r', branch: 'main' }),
     'https://raw.githubusercontent.com/o/r/main/data/skins/a%20b/Glowing%20Samurai%20Cover.png');
+});
+
+test('skins with a story get one line each, skins without keep the compact row', () => {
+  assert.equal(skinLines([{ name: 'A' }, { name: 'B' }]), '**A** · **B**');
+  assert.equal(skinLines([{ name: 'A', story: 'Lost in fog.' }, { name: 'B' }]), '- **A** — Lost in fog.\n- **B**');
+  const md = renderDescription({ kind: 'skinpack', name: 'P', legend: 'L', versions: [{ version: '1.0', skins: [{ name: 'A', story: 'First.' }] }, { version: '1.1', skins: [{ name: 'B', story: 'Second.' }] }] });
+  assert.match(md, /- \*\*A\*\* — First\./);
+  assert.match(md, /- \*\*B\*\* — Second\./);
 });
