@@ -1,0 +1,115 @@
+{
+  "pack": "zombiefarmer-gang-skinpack",
+  "style": "hair",
+  "at": "2026-11-19T23:08:52.018Z",
+  "versions": [
+    {
+      "version": "1.2",
+      "title": "Harvest Moon",
+      "skins": [
+        {
+          "name": "Zombie Farmer Pumpkin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Green (5/6)",
+          "black": 0.01,
+          "neon": 0.155,
+          "overlayTransparent": 0.99
+        },
+        {
+          "name": "Zombie Farmer Scarecrow",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Green (5/6)",
+          "black": 0,
+          "neon": 0.181,
+          "overlayTransparent": 0.86
+        },
+        {
+          "name": "Zombie Farmer Beekeeper",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Green (3/6)",
+          "black": 0,
+          "neon": 0.218,
+          "overlayTransparent": 0.88
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "The Barnyard Gang",
+      "skins": [
+        {
+          "name": "Zombie Farmer Cow",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Beekeeper (5/6)",
+          "black": 0,
+          "neon": 0.234,
+          "overlayTransparent": 0.98
+        },
+        {
+          "name": "Zombie Farmer Chicken",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Green (4/6)",
+          "black": 0,
+          "neon": 0.119,
+          "overlayTransparent": 0.93
+        },
+        {
+          "name": "Zombie Farmer Pig",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Chicken (3/6)",
+          "black": 0,
+          "neon": 0.249,
+          "overlayTransparent": 0.96
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "Wild Weather",
+      "skins": [
+        {
+          "name": "Zombie Farmer Storm",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Green (4/6)",
+          "black": 0,
+          "neon": 0.222,
+          "overlayTransparent": 0.9
+        },
+        {
+          "name": "Zombie Farmer Sunflower",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Chicken (3/6)",
+          "black": 0.04,
+          "neon": 0.122,
+          "overlayTransparent": 0.95
+        },
+        {
+          "name": "Zombie Farmer Swamp",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Zombie Farmer Green (4/6)",
+          "black": 0.05,
+          "neon": 0.001,
+          "overlayTransparent": 0.92
+        }
+      ]
+    }
+  ]
+}

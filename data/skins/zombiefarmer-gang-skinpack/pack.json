@@ -82,6 +82,108 @@
       ],
       "fileId": 7922736,
       "publishedAt": "2026-04-13T20:22:40.087Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Harvest Moon",
+      "skins": [
+        {
+          "file": "zombie_farmer_pumpkin.png",
+          "name": "Zombie Farmer Pumpkin",
+          "slim": false,
+          "story": "He fell asleep in the pumpkin patch on harvest night and woke up carved, glowing and grinning, and honestly he likes it better this way."
+        },
+        {
+          "file": "zombie_farmer_scarecrow.png",
+          "name": "Zombie Farmer Scarecrow",
+          "slim": false,
+          "story": "The crows took pity on the old scarecrow, so now he stands in the cornfield with button eyes and a stitched smile and lets them eat whatever they like."
+        },
+        {
+          "file": "zombie_farmer_beekeeper.png",
+          "name": "Zombie Farmer Beekeeper",
+          "slim": false,
+          "story": "He lifted his veil for just one second to smell the honey, and the bees have been reminding him of it ever since."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the harvest moon rises over the fields, three new farmers join the gang: one who grew a little too close to his pumpkins, one who guards the crows instead of scaring them, and one who keeps bees and regrets it.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "The Barnyard Gang",
+      "skins": [
+        {
+          "file": "zombie_farmer_cow.png",
+          "name": "Zombie Farmer Cow",
+          "slim": false,
+          "story": "The herd only listens to one of their own, so he zipped himself into a spotted cow suit, horns and all, and has been chewing the same piece of wheat for a week."
+        },
+        {
+          "file": "zombie_farmer_chicken.png",
+          "name": "Zombie Farmer Chicken",
+          "slim": false,
+          "story": "A brown hen chose his straw hair as the warmest nest on the farm, and he is far too scared of her beak to ever take it off."
+        },
+        {
+          "file": "zombie_farmer_pig.png",
+          "name": "Zombie Farmer Pig",
+          "slim": false,
+          "story": "He spent one hot summer rolling in the mud with the pigs, and when the mud finally dried he came out pink, snouted and with a curly little tail."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The animals on the farm got tired of being chased, so the gang made friends with them instead: one farmer moved into a cow costume, one lets a chicken nest on his head, and one simply became a pig.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Wild Weather",
+      "skins": [
+        {
+          "file": "zombie_farmer_storm.png",
+          "name": "Zombie Farmer Storm",
+          "slim": false,
+          "story": "A small grey rain cloud followed him home from the fields one afternoon, and now it waters his crops, soaks his coat and strikes his hat whenever he complains."
+        },
+        {
+          "file": "zombie_farmer_sunflower.png",
+          "name": "Zombie Farmer Sunflower",
+          "slim": false,
+          "story": "He stood in the sunflower field for so many summers, always turned towards the sun, that the petals finally grew all the way around his face."
+        },
+        {
+          "file": "zombie_farmer_swamp.png",
+          "name": "Zombie Farmer Swamp",
+          "slim": false,
+          "story": "He went to check the flooded rice field and simply never came back out, so now a lily pad shades his head, a frog keeps him company and his eyes glow like fireflies."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Rain, sun and fog all arrived at the farm in the same week, and three farmers came back changed: one with his own personal storm cloud, one who turned towards the sun, and one who never left the flooded field.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
