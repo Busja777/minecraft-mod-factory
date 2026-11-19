@@ -65,7 +65,9 @@ Die `.jar`-Uploads der Mods laufen weiterhin automatisch über die API. Dafür b
    ```
 5. Prüfen, Rest erledigen und **selbst abschicken**. Danach das Fenster schließen.
 
-**Bei Skinpack-Updates** liegt der neue Beschreibungsabschnitt schon in der **Zwischenablage**. Unter *Description* fügst du ihn **vor „How to install“** mit ⌘V ein.
+**Nach einem automatischen Upload** (die Datei lädt der Abend-Lauf selbst hoch) steht im Menü „Seite nachziehen: <Pack>“. Der Helfer setzt die komplette neue Beschreibung ein (Legende, alle Skins mit Story, die „Added in V1.x“-Abschnitte) und lädt den Screenshot der neuen Skins in die Galerie. Du klickst **Save** und **Apply**. Ob es online ist, liest der Helfer selbst bei CurseForge nach; die Aufgabe verschwindet dann aus dem Menü. Mehrere offene Seiten erledigt `s` im Menü oder `npm run cf -- seite` in einem Rutsch.
+
+**Bei Updates, die du von Hand hochlädst,** liegt der neue Beschreibungsabschnitt zusätzlich in der **Zwischenablage**. Unter *Description* fügst du ihn **vor „How to install“** mit ⌘V ein, oder du nimmst danach „Seite nachziehen“.
 
 **Bei neuen Projekten** („Neues Projekt veröffentlichen“) läuft alles in **einem** Durchgang, in der Reihenfolge deiner Anleitung:
 1. Das Tool füllt **General → Description → License** aus. Du prüfst und klickst **Create**.
@@ -84,6 +86,7 @@ npm run cf -- publish --skinpack <slug>            # neues Projekt komplett (Cre
 npm run cf -- new    --skinpack <slug>             # oder --mod <id>
 npm run cf -- media  --skinpack <slug>             # oder --mod <id>
 npm run cf -- update --skinpack <slug> [--version 1.3]
+npm run cf -- seite  [--skinpack <slug>]           # Beschreibung + Galerie nach einem Upload (ohne Angabe: alle offenen)
 npm run cf -- login                                # neu einloggen
 npm run cf -- inspect                              # Seiten für die Kalibrierung speichern
 ```

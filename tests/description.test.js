@@ -62,3 +62,10 @@ test('skins with a story get one line each, skins without keep the compact row',
   assert.match(md, /- \*\*A\*\* — First\./);
   assert.match(md, /- \*\*B\*\* — Second\./);
 });
+
+test('the "all skins" image sits under the legend, only when the pack has one', () => {
+  const versions = [{ version: '1.0', skins: [{ name: 'A' }] }];
+  const withImage = renderDescription({ kind: 'skinpack', name: 'P', legend: 'L', versions, collection: 'https://x/media/collection.png' });
+  assert.match(withImage, /AI-generated\.\)\*\n\n!\[All P skins\]\(https:\/\/x\/media\/collection\.png\)\n\n## The Skins/);
+  assert.doesNotMatch(renderDescription({ kind: 'skinpack', name: 'P', legend: 'L', versions }), /All P skins/);
+});

@@ -136,11 +136,20 @@ async function perform(page, step, loc, state) {
   }
 }
 
-// Waits until the user did the final click. until: { url: RegExp } | { gone: targetKey }
-async function waitForUser(page, step, { ask, log, targets, poll = 1000 }) {
+// Waits until the user did the final click. until: { url: RegExp } | { gone: targetKey } | { check: name }
+// check: an async function from `checks` that looks at the result itself (e.g. the Core API shows the
+// new description). Without such a function the user confirms with Enter.
+async function waitForUser(page, step, { ask, log, targets, checks = {}, poll = 1000 }) {
   log(`⏸  ${step.value}`);
+  const check = step.until?.check ? checks[step.until.check] : null;
+  if (step.until?.check && !check) { await ask('Wenn du gespeichert hast, hier Enter drücken.'); return; }
   const deadline = Date.now() + (step.timeout ?? 20 * 60 * 1000);
+  let nextCheck = 0;
   while (Date.now() < deadline) {
+    if (check && Date.now() >= nextCheck) {
+      if (await check().catch(() => false)) return;
+      nextCheck = Date.now() + (step.checkEvery ?? 5000);
+    }
     if (step.until?.url && step.until.url.test(page.url())) return;
     if (step.until?.gone) {
       const loc = await resolveTarget(page, targets[step.until.gone], { timeout: 0 });
@@ -148,7 +157,7 @@ async function waitForUser(page, step, { ask, log, targets, poll = 1000 }) {
     }
     await sleep(poll);
   }
-  await ask('Ich habe deinen Klick nicht erkannt. Wenn du fertig bist, Enter drücken.');
+  await ask(check ? 'CurseForge zeigt die Änderung noch nicht (das kann ein paar Minuten dauern). Wenn du gespeichert hast, Enter drücken.' : 'Ich habe deinen Klick nicht erkannt. Wenn du fertig bist, Enter drücken.');
 }
 
 async function captureProjectId(page, { ask }) {
@@ -159,7 +168,7 @@ async function captureProjectId(page, { ask }) {
 }
 
 // → { results: [{ title, status: 'ok'|'manual'|'skipped', detail? }], context: { projectId?, projectUrl? } }
-export async function runSteps(page, steps, { ask, log = console.log, timeout = 10000, pause = 400, targets = TARGETS, context = {} } = {}) {
+export async function runSteps(page, steps, { ask, log = console.log, timeout = 10000, pause = 400, targets = TARGETS, context = {}, checks = {} } = {}) {
   const results = [];
   const state = { dirty: false };
   for (const step of steps) {
@@ -175,8 +184,11 @@ export async function runSteps(page, steps, { ask, log = console.log, timeout = 
         await ask(`👉 ${step.value} Danach Enter drücken.`);
         state.dirty = false;
       } else if (step.action === 'waitFor') {
-        await waitForUser(page, step, { ask, log, targets });
+        await waitForUser(page, step, { ask, log, targets, checks });
         state.dirty = false;
+      } else if (step.action === 'learnProjectUrl') {
+        // After the user opened the project page by hand once, its address is remembered (cf.js).
+        if (step.projectId && page.url().includes(String(step.projectId))) { context.projectId = step.projectId; context.projectUrl = page.url(); }
       } else if (step.action === 'captureProjectId') {
         context.projectId = await captureProjectId(page, { ask });
         context.projectUrl = page.url();

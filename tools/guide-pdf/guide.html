@@ -104,7 +104,7 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
 </ol>
 
 <div class="cols">
-  <div class="box info"><b>Bei Skinpack-Updates</b><br>Der neue Beschreibungsabschnitt liegt schon in der Zwischenablage. Unter <i>Description</i> fügst du ihn <b>vor „How to install“</b> mit <kbd>⌘V</kbd> ein.</div>
+  <div class="box info"><b>Nach einem automatischen Upload</b><br>Im Menü steht „Seite nachziehen“. Der Helfer setzt die neue Beschreibung ein (alle Skins mit Story) und lädt den Screenshot in die Galerie. Du klickst <b>Save</b> und <b>Apply</b>. Der Helfer liest bei CurseForge nach, ob es online ist.</div>
   <div class="box info"><b>Bei neuen Projekten</b><br>Alles läuft in einem Durchgang: General → Description → License (du klickst <b>Create</b>), dann Media (du klickst <b>Apply</b>), dann File (du klickst <b>Add File</b>).</div>
 </div>
 
@@ -115,6 +115,7 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
   <tr><td><code>npm run cf -- publish --skinpack &lt;slug&gt;</code></td><td>Neues Projekt komplett (Create → Media → File)</td></tr>
   <tr><td><code>npm run cf -- media --skinpack &lt;slug&gt;</code></td><td>Nur Cover und Media</td></tr>
   <tr><td><code>npm run cf -- update --skinpack &lt;slug&gt;</code></td><td>Update hochladen (mit <code>--version 1.3</code> gezielt)</td></tr>
+  <tr><td><code>npm run cf -- seite</code></td><td>Beschreibung und Galerie aller offenen Projekte nachziehen</td></tr>
   <tr><td><code>npm run cf -- login</code></td><td>Neu einloggen</td></tr>
 </table>
 
@@ -268,18 +269,12 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
   <tr><td>Neues Projekt freigeben (Go)</td><td><b>Du</b>, im Studio</td><td>Nur neue Projekte brauchen Go</td></tr>
   <tr><td>Neues Projekt anlegen (Formular)</td><td>Helfer oder Makro, <b>du</b> klickst Create</td><td>CurseForge hat dafür keine Schnittstelle</td></tr>
   <tr><td>Cover und Galerie</td><td>Helfer oder Makro, <b>du</b> klickst Apply</td><td>Keine Schnittstelle</td></tr>
-  <tr><td>Beschreibung ändern</td><td>Helfer oder Makro, <b>du</b> speicherst</td><td>Keine Schnittstelle. Bei Updates liegt der Abschnitt in der Zwischenablage.</td></tr>
-  <tr><td>Datei eines Updates hochladen</td><td>Automatik (geplant)</td><td>Siehe Kasten unten</td></tr>
+  <tr><td>Beschreibung ändern</td><td>Helfer oder Makro, <b>du</b> speicherst</td><td>Keine Schnittstelle. Nach einem Upload: „Seite nachziehen“ im Helfer.</td></tr>
+  <tr><td>Datei und Changelog eines Updates hochladen</td><td>Automatik (Abend-Lauf)</td><td>Immer das komplette Pack mit allen Skins</td></tr>
   <tr><td>Login, Captcha, 2FA</td><td><b>Immer du</b></td><td>Wird nie umgangen</td></tr>
 </table>
 
-<div class="box warn"><b>Stand 18.11.2026: Die Upload-Automatik ist noch nicht aktiv.</b> Es fehlen drei Dinge:
-<ol style="margin:4px 0 0">
-  <li>Der richtige Upload-Token (CurseForge → Account → My API Tokens, sieht aus wie <code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>) in <span class="path">secrets.env</span> unter <code>CF_API_TOKEN</code>. Der bisherige Wert dort gehört unter <code>CF_CORE_API_KEY</code>.</li>
-  <li>Die neuen Abläufe müssen auf den Hauptzweig bei GitHub, weil nur dort Zeitpläne laufen.</li>
-  <li>Ein erfolgreicher Test-Upload auf ein Bedrock-Projekt.</li>
-</ol>
-Bis dahin lädst du Update-Dateien mit dem Helfer oder dem Makro <kbd>⌃⌥U</kbd> hoch.</div>
+<div class="box info"><b>Seit 19.11.2026 lädt der Abend-Lauf Updates selbst hoch.</b> Erster Upload: The Last Ninjas V1.2. Pro Abend höchstens ein Projekt, pro Projekt alle 22–25 Tage. Jede Datei enthält alle Skins des Packs. Danach wartet nur noch die Projektseite auf dich: „Seite nachziehen“ im Helfer, zwei Klicks.</div>
 
 <h3>Der Takt</h3>
 <ul>

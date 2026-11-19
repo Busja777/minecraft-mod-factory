@@ -30,3 +30,15 @@ test('version view wins over pack view, then the default', () => {
   assert.equal(viewFor({ view: 'walk' }, {}), 'walk');
   assert.equal(viewFor({}, {}, 'editor'), 'editor');
 });
+
+test('composeGrid: all skins in rows of four, narrower than CurseForge\'s 850 px limit', async () => {
+  const sharp = (await import('sharp')).default;
+  const { composeGrid } = await import('../tools/skin-render/render.js');
+  const figure = await sharp({ create: { width: 300, height: 400, channels: 4, background: '#252538' } })
+    .composite([{ input: await sharp({ create: { width: 100, height: 300, channels: 4, background: '#ff8800' } }).png().toBuffer(), left: 100, top: 50 }]).png().toBuffer();
+  const six = await sharp(await composeGrid(Array(6).fill(figure))).metadata();
+  assert.deepEqual([six.width, six.height], [800, 600]);
+  const two = await sharp(await composeGrid(Array(2).fill(figure))).metadata();
+  assert.deepEqual([two.width, two.height], [400, 300]);
+  await assert.rejects(composeGrid([]), /at least one/);
+});

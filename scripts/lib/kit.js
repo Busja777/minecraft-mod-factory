@@ -16,7 +16,8 @@ export function packVersionsForDescription(pack, { through } = {}) {
 }
 
 export function packDescription(pack, opts) {
-  return renderDescription({ kind: 'skinpack', name: pack.name, legend: pack.legend, versions: packVersionsForDescription(pack, opts) });
+  const collection = pack.collection ? rawUrl(`${repoPath(packDir(pack.slug))}/${pack.collection}`) : undefined;
+  return renderDescription({ kind: 'skinpack', name: pack.name, legend: pack.legend, versions: packVersionsForDescription(pack, opts), collection });
 }
 
 export function modDescription(meta) {
@@ -114,8 +115,10 @@ export function skinpackUpdateKit(pack, v, config, { uploaded, fileUrl } = {}) {
 
 ## Schritte
 ${upload}
-${uploaded ? '1.' : '2.'} **Description**: Abschnitt unten **ans Ende vor "How to install"** einfügen.
+${uploaded ? '1.' : '2.'} **Beschreibung und Galerie**: \`Macros/CurseForge.command\` starten und „Seite nachziehen: ${pack.name}“ wählen (oder \`npm run cf -- seite\`). Der Helfer füllt beides aus, du klickst Save und Apply.
 ${uploaded ? '2.' : '3.'} Issue schließen.
+
+Von Hand geht es auch: den Abschnitt unten unter Description **vor "How to install"** einfügen.
 
 ## Neuer Beschreibungsabschnitt
 

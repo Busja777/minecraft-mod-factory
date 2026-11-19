@@ -81,10 +81,14 @@
 <section data-panel="edit media files" hidden>
   <h2>Edit 'Glowing Samurai'</h2>
   <div role="tablist">
+    <button role="tab" onclick="show('edit description editdesc')">Description</button>
     <button role="tab" onclick="show('edit')">General</button>
     <button role="tab" onclick="show('edit files')">Files</button>
     <button role="tab" onclick="show('edit media')">Media</button>
   </div>
+</section>
+<section data-panel="editdesc" hidden>
+  <button id="save-desc" onclick="window.log.push('save');window.savedDescription=document.getElementById('desc').value">Save</button>
 </section>
 <section data-panel="media" hidden>
   <button onclick="document.getElementById('media-modal').hidden=false">+ Add Media</button>

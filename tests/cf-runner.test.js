@@ -86,6 +86,55 @@ test('publish flow: Create → Media → File, filled in the Anleitung order, fi
   assert.match(state.changelog, /## V1\.0[\s\S]*!\[V1\.0 skins\]\(https:\/\/raw\.githubusercontent\.com\//);
 });
 
+test('page follow-up: description and gallery are filled, Save and Apply stay with the user', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  await page.evaluate(() => show('edit'));
+  const pack = JSON.parse(fs.readFileSync('./data/skins/the-last-ninjas/pack.json', 'utf-8'));
+  const plan = buildSteps({ cmd: 'seite', kind: 'skinpack', id: pack.slug, projectId: pack.cfProjectId, version: '1.2', parts: { description: true, gallery: true } }, { config, pack });
+  const steps = plan.steps.filter(s => s.action !== 'manual').map(s => (s.action === 'waitFor' ? { ...s, timeout: 15000, checkEvery: 200 } : s));
+  // The user: saves once the description is in the field, applies once the gallery title is set.
+  let stop = false;
+  const user = (async () => {
+    while (!stop) {
+      await page.evaluate(() => {
+        const visible = id => { const el = document.getElementById(id); return el && el.offsetParent !== null; };
+        if (visible('save-desc') && document.getElementById('desc').value && !window.log.includes('save')) document.getElementById('save-desc').click();
+        if (visible('apply') && document.getElementById('media-title').value.startsWith('V1.2')) document.getElementById('apply').click();
+      }).catch(() => {});
+      await new Promise(r => setTimeout(r, 200));
+    }
+  })();
+  const asked = [];
+  // Stand-in for the Core API read-back: true once the saved description contains the new section.
+  const checks = { description: () => page.evaluate(() => /Added in V1\.2/.test(window.savedDescription || '')) };
+  const { results } = await runSteps(page, steps, { ...quiet, checks, ask: async q => { asked.push(q); return ''; } });
+  stop = true; await user;
+
+  const notOk = results.filter(r => r.status !== 'ok');
+  assert.deepEqual(notOk, [], `not ok: ${JSON.stringify(notOk)}`);
+  assert.deepEqual(asked, [], 'the saved description was recognised without asking');
+  const state = await page.evaluate(() => ({ log: window.log, editor: document.getElementById('desc-editor').value, saved: window.savedDescription, image: document.getElementById('cover').files[0]?.name, title: document.getElementById('media-title').value }));
+  assert.deepEqual(state.log, ['save', 'apply'], 'Save and Apply clicked exactly once — by the user');
+  assert.equal(state.editor, 'Markdown');
+  assert.match(state.saved, /^# The Last Ninjas[\s\S]*- \*\*Neon Shogun\*\* — [\s\S]*## How to install/);
+  assert.match(state.saved, /!\[All The Last Ninjas skins\]\(https:\/\/raw\.githubusercontent\.com\/[^)]+\/media\/collection\.png\)/);
+  assert.equal(state.image, 'v1.2-skins.png');
+  assert.equal(state.title, 'V1.2: Neon Shogun, Cursed Marionette');
+});
+
+test('without a read-back the helper asks instead of guessing that Save was clicked', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const asked = [];
+  const { results } = await runSteps(page, [{ title: 'Warten auf „Save“', action: 'waitFor', value: 'Bitte speichern', until: { check: 'description' } }], { ...quiet, ask: async q => { asked.push(q); return ''; } });
+  assert.equal(results[0].status, 'ok');
+  assert.match(asked[0], /Wenn du gespeichert hast/);
+  assert.deepEqual(await page.evaluate(() => window.log), []);
+});
+
 test('never clicks Create or Apply, and no second "Add File" once the form is filled', async t => {
   if (skip) return t.skip(skip);
   const page = await browser.newPage();
