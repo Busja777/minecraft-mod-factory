@@ -1,7 +1,7 @@
 {
   "slug": "crusaders-pack",
   "name": "Crusaders Pack",
-  "packName": "Kreuzritter",
+  "packName": "Crusaders",
   "summary": "",
   "legend": "",
   "altNames": [],
@@ -15,12 +15,12 @@
       "skins": [
         {
           "file": "templar_knight.png",
-          "name": "Templer-Ritter",
+          "name": "Templar Knight",
           "slim": false
         },
         {
           "file": "malta_knight.png",
-          "name": "Malta-Ritter",
+          "name": "Knight of Malta",
           "slim": false
         }
       ],
@@ -40,27 +40,27 @@
       "skins": [
         {
           "file": "teutonic_knight.png",
-          "name": "Teutonischer Ritter",
+          "name": "Teutonic Knight",
           "slim": false
         },
         {
           "file": "santiago_knight.png",
-          "name": "Ritter von Santiago",
+          "name": "Knight of Santiago",
           "slim": false
         },
         {
           "file": "sergeant.png",
-          "name": "Kreuzritter-Sergeant",
+          "name": "Crusader Sergeant",
           "slim": false
         },
         {
           "file": "saracen.png",
-          "name": "Sarazene",
+          "name": "Saracen",
           "slim": false
         },
         {
           "file": "crusader_king.png",
-          "name": "Kreuzfahrer-König",
+          "name": "Crusader King",
           "slim": false
         },
         {
@@ -77,6 +77,108 @@
       ],
       "fileId": 8006953,
       "publishedAt": "2026-04-28T20:21:54.947Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Brothers of the Orders",
+      "skins": [
+        {
+          "file": "knight_of_saint_lazarus.png",
+          "name": "Knight of Saint Lazarus",
+          "slim": false,
+          "story": "Sworn to care for the sick as much as to fight, he wears the green cross of Saint Lazarus on black over blackened mail."
+        },
+        {
+          "file": "sword_brother.png",
+          "name": "Sword Brother",
+          "slim": false,
+          "story": "He holds a stone fort on the cold northern frontier, the red sword and cross of his brotherhood on a white tabard."
+        },
+        {
+          "file": "knight_of_mountjoy.png",
+          "name": "Knight of Mountjoy",
+          "slim": false,
+          "story": "A knight of the small Order of Mountjoy, named for the hill where pilgrims first see Jerusalem, in a red surcoat with a white cross and heraldic shoulder plates."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three more military orders ride to the Holy Land: the black-clad Knights of Saint Lazarus, the Sword Brothers of the far north and the Knights of Mountjoy in their red surcoats.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Sergeants of the Walls",
+      "skins": [
+        {
+          "file": "crossbow_sergeant.png",
+          "name": "Crossbow Sergeant",
+          "slim": false,
+          "story": "From under his iron kettle hat he has watched every siege on these walls, a quiver of bolts at his hip and a crossbow on his back."
+        },
+        {
+          "file": "turcopole_archer.png",
+          "name": "Turcopole Archer",
+          "slim": false,
+          "story": "A light horse archer who rides scout for the orders, his pointed helm wrapped in olive cloth and a full quiver across his back."
+        },
+        {
+          "file": "banner_sergeant.png",
+          "name": "Banner Sergeant",
+          "slim": false,
+          "story": "Wherever his black-and-white banner still flies, the knights know where to rally, so he has sworn never to let it fall."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Knights win the charge, but the walls are held by sergeants: a crossbowman in a kettle hat, a turcopole archer and the sergeant who carries the black-and-white banner.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Riders of the East",
+      "skins": [
+        {
+          "file": "mamluk_lancer.png",
+          "name": "Mamluk Lancer",
+          "slim": false,
+          "story": "Trained from boyhood to fight from the saddle, he rides in steel lamellar laced with yellow silk, his face hidden behind a mail aventail."
+        },
+        {
+          "file": "steppe_horse_archer.png",
+          "name": "Steppe Horse Archer",
+          "slim": false,
+          "story": "He can loose three arrows before his horse lands a single stride, and his fur-trimmed cap is the last thing his enemies see."
+        },
+        {
+          "file": "citadel_guard.png",
+          "name": "Citadel Guard",
+          "slim": false,
+          "story": "He keeps the gate of the old citadel in gilded scales and a white turban wound round a steel spike, and no one has passed him uninvited."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "From the other side of the battlefield come three new riders: a lancer in lamellar armour, a horse archer of the steppe and a guard of the citadel in gilded scales.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
