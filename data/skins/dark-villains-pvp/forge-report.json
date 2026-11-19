@@ -1,0 +1,115 @@
+{
+  "pack": "dark-villains-pvp",
+  "style": "accent",
+  "at": "2026-11-19T23:09:05.310Z",
+  "versions": [
+    {
+      "version": "1.1",
+      "title": "The Infernal Court",
+      "skins": [
+        {
+          "name": "Cinder King",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cinder Brute (5/6)",
+          "black": 0.8,
+          "neon": 0.013,
+          "overlayTransparent": 0.7
+        },
+        {
+          "name": "Horned Tyrant",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Reaver (5/6)",
+          "black": 0.74,
+          "neon": 0.012,
+          "overlayTransparent": 0.78
+        },
+        {
+          "name": "Ash Widow",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Reaver (6/6)",
+          "black": 0.92,
+          "neon": 0.02,
+          "overlayTransparent": 0.61
+        }
+      ]
+    },
+    {
+      "version": "1.2",
+      "title": "Chains of the Pit",
+      "skins": [
+        {
+          "name": "Chain Warden",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Reaver (5/6)",
+          "black": 0.86,
+          "neon": 0.006,
+          "overlayTransparent": 0.71
+        },
+        {
+          "name": "Brimstone Executioner",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ash Widow (5/6)",
+          "black": 0.83,
+          "neon": 0.012,
+          "overlayTransparent": 0.66
+        },
+        {
+          "name": "Shackled Beast",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cinder Brute (5/6)",
+          "black": 0.93,
+          "neon": 0.015,
+          "overlayTransparent": 0.78
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "The Black Eclipse",
+      "skins": [
+        {
+          "name": "Eclipse Prophet",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cinder Brute (5/6)",
+          "black": 0.44,
+          "neon": 0.039,
+          "overlayTransparent": 0.67
+        },
+        {
+          "name": "Soulfire Revenant",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ash Widow (5/6)",
+          "black": 0.71,
+          "neon": 0.014,
+          "overlayTransparent": 0.62
+        },
+        {
+          "name": "Obsidian Juggernaut",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Reaver (5/6)",
+          "black": 0.34,
+          "neon": 0.027,
+          "overlayTransparent": 0.61
+        }
+      ]
+    }
+  ]
+}

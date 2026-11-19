@@ -82,6 +82,108 @@
       ],
       "fileId": 7954807,
       "publishedAt": "2026-04-20T09:25:15.503Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "The Infernal Court",
+      "skins": [
+        {
+          "file": "cinder_king.png",
+          "name": "Cinder King",
+          "slim": false,
+          "story": "He sits on a throne of cooling slag and wears a crown forged from the swords of every champion he burned."
+        },
+        {
+          "file": "horned_tyrant.png",
+          "name": "Horned Tyrant",
+          "slim": false,
+          "story": "The pit grew him two black horns for every arena he conquered, and the molten grin never leaves his face."
+        },
+        {
+          "file": "ash_widow.png",
+          "name": "Ash Widow",
+          "slim": true,
+          "story": "She wears a veil of black lace for every rival she outlived, and her violet fire burns colder than grief."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The villains of the pit crown their own rulers: a king of cinders, a horned tyrant and a widow in violet flame who mourns nobody.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Chains of the Pit",
+      "skins": [
+        {
+          "file": "chain_warden.png",
+          "name": "Chain Warden",
+          "slim": false,
+          "story": "He locked his own head in an iron cage so no prisoner could ever see him blink, and he never loses a key."
+        },
+        {
+          "file": "brimstone_executioner.png",
+          "name": "Brimstone Executioner",
+          "slim": false,
+          "story": "Nobody has seen the face under his hood, only the sulfur light in his eyes and the burning axe scar on his back."
+        },
+        {
+          "file": "shackled_beast.png",
+          "name": "Shackled Beast",
+          "slim": false,
+          "story": "The pit kept it chained for a hundred years, and the day it broke free it kept the shackles as trophies."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Below the infernal court lies the prison of the pit, where a warden, an executioner and the beast they never tamed wait for new challengers.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "The Black Eclipse",
+      "skins": [
+        {
+          "file": "eclipse_prophet.png",
+          "name": "Eclipse Prophet",
+          "slim": false,
+          "story": "He wears the dead sun on his brow and reads the end of every duel in the runes that burn down his robe."
+        },
+        {
+          "file": "soulfire_revenant.png",
+          "name": "Soulfire Revenant",
+          "slim": false,
+          "story": "Even the pit could not keep him dead; now cold blue soulfire burns where his heart and eyes used to be."
+        },
+        {
+          "file": "obsidian_juggernaut.png",
+          "name": "Obsidian Juggernaut",
+          "slim": false,
+          "story": "Forged out of a cooled lava flow, he walks through arrows and fireballs alike, and the magma inside him never sets."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the sun goes dark over the battlefield, the oldest villains rise: a prophet of the eclipse, a revenant of cold soulfire and an obsidian juggernaut.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [
