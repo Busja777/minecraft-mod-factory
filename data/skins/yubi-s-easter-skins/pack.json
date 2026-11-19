@@ -42,6 +42,108 @@
       ],
       "fileId": 7821929,
       "publishedAt": "2026-03-27T09:52:22.007Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "The Great Egg Hunt",
+      "skins": [
+        {
+          "file": "egg_hunter.png",
+          "name": "Egg Hunter",
+          "slim": false,
+          "story": "She was first out of the door on Easter morning, and her basket is already so full of painted eggs that she has to carry it with both hands."
+        },
+        {
+          "file": "eggshell_knight.png",
+          "name": "Eggshell Knight",
+          "slim": false,
+          "story": "He guards the hidden eggs in armour painted like the finest Easter egg, and the zigzag on his helmet is his family crest."
+        },
+        {
+          "file": "spring_lamb.png",
+          "name": "Spring Lamb",
+          "slim": false,
+          "story": "She was born on the first warm morning of spring, and the pink ribbon and the little golden bell were a present from the whole meadow."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The sun is up and the eggs are hidden: a young egg hunter with a full basket, a knight in painted eggshell armour and a little spring lamb join the Easter crowd.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "The Garden Wakes Up",
+      "skins": [
+        {
+          "file": "carrot_patch.png",
+          "name": "Carrot Patch",
+          "slim": false,
+          "story": "He was the biggest carrot in the Easter garden until the bunnies tried to pull him up, so he simply climbed out by himself, soil still on his boots."
+        },
+        {
+          "file": "tulip_bloom.png",
+          "name": "Tulip Bloom",
+          "slim": false,
+          "story": "She sleeps curled up in a tulip bud all winter, and on the first sunny day of spring the red petals open around her face like a bonnet."
+        },
+        {
+          "file": "honey_bee.png",
+          "name": "Honey Bee",
+          "slim": false,
+          "story": "He is the busiest bee in the Easter garden and still finds time to dip into the honey pot, which is why there is always a sticky drop on his hood."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Spring has reached the vegetable patch and the flower beds: a carrot pulled fresh from the soil, a tulip in full bloom and a busy honey bee come out to play.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "The Easter Parade",
+      "skins": [
+        {
+          "file": "sunday_bonnet.png",
+          "name": "Sunday Bonnet",
+          "slim": false,
+          "story": "Every year she weaves a new straw bonnet for the parade, and this year she tucked the first pink and blue flowers of the garden into its ribbon."
+        },
+        {
+          "file": "rainbow_cloud.png",
+          "name": "Rainbow Cloud",
+          "slim": false,
+          "story": "After every April shower he is the first one outside, with a fluffy cloud for hair and a jumper knitted in every colour of the rainbow."
+        },
+        {
+          "file": "egg_painter.png",
+          "name": "Egg Painter",
+          "slim": false,
+          "story": "He painted every single egg for the hunt this year, and you can tell, because there is paint on his smock, his trousers, his cheek and the egg he is still holding."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The whole town walks the Easter parade: a lady in her Sunday bonnet, a dreamer in a rainbow jumper with a cloud for hair and the egg painter who decorated every egg of the hunt.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

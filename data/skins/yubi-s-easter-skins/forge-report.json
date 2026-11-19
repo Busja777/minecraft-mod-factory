@@ -1,0 +1,115 @@
+{
+  "pack": "yubi-s-easter-skins",
+  "style": "hair",
+  "at": "2026-11-19T23:31:08.137Z",
+  "versions": [
+    {
+      "version": "1.1",
+      "title": "The Great Egg Hunt",
+      "skins": [
+        {
+          "name": "Egg Hunter",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Easter Bunny (6/6)",
+          "black": 0,
+          "neon": 0.556,
+          "overlayTransparent": 0.86
+        },
+        {
+          "name": "Eggshell Knight",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Easter Bunny (6/6)",
+          "black": 0,
+          "neon": 0.547,
+          "overlayTransparent": 0.88
+        },
+        {
+          "name": "Spring Lamb",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Easter Bunny (6/6)",
+          "black": 0,
+          "neon": 0.449,
+          "overlayTransparent": 0.89
+        }
+      ]
+    },
+    {
+      "version": "1.2",
+      "title": "The Garden Wakes Up",
+      "skins": [
+        {
+          "name": "Carrot Patch",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Easter Bunny (6/6)",
+          "black": 0,
+          "neon": 0.528,
+          "overlayTransparent": 0.91
+        },
+        {
+          "name": "Tulip Bloom",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Spring Fairy (5/6)",
+          "black": 0,
+          "neon": 0.289,
+          "overlayTransparent": 0.92
+        },
+        {
+          "name": "Honey Bee",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Spring Lamb (5/6)",
+          "black": 0,
+          "neon": 0.227,
+          "overlayTransparent": 0.92
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "The Easter Parade",
+      "skins": [
+        {
+          "name": "Sunday Bonnet",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Easter Bunny (6/6)",
+          "black": 0,
+          "neon": 0.526,
+          "overlayTransparent": 0.82
+        },
+        {
+          "name": "Rainbow Cloud",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Easter Bunny (6/6)",
+          "black": 0,
+          "neon": 0.381,
+          "overlayTransparent": 0.89
+        },
+        {
+          "name": "Egg Painter",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Egg Hunter (4/6)",
+          "black": 0,
+          "neon": 0.423,
+          "overlayTransparent": 0.89
+        }
+      ]
+    }
+  ]
+}
