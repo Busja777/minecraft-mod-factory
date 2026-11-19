@@ -20,11 +20,17 @@
     "cfName": "The Last Ninjas",
     "projectId": 1503504,
     "status": "published",
-    "version": "1.1",
-    "lastPublishedAt": "2026-05-05T17:48:38.670Z",
-    "nextUpdateDue": "2026-05-28T17:02:14.751Z",
-    "updateCount": 0,
-    "files": [],
+    "version": "1.2",
+    "lastPublishedAt": "2026-11-19T18:05:43.110Z",
+    "nextUpdateDue": "2026-12-14T10:25:50.401Z",
+    "updateCount": 1,
+    "files": [
+      {
+        "fileId": 9703541,
+        "version": "1.2",
+        "uploadedAt": "2026-11-19T18:05:43.110Z"
+      }
+    ],
     "game": "bedrock"
   }
 ]

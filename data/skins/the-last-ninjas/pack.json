@@ -96,14 +96,15 @@
         }
       ],
       "mcpack": "GlowNinjaPackVol3_Complete.mcpack",
-      "status": "due",
+      "status": "published",
       "note": "A Neon Shogun in gold armour with a crimson seal on his chest has come to claim the fallen. A pale Cursed Marionette with white doll eyes follows close behind.",
       "media": [
         "media/v1.2-skins.png"
       ],
-      "fileId": null,
-      "publishedAt": null,
-      "changelog": "## V1.2\n\nA Neon Shogun in gold armour with a crimson seal on his chest has come to claim the fallen. A pale Cursed Marionette with white doll eyes follows close behind.\n\nNew skins:\n- Neon Shogun\n- Cursed Marionette\n\n![V1.2 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/the-last-ninjas/media/v1.2-skins.png)\n"
+      "fileId": 9703541,
+      "publishedAt": "2026-11-19T18:05:43.110Z",
+      "changelog": "## V1.2\n\n2 new skins join the pack: Neon Shogun and Cursed Marionette.\n\nA Neon Shogun in gold armour with a crimson seal on his chest has come to claim the fallen. A pale Cursed Marionette with white doll eyes follows close behind.\n\nNew skins:\n- **Neon Shogun** — The new lord of the lost, gold-trimmed armour and a crimson seal burning on his chest, gathering every fallen ninja under one banner.\n- **Cursed Marionette** — A pale puppet with mismatched white eyes that walks beside the Shogun, moving without anyone pulling its strings.\n\nThis download contains all 8 skins of the pack, so new players get everything in one file.\n\n![V1.2 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/the-last-ninjas/media/v1.2-skins.png)\n",
+      "manual": false
     }
   ],
   "lastGameVersions": [
