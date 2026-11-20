@@ -1,0 +1,115 @@
+{
+  "pack": "young-mc-s-pack",
+  "style": "hair",
+  "at": "2026-11-19T23:22:08.917Z",
+  "versions": [
+    {
+      "version": "1.2",
+      "title": "Back to School Fits",
+      "skins": [
+        {
+          "name": "Cherry Varsity",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Midnight Hoodie (5/6)",
+          "black": 0,
+          "neon": 0.297,
+          "overlayTransparent": 0.89
+        },
+        {
+          "name": "Mocha Beats",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Midnight Hoodie (5/6)",
+          "black": 0.06,
+          "neon": 0.325,
+          "overlayTransparent": 0.9
+        },
+        {
+          "name": "Plaid Wrap",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Midnight Hoodie (6/6)",
+          "black": 0,
+          "neon": 0.417,
+          "overlayTransparent": 0.93
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "Skatepark Summer",
+      "skins": [
+        {
+          "name": "Checker Flip",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Desert Tan (5/6)",
+          "black": 0,
+          "neon": 0.298,
+          "overlayTransparent": 0.91
+        },
+        {
+          "name": "Tie-Dye Sky",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shadow Tech (5/6)",
+          "black": 0,
+          "neon": 0.594,
+          "overlayTransparent": 0.91
+        },
+        {
+          "name": "Peach Overalls",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cherry Varsity (5/6)",
+          "black": 0,
+          "neon": 0.526,
+          "overlayTransparent": 0.97
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "After Dark Drip",
+      "skins": [
+        {
+          "name": "Frost Puffer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cherry Varsity (4/6)",
+          "black": 0.03,
+          "neon": 0.297,
+          "overlayTransparent": 0.86
+        },
+        {
+          "name": "Night Runner",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Peach Overalls (5/6)",
+          "black": 0.08,
+          "neon": 0.212,
+          "overlayTransparent": 0.96
+        },
+        {
+          "name": "Retro Breaker",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Arctic Drip (5/6)",
+          "black": 0,
+          "neon": 0.298,
+          "overlayTransparent": 0.9
+        }
+      ]
+    }
+  ]
+}

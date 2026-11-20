@@ -9,7 +9,7 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 | Workflow | Window | What happens |
 |---|---|---|
 | `morning.yml` | 06:00–12:00, once per day at a random minute | 1) Uploads every pending mod whose CurseForge project ID you entered. 2) On `newModDays` (default Mon/Wed/Fri/Sat): Claude designs a new mod (incl. a short legend) → ChatGPT logo `<Name>.png` (400×400) and cover `<Name> Cover.png` (720×340) → source stored in `data/mods/<modId>/` → Gradle build (one auto-fix retry) → **project kit** committed and a GitHub issue (`cf-project-needed`) asks you to create the CurseForge project. |
-| `evening.yml` | 19:00–22:00, once per day at a random minute | Picks the published project whose per-project due date (random **22–25 days** after its last upload, never under 22) has passed, lets Claude implement one real improvement, bumps the minor version and uploads the new file with a changelog. Nothing due → nothing happens. |
+| `evening.yml` | 18:00–21:00, once per day at a random minute | Picks the next published project in the cycle (longest without an update first, at least **23 days** after its last upload as CurseForge reports it), lets Claude implement one real improvement, bumps the minor version and uploads the new file with a changelog. Nothing due → nothing happens. |
 
 **Your part:** create the project on https://authors.curseforge.com from the kit (name, summary, category, icon, description), put the numeric project ID into `data/cf-projects.json` (`"projectId": 123456`), commit, push. The next morning run uploads it. For an immediate upload run *Actions → Morning → Run workflow* with `force = true`.
 
@@ -23,18 +23,22 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 
 ## Skin packs (CurseForge Bedrock)
 
-Old packs from the local folder (`V1/`, `U1…Un/`) are imported once; afterwards the evening window releases one prepared version (`Un`) per pack every 22–25 days, mixed with mod updates (one update per evening in total).
+Old packs from the local folder (`V1/`, `U1…Un/`) are imported once; afterwards the evening window releases one prepared version (`Un`) per pack in turn, each pack at least 23 days apart, mixed with mod updates (one update per evening in total). Every upload ticks the game versions of the previous file plus the newest Minecraft releases.
 
 ```bash
+# 0. Overview of all projects: what is on CurseForge, what is prepared, the evening schedule
+npm run bestand          # → Output/bestand/BESTAND.md + bestand.csv (folder mapping: data/bestand.json)
 # 1. Import (reads every .mcpack, syncs the upload state from CurseForge via CF_CORE_API_KEY)
 node scripts/import-skinpack.js "/path/to/MCPE/Glowing Samurai" --project 1498885
+#    --skip U3,U4   leave out stage folders that need a check · --renumber   close gaps (U2 without U1)
+#    a V1 missing locally is taken from CurseForge; stages sharing one .mcpack name are stored as <name>_V1_x.mcpack
 # 2. Refresh the project page: Actions → "Skin pack — refresh project page" (pack = slug)
 #    → 3D renders, legend/summary/notes (Claude), logo + cover (ChatGPT), issue with the full kit
 ```
 
 - **Cover:** upload `<Name> Cover.png` under *Media* with the title **MCPEDL** (MCPEDL takes the cover from there), description `<Name> Cover.png`, ★ Feature Media.
 - **Description order:** legend → AI note → skins of V1.0 → one section per update (`Added in V1.2: …` with renders) → install notes. Description and gallery have no API: every update opens an issue with the new section to paste.
-- **Upload:** `config.bedrock.uploadApi` stays `false` until a test upload with the UUID upload token worked on a Bedrock project; until then the issue contains the file link for a manual upload. A manual upload is detected on the next run (file name = `.mcpack` name).
+- **Upload:** `config.bedrock.uploadApi` is `true` since the first API upload on 2026-11-19 (The Last Ninjas V1.2). Every uploaded file contains all skins so far (`scripts/lib/complete-pack.js`). A manual upload is detected on the next run (file name = `.mcpack` name).
 - Renders look like the 3D preview of the skin editor (`Input/minecraft-skin-editor`): same lights, poses and background `#252538`. 4D/custom geometry is not supported.
 - Positions: `node scripts/skin-views.js --pack <slug>` renders every skin in all positions of `tools/skin-render/views.json` and writes `previews/<slug>/index.html` (← → position, ↑ ↓ skin). Apply one with `node scripts/render-skins.js --pack <slug> --view walk --all` (or `--version 1.3 --view fight` for one version); the choice is stored in `pack.json`, default `editor`.
 
@@ -70,4 +74,4 @@ Gradle builds need Java 21. The CurseForge upload can be smoke-tested against a 
 
 ## Policy notes
 
-CurseForge forbids file updates made only to gain visibility and "multiple similar / low-effort projects". The update path therefore requires a real code change (hash check), a specific changelog and a per-project interval of 22–25 days (hard floor 22). Keep the volume of new projects moderate.
+CurseForge forbids file updates made only to gain visibility and "multiple similar / low-effort projects". The update path therefore requires a real code change (hash check), a specific changelog and a per-project interval of at least 23 days (23–26). Keep the volume of new projects moderate.

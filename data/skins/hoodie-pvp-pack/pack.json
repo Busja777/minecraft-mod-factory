@@ -1,0 +1,249 @@
+{
+  "slug": "hoodie-pvp-pack",
+  "name": "Hoodie PVP pack",
+  "packName": "PvP Hoodie Pack",
+  "summary": "These are hoodie fighters. Hoods up, colours loud, and nobody has ever seen what's underneath ...",
+  "legend": "Nobody remembers who opened the first arena. People only remember the hoodies. They showed up one night, sixteen of them, hoods pulled low, each one wearing a single bold colour like a flag. Crimson Striker came in first, red as a warning, with a cream stripe across the chest. Royal Blue followed, gold trim catching the torchlight. Midnight Black stayed in the shadows, and the only thing you could see was the white line on his chest. They never said where they came from. They never took their hoods down. Every fight ended the same way: a flash of colour, a squeak of white sneakers, and then nothing. Since then, more have arrived wearing masks, prints and fire. The crowd keeps growing. Somewhere past the edge of the map, another hood is already going up ...",
+  "altNames": [
+    "Hoods Up Arena",
+    "Hoodie Clash Crew"
+  ],
+  "cfProjectId": 1525940,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "crimson_striker.png",
+          "name": "Crimson Striker",
+          "slim": false,
+          "story": "The first to step into the arena, in blood-red with a cream stripe across the chest, and always the first to strike."
+        },
+        {
+          "file": "royal_blue.png",
+          "name": "Royal Blue",
+          "slim": false,
+          "story": "Royal blue with gold trim on the chest, cuffs and sneakers. He fights as if the arena already belongs to him."
+        },
+        {
+          "file": "forest_ranger.png",
+          "name": "Forest Ranger",
+          "slim": false,
+          "story": "Deep forest green with khaki stripes, he moves through the trees and only steps out when the fight is already decided."
+        },
+        {
+          "file": "sunset_orange.png",
+          "name": "Sunset Orange",
+          "slim": false,
+          "story": "Burning orange with a dark chest stripe, she always shows up just as the sun goes down."
+        },
+        {
+          "file": "electric_purple.png",
+          "name": "Electric Purple",
+          "slim": false,
+          "story": "Vivid purple with a pale lavender stripe, she moves so fast her colour seems to crackle in the air."
+        },
+        {
+          "file": "cyan_pulse.png",
+          "name": "Cyan Pulse",
+          "slim": false,
+          "story": "Cyan with navy bands, he keeps a steady rhythm, and every hit lands right on the beat."
+        },
+        {
+          "file": "hot_pink.png",
+          "name": "Hot Pink",
+          "slim": false,
+          "story": "Hot pink with cream trim, she is the brightest target on the field, and nobody has managed to hit her yet."
+        },
+        {
+          "file": "golden_bolt.png",
+          "name": "Golden Bolt",
+          "slim": false,
+          "story": "Golden yellow with black stripes and black sneakers, he hits like lightning and is gone before the thunder."
+        },
+        {
+          "file": "midnight_black.png",
+          "name": "Midnight Black",
+          "slim": false,
+          "story": "All black except for one white stripe. In the dark, that stripe is the last thing anyone sees."
+        },
+        {
+          "file": "arctic_white.png",
+          "name": "Arctic White",
+          "slim": false,
+          "story": "Snow-white with a sharp black stripe, he stays calm and cold and never gets a speck of dirt on his hoodie."
+        },
+        {
+          "file": "mint_fresh.png",
+          "name": "Mint Fresh",
+          "slim": false,
+          "story": "Soft mint green with dark trim. She looks harmless, and that is exactly the trap."
+        },
+        {
+          "file": "navy_storm.png",
+          "name": "Navy Storm",
+          "slim": false,
+          "story": "Deep navy with a white stripe, he sits quietly like storm clouds until the arena suddenly breaks open."
+        },
+        {
+          "file": "lime_edge.png",
+          "name": "Lime Edge",
+          "slim": false,
+          "story": "Acid lime with dark accents, she lives on the edge of every map and wins every fight from there."
+        },
+        {
+          "file": "burgundy_ace.png",
+          "name": "Burgundy Ace",
+          "slim": false,
+          "story": "Dark burgundy with cream stripes, he is an old champion who never shows his whole hand."
+        },
+        {
+          "file": "sky_scout.png",
+          "name": "Sky Scout",
+          "slim": false,
+          "story": "Pale sky blue with navy trim, he scouts ahead and marks every enemy before the fight begins."
+        },
+        {
+          "file": "coral_flash.png",
+          "name": "Coral Flash",
+          "slim": false,
+          "story": "Warm coral with a dark stripe, she is a quick flash of colour, and her opponents are on the ground before they notice."
+        }
+      ],
+      "mcpack": "PvP_Hoodie_Pack(2).mcpack",
+      "status": "published",
+      "note": "The first sixteen hoodies arrive, one bold colour each, hoods up and white sneakers laced, ready for the arena.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7995828,
+      "publishedAt": "2026-04-26T17:19:55.340Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Hoods Up",
+      "skins": [
+        {
+          "file": "bandit_shade.png",
+          "name": "Bandit Shade",
+          "slim": false,
+          "story": "Nobody has ever seen what is under the red bandana, only the cold blue eyes above it when he takes your bed."
+        },
+        {
+          "file": "copper_fox.png",
+          "name": "Copper Fox",
+          "slim": false,
+          "story": "He stitched fox ears and a bushy tail onto his hoodie for a joke, and now the whole server is scared of the orange blur in the trees."
+        },
+        {
+          "file": "split_signal.png",
+          "name": "Split Signal",
+          "slim": false,
+          "story": "Half teal, half night: she switches sides of the arena mid-fight and nobody can tell which team she is on."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new fighters pull their hoods up and keep their secrets: a masked raider, a fox with ears on his hood and a hoodie cut clean down the middle.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Suited for Battle",
+      "skins": [
+        {
+          "file": "iron_zip.png",
+          "name": "Iron Zip",
+          "slim": false,
+          "story": "He wears his iron chestplate under an open zip hoodie, pushes the hood back before every duel and still has the scar from the first one he lost."
+        },
+        {
+          "file": "hazard_runner.png",
+          "name": "Hazard Runner",
+          "slim": false,
+          "story": "Strapped into a hazard-orange harness with goggles over his eyes, he is the courier who always gets through the warzone."
+        },
+        {
+          "file": "frost_wrap.png",
+          "name": "Frost Wrap",
+          "slim": false,
+          "story": "She fights in the snow biome with a fur-trimmed hood and a scarf so long it trails behind her like a red flag."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The arena got rougher, so three fighters gear up: iron under the zip, a hazard harness over the hood and a thick knit scarf against the cold.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "Loud Prints",
+      "skins": [
+        {
+          "file": "tie_dye_tempest.png",
+          "name": "Tie-Dye Tempest",
+          "slim": false,
+          "story": "She dyed her hoodie in a bucket of every colour she could craft and fights with a grin as loud as her clothes."
+        },
+        {
+          "file": "twin_blade.png",
+          "name": "Twin Blade",
+          "slim": false,
+          "story": "Two crossed swords on his chest and one down his back: he wears the duel he has never lost."
+        },
+        {
+          "file": "ember_fade.png",
+          "name": "Ember Fade",
+          "slim": false,
+          "story": "His hoodie burns from coal at the shoulders to flame at the hem, and in the shadow of his hood only two embers glow."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Plain hoodies are out: a tie-dye storm, a giant crossed-swords print and a hoodie that fades from coal to flame.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.20.40",
+    "1.21.93",
+    "1.21.101",
+    "1.20",
+    "1.21",
+    "1.21.60",
+    "1.21.40",
+    "1.21.122",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: one blocky Minecraft-style character in a black hoodie with the hood up. Hidden in the hood's shadow, the face shows small glowing orange eyes. The hoodie's front and sleeves fade from black into fiery red, orange and yellow horizontal bands, like embers. Black pants, sneakers with an orange-yellow sole. Dramatic warm ember glow rising from below, dark navy-black background, floating sparks, cinematic lighting, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style characters side by side in a night-time PvP arena under floodlights. Left: a bright red hoodie with the hood up, a cream stripe across the chest, cream cuffs, dark grey pants and white sneakers. Centre: a dark charcoal hoodie with the hood up, a red bandana mask over the lower face, red sleeve bands and a red stripe down the dark pants. Right: a black hoodie with the hood up, small glowing orange eyes in the shadow, and the body fading from black into red, orange and yellow ember bands. Smoke, sparks and coloured rim light on a deep navy background. The title \"PvP Hoodie Pack\" in big, bold, stylised blocky letters across the top."
+}

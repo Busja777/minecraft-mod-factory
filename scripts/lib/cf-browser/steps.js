@@ -134,7 +134,7 @@ export function buildSteps(task, { config, pack, meta }) {
     } else {
       notes.push(`Die .jar lädt die Pipeline per API hoch: npm run publish -- --mod ${task.id} (braucht Java 21).`);
     }
-    notes.push('Approval abwarten (Glocke oben rechts). Updates frühestens nach 14 Tagen, die Pipeline wartet 22–25.');
+    notes.push('Approval abwarten (Glocke oben rechts). Updates frühestens nach 14 Tagen, die Pipeline wartet mindestens 23.');
     return { title: `Komplett veröffentlichen: ${f.name}`, steps, notes, record };
   }
   throw new Error(`Unbekannter Ablauf "${cmd}"`);

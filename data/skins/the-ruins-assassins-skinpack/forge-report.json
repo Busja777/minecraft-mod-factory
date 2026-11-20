@@ -1,0 +1,115 @@
+{
+  "pack": "the-ruins-assassins-skinpack",
+  "style": "accent",
+  "at": "2026-11-19T22:57:15.042Z",
+  "versions": [
+    {
+      "version": "1.3",
+      "title": "Sands of the Fallen City",
+      "skins": [
+        {
+          "name": "Sandstorm Assassin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shadow Assassin (6/6)",
+          "black": 0,
+          "neon": 0.134,
+          "overlayTransparent": 0.8
+        },
+        {
+          "name": "Scarab Assassin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shadow Assassin (5/6)",
+          "black": 0,
+          "neon": 0.045,
+          "overlayTransparent": 0.85
+        },
+        {
+          "name": "Jackal Assassin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shadow Assassin (6/6)",
+          "black": 0.04,
+          "neon": 0.04,
+          "overlayTransparent": 0.81
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "Winter in the Ruins",
+      "skins": [
+        {
+          "name": "Frost Assassin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sandstorm Assassin (5/6)",
+          "black": 0,
+          "neon": 0.303,
+          "overlayTransparent": 0.74
+        },
+        {
+          "name": "Winter Rose Assassin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sandstorm Assassin (5/6)",
+          "black": 0,
+          "neon": 0.15,
+          "overlayTransparent": 0.67
+        },
+        {
+          "name": "Aurora Assassin",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Crimson Assassin (5/6)",
+          "black": 0.07,
+          "neon": 0.026,
+          "overlayTransparent": 0.8
+        }
+      ]
+    },
+    {
+      "version": "1.5",
+      "title": "Masters of the Ruins",
+      "skins": [
+        {
+          "name": "Blood Moon Master",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Aurora Assassin (4/6)",
+          "black": 0.16,
+          "neon": 0.007,
+          "overlayTransparent": 0.77
+        },
+        {
+          "name": "Venom Master",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shadow Assassin (5/6)",
+          "black": 0,
+          "neon": 0.012,
+          "overlayTransparent": 0.84
+        },
+        {
+          "name": "Hawk Master",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Winter Rose Assassin (4/6)",
+          "black": 0,
+          "neon": 0.048,
+          "overlayTransparent": 0.82
+        }
+      ]
+    }
+  ]
+}

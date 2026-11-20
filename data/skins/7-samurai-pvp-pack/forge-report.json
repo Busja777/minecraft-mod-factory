@@ -1,0 +1,115 @@
+{
+  "pack": "7-samurai-pvp-pack",
+  "style": "minimal",
+  "at": "2026-11-19T22:58:00.783Z",
+  "versions": [
+    {
+      "version": "1.2",
+      "title": "Tide and Moon",
+      "skins": [
+        {
+          "name": "Nami Tide",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shiroi Ghost (5/6)",
+          "black": 0,
+          "neon": 0.064,
+          "overlayTransparent": 0.99
+        },
+        {
+          "name": "Tsuki Moon",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Kage Shadow (6/6)",
+          "black": 0.01,
+          "neon": 0.093,
+          "overlayTransparent": 0.99
+        },
+        {
+          "name": "Hotaru Firefly",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Nami Tide (5/6)",
+          "black": 0.31,
+          "neon": 0.041,
+          "overlayTransparent": 0.99
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "Ashes of the Mountain",
+      "skins": [
+        {
+          "name": "Kazan Volcano",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ryuu Dragon (5/6)",
+          "black": 0.28,
+          "neon": 0.028,
+          "overlayTransparent": 0.98
+        },
+        {
+          "name": "Kin Gold",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Nami Tide (5/6)",
+          "black": 0,
+          "neon": 0.113,
+          "overlayTransparent": 0.95
+        },
+        {
+          "name": "Iwa Stone",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Midori Forest (5/6)",
+          "black": 0.01,
+          "neon": 0.042,
+          "overlayTransparent": 0.97
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "Spirits of the Shrine",
+      "skins": [
+        {
+          "name": "Kitsune Fox",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ryuu Dragon (5/6)",
+          "black": 0,
+          "neon": 0.343,
+          "overlayTransparent": 0.99
+        },
+        {
+          "name": "Hebi Serpent",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Midori Forest (5/6)",
+          "black": 0,
+          "neon": 0.035,
+          "overlayTransparent": 0.95
+        },
+        {
+          "name": "Karasu Crow",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Raijin Thunder (5/6)",
+          "black": 0,
+          "neon": 0.042,
+          "overlayTransparent": 0.95
+        }
+      ]
+    }
+  ]
+}

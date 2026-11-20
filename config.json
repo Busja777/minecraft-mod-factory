@@ -13,8 +13,8 @@
       "12:00"
     ],
     "evening": [
-      "19:00",
-      "22:00"
+      "18:00",
+      "21:00"
     ]
   },
   "newModDays": [
@@ -24,12 +24,12 @@
     6
   ],
   "updateIntervalDays": [
-    22,
-    25
+    23,
+    26
   ],
   "maxPendingKits": 5,
   "images": {
-    "model": "gpt-image-2.5-flare",
+    "model": "gpt-image-2.6-flare",
     "logoSize": 400,
     "coverSize": [
       720,

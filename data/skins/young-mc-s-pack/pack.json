@@ -1,0 +1,252 @@
+{
+  "slug": "young-mc-s-pack",
+  "name": "Young MC's Pack",
+  "packName": "Fresh Youth Slim Pack",
+  "summary": "These are fresh street kids. It seems like there is more than just style stitched into their hoodies ...",
+  "legend": "Nobody knows who first started the crew. One night the city's group chat just lit up with a single photo: a kid in a black hoodie and dark jeans, standing under a broken streetlamp. They call him Midnight Hoodie, and wherever he walks, others show up. Street Gold came next, the gold chevron on his black tee pointing somewhere nobody else could see. Then the lights in the old arcade flickered, and two new faces stepped out of the static: Cyber Pink with magenta marks across her cheeks, and Toxic Lime with neon-green stripes that glow brighter after dark. They don't post. They don't explain. They just leave fresh sneaker prints at the edge of town. And every season, the crew gets a little bigger. Who's next to get the call?",
+  "altNames": [
+    "Fresh Youth Crew",
+    "Young MC Street Fits"
+  ],
+  "cfProjectId": 1493433,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "Midnight_Hoodie.png",
+          "name": "Midnight Hoodie",
+          "slim": true,
+          "story": "The first of the crew, brown-haired and silent, his black hoodie and navy jeans blending into every midnight street."
+        },
+        {
+          "file": "Neon_Drip.png",
+          "name": "Neon Drip",
+          "slim": true,
+          "story": "Bright green shirt, black pants, spotless white sneakers: Neon Drip is the one you spot first in any crowd."
+        },
+        {
+          "file": "Pastel_Dream.png",
+          "name": "Pastel Dream",
+          "slim": true,
+          "story": "Pink hair, lavender top and icy pastel pants, Pastel Dream drifts through town like she stepped out of a soft daydream."
+        },
+        {
+          "file": "Skater_Red.png",
+          "name": "Skater Red",
+          "slim": true,
+          "story": "Red cap, white tee, blue jeans and red kicks, Skater Red was born on the half-pipe and never left."
+        },
+        {
+          "file": "Shadow_Tech.png",
+          "name": "Shadow Tech",
+          "slim": true,
+          "story": "Dressed in deep purple-black from head to toe, Shadow Tech knows every dark corner of the city's wiring."
+        },
+        {
+          "file": "Ocean_Wave.png",
+          "name": "Ocean Wave",
+          "slim": true,
+          "story": "Blue hair, teal shirt and bright white pants, Ocean Wave rolls in calm and leaves everyone a little cooler."
+        },
+        {
+          "file": "Fire_Fit.png",
+          "name": "Fire Fit",
+          "slim": true,
+          "story": "Orange hair and a blazing orange shirt over black pants, Fire Fit heats up any block he walks onto."
+        },
+        {
+          "file": "Arctic_Drip.png",
+          "name": "Arctic Drip",
+          "slim": true,
+          "story": "White hair, icy white shirt and grey pants, Arctic Drip keeps his cool even when the whole crew gets loud."
+        },
+        {
+          "file": "Forest_Chill.png",
+          "name": "Forest Chill",
+          "slim": true,
+          "story": "Dark green hair, green shirt and earthy brown pants, Forest Chill smells faintly of pine and never rushes anything."
+        },
+        {
+          "file": "Sunset_Glow.png",
+          "name": "Sunset Glow",
+          "slim": true,
+          "story": "Copper hair and a coral shirt over black pants, Sunset Glow only shows up when the sky turns orange."
+        },
+        {
+          "file": "Street_Gold.png",
+          "name": "Street Gold",
+          "slim": true,
+          "story": "Gold-banded cap and a yellow chevron on his black tee, Street Gold always points the crew where to go next."
+        },
+        {
+          "file": "Violet_Storm.png",
+          "name": "Violet Storm",
+          "slim": true,
+          "story": "Purple hair, purple shirt and matching purple shoes, Violet Storm rolls in fast and leaves the air buzzing."
+        },
+        {
+          "file": "Crimson_Edge.png",
+          "name": "Crimson Edge",
+          "slim": true,
+          "story": "Red hair, red shirt, black pants: Crimson Edge walks the sharpest line between cool and trouble."
+        }
+      ],
+      "mcpack": "Fresh_Youth_Slim_Pack_v4.mcpack",
+      "status": "published",
+      "note": "The crew assembles: thirteen fresh street fits, from Midnight Hoodie to Crimson Edge, step out under the city lights for the first time.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7799004,
+      "publishedAt": "2026-03-23T10:26:28.780Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "Cyber_Pink.png",
+          "name": "Cyber Pink",
+          "slim": true,
+          "story": "Magenta from head to toe with hot-pink marks across her face, Cyber Pink came out of the arcade's static."
+        },
+        {
+          "file": "Desert_Tan.png",
+          "name": "Desert Tan",
+          "slim": true,
+          "story": "Sand-coloured and striped in brown, Desert Tan wandered in from the dunes beyond town carrying sun-baked secrets."
+        },
+        {
+          "file": "Toxic_Lime.png",
+          "name": "Toxic Lime",
+          "slim": true,
+          "story": "Dark green fit, neon lime stripes on face and arms, pale cyan eyes: Toxic Lime glows brighter the darker it gets."
+        }
+      ],
+      "mcpack": "Fresh_Youth_Slim_Pack_v5.mcpack",
+      "status": "published",
+      "note": "The arcade lights flicker and three newcomers arrive: glowing Cyber Pink, sun-baked Desert Tan and neon Toxic Lime.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7927322,
+      "publishedAt": "2026-04-14T20:08:20.487Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Back to School Fits",
+      "skins": [
+        {
+          "file": "cherry_varsity.png",
+          "name": "Cherry Varsity",
+          "slim": true,
+          "story": "She cheers louder than anyone in the bleachers, so the school gave her a cherry varsity jacket with a cream star on the chest to prove it."
+        },
+        {
+          "file": "mocha_beats.png",
+          "name": "Mocha Beats",
+          "slim": true,
+          "story": "He walks to class with his mint headphones on and his knit sleeves pulled over his hands, nodding along to beats only he can hear."
+        },
+        {
+          "file": "plaid_wrap.png",
+          "name": "Plaid Wrap",
+          "slim": true,
+          "story": "She never actually wears her green flannel, she just knots it around her waist and pushes up her round glasses whenever she has a better idea."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The first bell rings and the crew shows up in their best school-day layers: a cherry varsity jacket, a cosy knit with big headphones and a green flannel tied around the waist.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Skatepark Summer",
+      "skins": [
+        {
+          "file": "checker_flip.png",
+          "name": "Checker Flip",
+          "slim": true,
+          "story": "He has landed exactly one kickflip in his life, but he wears his teal cap backwards and his checker shoes like he lands them every day."
+        },
+        {
+          "file": "tie_dye_sky.png",
+          "name": "Tie-Dye Sky",
+          "slim": true,
+          "story": "He dyed the shirt himself in the backyard and swears the spiral is a map of the sky on the night he got his first skateboard."
+        },
+        {
+          "file": "peach_overalls.png",
+          "name": "Peach Overalls",
+          "slim": true,
+          "story": "She keeps one strap undone on purpose, twists her pink hair into two space buns and paints daisies on everybody's skateboard."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "School is out and the crew takes over the skatepark: a kickflip kid in checkerboard shoes, a tie-dye dreamer with sunglasses in his hair and an overall girl with pink space buns.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "After Dark Drip",
+      "skins": [
+        {
+          "file": "frost_puffer.png",
+          "name": "Frost Puffer",
+          "slim": true,
+          "story": "She zips her ice-blue puffer up to her chin the moment the sun goes down and never leaves the house without her navy pompom beanie."
+        },
+        {
+          "file": "night_runner.png",
+          "name": "Night Runner",
+          "slim": true,
+          "story": "He runs the same loop around the block every night, and his reflective stripes flash in the headlights like a tiny comet."
+        },
+        {
+          "file": "retro_breaker.png",
+          "name": "Retro Breaker",
+          "slim": true,
+          "story": "His windbreaker is louder than his music, three colours crashing across it, and his yellow bucket hat has never once seen rain."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the streetlights come on, the crew heads out in their night fits: an ice-blue puffer with a pompom beanie, a runner with reflective stripes and a colour-block windbreaker under a bucket hat.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.82",
+    "26.0.02",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style teen figure in a dark green outfit, neon lime glowing stripes across the face and down the arms, a glowing lime cross on the chest, pale cyan eyes, short dark green hair, dramatic neon-green rim light and soft glow haze, dark navy-black background, centered, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style teen figures side by side on a rainy night street with neon signs and wet reflective pavement. Left: Cyber Pink, deep magenta outfit with hot-pink glowing marks across the face, a pink cross on the chest and pink cuff stripes. Center: Street Gold, darker skin, black tee with a glowing yellow chevron, black pants, yellow-gold cap. Right: Toxic Lime, dark green outfit with neon lime glowing face stripes, lime chest cross and lime arm stripes. Above them, the title \"Young MC's Pack\" in big bold stylised graffiti letters."
+}

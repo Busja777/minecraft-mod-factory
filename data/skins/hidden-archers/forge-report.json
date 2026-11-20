@@ -1,0 +1,43 @@
+{
+  "pack": "hidden-archers",
+  "style": "accent",
+  "at": "2026-11-19T23:35:23.629Z",
+  "versions": [
+    {
+      "version": "1.3",
+      "title": "Tide, Blossom and Storm",
+      "skins": [
+        {
+          "name": "Tide Shell Archer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Crimson Shadow Archer (6/6)",
+          "black": 0.04,
+          "neon": 0.061,
+          "overlayTransparent": 0.68
+        },
+        {
+          "name": "Blossom Veil Archer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Crimson Shadow Archer (5/6)",
+          "black": 0.04,
+          "neon": 0.064,
+          "overlayTransparent": 0.61
+        },
+        {
+          "name": "Storm Peak Archer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Midnight Void Archer (4/6)",
+          "black": 0.04,
+          "neon": 0.071,
+          "overlayTransparent": 0.61
+        }
+      ]
+    }
+  ]
+}

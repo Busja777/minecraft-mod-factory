@@ -1,0 +1,105 @@
+{
+  "pack": "the-last-ninjas",
+  "style": "glow",
+  "at": "2026-11-19T22:45:16.700Z",
+  "versions": [
+    {
+      "version": "1.3",
+      "title": "The Shogun's Guard",
+      "skins": [
+        {
+          "name": "Sakura Blade",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Shadow Ninja (6/6)",
+          "black": 0.88,
+          "neon": 0.082,
+          "overlayTransparent": 0.78
+        },
+        {
+          "name": "Iron Lantern",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Kitsune Ninja (5/6)",
+          "black": 0.83,
+          "neon": 0.108,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Tide Walker",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sakura Blade (5/6)",
+          "black": 0.88,
+          "neon": 0.086,
+          "overlayTransparent": 0.79
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "Ashes of the Dojo",
+      "skins": [
+        {
+          "name": "Ember Monk",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Oni Ninja (5/6)",
+          "black": 0.84,
+          "neon": 0.103,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Thunder Fang",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Ember Monk (5/6)",
+          "black": 0.85,
+          "neon": 0.105,
+          "overlayTransparent": 0.79
+        }
+      ]
+    },
+    {
+      "version": "1.5",
+      "title": "The Last Light",
+      "skins": [
+        {
+          "name": "Eclipse Shogun",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Phantom Ninja (5/6)",
+          "black": 0.85,
+          "neon": 0.103,
+          "overlayTransparent": 0.74
+        },
+        {
+          "name": "Mirror Ghost",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Storm Ronin (5/6)",
+          "black": 0.88,
+          "neon": 0.083,
+          "overlayTransparent": 0.79
+        },
+        {
+          "name": "Crimson Oath",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sakura Blade (5/6)",
+          "black": 0.85,
+          "neon": 0.105,
+          "overlayTransparent": 0.77
+        }
+      ]
+    }
+  ]
+}

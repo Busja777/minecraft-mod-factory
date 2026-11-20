@@ -1,0 +1,212 @@
+{
+  "slug": "crusaders-pack",
+  "name": "Crusaders Pack",
+  "packName": "Crusaders",
+  "summary": "These are crusaders sworn to old oaths. It seems like their vows guard something darker than a holy war ...",
+  "legend": "When the bells of the last fortress fell silent, the dust on the road to the Holy City did not settle. Travellers still speak of a Templar Knight in a silver great helm, a red cross burning on his white surcoat, who walks the walls at dusk and never lifts his visor. Beside him rides a Crusader King whose golden crown is fused to his helm, his crimson banner bearing a sun no herald can name. And in the shadows of the citadel, a Hashshashin wrapped in white linen watches them both, waiting for an order that was given centuries ago. They swore oaths to different masters, yet each guards the same sealed gate beneath the old keep. No one remembers what lies behind it. But lately, the gate has started to open.",
+  "altNames": [
+    "Oaths of the Holy Road",
+    "Knights of the Sealed Gate"
+  ],
+  "cfProjectId": 1503139,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "templar_knight.png",
+          "name": "Templar Knight",
+          "slim": false,
+          "story": "A silent Templar behind a black-slit silver helm, his red cross the last thing many enemies ever see on the walls."
+        },
+        {
+          "file": "malta_knight.png",
+          "name": "Knight of Malta",
+          "slim": false,
+          "story": "The Knight of Malta wears a golden cross across his helm and a red-and-white star of the Hospital, healing allies and burying foes."
+        }
+      ],
+      "mcpack": "Kreuzritter_v3.mcpack",
+      "status": "published",
+      "note": "The first oaths are sworn: the Templar Knight and the Knight of Malta take up their posts on the walls.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7866432,
+      "publishedAt": "2026-04-03T08:01:16.740Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "teutonic_knight.png",
+          "name": "Teutonic Knight",
+          "slim": false,
+          "story": "From the frozen north came the Teutonic Knight, steel-helmed, white-robed, a stark black cross on his chest and no mercy in his march."
+        },
+        {
+          "file": "santiago_knight.png",
+          "name": "Knight of Santiago",
+          "slim": false,
+          "story": "The Knight of Santiago rides in bronze-dark mail, his white tabard split by a red sword-cross forged for the pilgrim road."
+        },
+        {
+          "file": "sergeant.png",
+          "name": "Crusader Sergeant",
+          "slim": false,
+          "story": "A bearded Crusader Sergeant in a nasal helm and brown tabard, red stripe down his chest, who held the gate when knights fled."
+        },
+        {
+          "file": "saracen.png",
+          "name": "Saracen",
+          "slim": false,
+          "story": "The Saracen in a cream head wrap and teal robe, gold at his waist, knows every well and secret path of the desert."
+        },
+        {
+          "file": "crusader_king.png",
+          "name": "Crusader King",
+          "slim": false,
+          "story": "The Crusader King, his crown fused to a golden helm, wears a red surcoat bearing a golden sun that no herald can name."
+        },
+        {
+          "file": "assassin.png",
+          "name": "Hashshashin",
+          "slim": false,
+          "story": "The Hashshashin hides in white linen and dark robes bound by a red sash, only his brown eyes revealing he is already near."
+        }
+      ],
+      "mcpack": "Kreuzritter_8er_Pack.mcpack",
+      "status": "published",
+      "note": "The road grows crowded: the Teutonic Knight, Knight of Santiago, Crusader Sergeant, Saracen, Crusader King and the shadowy Hashshashin arrive at the sealed gate.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 8006953,
+      "publishedAt": "2026-04-28T20:21:54.947Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Brothers of the Orders",
+      "skins": [
+        {
+          "file": "knight_of_saint_lazarus.png",
+          "name": "Knight of Saint Lazarus",
+          "slim": false,
+          "story": "Sworn to care for the sick as much as to fight, he wears the green cross of Saint Lazarus on black over blackened mail."
+        },
+        {
+          "file": "sword_brother.png",
+          "name": "Sword Brother",
+          "slim": false,
+          "story": "He holds a stone fort on the cold northern frontier, the red sword and cross of his brotherhood on a white tabard."
+        },
+        {
+          "file": "knight_of_mountjoy.png",
+          "name": "Knight of Mountjoy",
+          "slim": false,
+          "story": "A knight of the small Order of Mountjoy, named for the hill where pilgrims first see Jerusalem, in a red surcoat with a white cross and heraldic shoulder plates."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three more military orders ride to the Holy Land: the black-clad Knights of Saint Lazarus, the Sword Brothers of the far north and the Knights of Mountjoy in their red surcoats.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Sergeants of the Walls",
+      "skins": [
+        {
+          "file": "crossbow_sergeant.png",
+          "name": "Crossbow Sergeant",
+          "slim": false,
+          "story": "From under his iron kettle hat he has watched every siege on these walls, a quiver of bolts at his hip and a crossbow on his back."
+        },
+        {
+          "file": "turcopole_archer.png",
+          "name": "Turcopole Archer",
+          "slim": false,
+          "story": "A light horse archer who rides scout for the orders, his pointed helm wrapped in olive cloth and a full quiver across his back."
+        },
+        {
+          "file": "banner_sergeant.png",
+          "name": "Banner Sergeant",
+          "slim": false,
+          "story": "Wherever his black-and-white banner still flies, the knights know where to rally, so he has sworn never to let it fall."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Knights win the charge, but the walls are held by sergeants: a crossbowman in a kettle hat, a turcopole archer and the sergeant who carries the black-and-white banner.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Riders of the East",
+      "skins": [
+        {
+          "file": "mamluk_lancer.png",
+          "name": "Mamluk Lancer",
+          "slim": false,
+          "story": "Trained from boyhood to fight from the saddle, he rides in steel lamellar laced with yellow silk, his face hidden behind a mail aventail."
+        },
+        {
+          "file": "steppe_horse_archer.png",
+          "name": "Steppe Horse Archer",
+          "slim": false,
+          "story": "He can loose three arrows before his horse lands a single stride, and his fur-trimmed cap is the last thing his enemies see."
+        },
+        {
+          "file": "citadel_guard.png",
+          "name": "Citadel Guard",
+          "slim": false,
+          "story": "He keeps the gate of the old citadel in gilded scales and a white turban wound round a steel spike, and no one has passed him uninvited."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "From the other side of the battlefield come three new riders: a lancer in lamellar armour, a horse archer of the steppe and a guard of the citadel in gilded scales.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.20",
+    "1.21",
+    "1.21.122",
+    "1.21.121",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a blocky Minecraft-style Crusader King: golden great helm with a crown rim and a thin black visor slit, red surcoat with a large golden diamond-shaped emblem, gold-tinted checkered chainmail on arms and legs, gold gauntlets, standing heroically, dramatic warm golden rim light, torch embers drifting, deep dark background, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures side by side: left, a Templar Knight with a silver great helm with black visor slit, white surcoat with a red diamond cross and brown belt with gold buckle, grey checkered chainmail; centre, a Crusader King with a golden crowned helm, red surcoat with a golden diamond emblem and gold-tinted mail; right, a Hashshashin in a white head wrap showing only brown eyes, dark brown-black robes with a red sash. Background: a desert fortress at sunset, dust and torchlight, crimson banners on stone walls. Big stylised medieval title letters reading \"Crusaders\"."
+}

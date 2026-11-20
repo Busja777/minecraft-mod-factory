@@ -19,6 +19,8 @@
     "publish": "node scripts/publish.js",
     "select-mode": "node scripts/select-mode.js",
     "list-pending": "node scripts/list-pending.js",
+    "bestand": "node scripts/inventory.js",
+    "forge": "node scripts/forge.js",
     "secrets:push": "bash scripts/push-secrets.sh"
   },
   "dependencies": {

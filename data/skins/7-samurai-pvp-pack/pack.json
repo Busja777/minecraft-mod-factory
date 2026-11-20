@@ -1,0 +1,229 @@
+{
+  "slug": "7-samurai-pvp-pack",
+  "name": ".7 Samurai PVP PACK",
+  "packName": "7 Samurai",
+  "summary": "These are glowing samurai. Their armour never cools, and something inside it is still keeping score ...",
+  "legend": "Long ago, seven warriors swore an oath beneath a dead moon and were sealed into armour that never cools. Kage walks in obsidian plate, a violet light pulsing where his heart should be. Ryuu burns red and gold, a dragon's ember lodged in his chest. Kaen hides his face behind a mask of cold cyan fire, and no one who has seen what lies beneath it will speak of it. The villages say the samurai still fight, duel after duel, in arenas that appear only at dusk. Each victory lights another lantern on the mountain road. Each defeat wakes something else. Lately the lanterns have started to flicker, and not every new light on that road belongs to a friend.",
+  "altNames": [
+    "Seven Blades of the Lantern Road",
+    "Ronin of the Undying Glow"
+  ],
+  "cfProjectId": 1502094,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "kage_shadow.png",
+          "name": "Kage Shadow",
+          "slim": false,
+          "story": "Kage moves in black obsidian plate, violet light pulsing through his chest and limbs and a thin red slit for a gaze."
+        },
+        {
+          "file": "ryuu_dragon.png",
+          "name": "Ryuu Dragon",
+          "slim": false,
+          "story": "Ryuu wears dragon-red armour bound in gold, and the yellow ember blazing in his chest has never once gone out."
+        },
+        {
+          "file": "midori_forest.png",
+          "name": "Midori Forest",
+          "slim": false,
+          "story": "Midori is wrapped in leaf-green armour with a bark-brown belt, and a single green glow watches from the shadows of the trees."
+        },
+        {
+          "file": "arashi_storm.png",
+          "name": "Arashi Storm",
+          "slim": false,
+          "story": "Arashi rides the storm in deep blue armour, with lightning-yellow bands and a glowing cross sealed onto his white breastplate."
+        },
+        {
+          "file": "tsubaki_blossom.png",
+          "name": "Tsubaki Blossom",
+          "slim": false,
+          "story": "Tsubaki fights in camellia-pink armour, so soft-looking that her rivals forget about the thorns until it is too late."
+        },
+        {
+          "file": "tetsu_iron.png",
+          "name": "Tetsu Iron",
+          "slim": false,
+          "story": "Tetsu is forged from grey steel, and molten orange still glows at his chest, gauntlets and boots from the anvil."
+        },
+        {
+          "file": "kaen_void.png",
+          "name": "Kaen Void",
+          "slim": false,
+          "story": "Kaen hides behind a mask of cold cyan fire set in dark teal armour, and violet void-light coils over his shoulders."
+        }
+      ],
+      "mcpack": "7Samurai.mcpack",
+      "status": "published",
+      "note": "The oath is sworn: Kage, Ryuu, Midori, Arashi, Tsubaki, Tetsu and Kaen take up their glowing armour and step onto the lantern road.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7860098,
+      "publishedAt": "2026-04-02T06:57:39.840Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "oni_demon.png",
+          "name": "Oni Demon",
+          "slim": false,
+          "story": "Oni wears crimson armour bound with gold, and the yellow glint behind his mask is hungry for every duel."
+        },
+        {
+          "file": "shiroi_ghost.png",
+          "name": "Shiroi Ghost",
+          "slim": false,
+          "story": "Shiroi drifts in frost-white armour lined with ice-blue light, and his pale blue face is the last thing his enemies see."
+        },
+        {
+          "file": "raijin_thunder.png",
+          "name": "Raijin Thunder",
+          "slim": false,
+          "story": "Raijin wears bronze armour crackling with neon-yellow bands, his midnight-blue fists and boots charged like a summer storm."
+        },
+        {
+          "file": "kuroi_shogun.png",
+          "name": "Kuroi Shogun",
+          "slim": false,
+          "story": "Kuroi commands in black lacquered armour bound with blood-red cords, a gold breastplate shining over a heart of ember-orange."
+        }
+      ],
+      "mcpack": "7Samurai_UpgradePack.mcpack",
+      "status": "published",
+      "note": "Four new lights flicker at dusk. Oni, Shiroi, Raijin and the black-and-gold Kuroi Shogun have come to challenge the seven.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7979149,
+      "publishedAt": "2026-04-24T20:14:06.177Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Tide and Moon",
+      "skins": [
+        {
+          "file": "nami_tide.png",
+          "name": "Nami Tide",
+          "slim": false,
+          "story": "He fights the way the sea moves, wave after wave, and his foam-white mask has never been seen dry."
+        },
+        {
+          "file": "tsuki_moon.png",
+          "name": "Tsuki Moon",
+          "slim": false,
+          "story": "She only duels under a full moon, and the silver disc on her helm is the last light her rivals remember."
+        },
+        {
+          "file": "hotaru_firefly.png",
+          "name": "Hotaru Firefly",
+          "slim": false,
+          "story": "Nobody sees him in the dark forest arena until the fireflies on his armour light up all at once."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new samurai step onto the arena at night: a tide warrior with a dorsal-fin crest, a moon guard behind a silver visor and a firefly hunter who glows in the dark.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Ashes of the Mountain",
+      "skins": [
+        {
+          "file": "kazan_volcano.png",
+          "name": "Kazan Volcano",
+          "slim": false,
+          "story": "Every hit he takes only cracks his armour wider, and the lava underneath burns hotter for the next round."
+        },
+        {
+          "file": "kin_gold.png",
+          "name": "Kin Gold",
+          "slim": false,
+          "story": "The golden general laces his armour with crimson cord, one knot for every arena he has won."
+        },
+        {
+          "file": "iwa_stone.png",
+          "name": "Iwa Stone",
+          "slim": false,
+          "story": "A guardian carved from the mountain itself, tied with a sacred rope so he cannot walk away from the fight."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The mountain clan joins the fight: a volcano samurai with lava in his cracks, a golden general in crimson lacing and a stone guardian tied with a sacred rope.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Spirits of the Shrine",
+      "skins": [
+        {
+          "file": "kitsune_fox.png",
+          "name": "Kitsune Fox",
+          "slim": false,
+          "story": "The shrine fox wears a white mask with red markings, and by the time you see her ears move she has already struck."
+        },
+        {
+          "file": "hebi_serpent.png",
+          "name": "Hebi Serpent",
+          "slim": false,
+          "story": "The jade serpent hisses once before every duel, and nobody has ever lasted long enough to hear the second."
+        },
+        {
+          "file": "karasu_crow.png",
+          "name": "Karasu Crow",
+          "slim": false,
+          "story": "The crow samurai drops from the shrine roof with black feathers spread, and his red eyes pick a target before he lands."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three shrine spirits put on armour for the tournament: a white fox in a vermilion mask, a jade serpent with golden fangs and a crow samurai with a sharp orange beak.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.2",
+    "1.20.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style samurai figure, Kage Shadow, in pitch-black obsidian armour with short purple horns on the helmet, a glowing red slit visor, and bright violet glowing bands across the chest, arms and shins, with grey gauntlets and boots. Dramatic purple rim light, faint violet embers drifting upward, deep dark background, low-angle heroic pose, pixel-texture detail, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style samurai standing side by side. Left: Ryuu Dragon in red-orange armour with glowing gold bands and a radiant yellow chest emblem. Centre: Kage Shadow in black obsidian armour with purple horns, a red slit visor and glowing violet bands. Right: Kaen Void in dark teal armour with a glowing cyan face mask, purple shoulder accents and cream gauntlets and boots. Behind them is a misty mountain road at dusk lined with paper lanterns, a pale moon and drifting embers. Big stylised brush-stroke title letters read \"7 Samurai\" across the top."
+}

@@ -1,0 +1,177 @@
+{
+  "slug": "basketball-skins",
+  "name": "Basketball skins",
+  "packName": "Basketball Skin Pack",
+  "summary": "These are midnight ballers. It seems like the old court is choosing its players, and it isn't done yet ...",
+  "legend": "When the city sleeps, the old gym at the end of the street still hums. The floorboards creak, the scoreboard flickers, and a ball bounces where nobody stands. Players say the court picks who it wants. First it chose the Court Rookie, a bearded kid in a cream jersey with a purple 23 who never misses a free throw after midnight. Then came the Purple Hoops Star, a golden 24 shining under the dead lights and one purple sleeve pulled tight like a promise. Out on the cracked blacktop, the Blacktop Legend waits in black and gold, a crimson emblem on his chest and a chain that catches the moonlight. Nobody knows who keeps score. The buzzer hasn't sounded yet... and the bench keeps filling up.",
+  "altNames": [
+    "Hardwood Legends",
+    "Buzzer Beater Crew"
+  ],
+  "cfProjectId": 1535492,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "court_rookie.png",
+          "name": "Court Rookie",
+          "slim": false,
+          "story": "A bearded newcomer in a cream jersey with a purple 23 and purple sneakers, still learning why the ball always finds his hands."
+        },
+        {
+          "file": "purple_hoops_star.png",
+          "name": "Purple Hoops Star",
+          "slim": false,
+          "story": "Golden 24 jersey, one purple sleeve, black-and-white kicks: the star who scores from anywhere and never says where he learned it."
+        },
+        {
+          "file": "blacktop_legend.png",
+          "name": "Blacktop Legend",
+          "slim": false,
+          "story": "In a black jersey with a crimson emblem, gold trim and a gold chain, the bearded king of the blacktop has never lost after dark."
+        }
+      ],
+      "mcpack": "Basketball_Skin_Pack_Bedrock.mcpack",
+      "status": "published",
+      "note": "The doors of the old gym creak open, and the Court Rookie, the Purple Hoops Star and the Blacktop Legend step onto the floor for the first game of the night.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 8048244,
+      "publishedAt": "2026-05-06T14:07:01.363Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Tip-Off Night",
+      "skins": [
+        {
+          "file": "comet_flyer.png",
+          "name": "Comet Flyer",
+          "slim": false,
+          "story": "The star of the Harbor City Comets jumps so high that the crowd swears his teal sleeve leaves a trail across the rim."
+        },
+        {
+          "file": "frost_guard.png",
+          "name": "Frost Guard",
+          "slim": false,
+          "story": "The point guard of the Glacier Bay Lynx never blinks behind his sport goggles, and his free throws are as cold as the bay in January."
+        },
+        {
+          "file": "canyon_center.png",
+          "name": "Canyon Center",
+          "slim": false,
+          "story": "The bearded giant of the Red Mesa Coyotes plants himself under the basket like a canyon wall, and nothing gets past him."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The new season tips off under the city lights, and three new players walk onto the court: a high-flying dunker, an ice-cold shooter and a centre nobody can move.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Streetball Summer",
+      "skins": [
+        {
+          "file": "park_crossover.png",
+          "name": "Park Crossover",
+          "slim": false,
+          "story": "He learned his crossover on the cracked park court behind his building and still plays there every evening in his mesh tank and gold chain."
+        },
+        {
+          "file": "neon_night_baller.png",
+          "name": "Neon Night Baller",
+          "slim": false,
+          "story": "Under the floodlights of the midnight league his lime-tipped locs and neon jersey are the brightest things on the court."
+        },
+        {
+          "file": "sunset_queen.png",
+          "name": "Sunset Queen",
+          "slim": true,
+          "story": "Nobody has beaten her at the beach court since spring, and she always plays the last game of the day as the sun goes down."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When school is out, the real games move to the park courts: a crossover artist with a gold chain, a night baller with glowing locs and the queen of the sunset court.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "All-Star Weekend",
+      "skins": [
+        {
+          "file": "slam_champion.png",
+          "name": "Slam Champion",
+          "slim": false,
+          "story": "He won the dunk contest three years running, and the league finally gave him a golden crown to wear at every All-Star game."
+        },
+        {
+          "file": "retro_groove_guard.png",
+          "name": "Retro Groove Guard",
+          "slim": false,
+          "story": "He still plays in short shorts, striped tube socks and a big afro, because nobody ever told him the seventies were over."
+        },
+        {
+          "file": "midnight_owl_mascot.png",
+          "name": "Midnight Owl Mascot",
+          "slim": false,
+          "story": "The Midnight Owls never win the title, but their purple owl mascot flips, dances and dunks so well that the fans only come to see him."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The best players of the season meet for one big weekend: the crowned slam champion, a retro guard straight out of the seventies and the owl mascot who steals every show.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.93",
+    "1.20.60",
+    "1.21.101",
+    "1.20.70",
+    "1.21.94",
+    "1.21.100",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.111",
+    "1.21.114",
+    "1.21.120",
+    "1.21.122",
+    "1.21.121",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a blocky Minecraft-style basketball player with dark brown skin, short black hair and a black beard, wearing a black jersey with a crimson-and-gold circular C emblem on the chest, gold trim on the collar and shorts, a gold chain, black shorts and black sneakers with gold accents. He holds an orange basketball. Dramatic warm gold rim light and a soft spotlight from above, dark empty gym background with faint court lines, cinematic, NO text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style basketball players standing side by side on a moody night court lit by flickering arena lights. Left: bearded player with dark brown skin in a cream/pale gold jersey with a purple number 23, purple trim, a white arm sleeve on one arm, pale gold shorts and purple sneakers. Center: player with brown skin in a bright yellow-gold jersey with a white number 24, one purple sleeve, purple trim on the shorts, black-and-white sneakers. Right: bearded player with dark brown skin and black hair in a black jersey with a crimson-and-gold C emblem, gold trim, a gold chain, black shorts and black sneakers with gold accents. Background: an old gym opening onto a cracked outdoor blacktop under the moon, a hoop and scoreboard glowing faintly. Big stylised title text \"BASKETBALL SKINS\" in bold sporty letters at the top."
+}

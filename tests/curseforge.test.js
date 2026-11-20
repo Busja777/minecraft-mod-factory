@@ -95,7 +95,7 @@ test('resolveGameVersions fetches once and then serves from cache', async () => 
   assert.equal(f.calls.length, 2);
 });
 
-import { matchBedrockVersionIds } from '../scripts/platforms/curseforge.js';
+import { matchBedrockVersionIds, bedrockVersions, compareVersions } from '../scripts/platforms/curseforge.js';
 
 test('matchBedrockVersionIds picks every 26.x release version and skips previews', () => {
   const catalog = {
@@ -106,9 +106,28 @@ test('matchBedrockVersionIds picks every 26.x release version and skips previews
       { id: 14, gameVersionTypeID: 1, name: '1.21.130' }, { id: 15, gameVersionTypeID: 2, name: '26.20' }
     ]
   };
-  assert.deepEqual(matchBedrockVersionIds(catalog, { prefix: '26.' }), [10, 11, 12, 13]);
-  assert.deepEqual(matchBedrockVersionIds(catalog, { prefix: '26.', include: ['1.21.130'] }), [10, 11, 12, 13, 14]);
+  const sorted = ids => [...ids].sort((a, b) => a - b);
+  assert.deepEqual(sorted(matchBedrockVersionIds(catalog, { prefix: '26.' })), [10, 11, 12, 13]);
+  assert.deepEqual(sorted(matchBedrockVersionIds(catalog, { prefix: '26.', include: ['1.21.130'] })), [10, 11, 12, 13, 14]);
   assert.throws(() => matchBedrockVersionIds(catalog, { prefix: '27.' }), /No CurseForge Bedrock/);
+});
+
+test('bedrockVersions always ticks the newest Minecraft release, even a new major', () => {
+  const catalog = {
+    types: [{ id: 1, name: 'Minecraft Bedrock', slug: 'bedrock' }, { id: 2, name: 'Bedrock Preview', slug: 'bedrock-preview' }],
+    versions: [
+      { id: 1, gameVersionTypeID: 1, name: '1.21.130' }, { id: 2, gameVersionTypeID: 1, name: '26.3' },
+      { id: 3, gameVersionTypeID: 1, name: '26.10' }, { id: 4, gameVersionTypeID: 1, name: '26.60' },
+      { id: 5, gameVersionTypeID: 1, name: '27.0' }, { id: 6, gameVersionTypeID: 2, name: '27.10' },
+      { id: 7, gameVersionTypeID: 1, name: '1.20' }
+    ]
+  };
+  const v = bedrockVersions(catalog, { prefix: '26.', include: ['1.21.130', '26.3', '26.10'] });
+  assert.deepEqual(v.names, ['1.21.130', '26.3', '26.10', '26.60', '27.0']);
+  assert.equal(v.newest, '27.0');
+  assert.deepEqual(v.added, ['26.60', '27.0'], 'versions the last file did not have yet');
+  assert.ok(!v.names.includes('1.20'), 'older versions the last file did not list stay off');
+  assert.ok(compareVersions('26.10', '26.3') > 0 && compareVersions('27.0', '26.60') > 0 && compareVersions('26.0.02', '26.0') > 0);
 });
 
 import { redact } from '../scripts/platforms/curseforge.js';

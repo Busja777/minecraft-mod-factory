@@ -1,0 +1,207 @@
+{
+  "slug": "fantasy-academy-skins",
+  "name": "Fantasy Academy Skins",
+  "packName": "Fantasy Academy Students",
+  "summary": "These are academy students in four house colours. It seems like there is more than homework hidden in these halls ...",
+  "legend": "Beyond the last signpost of the overworld stands an academy that only appears when its four house banners are raised. Emberfell keeps its fires in crimson and gold, Stormleaf studies the winds in deep navy, Verdanthold tends the green halls, and Moonvein reads the silver stars. Each autumn the gates open for a new class. The Ember Apprentice arrives with a flame stitched over her heart, the Storm Scholar pushes up his dark spectacles before the first bell, and the Moon Seer walks the corridors blindfolded, yet never misses a step. The teachers say the houses were founded to keep something asleep beneath the library. The students say the cellars hum at night. Nobody agrees on which story is true, but every year one more door in the academy is found unlocked...",
+  "altNames": [
+    "Fantasy Academy: The Four Houses",
+    "Emberfell, Stormleaf & Moonvein Academy"
+  ],
+  "cfProjectId": 1523336,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "EmberApprentice.png",
+          "name": "Ember Apprentice — Emberfell House",
+          "slim": false,
+          "story": "A ginger-haired first-year of Emberfell whose red-and-gold robe bears an orange flame that warms whenever she gets an answer right."
+        },
+        {
+          "file": "EmberDuelist.png",
+          "name": "Ember Duelist — Emberfell House",
+          "slim": false,
+          "story": "Green-eyed and quick, this Emberfell duelist wears a dark vest under crimson, its gold sigil marking every challenge he has never lost."
+        },
+        {
+          "file": "EmberFirekeeper.png",
+          "name": "Ember Firekeeper — Emberfell House",
+          "slim": false,
+          "story": "With amber eyes and a crimson hood, the Firekeeper tends Emberfell's oldest hearth, the one the teachers say must never go out."
+        },
+        {
+          "file": "StormScholar.png",
+          "name": "Storm Scholar — Stormleaf House",
+          "slim": false,
+          "story": "Behind dark spectacles and deep navy robes, Stormleaf's scholar has read every book in the library except the one that is locked."
+        },
+        {
+          "file": "StormSkyfarer.png",
+          "name": "Storm Skyfarer — Stormleaf House",
+          "slim": false,
+          "story": "A blonde Stormleaf student in steel-blue robes who claims the winds above the towers whisper the next day's exam questions."
+        },
+        {
+          "file": "VerdantHerbalist.png",
+          "name": "Verdant Herbalist — Verdanthold House",
+          "slim": false,
+          "story": "This green-eyed Verdanthold herbalist stitched a pale leaf onto her robe, grown from a seed nobody else could make sprout."
+        },
+        {
+          "file": "VerdantWarden.png",
+          "name": "Verdant Warden — Verdanthold House",
+          "slim": false,
+          "story": "Gold pauldrons on forest-green robes mark Verdanthold's warden, who patrols the greenhouses after curfew and never explains why."
+        },
+        {
+          "file": "MoonEnchantress.png",
+          "name": "Moon Enchantress — Moonvein House",
+          "slim": false,
+          "story": "White-haired and violet-eyed, Moonvein's enchantress wears purple and a golden rune that faintly hums when the moon rises."
+        },
+        {
+          "file": "MoonSeer.png",
+          "name": "Moon Seer — Moonvein House",
+          "slim": false,
+          "story": "Blindfolded in silver with a violet glyph, the Moon Seer sees more of the academy's secrets than anyone with open eyes."
+        },
+        {
+          "file": "StarlightNovice.png",
+          "name": "Starlight Novice — Moonvein House",
+          "slim": false,
+          "story": "The palest of Moonvein, this ice-eyed novice in white and sky-blue robes carries a golden star that appeared on her first night."
+        }
+      ],
+      "mcpack": "FantasyAcademy_Skinpack.mcpack",
+      "status": "published",
+      "note": "The gates open and the first class arrives: students of Emberfell, Stormleaf, Verdanthold and Moonvein take their places in the halls. Keep an eye on the doors, because not all of them will stay locked.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7976185,
+      "publishedAt": "2026-04-24T07:10:22.420Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "The Staff Room",
+      "skins": [
+        {
+          "file": "flame_professor_emberfell_house.png",
+          "name": "Flame Professor — Emberfell House",
+          "slim": false,
+          "story": "The oldest teacher of Emberfell lights the classroom candles with a snap of his fingers and keeps his half-moon spectacles on the tip of his nose."
+        },
+        {
+          "file": "storm_librarian_stormleaf_house.png",
+          "name": "Storm Librarian — Stormleaf House",
+          "slim": false,
+          "story": "The Stormleaf librarian pins her shawl with a silver lightning bolt and hushes every whisper in the great library before it reaches the shelves."
+        },
+        {
+          "file": "moon_astronomer_moonvein_house.png",
+          "name": "Moon Astronomer — Moonvein House",
+          "slim": false,
+          "story": "The Moonvein astronomer climbs the north tower every clear night, her brass monocle fixed on the stars stitched into her hood."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The teachers step out of the staff room: an old fire professor with a beard down to his belt, the Stormleaf librarian who never lets a book go and the Moonvein astronomer who maps the night sky.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Prefects and Champions",
+      "skins": [
+        {
+          "file": "ember_duel_champion_emberfell_house.png",
+          "name": "Ember Duel Champion — Emberfell House",
+          "slim": false,
+          "story": "The Emberfell duel champion has never lost a match in the great hall, and the gold medal on his sash still smells of smoke."
+        },
+        {
+          "file": "verdant_prefect_verdanthold_house.png",
+          "name": "Verdant Prefect — Verdanthold House",
+          "slim": false,
+          "story": "The Verdanthold prefect polishes her bronze leaf badge every morning and knows every rule of the academy by heart, even the forgotten ones."
+        },
+        {
+          "file": "storm_windcaller_stormleaf_house.png",
+          "name": "Storm Windcaller — Stormleaf House",
+          "slim": false,
+          "story": "The Stormleaf windcaller pulls down his flight goggles, whistles up a gust and lets his long scarf point the way across the rooftops."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three students earn their colours: the undefeated Emberfell duel champion, a Verdanthold prefect with a shiny new badge and a Stormleaf windcaller who rides the gusts over the towers.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "Grounds and Cellars",
+      "skins": [
+        {
+          "file": "verdant_groundskeeper_verdanthold_house.png",
+          "name": "Verdant Groundskeeper — Verdanthold House",
+          "slim": false,
+          "story": "The Verdanthold groundskeeper talks to every tree on the academy grounds and always carries a trowel in his bib pocket, just in case one answers."
+        },
+        {
+          "file": "moon_alchemist_moonvein_house.png",
+          "name": "Moon Alchemist — Moonvein House",
+          "slim": false,
+          "story": "The Moonvein alchemist brews silver potions by moonlight in the cellar, and her wild hair has never fully recovered from the last explosion."
+        },
+        {
+          "file": "ember_hearth_cook_emberfell_house.png",
+          "name": "Ember Hearth Cook — Emberfell House",
+          "slim": false,
+          "story": "The Emberfell cook lights the great hearth with one breath every morning and serves a stew so hot that it glows in the bowl."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Far from the classrooms the academy keeps on running: the groundskeeper of the herb gardens, the alchemist of the moonlit cellar and the cook who keeps the great hearth burning.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.20.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.19.10",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style student character, the Moon Seer: dark skin, short black hair, silver blindfold marked with a glowing violet glyph, lavender academy robe with white front panel and purple emblem. Dramatic soft violet magical glow around the figure, floating star motes, deep dark navy background, centred composition, crisp voxel style, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style academy students standing side by side: left, the Ember Apprentice with ginger hair and a red robe with gold trim and an orange flame emblem; centre, the Storm Scholar with brown hair, black spectacles and a navy blue robe with white stripes; right, the Moon Enchantress with white hair, violet eyes and a purple robe with a white front and yellow emblem. Behind them a towering fantasy academy castle at dusk, four house banners in red, blue, green and purple, glowing windows and drifting magical sparks. Title text \"Fantasy Academy\" in big stylised golden fantasy letters across the top."
+}

@@ -1,0 +1,164 @@
+{
+  "slug": "glass-pvp",
+  "name": "GLASS PVP",
+  "packName": "Mod Glow Pack",
+  "summary": "These are glowing glass fighters. It seems like there is more than just light humming inside ...",
+  "legend": "Beneath the arena floor, where shattered glass still hums with stolen light, the old machines never truly went dark. AE2 DRONE was the first to wake, its black-framed cube head ringed in pale light around a single cyan core that remembers everything it has ever stored. Behind it drifted BOTANIA MANA, a purple-visored guardian with a magenta bloom pulsing on its pale chest, carrying more mana than any flower should hold. Last came SLIME GLOW, square green eyes blinking in the dark, a lime heart bouncing beneath black-lined glass. Every edge of them burns in shifting rainbow, as if a whole stained-glass window had been melted down and poured into armour. Players say they only fight to test what they have become. But the glass keeps cracking, and something deeper is starting to glow...",
+  "altNames": [
+    "Prism Mod Glow",
+    "Rainbow Glass Arena"
+  ],
+  "cfProjectId": 1516459,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "ae2_drone.png",
+          "name": "AE2 DRONE",
+          "slim": false,
+          "story": "A storage-born sentinel whose black cube head hides a single cyan core, logging every move you make in the arena."
+        },
+        {
+          "file": "botania_mana.png",
+          "name": "BOTANIA MANA",
+          "slim": false,
+          "story": "A purple-visored guardian with a magenta bloom on its chest, channelling forbidden mana through rainbow-edged glass."
+        },
+        {
+          "file": "slime_glow.png",
+          "name": "SLIME GLOW",
+          "slim": false,
+          "story": "Square green eyes and a bouncing lime heart: the slime that crawled into the glass and refused to stop glowing."
+        }
+      ],
+      "mcpack": "ModGlowPack_v2.mcpack",
+      "status": "published",
+      "note": "The first three wake beneath the arena: AE2 DRONE, BOTANIA MANA and SLIME GLOW step out of the cracked glass, rainbow edges blazing.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7939115,
+      "publishedAt": "2026-04-17T09:25:09.643Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "The Glass Arena",
+      "skins": [
+        {
+          "file": "prism_knight.png",
+          "name": "PRISM KNIGHT",
+          "slim": false,
+          "story": "His great helm was cut from a single amber prism, and the sword on his shield glows brighter with every duel he wins."
+        },
+        {
+          "file": "ruby_dragon.png",
+          "name": "RUBY DRAGON",
+          "slim": false,
+          "story": "A young dragon hatched inside a ruby, it still breathes red glass fire and leaves claw marks on every wall of the arena."
+        },
+        {
+          "file": "shard_shark.png",
+          "name": "SHARD SHARK",
+          "slim": false,
+          "story": "It swims through the glass floor of the arena as if it were water, and its grin is made of crystal shards."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The gates of the glass arena open and three new champions step into the rainbow light: an amber knight, a ruby dragon and a shark that bites through crystal.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Moonlight Creatures",
+      "skins": [
+        {
+          "file": "moon_bunny.png",
+          "name": "MOON BUNNY",
+          "slim": false,
+          "story": "She hops from one glass tower to the next under the full moon, and nobody has ever been fast enough to catch her."
+        },
+        {
+          "file": "star_owl.png",
+          "name": "STAR OWL",
+          "slim": false,
+          "story": "The owl keeps watch from the top of the arena all night, and the star on its chest lights the way for lost players."
+        },
+        {
+          "file": "lantern_ghost.png",
+          "name": "LANTERN GHOST",
+          "slim": false,
+          "story": "A friendly ghost who floats through the glass halls at night, holding up its little orange lantern so nobody walks alone."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the moon rises over the arena the glass starts to glow, and three night creatures come out to play: a moon bunny, a star owl and a ghost who carries a lantern.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "The Crystal Throne",
+      "skins": [
+        {
+          "file": "glass_queen.png",
+          "name": "GLASS QUEEN",
+          "slim": false,
+          "story": "She rules the arena from the crystal throne, and the magenta gem in her crown shines on every player who wins with honour."
+        },
+        {
+          "file": "crystal_skull.png",
+          "name": "CRYSTAL SKULL",
+          "slim": false,
+          "story": "Its bones are clear as glass and only its red crystal heart and eyes give it away when it creeps up in the dark."
+        },
+        {
+          "file": "volt_mech.png",
+          "name": "VOLT MECH",
+          "slim": false,
+          "story": "Built to guard the throne room, it charges its battery from the storm above the arena and flashes yellow before every strike."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Deep under the arena stands a throne of glass, and three guardians never leave its side: a queen in a black crown, a skull of pure crystal and a mech that runs on lightning.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.20.40",
+    "1.21.2",
+    "1.21.93",
+    "1.20.1",
+    "1.21.100",
+    "1.21",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style figure, AE2 DRONE, with a black-framed cube head showing concentric pale squares around a glowing cyan core, pale glass body with a cyan eye-panel on the chest, every edge outlined in black and burning with shifting rainbow neon (red, orange, yellow, green, cyan, blue, magenta), dramatic glow and light bloom, deep dark navy background, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style figures side by side made of glowing pale glass with thick black outlines and rainbow neon edges. Left: AE2 DRONE, black cube head with concentric squares and a cyan core, cyan panel on chest. Center: BOTANIA MANA, purple visor and mouth on its head, magenta-pink flower glowing on a pale blue-white chest. Right: SLIME GLOW, square green eyes, bright lime-green blob glowing on its chest. Background: a dark shattered-glass PvP arena with floating prismatic shards and rainbow light beams. Title \"GLASS PVP\" in big stylised glowing glass letters with rainbow edges at the top."
+}

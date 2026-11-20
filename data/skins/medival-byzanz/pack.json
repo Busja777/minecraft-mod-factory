@@ -1,0 +1,172 @@
+{
+  "slug": "medival-byzanz",
+  "name": "Medival Byzanz",
+  "packName": "Byzantine Warriors",
+  "summary": "These are Byzantine warriors in purple and steel. It seems like there's more than loyalty keeping them on the walls ...",
+  "legend": "When the bells of Constantinople fall silent, the old walls start to whisper. People say the empire never really fell. Its warriors only went to sleep beneath the Golden Horn and wait in steel and purple for the day the Basileus calls them again. The Kataphraktos rides first. His face is hidden behind a slit visor, and gold rims his iron shoulders. The Varangian Guard follows him, a bearded northerner sworn to the throne, his eyes framed in cold blue steel. Behind them a hooded figure walks without a face. Orange fire flickers on his shoulders and a burning cross smoulders on his chest. Nobody knows what fuels the Siphonarios, but the sailors who saw the sea burn never forgot it. Every night another sentry wakes up on the walls. Is the empire coming back, or just its ghosts?",
+  "altNames": [
+    "Byzantine Warriors: Legion of the Purple Throne",
+    "Guardians of the Golden Horn"
+  ],
+  "cfProjectId": 1514709,
+  "source": "Byzanz",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "kataphraktos.png",
+          "name": "Kataphraktos",
+          "slim": false,
+          "story": "The Kataphraktos, Iron Rider of the Empire, hides his face behind a slit steel visor and wears the purple of the throne beneath gold-rimmed lamellar."
+        },
+        {
+          "file": "varangian.png",
+          "name": "Varangian Guard",
+          "slim": false,
+          "story": "The Varangian Guard, Northern Oathkeeper, is a bearded axeman in a steel helm with blue-framed eyes and blue trousers, sworn to die for the Basileus."
+        },
+        {
+          "file": "skutatos.png",
+          "name": "Skutatos",
+          "slim": false,
+          "story": "The Skutatos, Shield of the Line, wears bright steel lamellar and pale shoulder guards over green and red legs, and holds the wall when it counts."
+        }
+      ],
+      "mcpack": "Byzantine_Warriors.mcpack",
+      "status": "published",
+      "note": "The first sentries wake on the walls: the Kataphraktos, the Varangian Guard and the Skutatos take up steel and purple again.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7929674,
+      "publishedAt": "2026-04-15T09:02:47.577Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "toxotes.png",
+          "name": "Toxotes",
+          "slim": false,
+          "story": "The Toxotes, Silent Bowman, wears a green cap, a pale linen tunic and a worn leather bracer, and his arrows fall before the enemy sees him."
+        },
+        {
+          "file": "strategos.png",
+          "name": "Strategos",
+          "slim": false,
+          "story": "The Strategos, Mind of the Legions, is white-haired and grey-bearded and plans every battle in a gold breastplate over imperial purple."
+        }
+      ],
+      "mcpack": "Byzantine_Warriors_V1_1.mcpack",
+      "status": "due",
+      "note": "An arrow flies from the shadows and a general returns to the war table, as the Toxotes and the Strategos join the watch.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "akrites.png",
+          "name": "Akrites",
+          "slim": false,
+          "story": "The Akrites, Warden of the Frontier, rides the lonely borderlands in a padded khaki coat with a brown belt and a weathered beard."
+        },
+        {
+          "file": "droungarios.png",
+          "name": "Droungarios",
+          "slim": false,
+          "story": "The Droungarios, Admiral of the Fleet, commands the burning seas in a teal robe marked with a golden insignia."
+        },
+        {
+          "file": "basileus.png",
+          "name": "Basileus",
+          "slim": false,
+          "story": "The Basileus, Emperor of the Romans, wears a ruby-set gold crown and a white beard and rules in purple and gold, the colours no one else may wear."
+        }
+      ],
+      "mcpack": "Byzantine_Warriors_V1_2.mcpack",
+      "status": "due",
+      "note": "The frontier, the fleet and the throne itself stir: the Akrites, the Droungarios and the Basileus himself rise.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "scholarios.png",
+          "name": "Scholarios",
+          "slim": false,
+          "story": "The Scholarios, Palace Blade, stands guard in a golden helm and a red-and-gold coat over pale lamellar, the empire's finest soldier on parade."
+        },
+        {
+          "file": "koursar.png",
+          "name": "Koursar",
+          "slim": false,
+          "story": "The Koursar, Raider of the Marches, wears a steel helm and battered leather lamellar and strikes fast before vanishing into the hills."
+        }
+      ],
+      "mcpack": "Byzantine_Warriors_V1_3.mcpack",
+      "status": "due",
+      "note": "Gold flashes in the palace halls and hooves thunder in the hills as the Scholarios and the Koursar answer the call.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "",
+      "skins": [
+        {
+          "file": "siphonarios.png",
+          "name": "Siphonarios",
+          "slim": false,
+          "story": "The Siphonarios, Keeper of Greek Fire, has no visible face and walks in dark robes as orange flame smoulders on his shoulders and chest."
+        },
+        {
+          "file": "pronoiar.png",
+          "name": "Pronoiar",
+          "slim": false,
+          "story": "The Pronoiar, Landed Knight, hides behind a chainmail veil in a grey tunic marked with a blue stripe and a golden cross, paying for his lands in blood."
+        }
+      ],
+      "mcpack": "Byzantine_Warriors_V1_4.mcpack",
+      "status": "due",
+      "note": "The sea starts to burn again. The faceless Siphonarios brings Greek fire, and the Pronoiar rides out behind his chainmail veil.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.2",
+    "1.21",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a blocky Minecraft-style Byzantine Siphonarios figure in a dark brown hood that fully hides the face, with dark brown robes, bright orange glowing shoulder trims and a glowing orange cross on the chest, orange firelight flickering around him, dramatic glow on a near-black background, low-angle hero pose, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style Byzantine warriors standing side by side. On the left, the Kataphraktos in a full grey steel helmet with a gold rim, a dark slit visor, gold-trimmed shoulders, a purple tunic and purple skirt over striped grey lamellar. In the middle, the Basileus in a gold crown with red gems, a white beard, a royal purple robe with gold trim and a gold pendant. On the right, the hooded Siphonarios in dark brown with glowing orange shoulder trims and a glowing orange cross on his chest. Behind them, the walls of Constantinople at dusk, a golden dome, and Greek fire burning on the dark sea. The title \"Byzantine Warriors\" sits in big ornate gold-and-purple stylised letters."
+}

@@ -1,0 +1,211 @@
+{
+  "slug": "yubi-s-glow-pack",
+  "name": "Yubi's Glow Pack",
+  "packName": "Glow Skins Pack",
+  "summary": "These are glowing warriors of the dark. It seems like something more than light is burning inside ...",
+  "legend": "When the last lantern of the city went dark, the shadows did not stay empty. Figures in armour as black as a moonless sky began to walk the rooftops, lit only by the light trapped inside them. Phantom Cyan moves first, four cold teal eyes burning through the night. Behind it, KitsuneGold follows a trail of golden light, and NeonShogun watches from beneath a crimson crest, a red ember blazing on his brow. No one knows who forged the suits, or why each one glows a different colour. Some say the light is a warning. Others say it is a heartbeat. But every night, another glow appears in the dark... and it is getting closer.",
+  "altNames": [
+    "Glow Shadows: Neon Warriors",
+    "Yubi's Neon Night Legends"
+  ],
+  "cfProjectId": 1495240,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "glow_phantom.png",
+          "name": "Phantom Cyan",
+          "slim": false,
+          "story": "Phantom Cyan slips through the dark unseen, betrayed only by four teal eyes and cold cyan circuits tracing its black armour."
+        },
+        {
+          "file": "glow_voltage.png",
+          "name": "Voltage Pink",
+          "slim": false,
+          "story": "Voltage Pink carries a storm inside; her slit visor and hot-pink circuits crackle brighter whenever danger draws near."
+        },
+        {
+          "file": "glow_sentinel.png",
+          "name": "Sentinel Orange",
+          "slim": false,
+          "story": "Sentinel Orange guards the gate, its amber visor band sweeping the night while orange lines smoulder like embers along its armour."
+        }
+      ],
+      "mcpack": "Glow_Skins_Pack.mcpack",
+      "status": "published",
+      "note": "The first three lights wake in the darkness: Phantom Cyan, Voltage Pink and Sentinel Orange step out with burning visors and glowing circuits.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7811016,
+      "publishedAt": "2026-03-25T13:11:47.257Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "glow_kitsune.png",
+          "name": "KitsuneGold",
+          "slim": false,
+          "story": "KitsuneGold, the fox spirit, stares with slanted golden eyes, a glowing gold sash slung across her shadowed chest."
+        },
+        {
+          "file": "glow_ronin.png",
+          "name": "StormRonin",
+          "slim": false,
+          "story": "StormRonin wanders masterless beneath a pale blue headband, ice-blue chevrons flickering across his chest like lightning."
+        },
+        {
+          "file": "glow_wraith.png",
+          "name": "VoidWraith",
+          "slim": false,
+          "story": "VoidWraith is barely holding together, its black body crumbling into drifting shards speckled with toxic green sparks."
+        },
+        {
+          "file": "glow_shogun.png",
+          "name": "NeonShogun",
+          "slim": false,
+          "story": "NeonShogun rules beneath a dark red crest, a crimson ember on his brow and golden eyes judging all who kneel."
+        },
+        {
+          "file": "glow_marionette.png",
+          "name": "CursedMarionette",
+          "slim": false,
+          "story": "CursedMarionette wears a pale white mask, grey strings hanging down its black body, still waiting for the hand that pulls them."
+        }
+      ],
+      "mcpack": "Yubis_Glow_Pack_Vol2.mcpack",
+      "status": "published",
+      "note": "The glow spreads to a forgotten shadow realm: KitsuneGold, StormRonin, VoidWraith, NeonShogun and CursedMarionette rise from the dark. Spirits, ronin and a puppet without a master now walk among the lights.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7956417,
+      "publishedAt": "2026-04-20T15:08:36.617Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Circuit City",
+      "skins": [
+        {
+          "file": "bass_pulse.png",
+          "name": "Bass Pulse",
+          "slim": false,
+          "story": "She plays the last club in the city every night, and the cyan beat in her headphones keeps the whole district's lights pulsing."
+        },
+        {
+          "file": "circuit_hacker.png",
+          "name": "Circuit Hacker",
+          "slim": false,
+          "story": "He hides under a lime-lit hood and draws a new circuit on his own chest every time he breaks into a system."
+        },
+        {
+          "file": "screen_droid.png",
+          "name": "Screen Droid",
+          "slim": false,
+          "story": "An old city patrol droid whose blue screen face still smiles at everyone, powered by the hex reactor humming in its chest."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Yubi's glow spills into the city at night: a DJ whose headphones never go quiet, a hacker who reads the wires like a book and a droid with a smile on its screen.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "Glowing Wilds",
+      "skins": [
+        {
+          "file": "moth_queen.png",
+          "name": "Moth Queen",
+          "slim": true,
+          "story": "She rules the night sky over the marshes, and every lamp in the world pulls at her violet wings."
+        },
+        {
+          "file": "deep_angler.png",
+          "name": "Deep Angler",
+          "slim": false,
+          "story": "It hunts in the darkest trench of the ocean, where its golden lure is the only light anyone ever follows."
+        },
+        {
+          "file": "antler_warden.png",
+          "name": "Antler Warden",
+          "slim": false,
+          "story": "A forest spirit in a bone mask who carries the glowing tree of the old woods on his chest wherever he walks."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Far from the city lights, the wild things glow on their own: a moth queen, a hunter from the deep sea and the warden of the old forest.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Signals from Orbit",
+      "skins": [
+        {
+          "file": "orbit_keeper.png",
+          "name": "Orbit Keeper",
+          "slim": false,
+          "story": "He winds the paths of the planets every night, and a golden ring still circles his head from the last one he tamed."
+        },
+        {
+          "file": "static_glitch.png",
+          "name": "Static Glitch",
+          "slim": false,
+          "story": "Born from a corrupted satellite signal, it flickers between red and cyan and never stands in one place for long."
+        },
+        {
+          "file": "star_diver.png",
+          "name": "Star Diver",
+          "slim": false,
+          "story": "Her capsule crashed in the night, but the coral lights of her helmet still glow, calling home through the dark."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Strange signals reach the ground from far above: a keeper of the planets, a broken broadcast that learned to walk and a diver who fell from the stars.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.2",
+    "1.19.23",
+    "1.20.1",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style figure in matte pitch-black armour and hood, four glowing teal-cyan eye pixels, thin cyan circuit lines glowing across the chest and a cyan stripe on the boots, dramatic neon cyan rim light and soft bloom, dark near-black background with faint mist, centered, high contrast, no text",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures standing side by side in matte black armour: left with glowing teal-cyan eyes and cyan circuit lines, centre with a hot-pink slit visor and pink circuit lines, right with a glowing orange visor band and orange circuit lines, each with matching glowing boot stripes; night-time rooftop cityscape with dark fog and neon reflections; big stylised glowing title text \"Yubi's Glow Pack\" across the top"
+}

@@ -1,0 +1,115 @@
+{
+  "pack": "urban-teen-pack",
+  "style": "clothing",
+  "at": "2026-11-19T23:21:39.958Z",
+  "versions": [
+    {
+      "version": "1.1",
+      "title": "Skate Park Squad",
+      "skins": [
+        {
+          "name": "Cobalt Kick",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Violet Royal (3/6)",
+          "black": 0,
+          "neon": 0.301,
+          "overlayTransparent": 0.32
+        },
+        {
+          "name": "Olive Drift",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sunset Kid (3/6)",
+          "black": 0,
+          "neon": 0.135,
+          "overlayTransparent": 0.3
+        },
+        {
+          "name": "Berry Beats",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Sunset Kid (5/6)",
+          "black": 0,
+          "neon": 0.303,
+          "overlayTransparent": 0.55
+        }
+      ]
+    },
+    {
+      "version": "1.2",
+      "title": "Sunny Side Street",
+      "skins": [
+        {
+          "name": "Denim Daisy",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cobalt Kick (3/6)",
+          "black": 0,
+          "neon": 0.376,
+          "overlayTransparent": 0.59
+        },
+        {
+          "name": "Coral Wave",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Cobalt Kick (4/6)",
+          "black": 0,
+          "neon": 0.564,
+          "overlayTransparent": 0.35
+        },
+        {
+          "name": "Tangerine Track",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Lemon Glow (3/6)",
+          "black": 0,
+          "neon": 0.27,
+          "overlayTransparent": 0.42
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "After Dark Arcade",
+      "skins": [
+        {
+          "name": "Plum Varsity",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Mint Fresh (3/6)",
+          "black": 0,
+          "neon": 0.174,
+          "overlayTransparent": 0.43
+        },
+        {
+          "name": "Frost Puff",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Mint Fresh (4/6)",
+          "black": 0,
+          "neon": 0.606,
+          "overlayTransparent": 0.33
+        },
+        {
+          "name": "Jade Pixel",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Mint Fresh (3/6)",
+          "black": 0,
+          "neon": 0.246,
+          "overlayTransparent": 0.47
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "pack": "basketball-skins",
+  "style": "accent",
+  "at": "2026-11-19T23:05:59.249Z",
+  "versions": [
+    {
+      "version": "1.1",
+      "title": "Tip-Off Night",
+      "skins": [
+        {
+          "name": "Comet Flyer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Court Rookie (6/6)",
+          "black": 0.02,
+          "neon": 0.178,
+          "overlayTransparent": 0.82
+        },
+        {
+          "name": "Frost Guard",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Court Rookie (6/6)",
+          "black": 0,
+          "neon": 0.664,
+          "overlayTransparent": 0.84
+        },
+        {
+          "name": "Canyon Center",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Court Rookie (6/6)",
+          "black": 0,
+          "neon": 0.14,
+          "overlayTransparent": 0.85
+        }
+      ]
+    },
+    {
+      "version": "1.2",
+      "title": "Streetball Summer",
+      "skins": [
+        {
+          "name": "Park Crossover",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Court Rookie (6/6)",
+          "black": 0.08,
+          "neon": 0.175,
+          "overlayTransparent": 0.9
+        },
+        {
+          "name": "Neon Night Baller",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Court Rookie (6/6)",
+          "black": 0.1,
+          "neon": 0.129,
+          "overlayTransparent": 0.74
+        },
+        {
+          "name": "Sunset Queen",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Court Rookie (6/6)",
+          "black": 0,
+          "neon": 0.482,
+          "overlayTransparent": 0.83
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "All-Star Weekend",
+      "skins": [
+        {
+          "name": "Slam Champion",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Neon Night Baller (5/6)",
+          "black": 0.02,
+          "neon": 0.348,
+          "overlayTransparent": 0.84
+        },
+        {
+          "name": "Retro Groove Guard",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Neon Night Baller (4/6)",
+          "black": 0,
+          "neon": 0.247,
+          "overlayTransparent": 0.73
+        },
+        {
+          "name": "Midnight Owl Mascot",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Canyon Center (5/6)",
+          "black": 0,
+          "neon": 0.215,
+          "overlayTransparent": 0.8
+        }
+      ]
+    }
+  ]
+}

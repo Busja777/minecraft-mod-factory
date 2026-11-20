@@ -24,10 +24,12 @@ export function stableUuid(seed) {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-5${h.slice(13, 16)}-${variant}${h.slice(17, 20)}-${h.slice(20, 32)}`;
 }
 
-// expected: [{ name, png }] → the ones whose texture is not in the .mcpack
+// expected: [{ name, png }] → the ones whose texture is not in the .mcpack, or whose display name
+// there differs from pack.json (e.g. after German names were translated to English)
 export function missingSkins(mcpack, expected) {
-  const have = new Set(readMcpack(mcpack).skins.filter(s => s.png).map(s => sha(s.png)));
-  return expected.filter(s => !have.has(sha(s.png)));
+  const skins = readMcpack(mcpack).skins.filter(s => s.png);
+  const have = new Map(skins.map(s => [sha(s.png), s.name]));
+  return expected.filter(s => { const name = have.get(sha(s.png)); return name === undefined || (s.name && name !== s.name); });
 }
 
 export const completeFileName = (pack, v) => `${pack.packName.replace(/[^A-Za-z0-9]+/g, '_')}_V${v.version.replace('.', '_')}_Complete.mcpack`;

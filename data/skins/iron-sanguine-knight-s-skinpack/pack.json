@@ -1,0 +1,253 @@
+{
+  "slug": "iron-sanguine-knight-s-skinpack",
+  "name": "Iron Sanguine Knight's Skinpack",
+  "packName": "Knights Collection",
+  "summary": "These are knights of iron and flame. It seems like every visor hides an oath that never died ...",
+  "legend": "Long before the first torch was lit, the Iron Sanguine Order sealed its oath in a hall of glowing stone. Each knight swore on a different metal, and each metal answered with a light of its own. The Purple Epic Knight still walks the deep roads, cyan light burning through his visor like a cold star. Somewhere beyond the Nether gate, the Fire Knight leaves footprints of living flame, his red eyes never blinking. And in the frozen ruins, the Knight Magic guards a secret that makes the air around his gauntlets shimmer turquoise. Travellers say the Order disbanded centuries ago. Yet every so often, a new banner appears on the castle walls, and a new pair of eyes lights up in the dark. The question isn't whether more knights will come. It's what they swore to protect.",
+  "altNames": [
+    "Iron Sanguine Order",
+    "Banners of the Glowing Oath"
+  ],
+  "cfProjectId": 1483568,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "purple_knight.png",
+          "name": "Purple Epic Knight",
+          "slim": false,
+          "story": "The Order's first champion, clad in deep purple plate, his cyan visor and chest diamond glowing like a captured star."
+        },
+        {
+          "file": "green_knight.png",
+          "name": "Green Knight",
+          "slim": false,
+          "story": "A forest warden in emerald armour, gold banding his visor, chest and greaves, sworn to guard the wild roads."
+        },
+        {
+          "file": "golden_lord.png",
+          "name": "Golden Lord",
+          "slim": false,
+          "story": "Ruler of the Order in gleaming gold plate, a crimson gem on his chest and red bands marking his royal blood."
+        },
+        {
+          "file": "yellow_knight.png",
+          "name": "Yellow Knight",
+          "slim": false,
+          "story": "The Golden Lord's sworn twin, his yellow armour streaked with ember-orange, forged in the same furnace but cooled by fire."
+        },
+        {
+          "file": "blue_knight.png",
+          "name": "Blue Knight",
+          "slim": false,
+          "story": "A loyal sky-blue sentinel with a golden crest and belt, who keeps watch from the castle walls at dawn."
+        }
+      ],
+      "mcpack": "Knights_Collection.mcpack",
+      "status": "published",
+      "note": "The Order's first banners are raised: five knights in purple, green, gold, yellow and blue answer the oath.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7900605,
+      "publishedAt": "2026-04-09T17:40:31.850Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "knight_collection_skin_6.png",
+          "name": "Knight Magic",
+          "slim": false,
+          "story": "A crowned steel sorcerer whose cyan eyes and turquoise flame-runes crawl across his gauntlets and legs whenever magic stirs."
+        },
+        {
+          "file": "knight_collection_skin_7.png",
+          "name": "Knight Gold",
+          "slim": false,
+          "story": "A masked king in a golden crown and blood-red cape, his grey plate bearing the Order's ancient sigil."
+        },
+        {
+          "file": "knight_collection_skin_8.png",
+          "name": "Fire Knight",
+          "slim": false,
+          "story": "Born beyond the Nether gate, his red eyes never blink and orange flames burn eternally on his hands and feet."
+        }
+      ],
+      "mcpack": "Knights_Collection_Updated_Bedrock.mcpack",
+      "status": "published",
+      "note": "Three darker sworn knights step out of the shadows: a crowned king, a cyan-runed sorcerer and a knight wreathed in fire.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 8092037,
+      "publishedAt": "2026-05-15T11:26:11.717Z"
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "knight_collection_skin_9.png",
+          "name": "Silver Paladin",
+          "slim": false,
+          "story": "A holy warrior in polished silver, a golden cross shining on his blue tabard, gold trimming every plate."
+        },
+        {
+          "file": "knight_collection_skin_10.png",
+          "name": "Netherite Knight",
+          "slim": false,
+          "story": "Forged from black netherite and gold, his orange eyes smoulder behind the visor like coals that never cool."
+        },
+        {
+          "file": "knight_collection_skin_11.png",
+          "name": "Copper Knight",
+          "slim": false,
+          "story": "An ancient copper guardian, his orange plate slowly eaten by teal patina, still marching after centuries of rain."
+        },
+        {
+          "file": "knight_collection_skin_12.png",
+          "name": "Bone Knight",
+          "slim": false,
+          "story": "A fallen knight returned as bone, green eyes glowing in his skull, his ribcage wrapped in rotting dark-green armour."
+        }
+      ],
+      "mcpack": "Knights_Collection_V1.1.mcpack",
+      "status": "published",
+      "note": "The forges reignite as silver, netherite, copper and even bone join the ranks, each one a different metal sworn to the old oath.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": 9628578,
+      "publishedAt": "2026-11-15T12:41:40.953Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.3",
+      "title": "Order of the Frost",
+      "skins": [
+        {
+          "file": "frost_warden.png",
+          "name": "Frost Warden",
+          "slim": false,
+          "story": "He guards the pass where winter never ends, his ice-blue plate cold enough to freeze the blade that strikes it."
+        },
+        {
+          "file": "rime_lancer.png",
+          "name": "Rime Lancer",
+          "slim": false,
+          "story": "An old knight with a frost-white beard who has ridden into every blizzard since the order was founded."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "From the frozen north ride two knights of the Frost Order: a warden in ice-blue plate and a lancer whose beard is white with rime.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.4",
+      "title": "The Emerald Vow",
+      "skins": [
+        {
+          "file": "jade_sentinel.png",
+          "name": "Jade Sentinel",
+          "slim": false,
+          "story": "Keeper of the emerald gate, he wears the golden lion of his house and has never once stepped back."
+        },
+        {
+          "file": "thorn_knight.png",
+          "name": "Thorn Knight",
+          "slim": false,
+          "story": "His tabard carries a black thorn on dark green, a warning to anyone who thinks the forest is undefended."
+        },
+        {
+          "file": "rose_paladin.png",
+          "name": "Rose Paladin",
+          "slim": false,
+          "story": "She rides into battle with roses woven into her armour, and every knight she saves gets one to keep."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three knights swear the Emerald Vow: a sentinel with a golden lion, a thorn knight over chainmail and a paladin of roses.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.5",
+      "title": "Night Watch",
+      "skins": [
+        {
+          "file": "obsidian_guard.png",
+          "name": "Obsidian Guard",
+          "slim": false,
+          "story": "Forged from volcanic glass, he only opens his violet eyes when an enemy reaches the castle walls."
+        },
+        {
+          "file": "sun_herald.png",
+          "name": "Sun Herald",
+          "slim": false,
+          "story": "His white-gold armour catches the last light of the day and keeps it burning on his chest all night long."
+        },
+        {
+          "file": "storm_knight.png",
+          "name": "Storm Knight",
+          "slim": false,
+          "story": "Lightning chose him on the battlefield, and the yellow bolt on his dark-blue plate has never stopped crackling."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the sun goes down, the Night Watch takes the walls: an obsidian guard with horns, a herald of the sun and a knight who carries the storm.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.21.2",
+    "1.20.80",
+    "1.21",
+    "1.21.80",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10",
+    "26.11",
+    "26.12",
+    "26.20",
+    "26.13",
+    "26.30",
+    "26.40",
+    "26.50",
+    "26.60"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style knight in red and charcoal-grey armour, glowing red eyes in a dark helmet, small orange glowing eyes on the chest plate, his hands and feet engulfed in bright orange-yellow pixel flames, dramatic fiery glow and rising embers, pitch-black background, low camera angle, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style knights side by side: on the left a purple-armoured knight with a glowing cyan visor, cyan chest diamond and cyan bands at waist and shins; in the centre a dark steel knight with a spiked crown helm, glowing cyan eyes and cyan flame patterns on his hands and legs; on the right a red and charcoal knight with glowing red eyes and orange-yellow flames on hands and feet. Background: a ruined castle hall at night, torchlight and drifting embers, moody mist. Above them the title \"Knights Collection\" in big stylised metallic medieval letters."
+}

@@ -1,5 +1,7 @@
+import './lib/load-secrets.js';
 import fs from 'fs';
-import { loadProjects, pickForUpdate, findUnassigned, kindOf, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
+import { loadProjects, saveProjects, pickForUpdate, syncLastUpload, findUnassigned, kindOf, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
+import { listFiles } from './platforms/curseforge-core.js';
 import { loadPack, hasDueVersion, listPacks } from './lib/skinpacks.js';
 import { localParts } from './lib/schedule.js';
 import { setOutputs } from './lib/github-output.js';
@@ -19,6 +21,23 @@ const maxPendingKits = config.maxPendingKits ?? 5;
 const newModDays = config.newModDays || [1, 3, 5, 6];
 const local = localParts(now, config.timezone || 'Europe/Berlin');
 const packs = new Set(listPacks());
+
+// The real last upload comes from CurseForge (a file uploaded by hand counts too), so the 23-day
+// rule and the cycle order hold even when data/cf-projects.json is behind. Read-only Core API.
+async function syncLastUploads() {
+  const key = process.env.CF_CORE_API_KEY;
+  if (!key) { console.log('No CF_CORE_API_KEY — using the last uploads from data/cf-projects.json'); return; }
+  const moved = [];
+  for (const p of projects.filter(p => p.status === 'published' && Number.isInteger(p.projectId))) {
+    try {
+      if (syncLastUpload(p, await listFiles(p.projectId, { key }))) moved.push(`${p.modId} → ${p.lastPublishedAt.slice(0, 10)}`);
+    } catch (e) {
+      console.log(`::warning::Could not read the CurseForge files of ${p.modId}: ${e.message}`);
+    }
+  }
+  if (moved.length) { console.log(`Last uploads taken from CurseForge: ${moved.join(', ')}`); saveProjects(projects); }
+}
+if (mode === 'update' || mode === 'auto') await syncLastUploads();
 
 // Skin packs are only updatable while a prepared next version exists (local U-folders).
 const eligible = p => kindOf(p) !== 'skinpack' || (packs.has(p.modId) && hasDueVersion(loadPack(p.modId)));

@@ -1,0 +1,201 @@
+{
+  "slug": "mutants-arrival",
+  "name": "Mutants Arrival",
+  "packName": "Steve Hybrid Pack",
+  "summary": "This is Steve, split down the middle. One half is still human, but the other half answers to the mobs...",
+  "legend": "Nobody knows what fell from the sky that night, only that Steve walked out of the crater split straight down the middle. His left side was still himself: brown hair, blue eye, blue shirt, worn grey trousers. His right side belonged to something else. In the first village he was Steve x Enderman, half black void with violet sparks for eyes. By the next sunrise a pale, bone-white Steve x Skeleton was rattling through the forest. Then the shepherds swore they saw Steve x Blaze, one half burning gold, leaving scorch marks across their fields. Every copy has the same calm blue eye on the human side. Every copy is missing a little more of the man. The mutants keep arriving, and the crater has not gone quiet yet...",
+  "altNames": [
+    "Half-Steve Hybrids",
+    "The Split Steve Experiments"
+  ],
+  "cfProjectId": 1501253,
+  "source": "Mutants arrival",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "steve_enderman.png",
+          "name": "Steve x Enderman",
+          "slim": false,
+          "story": "The first to crawl from the crater, half Steve and half pitch-black Enderman, with violet sparks glittering in his void-dark eye."
+        },
+        {
+          "file": "steve_skeleton.png",
+          "name": "Steve x Skeleton",
+          "slim": false,
+          "story": "His right side was stripped down to bone-white ribs and hollow black sockets, and he rattles softly when he walks."
+        },
+        {
+          "file": "steve_enderdragon.png",
+          "name": "Steve x Enderdragon",
+          "slim": false,
+          "story": "Dark purple scales, a glowing violet eye and pale claws: the End itself seems to have claimed half of this Steve."
+        }
+      ],
+      "mcpack": "SteveHybrid_Pack.mcpack",
+      "status": "published",
+      "note": "The crater opens: Steve x Enderman, Steve x Skeleton and the violet-eyed Steve x Enderdragon walk out of the dark.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7854963,
+      "publishedAt": "2026-04-01T08:16:22.740Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "steve_pig.png",
+          "name": "Steve x Pig",
+          "slim": false,
+          "story": "A pink, snouted half that the farmers swear grunts in its sleep, and yes, it still loves carrots."
+        },
+        {
+          "file": "steve_slime.png",
+          "name": "Steve x Slime",
+          "slim": false,
+          "story": "His bright green half wobbles like jelly, and the hollow dark eyes inside it never seem to blink."
+        },
+        {
+          "file": "steve_chicken.png",
+          "name": "Steve x Chicken",
+          "slim": false,
+          "story": "White feathers, a red comb, a yellow beak and orange feet, and he still clucks whenever the sun rises."
+        }
+      ],
+      "mcpack": "SteveHybrid2_Pack.mcpack",
+      "status": "published",
+      "note": "The mutation reaches the overworld: pink Steve x Pig, wobbling Steve x Slime and feathered Steve x Chicken join the arrivals.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7972954,
+      "publishedAt": "2026-04-23T16:22:05.817Z"
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "steve_cow.png",
+          "name": "Steve x Cow",
+          "slim": false,
+          "story": "Black-and-white patches spread across his body, a pink muzzle grew in, and nobody dares to milk him."
+        },
+        {
+          "file": "steve_creeper.png",
+          "name": "Steve x Creeper",
+          "slim": false,
+          "story": "A mottled green half with a black, frowning face, and a quiet hiss follows him everywhere."
+        },
+        {
+          "file": "steve_babychicken.png",
+          "name": "Steve x Baby Chicken",
+          "slim": false,
+          "story": "The smallest mutation: a fluffy bright-yellow half with a tiny orange beak and orange feet that patter close behind you."
+        },
+        {
+          "file": "steve_sheep.png",
+          "name": "Steve x Sheep",
+          "slim": false,
+          "story": "Cream-white wool on one side, a tan face peeking out, and the shears always seem to go missing near him."
+        }
+      ],
+      "mcpack": "SteveHybrid3_Pack.mcpack",
+      "status": "due",
+      "note": "The farms are not safe anymore. Steve x Cow, Steve x Creeper, the tiny Steve x Baby Chicken and woolly Steve x Sheep have been spotted.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "steve_zombie.png",
+          "name": "Steve x Zombie",
+          "slim": false,
+          "story": "The green rot is still spreading, dripping across his blue shirt as one undead arm reaches forward."
+        },
+        {
+          "file": "steve_blaze.png",
+          "name": "Steve x Blaze",
+          "slim": false,
+          "story": "Half of him burns a molten gold and orange, and the grass he walks on never grows back."
+        },
+        {
+          "file": "steve_fox.png",
+          "name": "Steve x Fox",
+          "slim": false,
+          "story": "An orange-furred half with a white muzzle and black paws, slipping between the trees before you can follow."
+        }
+      ],
+      "mcpack": "SteveHybrid4_Pack.mcpack",
+      "status": "due",
+      "note": "Rot, fire and fur: Steve x Zombie, the burning Steve x Blaze and the sly Steve x Fox arrive, and the crater is still not quiet.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.4",
+      "title": "Webs, Iron and Echoes",
+      "skins": [
+        {
+          "file": "steve_x_spider.png",
+          "name": "Steve x Spider",
+          "slim": false,
+          "story": "His dark, bristly half clings to the cave walls at night, and a cluster of red eyes watches you even when the human eye is closed."
+        },
+        {
+          "file": "steve_x_iron_golem.png",
+          "name": "Steve x Iron Golem",
+          "slim": false,
+          "story": "Half of him turned to heavy, vine-wrapped iron, and the villagers sleep easy now because he still carries a red poppy for every child he guards."
+        },
+        {
+          "file": "steve_x_warden.png",
+          "name": "Steve x Warden",
+          "slim": false,
+          "story": "He came up from the deep dark without a left eye at all, and the souls trapped in his chest glow brighter every time you make a sound."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The crater reaches deeper: Steve x Spider climbs out of the caves, Steve x Iron Golem stomps in from the village, and the blind Steve x Warden rises from the deep dark.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.2",
+    "1.21.20",
+    "1.19",
+    "1.20",
+    "1.21",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style figure split vertically down the middle: left half classic Steve with brown hair, blue eye, blue shirt and grey trousers; right half Ender Dragon with dark purple-black scales, a glowing violet eye, speckled purple glow across the body and pale bone-white horns and claws. Dramatic violet rim light and purple particles, deep dark background, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style figures standing side by side, each split vertically down the middle, left half classic Steve (brown hair, blue eye, blue shirt, grey trousers). Left figure: right half Enderman, pitch black with glowing purple eyes and violet specks. Middle figure: right half mottled green Creeper with a black face. Right figure: right half Blaze, burning golden-yellow and orange with a fiery glow. Background: a smoking crater at night under a strange purple sky, with drifting embers and ender particles. Big stylised blocky title text \"MUTANTS ARRIVAL\" across the top."
+}

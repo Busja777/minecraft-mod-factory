@@ -14,7 +14,7 @@ Diese Anleitung und die Makro-Anleitung gibt es zusammen als PDF: `Macros/ANLEIT
 | **Wartet auf dein Go** | „Packs nacheinander prüfen“. Passt alles → **Go – fertig**. Passt ein Teil nicht → dort **Ändern**, kurz schreiben was, am Ende **An Claude zurückgeben**. |
 | **Wartet auf Claude** | Nichts. Sag Claude in der nächsten Sitzung „bearbeite die Studio-Notizen“. Danach liegt das Pack wieder bei dir, geänderte Teile sind markiert. |
 | **Eingeplant** | Nichts. Termin steht dran (Mo/Mi/Fr/Sa, 06–12 Uhr, max. 1 neues Projekt pro Tag). „Go zurücknehmen“ geht jederzeit. |
-| **Updates** | Nur zur Info, brauchen kein Go (abends, alle 22–25 Tage). |
+| **Updates** | Nur zur Info, brauchen kein Go (1 pro Abend zwischen 18 und 21 Uhr, reihum, jedes Pack frühestens nach 23 Tagen). |
 
 **Go ist gesperrt**, solange Notizen offen sind oder eine automatische Prüfung rot ist (falsche Bildgröße, ≥ 2 MB, fehlender KI-Hinweis, keine Screenshots, falscher MCPEDL-Titel, kaputte .mcpack). Der Grund steht direkt unter dem Knopf.
 
@@ -72,7 +72,7 @@ Die `.jar`-Uploads der Mods laufen weiterhin automatisch über die API. Dafür b
 2. Es erkennt die neue **Projekt-ID** selbst und trägt sie ein.
 3. **Media:** Es lädt das Cover hoch und setzt den Titel **MCPEDL**. Du klickst **Apply**.
 4. **File:** Es lädt die `.mcpack` hoch, setzt Game-Versionen, Release und den Changelog mit Screenshots. Du klickst **Add File**.
-5. Es fragt „Hochgeladen? (j/n)“ und plant danach das nächste Update (22–25 Tage).
+5. Es fragt „Hochgeladen? (j/n)“ und plant danach das nächste Update (frühestens nach 23 Tagen).
 
 Danach im Terminal des Repos committen und pushen. Die Bilder in Beschreibung und Changelog werden erst nach dem Push sichtbar.
 

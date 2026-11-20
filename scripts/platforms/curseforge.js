@@ -82,18 +82,40 @@ export async function resolveGameVersions({ token, mcVersion, loader = 'Fabric',
   return { ...result, fromCache: false };
 }
 
-// Bedrock files list many game versions (e.g. 1.21.x and 26.0 … 26.60). Picks every name from
-// `include` (the versions of the previous file) plus every catalog version starting with `prefix`,
-// skipping beta/preview/snapshot types.
-export function matchBedrockVersionIds(catalog, { prefix = '26.', include = [] } = {}) {
+// Compares Bedrock version names numerically ("26.10" > "26.3", "27.0" > "26.60").
+export function compareVersions(a, b) {
+  const pa = String(a).split('.').map(Number), pb = String(b).split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const d = (pa[i] || 0) - (pb[i] || 0);
+    if (d) return d;
+  }
+  return 0;
+}
+
+// Bedrock files list many game versions (e.g. 1.21.x and 26.0 … 26.60). Picks every release version
+// from `include` (the versions of the previous file), every one starting with `prefix`, and every
+// one newer than all of those, so a new Minecraft release (27.0, …) is always ticked as well.
+// Beta/preview/snapshot versions are skipped. → { ids, names, newest, added }
+export function bedrockVersions(catalog, { prefix = '26.', include = [] } = {}) {
   const skipTypes = new Set(catalog.types.filter(t => /beta|preview|snapshot/i.test(`${t.name} ${t.slug || ''}`)).map(t => t.id));
+  const releases = catalog.versions.filter(v => !skipTypes.has(v.gameVersionTypeID) && !/beta|preview/i.test(v.name) && /^\d+(\.\d+)*$/.test(String(v.name)));
   const wanted = new Set(include.map(String));
-  const ids = catalog.versions
-    .filter(v => !skipTypes.has(v.gameVersionTypeID) && !/beta|preview/i.test(v.name))
-    .filter(v => wanted.has(String(v.name)) || String(v.name).startsWith(prefix))
-    .map(v => v.id);
-  if (!ids.length) throw new Error(`No CurseForge Bedrock game versions start with "${prefix}"`);
-  return [...new Set(ids)];
+  const base = releases.filter(v => wanted.has(String(v.name)) || String(v.name).startsWith(prefix));
+  if (!base.length) throw new Error(`No CurseForge Bedrock game versions start with "${prefix}"`);
+  const top = base.map(v => String(v.name)).sort(compareVersions).at(-1);
+  const picked = releases.filter(v => base.includes(v) || compareVersions(v.name, top) > 0);
+  const byName = new Map(picked.map(v => [String(v.name), v]));
+  const names = [...byName.keys()].sort(compareVersions);
+  return {
+    ids: [...new Set(names.map(n => byName.get(n).id))],
+    names,
+    newest: names.at(-1),
+    added: names.filter(n => !wanted.has(n))
+  };
+}
+
+export function matchBedrockVersionIds(catalog, options = {}) {
+  return bedrockVersions(catalog, options).ids;
 }
 
 export function buildMetadata({ changelog, displayName, releaseType = 'release', gameVersionIds }) {

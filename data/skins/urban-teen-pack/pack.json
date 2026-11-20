@@ -1,0 +1,224 @@
+{
+  "slug": "urban-teen-pack",
+  "name": "Urban Teen Pack",
+  "packName": "Urban Teen Pack",
+  "summary": "These are urban teens in cosy sweaters. It seems like there is more than just style behind every colour ...",
+  "legend": "They say the city has a secret dress code. Each autumn evening, when the streetlights flicker on, a crew of teens shows up at the corner of Fifth and Nowhere, every one of them in a chunky ribbed sweater of a single colour. Violet Royal always gets there first, a pink blossom tucked into her pale hair. Cyber Neon leans on the wall in midnight navy, with cyan hair that looks almost electric under the lamps. Midnight Queen arrives last, all in black except for the gold band in her hair. Nobody knows who picks the colours, or why each one matches the stripe on their white sneakers. Last night, though, somebody spotted a new set of footprints heading toward the skate park...",
+  "altNames": [
+    "Streetwise Sweater Crew",
+    "City Corner Teens"
+  ],
+  "cfProjectId": 1520582,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "VioletRoyal.png",
+          "name": "Violet Royal",
+          "slim": false,
+          "story": "Violet Royal rules the corner in a regal purple sweater, with pink eyes and a pink blossom pinned in her cream hair."
+        },
+        {
+          "file": "SunsetKid.png",
+          "name": "Sunset Kid",
+          "slim": false,
+          "story": "Sunset Kid's orange hair, golden headband and blazing orange sweater make him look like the last hour of daylight."
+        },
+        {
+          "file": "MidnightQueen.png",
+          "name": "Midnight Queen",
+          "slim": false,
+          "story": "Dressed all in black with a gold band and pink gem in her hair, Midnight Queen owns the city after dark."
+        },
+        {
+          "file": "MintFresh.png",
+          "name": "Mint Fresh",
+          "slim": false,
+          "story": "Mint Fresh pairs mint hair and mint trousers with a cream sweater, always looking like the first cool morning of autumn."
+        },
+        {
+          "file": "RoseBlossom.png",
+          "name": "Rose Blossom",
+          "slim": false,
+          "story": "Rose Blossom wears pink flowers in her pale hair, a soft pink sweater and spotless white trousers wherever she goes."
+        },
+        {
+          "file": "CyberNeon.png",
+          "name": "Cyber Neon",
+          "slim": false,
+          "story": "Cyber Neon has cyan hair, cyan eyes and a navy sweater, with dark sneakers that carry a cyan stripe like a signal."
+        },
+        {
+          "file": "CocoaDream.png",
+          "name": "Cocoa Dream",
+          "slim": false,
+          "story": "Cocoa Dream drifts through the streets in warm tan and deep brown, as calm and cosy as a cup of hot chocolate."
+        },
+        {
+          "file": "LemonGlow.png",
+          "name": "Lemon Glow",
+          "slim": false,
+          "story": "Blue-eyed Lemon Glow wears a sunny yellow sweater, a golden headband and blue jeans, and brightens every grey street."
+        },
+        {
+          "file": "SageWisdom.png",
+          "name": "Sage Wisdom",
+          "slim": false,
+          "story": "Sage Wisdom wears a green band in his dark hair and a muted sage sweater, and quietly knows every shortcut in town."
+        },
+        {
+          "file": "LilacDream.png",
+          "name": "Lilac Dream",
+          "slim": false,
+          "story": "Lilac Dream has silver hair and lilac eyes, and her pale purple sweater and sneakers make her look half asleep and half magic."
+        },
+        {
+          "file": "CrimsonRose.png",
+          "name": "Crimson Rose",
+          "slim": false,
+          "story": "Crimson Rose has dark red hair, a bold red sweater and black trousers, and nobody forgets her once they've seen her."
+        },
+        {
+          "file": "PeachGlow.png",
+          "name": "Peach Glow",
+          "slim": false,
+          "story": "Peach Glow has light blonde hair, blue eyes and a soft peach sweater, and brings warmth to the coldest street corner."
+        }
+      ],
+      "mcpack": "UrbanTeens.mcpack",
+      "status": "published",
+      "note": "The corner crew gathers for the first time: twelve teens, each in a signature ribbed sweater with a matching stripe on white sneakers. The streetlights are on, and the city's secret dress code begins.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7959952,
+      "publishedAt": "2026-04-21T09:02:16.457Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Skate Park Squad",
+      "skins": [
+        {
+          "file": "cobalt_kick.png",
+          "name": "Cobalt Kick",
+          "slim": false,
+          "story": "Cobalt Kick wears his red cap backwards and his hoodie strings uneven, and he still lands every kickflip first try."
+        },
+        {
+          "file": "olive_drift.png",
+          "name": "Olive Drift",
+          "slim": false,
+          "story": "Olive Drift keeps a mustard beanie over the ginger hair and an olive bomber zipped open, cruising wherever the wind goes."
+        },
+        {
+          "file": "berry_beats.png",
+          "name": "Berry Beats",
+          "slim": false,
+          "story": "Berry Beats sings along with her eyes closed, berry headphones on and an equalizer tee that jumps to every song."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Three new teens roll in from the skate park with a backwards cap, a knit beanie and a pair of headphones that never come off.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Sunny Side Street",
+      "skins": [
+        {
+          "file": "denim_daisy.png",
+          "name": "Denim Daisy",
+          "slim": false,
+          "story": "Denim Daisy ties her braids with daisy clips and keeps a daisy patch on her overall pocket all summer long."
+        },
+        {
+          "file": "coral_wave.png",
+          "name": "Coral Wave",
+          "slim": false,
+          "story": "Coral Wave lets her honey waves fall from under a cream bucket hat and wears a coral crop top with a little wave print."
+        },
+        {
+          "file": "tangerine_track.png",
+          "name": "Tangerine Track",
+          "slim": false,
+          "story": "Tangerine Track runs the whole block in a bright tracksuit, a white sweatband holding back his afro."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Summer hits the block: daisy braids and denim overalls, a coral crop top under a bucket hat and a tangerine tracksuit ready to race.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "After Dark Arcade",
+      "skins": [
+        {
+          "file": "plum_varsity.png",
+          "name": "Plum Varsity",
+          "slim": false,
+          "story": "Plum Varsity wears round glasses and a plum letter jacket, top of the class and first in line at the arcade."
+        },
+        {
+          "file": "frost_puff.png",
+          "name": "Frost Puff",
+          "slim": false,
+          "story": "Frost Puff zips her ice-blue puffer up to the chin, her pink bob tucked inside a fluffy white hood."
+        },
+        {
+          "file": "jade_pixel.png",
+          "name": "Jade Pixel",
+          "slim": false,
+          "story": "Jade Pixel carries a crossbody bag full of arcade tokens, with jade tips on a shaggy wolf cut and a pixel heart pinned to the jacket."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the street lights come on, the crew heads to the arcade in a letter jacket, a frosty puffer and a colour-block windbreaker.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.18.2",
+    "1.21.2",
+    "1.15",
+    "1.18",
+    "1.18.1",
+    "1.19.20",
+    "1.19",
+    "1.20.80",
+    "1.21",
+    "1.19.10",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: a single blocky Minecraft-style teen with pale cream hair, a pink flower headband and pink eyes, wearing a chunky ribbed purple sweater, black trousers and white sneakers with a small purple stripe. A soft violet rim light outlines the figure against a dark navy-black urban night background with blurred streetlights. Dramatic lighting, crisp voxel detail, no text.",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style teens standing side by side on a city street at dusk. On the left, a girl with cream hair and a pink flower headband in a ribbed purple sweater and black trousers. In the middle, a teen with cyan hair and cyan eyes in a navy sweater and black trousers, with cyan stripes on dark sneakers. On the right, a dark-skinned girl with black hair and a gold band with a pink gem, wearing an all-black sweater and trousers. Behind them are warm streetlights, brick walls and a purple-orange sky. Across the top, the title \"Urban Teen Pack\" in big, bold graffiti-style letters."
+}

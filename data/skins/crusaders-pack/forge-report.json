@@ -1,0 +1,115 @@
+{
+  "pack": "crusaders-pack",
+  "style": "accent",
+  "at": "2026-11-19T22:58:40.735Z",
+  "versions": [
+    {
+      "version": "1.2",
+      "title": "Brothers of the Orders",
+      "skins": [
+        {
+          "name": "Knight of Saint Lazarus",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Templar Knight (6/6)",
+          "black": 0,
+          "neon": 0,
+          "overlayTransparent": 0.89
+        },
+        {
+          "name": "Sword Brother",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Templar Knight (6/6)",
+          "black": 0,
+          "neon": 0.039,
+          "overlayTransparent": 0.87
+        },
+        {
+          "name": "Knight of Mountjoy",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Templar Knight (6/6)",
+          "black": 0.02,
+          "neon": 0.161,
+          "overlayTransparent": 0.86
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "title": "Sergeants of the Walls",
+      "skins": [
+        {
+          "name": "Crossbow Sergeant",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Knight of Santiago (5/6)",
+          "black": 0,
+          "neon": 0.099,
+          "overlayTransparent": 0.88
+        },
+        {
+          "name": "Turcopole Archer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Templar Knight (6/6)",
+          "black": 0,
+          "neon": 0.082,
+          "overlayTransparent": 0.89
+        },
+        {
+          "name": "Banner Sergeant",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Templar Knight (6/6)",
+          "black": 0,
+          "neon": 0.061,
+          "overlayTransparent": 0.88
+        }
+      ]
+    },
+    {
+      "version": "1.4",
+      "title": "Riders of the East",
+      "skins": [
+        {
+          "name": "Mamluk Lancer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Knight of Santiago (5/6)",
+          "black": 0,
+          "neon": 0.271,
+          "overlayTransparent": 0.83
+        },
+        {
+          "name": "Steppe Horse Archer",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Banner Sergeant (5/6)",
+          "black": 0,
+          "neon": 0.059,
+          "overlayTransparent": 0.81
+        },
+        {
+          "name": "Citadel Guard",
+          "ok": true,
+          "errors": [],
+          "warnings": [],
+          "closest": "Steppe Horse Archer (5/6)",
+          "black": 0.08,
+          "neon": 0.513,
+          "overlayTransparent": 0.84
+        }
+      ]
+    }
+  ]
+}

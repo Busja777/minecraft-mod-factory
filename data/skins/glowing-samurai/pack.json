@@ -23,17 +23,20 @@
         {
           "file": "raijin.png",
           "name": "RAIJIN — Thunder Samurai",
-          "slim": false
+          "slim": false,
+          "story": "RAIJIN wears the storm itself: golden lightning burns in his eyes, crest and gauntlets whenever he draws his blade."
         },
         {
           "file": "oni_kai.png",
           "name": "ONI-KAI — Blood Oni",
-          "slim": false
+          "slim": false,
+          "story": "ONI-KAI, the Blood Oni, glares with crimson eyes, and red fire seeps through every crack in his black armour."
         },
         {
           "file": "mugen.png",
           "name": "MUGEN — Void Ghost",
-          "slim": false
+          "slim": false,
+          "story": "MUGEN, the Void Ghost, is barely there: only faint violet eyes and purple-glowing hands show where he hides in the darkness."
         }
       ],
       "mcpack": "SamuraiSaga_GlowPack.mcpack",
@@ -53,22 +56,26 @@
         {
           "file": "kaze_ki.png",
           "name": "KAZE-KI — Wind Wraith",
-          "slim": false
+          "slim": false,
+          "story": "KAZE-KI, the Wind Wraith, is marked by cyan gusts slashing across his helmet, a fallen general who moves like a gale."
         },
         {
           "file": "doku_ha.png",
           "name": "DOKU-HA — Poison Blade",
-          "slim": false
+          "slim": false,
+          "story": "DOKU-HA, the Poison Blade, glows toxic green from his eyes to the twin venom bars across his chest."
         },
         {
           "file": "hyoketsu.png",
           "name": "HYOKETSU — Frozen Warlord",
-          "slim": false
+          "slim": false,
+          "story": "HYOKETSU, the Frozen Warlord, stares with pale ice-blue eyes, a frost-white spine of light running down his chest."
         },
         {
           "file": "kurohono.png",
           "name": "KUROHONO — Shadow Flame",
-          "slim": false
+          "slim": false,
+          "story": "KUROHONO, the Shadow Flame, smoulders in orange embers, a fire that burns only where the darkness is deepest."
         }
       ],
       "mcpack": "SamuraiSaga_ChapterII.mcpack",
@@ -88,22 +95,26 @@
         {
           "file": "shiroi_ki.png",
           "name": "SHIROI-KI — White Lotus",
-          "slim": false
+          "slim": false,
+          "story": "SHIROI-KI, the White Lotus, carries a pure white ring of light on her chest, the calmest and most dangerous guardian."
         },
         {
           "file": "jigoku_ya.png",
           "name": "JIGOKU-YA — Hell Archer",
-          "slim": false
+          "slim": false,
+          "story": "JIGOKU-YA, the Hell Archer, sees through a burning pink visor slit, and no target escapes his magenta arrows."
         },
         {
           "file": "raikage.png",
           "name": "RAIKAGE — Storm Shogun",
-          "slim": false
+          "slim": false,
+          "story": "RAIKAGE, the Storm Shogun, commands violet thunder from the shadows, his purple glow flickering like distant lightning."
         },
         {
           "file": "tetsuki.png",
           "name": "TETSUKI — Iron Forge",
-          "slim": false
+          "slim": false,
+          "story": "TETSUKI, the Iron Forge, glows amber like molten metal, his helmet visor still hot from the anvil that made him."
         }
       ],
       "mcpack": "SamuraiSaga_ChapterIII.mcpack",
@@ -123,32 +134,38 @@
         {
           "file": "shinki_s1.png",
           "name": "SHINKI (魂鬼) — Sealed",
-          "slim": false
+          "slim": false,
+          "story": "Sealed SHINKI is a dim crimson ember, his soul-demon chained inside black armour, only faint red eyes betraying it."
         },
         {
           "file": "shinki_s2.png",
           "name": "SHINKI (魂鬼) — Ascended",
-          "slim": false
+          "slim": false,
+          "story": "Ascended SHINKI breaks the seal, and blazing gold floods his helmet, chest and limbs like a demon reborn as sun."
         },
         {
           "file": "ryujin_s1.png",
           "name": "RYUJIN (龍神) — Sealed",
-          "slim": false
+          "slim": false,
+          "story": "Sealed RYUJIN, the dragon god, sleeps behind sky-blue eyes, his power trickling out only through his glowing gauntlets."
         },
         {
           "file": "ryujin_s2.png",
           "name": "RYUJIN (龍神) — Ascended",
-          "slim": false
+          "slim": false,
+          "story": "Ascended RYUJIN awakens in lime-green fire, dragon scales of light spreading across his chest and helmet."
         },
         {
           "file": "muramasa_s1.png",
           "name": "MURAMASA (村正) — Sealed",
-          "slim": false
+          "slim": false,
+          "story": "Sealed MURAMASA is almost invisible, a faint purple glow hinting at the cursed blade still hungry inside him."
         },
         {
           "file": "muramasa_s2.png",
           "name": "MURAMASA (村正) — Ascended",
-          "slim": false
+          "slim": false,
+          "story": "Ascended MURAMASA lets the curse out: hot pink cracks split his whole armour as the bloodthirsty blade takes over."
         }
       ],
       "mcpack": "SamuraiSaga_ChapterIV.mcpack",
@@ -168,27 +185,32 @@
         {
           "file": "kagami.png",
           "name": "KAGAMI (鏡) — Mirror Wraith",
-          "slim": false
+          "slim": false,
+          "story": "KAGAMI, the Mirror Wraith, wears a white-framed faceplate like a mirror, showing every enemy only their own reflection."
         },
         {
           "file": "jikoku.png",
           "name": "JIKOKU (時刻) — The Timekeeper",
-          "slim": false
+          "slim": false,
+          "story": "JIKOKU, the Timekeeper, bears a teal clock dial on his face, counting down the seconds every rival has left."
         },
         {
           "file": "okami.png",
           "name": "OKAMI-DO (狼道) — Wolf Road",
-          "slim": false
+          "slim": false,
+          "story": "OKAMI-DO, the Wolf Road, hunts with piercing blue eyes, a lone ronin following tracks only he can see."
         },
         {
           "file": "yomigaeri.png",
           "name": "YOMIGAERI (蘇り) — The Reborn",
-          "slim": false
+          "slim": false,
+          "story": "YOMIGAERI, the Reborn, climbed back from death with mint-green eyes and new life glowing through his ribs."
         },
         {
           "file": "akumu.png",
           "name": "AKUMU (悪夢) — The Nightmare",
-          "slim": false
+          "slim": false,
+          "story": "AKUMU, the Nightmare, flickers with broken magenta glitches, as if the dream that made him is still falling apart."
         }
       ],
       "mcpack": "SamuraiSaga_ChapterV.mcpack",
@@ -199,6 +221,40 @@
       ],
       "fileId": null,
       "publishedAt": null
+    },
+    {
+      "stage": "F1",
+      "version": "1.5",
+      "title": "The Lantern Road",
+      "skins": [
+        {
+          "file": "tomoshibi_lantern_keeper.png",
+          "name": "TOMOSHIBI (灯火) — Lantern Keeper",
+          "slim": false,
+          "story": "TOMOSHIBI, the Lantern Keeper, carries the first flame of the mountain road inside his chest, a red paper lantern ringed in gold that never burns down."
+        },
+        {
+          "file": "hotaru_firefly_ronin.png",
+          "name": "HOTARU (蛍) — Firefly Ronin",
+          "slim": false,
+          "story": "HOTARU, the Firefly Ronin, walks the road under a wide straw hat, and the fireflies that follow him are the souls of everyone he swore to protect."
+        },
+        {
+          "file": "suigetsu_moon_on_the_water.png",
+          "name": "SUIGETSU (水月) — Moon on the Water",
+          "slim": false,
+          "story": "SUIGETSU, the Moon on the Water, wears a golden crescent on his helm and fights where the river is calm, so every enemy sees two moons before the end."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Once a year the lanterns are lit along the old mountain road, and three samurai who died guarding it walk again: TOMOSHIBI with a burning lantern in his chest, HOTARU under a hat full of fireflies and SUIGETSU with the moon on his helm. When the last lantern goes out, so do they.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
     }
   ],
   "lastGameVersions": [

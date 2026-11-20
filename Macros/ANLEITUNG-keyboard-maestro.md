@@ -161,7 +161,7 @@ CurseForge (und jede andere Seite) blockt Dinge, die nach **Spam oder Bot-Netz**
 
 - **Dein echtes Chrome mit deinem Login.** Keine separaten Browser, keine Logins per Makro.
 - **Menschliches Tempo.** Zwischen den Schritten 0,5–1 s Pause. Das Makro ist trotzdem viel schneller als du, weil es nicht suchen, kopieren und tippen muss.
-- **Kein Massenbetrieb.** Ein Projekt, ein Lauf. Die Pipeline hält sich schon an die CurseForge-Regeln (22–25 Tage Abstand, echte Änderungen), und das Makro ändert daran nichts.
+- **Kein Massenbetrieb.** Ein Projekt, ein Lauf. Die Pipeline hält sich schon an die CurseForge-Regeln (mindestens 23 Tage Abstand, echte Änderungen), und das Makro ändert daran nichts.
 - **Captcha, 2FA und Login machst immer du.** Wenn so etwas auftaucht, brich das Makro ab (Menüleisten-Icon von KM → „Cancel All Macros“), erledige es und starte das Makro neu. Captchas automatisch zu umgehen verstößt gegen die Regeln und ist der sichere Weg zur Sperre.
 - **Den letzten Klick machst du.** So geht nie etwas Falsches raus.
 

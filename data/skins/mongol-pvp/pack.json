@@ -1,0 +1,208 @@
+{
+  "slug": "mongol-pvp",
+  "name": "Mongol PVP",
+  "packName": "Mongol Warriors",
+  "summary": "These are the khans of the steppe. It seems like there is more than just conquest in their eyes ...",
+  "legend": "The wind across the steppe carries hoofbeats long after the riders have gone. Old herders say that on moonless nights the khans come back to the grasslands, their silk robes and steel lamellar catching the light of fires no one remembers lighting. Genghis Khan rides in front, white-bearded and dressed in gold, and his gaze has not softened. Behind him comes Subutai, his face hidden under a steel mask, the general who never lost a campaign. Kublai Khan follows in royal blue and gold, carrying the seal of an empire that stretched past every horizon. They are not alone. Every banner of the Horde seems to be gathering again, one warrior at a time, and the steppe is quiet in a way that feels like waiting. Some say they are looking for an heir. Others think they are looking for a fight...",
+  "altNames": [
+    "Khans of the Endless Steppe",
+    "Golden Horde Warriors"
+  ],
+  "cfProjectId": 1527952,
+  "source": "Mongol PVP",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "kheshig.png",
+          "name": "Kheshig",
+          "slim": false,
+          "story": "A sworn guard of the Kheshig in a plumed silver helmet and steel lamellar with a gold collar, who never leaves the khan's tent unwatched."
+        },
+        {
+          "file": "nukur.png",
+          "name": "Nukur",
+          "slim": false,
+          "story": "Nukur, the loyal companion in an orange deel and brown cap, has followed his khan across every river of the steppe."
+        }
+      ],
+      "mcpack": "Mongol_Warriors.mcpack",
+      "status": "published",
+      "note": "The first riders appear on the steppe: the steel-clad Kheshig guard and Nukur, a loyal companion in orange.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 8005944,
+      "publishedAt": "2026-04-28T16:24:01.793Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "genghis_khan.png",
+          "name": "Genghis Khan",
+          "slim": false,
+          "story": "Genghis Khan, white-bearded and robed in gold, is the founder of the Horde, and his gaze still commands the wind."
+        },
+        {
+          "file": "subutai.png",
+          "name": "Subutai",
+          "slim": false,
+          "story": "Subutai wears a full steel mask and grey lamellar; he is the general who never lost a battle and never showed his face."
+        },
+        {
+          "file": "kublai_khan.png",
+          "name": "Kublai Khan",
+          "slim": false,
+          "story": "Kublai Khan, white-bearded in royal blue and gold, rules from a throne that reaches past every horizon."
+        }
+      ],
+      "mcpack": "Mongol_Warriors_V1_1.mcpack",
+      "status": "due",
+      "note": "The khans arrive. Golden Genghis Khan, masked Subutai and Kublai Khan in royal blue join the Horde.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U2",
+      "version": "1.2",
+      "title": "",
+      "skins": [
+        {
+          "file": "jebe.png",
+          "name": "Jebe",
+          "slim": false,
+          "story": "Jebe, the Arrow, rides in olive lamellar and teal silk, and his shots strike before the enemy hears the bowstring."
+        },
+        {
+          "file": "hulagu_khan.png",
+          "name": "Hulagu Khan",
+          "slim": false,
+          "story": "Hulagu Khan marches west in gold-crested steel, crimson trousers and red-gold shoulders, and leaves fallen cities behind him."
+        }
+      ],
+      "mcpack": "Mongol_Warriors_V1_2.mcpack",
+      "status": "due",
+      "note": "Jebe the Arrow rides in teal and olive, and Hulagu Khan marches beside him in crimson and gold-crested steel.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U3",
+      "version": "1.3",
+      "title": "",
+      "skins": [
+        {
+          "file": "muqali.png",
+          "name": "Muqali",
+          "slim": false,
+          "story": "Muqali, in green silk and steel scales trimmed with gold, holds the eastern front while the khan rides elsewhere."
+        },
+        {
+          "file": "batu_khan.png",
+          "name": "Batu Khan",
+          "slim": false,
+          "story": "Batu Khan, clad in black and gold lamellar, is the lord of the Golden Horde, and his shadow falls over distant kingdoms."
+        }
+      ],
+      "mcpack": "Mongol_Warriors_V1_3.mcpack",
+      "status": "due",
+      "note": "Muqali comes in from the east in green and gold, and Batu Khan of the Golden Horde follows in black and gold.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U4",
+      "version": "1.4",
+      "title": "",
+      "skins": [
+        {
+          "file": "ogedei_khan.png",
+          "name": "Ogedei Khan",
+          "slim": false,
+          "story": "Ogedei Khan, robed in deep blue with gold and white, inherited his father's empire and widened it further."
+        },
+        {
+          "file": "mongke_khan.png",
+          "name": "Mongke Khan",
+          "slim": false,
+          "story": "Mongke Khan, in brown armour banded with silver and a steel cap, keeps a stern eye on the Horde."
+        },
+        {
+          "file": "boorchu.png",
+          "name": "Boorchu",
+          "slim": false,
+          "story": "Boorchu, white-bearded in tan robes and a fur hat, was the khan's first friend and remains his oldest blade."
+        }
+      ],
+      "mcpack": "Mongol_Warriors_V1_4.mcpack",
+      "status": "due",
+      "note": "Three more banners rise: Ogedei Khan in blue, Mongke Khan in silver-banded brown, and white-bearded Boorchu in tan.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    },
+    {
+      "stage": "U5",
+      "version": "1.5",
+      "title": "",
+      "skins": [
+        {
+          "file": "jelme.png",
+          "name": "Jelme",
+          "slim": false,
+          "story": "Jelme, in red lamellar under a silver helmet, once saved the khan's life and still stands in front of every arrow."
+        },
+        {
+          "file": "chagatai_khan.png",
+          "name": "Chagatai Khan",
+          "slim": false,
+          "story": "Chagatai Khan, robed in purple and white silk under silver steel, guards the Horde's laws as fiercely as its borders."
+        }
+      ],
+      "mcpack": "Mongol_Warriors_V1_5.mcpack",
+      "status": "due",
+      "note": "Jelme the protector arrives in red lamellar, and Chagatai Khan brings the law of the steppe in purple and silver.",
+      "media": [
+        "media/v1.5-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null
+    }
+  ],
+  "lastGameVersions": [
+    "1.20",
+    "1.21",
+    "1.21.111",
+    "1.21.114",
+    "1.21.122",
+    "1.21.121",
+    "1.21.123",
+    "1.21.124",
+    "1.21.130",
+    "1.21.131",
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo: Genghis Khan as a blocky Minecraft-style figure, white beard, gold fur-trimmed hat, shining gold lamellar robe with bright gold highlights, warm golden rim light, dramatic shadows, dark night steppe background with faint embers, no text",
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style Mongol warriors side by side. Left: Subutai in a full steel face-mask helmet and grey steel lamellar armour with a brown belt. Center: Genghis Khan with a white beard, gold fur hat and gold robe. Right: Kublai Khan with a white beard, black-and-gold hat and royal blue robe with gold trim and a gold emblem. Behind them is a vast steppe at sunset with yurts, horse banners and dust clouds. Big stylised title letters reading \"Mongol PVP\" in weathered gold and steel."
+}

@@ -1,0 +1,214 @@
+{
+  "slug": "zombiefarmer-gang-skinpack",
+  "name": "Zombiefarmer Gang Skinpack",
+  "packName": "Zombie Farmer Skin Pack",
+  "summary": "These are zombie farmers. It seems like something more than crops is growing in their fields ...",
+  "legend": "Nobody remembers who planted the first field at Rotten Acres. They only remember the night the soil turned over by itself and the farmers came back up, hats still on their heads. Zombie Farmer Green was first, straw hat crooked, brown overalls caked in earth, tending rows that no living hand had touched in years. Then the frost crept in and Zombie Farmer Ice walked out of a frozen well, pale blue from head to boot. And when the moon hid, the clank of grey armour told everyone that Zombie Farmer Black Warrior was guarding the gate, a red band across his chest. Every season the gang grows, as if the field itself were harvesting them. The old scarecrow swears he has counted the furrows, and there are still far more than there are farmers...",
+  "altNames": [
+    "Zombiefarmer Gang",
+    "Rotten Acres Crew"
+  ],
+  "cfProjectId": 1491614,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "zf_gruen.png",
+          "name": "Zombie Farmer Green",
+          "slim": false,
+          "story": "The first to rise at Rotten Acres, still wearing his golden straw hat and earth-brown overalls, tending fields nobody alive remembers planting."
+        },
+        {
+          "file": "zf_eis.png",
+          "name": "Zombie Farmer Ice",
+          "slim": false,
+          "story": "He climbed out of a frozen well, icy blue from hat to boots, and the crops freeze wherever he walks."
+        },
+        {
+          "file": "zf_wuerste.png",
+          "name": "Zombie Farmer Sausage",
+          "slim": false,
+          "story": "In a white cap and orange-red shirt with a gold belt, he runs the gang's smokehouse, and nobody asks what goes into the sausages."
+        },
+        {
+          "file": "zf_wasser.png",
+          "name": "Zombie Farmer Water",
+          "slim": false,
+          "story": "Deep teal from head to toe, he rose from the flooded irrigation ditch and still carries the river's cold colour."
+        },
+        {
+          "file": "zf_skelett.png",
+          "name": "Zombie Farmer Skeleton",
+          "slim": false,
+          "story": "His flesh is long gone, leaving a bone-white face with dark hollow eyes beneath a brown hat, but he never misses a harvest."
+        },
+        {
+          "file": "zf_krieger.png",
+          "name": "Zombie Farmer Black Warrior",
+          "slim": false,
+          "story": "Clad in black and grey armour with a blood-red band across his chest, he guards the farm gate when the moon hides."
+        }
+      ],
+      "mcpack": "Zombie_Farmer_Pack.mcpack",
+      "status": "published",
+      "note": "The soil at Rotten Acres turns over and the first six farmers rise, from straw-hatted Green to the armoured Black Warrior at the gate.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 7789232,
+      "publishedAt": "2026-03-21T11:58:17.047Z"
+    },
+    {
+      "stage": "U1",
+      "version": "1.1",
+      "title": "",
+      "skins": [
+        {
+          "file": "zf_feuer.png",
+          "name": "Zombie Farmer Fire",
+          "slim": false,
+          "story": "His head and arms burn ember-orange above soot-black overalls, a farmer who walked out of the barn fire and kept working."
+        },
+        {
+          "file": "zf_pilz.png",
+          "name": "Zombie Farmer Mushroom",
+          "slim": false,
+          "story": "Pale lilac skin and a red mushroom cap: he slept too long in the damp cellar and something grew on him."
+        },
+        {
+          "file": "zf_wueste.png",
+          "name": "Zombie Farmer Desert",
+          "slim": false,
+          "story": "Sun-baked sandy yellow under faded light blue clothes, he wandered in from the dry fields beyond the dunes, still looking for rain."
+        }
+      ],
+      "mcpack": "Zombie_Farmer_Pack_Complete.mcpack",
+      "status": "published",
+      "note": "Three more drift in from the edges of the farm: Fire from the burned barn, Mushroom from the damp cellar and Desert from the dunes.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": 7922736,
+      "publishedAt": "2026-04-13T20:22:40.087Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.2",
+      "title": "Harvest Moon",
+      "skins": [
+        {
+          "file": "zombie_farmer_pumpkin.png",
+          "name": "Zombie Farmer Pumpkin",
+          "slim": false,
+          "story": "He fell asleep in the pumpkin patch on harvest night and woke up carved, glowing and grinning, and honestly he likes it better this way."
+        },
+        {
+          "file": "zombie_farmer_scarecrow.png",
+          "name": "Zombie Farmer Scarecrow",
+          "slim": false,
+          "story": "The crows took pity on the old scarecrow, so now he stands in the cornfield with button eyes and a stitched smile and lets them eat whatever they like."
+        },
+        {
+          "file": "zombie_farmer_beekeeper.png",
+          "name": "Zombie Farmer Beekeeper",
+          "slim": false,
+          "story": "He lifted his veil for just one second to smell the honey, and the bees have been reminding him of it ever since."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "When the harvest moon rises over the fields, three new farmers join the gang: one who grew a little too close to his pumpkins, one who guards the crows instead of scaring them, and one who keeps bees and regrets it.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.3",
+      "title": "The Barnyard Gang",
+      "skins": [
+        {
+          "file": "zombie_farmer_cow.png",
+          "name": "Zombie Farmer Cow",
+          "slim": false,
+          "story": "The herd only listens to one of their own, so he zipped himself into a spotted cow suit, horns and all, and has been chewing the same piece of wheat for a week."
+        },
+        {
+          "file": "zombie_farmer_chicken.png",
+          "name": "Zombie Farmer Chicken",
+          "slim": false,
+          "story": "A brown hen chose his straw hair as the warmest nest on the farm, and he is far too scared of her beak to ever take it off."
+        },
+        {
+          "file": "zombie_farmer_pig.png",
+          "name": "Zombie Farmer Pig",
+          "slim": false,
+          "story": "He spent one hot summer rolling in the mud with the pigs, and when the mud finally dried he came out pink, snouted and with a curly little tail."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The animals on the farm got tired of being chased, so the gang made friends with them instead: one farmer moved into a cow costume, one lets a chicken nest on his head, and one simply became a pig.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.4",
+      "title": "Wild Weather",
+      "skins": [
+        {
+          "file": "zombie_farmer_storm.png",
+          "name": "Zombie Farmer Storm",
+          "slim": false,
+          "story": "A small grey rain cloud followed him home from the fields one afternoon, and now it waters his crops, soaks his coat and strikes his hat whenever he complains."
+        },
+        {
+          "file": "zombie_farmer_sunflower.png",
+          "name": "Zombie Farmer Sunflower",
+          "slim": false,
+          "story": "He stood in the sunflower field for so many summers, always turned towards the sun, that the petals finally grew all the way around his face."
+        },
+        {
+          "file": "zombie_farmer_swamp.png",
+          "name": "Zombie Farmer Swamp",
+          "slim": false,
+          "story": "He went to check the flooded rice field and simply never came back out, so now a lily pad shades his head, a frog keeps him company and his eyes glow like fireflies."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "Rain, sun and fog all arrived at the farm in the same week, and three farmers came back changed: one with his own personal storm cloud, one who turned towards the sun, and one who never left the flooded field.",
+      "media": [
+        "media/v1.4-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.81",
+    "1.20.1",
+    "1.20",
+    "1.21",
+    "1.21.80",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style zombie farmer with green pixel skin, dark hollow eyes and a small open mouth, wearing a flat golden-tan straw hat and brown overalls, standing at night in a moonlit field, dramatic rim light and faint green haze around him, deep dark navy background, no text.",
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style zombie farmers standing side by side: on the left a green-skinned zombie in a flat golden-tan straw hat and brown overalls; in the middle a completely pale icy-blue zombie with light blue hat and blue clothes; on the right a green-skinned zombie in a black hat and dark grey armour with a red band across the chest and grey gauntlets. Behind them a moonlit haunted farm with crooked fences, a barn and rows of crops under fog. Big stylised blocky title letters reading \"Zombiefarmer Gang\" across the top."
+}

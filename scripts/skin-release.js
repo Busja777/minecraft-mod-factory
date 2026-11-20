@@ -5,7 +5,7 @@ import { loadPack, savePack, packDir, nextDueVersion, markVersionPublished, chan
 import { ensureCompletePack } from './lib/complete-pack.js';
 import { skinpackUpdateKit, versionImageUrls } from './lib/kit.js';
 import { loadProjects, saveProjects, findProject, markPublished } from './lib/cf-projects.js';
-import { fetchGameVersionCatalog, matchBedrockVersionIds, buildMetadata, uploadFile } from './platforms/curseforge.js';
+import { fetchGameVersionCatalog, bedrockVersions, buildMetadata, uploadFile } from './platforms/curseforge.js';
 import { listFiles, syncPackWithFiles } from './platforms/curseforge-core.js';
 import { setOutputs, arg, flag } from './lib/github-output.js';
 
@@ -52,9 +52,13 @@ let fileId = null, fileUrl = null, uploaded = false;
 if (b.uploadApi) {
   const token = process.env.CF_API_TOKEN;
   if (!token && !dryRun) throw new Error('CF_API_TOKEN is missing');
-  const gameVersionIds = token
-    ? matchBedrockVersionIds(await fetchGameVersionCatalog({ token, gameEndpoint: b.gameEndpoint }), { prefix: b.versionPrefix, include: pack.lastGameVersions || [] })
-    : [0];
+  let gameVersionIds = [0];
+  if (token) {
+    // Every version of the previous file plus the newest Minecraft releases it did not have yet.
+    const gv = bedrockVersions(await fetchGameVersionCatalog({ token, gameEndpoint: b.gameEndpoint }), { prefix: b.versionPrefix, include: pack.lastGameVersions || [] });
+    gameVersionIds = gv.ids;
+    console.log(`Game versions: ${gv.names.length}, newest ${gv.newest}${gv.added.length ? `, newly ticked: ${gv.added.join(', ')}` : ''}`);
+  }
   const metadata = buildMetadata({ changelog: v.changelog, displayName: v.mcpack, releaseType, gameVersionIds });
   console.log('CurseForge metadata:', JSON.stringify(metadata, null, 2));
   if (!dryRun) {

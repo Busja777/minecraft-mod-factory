@@ -1,0 +1,181 @@
+{
+  "slug": "cosy-sleeper",
+  "name": "Cosy Sleeper",
+  "packName": "Cosy Sleeper",
+  "summary": "These are cosy wool sleepers. It seems like there is more than just yarn knitted into every stitch ...",
+  "legend": "When the last lamp goes out in the village, the wool comes alive. Nobody knows who knitted the six hooded sweaters folded at the foot of every bed, but those who wear them never quite wake up in the same world. The Red Wool Sweater grins through the dark with all its teeth showing, the Yellow Wool Sweater keeps its eyes shut and still somehow finds the way, and the Purple Wool Sweater cries soft blue tears for a dream it can't remember. They wander between the bedrooms, warm and fuzzy and silent, tidying dreams and chasing off nightmares. In the morning only a few loose threads on the floor show they were there. But some nights the wool feels warmer than usual, and a new set of footprints leads away from the bed...",
+  "altNames": [
+    "Cosy Sleeper: Wool Dreamers",
+    "Cosy Sleeper - Knitted Night Club"
+  ],
+  "cfProjectId": 1544656,
+  "source": "curseforge",
+  "versions": [
+    {
+      "stage": "V1",
+      "version": "1.0",
+      "title": "",
+      "skins": [
+        {
+          "file": "Rot.png",
+          "name": "Red Wool Sweater",
+          "slim": false,
+          "story": "The Red Wool Sweater stays wide awake all night, grinning with every white tooth to scare the nightmares off."
+        },
+        {
+          "file": "Blau.png",
+          "name": "Blue Wool Sweater",
+          "slim": false,
+          "story": "The Blue Wool Sweater winks one eye shut and laughs softly, as if it already knows how tonight's dream ends."
+        },
+        {
+          "file": "Gruen.png",
+          "name": "Green Wool Sweater",
+          "slim": false,
+          "story": "The Green Wool Sweater stares out of its mossy hood, mouth wide open, as though it just saw something wander past the bed."
+        },
+        {
+          "file": "Gelb.png",
+          "name": "Yellow Wool Sweater",
+          "slim": false,
+          "story": "The Yellow Wool Sweater keeps both eyes closed and smiles, sleepwalking through dreams it somehow never gets lost in."
+        },
+        {
+          "file": "Lila.png",
+          "name": "Purple Wool Sweater",
+          "slim": false,
+          "story": "The Purple Wool Sweater cries little blue tears for a beautiful dream it lost the moment it woke up."
+        },
+        {
+          "file": "Orange.png",
+          "name": "Orange Wool Sweater",
+          "slim": false,
+          "story": "The Orange Wool Sweater watches quietly from its warm hood, the calm one who makes sure everyone gets home before sunrise."
+        }
+      ],
+      "mcpack": "WollPulli_Varianten_v2.mcpack",
+      "status": "published",
+      "note": "The first six wool sweaters, red, blue, green, yellow, purple and orange, crawl out from under the covers. Put one on, turn off the lamp, and see where the night takes you.",
+      "media": [
+        "media/v1.0-skins.png"
+      ],
+      "fileId": 8097662,
+      "publishedAt": "2026-05-16T09:51:47.950Z"
+    },
+    {
+      "stage": "F1",
+      "version": "1.1",
+      "title": "Lights Out",
+      "skins": [
+        {
+          "file": "starry_nightcap.png",
+          "name": "Starry Nightcap",
+          "slim": false,
+          "story": "She falls asleep counting the yellow stars on her midnight pyjamas, and the pompom of her nightcap always ends up on her ear."
+        },
+        {
+          "file": "mint_stripe_pyjamas.png",
+          "name": "Mint Stripe Pyjamas",
+          "slim": false,
+          "story": "He has worn his mint striped pyjamas for three lazy days in a row, and his bed hair has stopped listening to the comb."
+        },
+        {
+          "file": "counting_sheep.png",
+          "name": "Counting Sheep",
+          "slim": false,
+          "story": "She counts sheep every night until she is the sheep, curled up in a woolly onesie with floppy grey ears."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The lamps go off and three new sleepyheads shuffle into the pack: a stargazer in a drooping nightcap, a very tired pyjama fan and a little sheep who counts herself to sleep.",
+      "media": [
+        "media/v1.1-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F2",
+      "version": "1.2",
+      "title": "Snow Day Knits",
+      "skins": [
+        {
+          "file": "fair_isle_snowflake.png",
+          "name": "Fair Isle Snowflake",
+          "slim": false,
+          "story": "He was the first one out in the snow this morning, and his teal Fair Isle jumper still has a snowflake on the chest to prove it."
+        },
+        {
+          "file": "reindeer_jumper.png",
+          "name": "Reindeer Jumper",
+          "slim": false,
+          "story": "His grandma knitted a reindeer on his jumper and two antlers on his hood, and he has refused to take either off since."
+        },
+        {
+          "file": "hot_cocoa_argyle.png",
+          "name": "Hot Cocoa Argyle",
+          "slim": false,
+          "story": "He drinks his hot cocoa so fast that he always wears a chocolate moustache under his fluffy earmuffs."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "School is snowed in, so the sleepers pull out their warmest winter knits: a Fair Isle jumper with a pompom beanie, a reindeer jumper with antlers and an argyle sweater with fluffy earmuffs.",
+      "media": [
+        "media/v1.2-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    },
+    {
+      "stage": "F3",
+      "version": "1.3",
+      "title": "Sweet Dreams Club",
+      "skins": [
+        {
+          "file": "patchwork_quilt.png",
+          "name": "Patchwork Quilt",
+          "slim": false,
+          "story": "She never got out of bed this winter, so her grandma simply stitched her favourite quilt into a hood and a onesie."
+        },
+        {
+          "file": "sleepy_panda.png",
+          "name": "Sleepy Panda",
+          "slim": false,
+          "story": "He sleeps twenty hours a day in his panda onesie and still wakes up smiling, already looking forward to the next nap."
+        },
+        {
+          "file": "sweetheart_cardigan.png",
+          "name": "Sweetheart Cardigan",
+          "slim": false,
+          "story": "She knitted her pink cardigan heart by heart, and whenever she thinks of her warm bed her eyes turn into hearts too."
+        }
+      ],
+      "mcpack": null,
+      "status": "due",
+      "note": "The sleepers start a club for the best naps in the world: one wrapped in a patchwork quilt, a panda who snores in bubbles and a dreamer in a heart cardigan.",
+      "media": [
+        "media/v1.3-skins.png"
+      ],
+      "fileId": null,
+      "publishedAt": null,
+      "forged": true
+    }
+  ],
+  "lastGameVersions": [
+    "1.21.132",
+    "26.0.02",
+    "26.0",
+    "26.3",
+    "26.10",
+    "26.11",
+    "26.12",
+    "26.20",
+    "26.13"
+  ],
+  "logoPrompt": "Square logo, a single blocky Minecraft-style character in a fuzzy, textured red wool hooded onesie covering the whole body. Only a small skin-toned face shows through the hood, with wide dark eyes, rosy pink cheeks and a big open grin full of white teeth. Soft warm candle-like glow around the character's edges as if lit by a bedside lamp, dark midnight-blue background with faint drifting dust motes, cosy and a little mysterious, centred composition, no text.",
+  "coverPrompt": "Wide cinematic cover image, three blocky Minecraft-style characters standing side by side, each in a fuzzy, textured hooded wool onesie covering the whole body with only a small skin-toned face visible: left, a bright red sweater with wide eyes, rosy cheeks and a toothy grin; centre, a golden yellow sweater with both eyes peacefully closed and a small smile; right, a violet purple sweater with light blue tears under its eyes and an open mouth. Background: a dim moonlit Minecraft bedroom with wool beds, a glowing lantern and stars through the window, warm soft light. Title text \"Cosy Sleeper\" in big rounded, stitched wool-yarn style letters across the top."
+}

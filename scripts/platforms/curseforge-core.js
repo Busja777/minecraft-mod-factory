@@ -26,8 +26,16 @@ export async function findProjectBySlug({ gameSlug = 'minecraft-bedrock', slug, 
 export async function listFiles(projectId, { key, fetchImpl, pageSize = 50 } = {}) {
   const files = await get(`/mods/${projectId}/files?pageSize=${pageSize}`, key, fetchImpl);
   return files
-    .map(f => ({ id: f.id, fileName: f.fileName, fileDate: f.fileDate, gameVersions: f.gameVersions || [], releaseType: f.releaseType }))
+    .map(f => ({ id: f.id, fileName: f.fileName, fileDate: f.fileDate, gameVersions: f.gameVersions || [], releaseType: f.releaseType, downloadUrl: f.downloadUrl || null }))
     .sort((a, b) => Date.parse(b.fileDate) - Date.parse(a.fileDate));
+}
+
+// Downloads one of the project's own files (e.g. a V1 that only exists on CurseForge any more).
+export async function downloadFile(file, fetchImpl = fetch) {
+  if (!file?.downloadUrl) throw new Error(`CurseForge offers no download for ${file?.fileName || 'this file'}`);
+  const res = await fetchImpl(file.downloadUrl);
+  if (!res.ok) throw new Error(`Download of ${file.fileName} failed (${res.status})`);
+  return Buffer.from(await res.arrayBuffer());
 }
 
 // Marks pack versions as published when CurseForge already has a file with the same .mcpack name.
