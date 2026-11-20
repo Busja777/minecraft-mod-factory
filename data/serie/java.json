@@ -10,7 +10,9 @@
     "DR": "Data Pack + Resource Pack",
     "M": "Fabric-Mod 1.21.1"
   },
-  "reserve": [],
+  "reserve": [
+    "Recipes You Missed"
+  ],
   "projects": [
     {
       "nr": 1,
@@ -331,6 +333,19 @@
     },
     {
       "nr": 25,
+      "slug": "ice-cave-advancements",
+      "name": "Ice Cave Advancements",
+      "art": "D",
+      "was": "18 Fortschritte rund um die Eishöhlen von Minecraft 26.4 (Vorab-Projekt, wartet auf 26.4)",
+      "updates": [
+        "Fortschritte zu den Neuerungen der nächsten Testversionen",
+        "Belohnungen und Feinschliff",
+        "Deutsch und weitere Sprachen"
+      ],
+      "waitsFor": "26.4"
+    },
+    {
+      "nr": 26,
       "slug": "actionbar-coords",
       "name": "Actionbar Coords",
       "art": "D",
@@ -342,7 +357,7 @@
       ]
     },
     {
-      "nr": 26,
+      "nr": 27,
       "slug": "stack-more",
       "name": "Stack More",
       "art": "M",
@@ -354,7 +369,7 @@
       ]
     },
     {
-      "nr": 27,
+      "nr": 28,
       "slug": "seamless-panes",
       "name": "Seamless Panes",
       "art": "R",
@@ -366,7 +381,7 @@
       ]
     },
     {
-      "nr": 28,
+      "nr": 29,
       "slug": "double-door-buddy",
       "name": "Double Door Buddy",
       "art": "M",
@@ -375,18 +390,6 @@
         "Zauntore und Falltüren",
         "Redstone-Ausnahme",
         "NeoForge"
-      ]
-    },
-    {
-      "nr": 29,
-      "slug": "recipes-you-missed",
-      "name": "Recipes You Missed",
-      "art": "D",
-      "was": "Rezepte für Namensschild, Glocke, Spinnweben …",
-      "updates": [
-        "+10",
-        "leicht/fair",
-        "Rezeptbuch"
       ]
     },
     {

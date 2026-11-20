@@ -1,0 +1,8 @@
+{
+  "kind": "data",
+  "name": "Ice Cave Advancements",
+  "description": "18 advancements for the ice caves in their own tab",
+  "mc": "26.4-snapshot-10",
+  "gameVersions": ["26.4"],
+  "waitsFor": "26.4"
+}
