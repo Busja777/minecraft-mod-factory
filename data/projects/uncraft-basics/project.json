@@ -1,0 +1,19 @@
+{
+  "slug": "uncraft-basics",
+  "game": "java",
+  "name": "Uncraft Basics",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "UncraftBasics-1.0.zip",
+      "changelog": "## Uncraft Basics 1.0\n\nFirst release.\n\n- Take wool of all 16 colours apart into 4 string.\n- Take quartz blocks, quartz pillars and chiseled quartz blocks apart into 4 nether quartz each.\n- Take clay, snow blocks, glowstone, amethyst blocks, bricks, nether bricks, honeycomb blocks and dripstone blocks apart into the 4 pieces they are made of.\n- Take blue ice apart into 9 packed ice and packed ice into 9 ice.\n- 29 shapeless crafting recipes; every amount matches the vanilla recipe that makes the block, so nothing is ever gained.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1"
+      ]
+    }
+  ]
+}

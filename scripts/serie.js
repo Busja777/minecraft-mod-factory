@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { REIHEN, loadReihe, loadReihen, saveReihe, findSerieProject, projectDir, outDir, plannedDate, addStock, reiheStand, registerProject } from './lib/serie.js';
 import { checkPage, pageOk, aiNote, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE } from './lib/page-check.js';
-import { CHATGPT_ROOT, chatgptDir, writeChatgptFolder, findChatgptBanner, cropBanner, comparisonHtml } from './lib/banner.js';
+import { CHATGPT_ROOT, chatgptDir, writeChatgptFolder, findChatgptBanner, cropBanner, comparisonHtml, paintBanner } from './lib/banner.js';
 import { loadProjects, saveProjects } from './lib/cf-projects.js';
 import { loadReleaseProject, listReleaseProjects, releaseFile } from './lib/releases.js';
 import { gameOf, tokenFor } from './lib/games.js';
@@ -17,6 +17,7 @@ import { arg, flag } from './lib/github-output.js';
 //   npm run serie -- logo <slug> [--force]       KI-Logo erzeugen (kostet OpenAI-Guthaben)
 //   npm run serie -- seite <slug>                Titelbild, Texte und Prüfung nach Output/serie/<reihe>/<nr>-<slug>/
 //   npm run serie -- banner <slug>               mein Banner (720×340) nach Output/serie/<reihe>/<nr>-<slug>/banner-claude.png
+//   npm run serie -- banner-gemalt <slug>        gemaltes Banner über die OpenAI-Schnittstelle (kostet Guthaben)
 //   npm run serie -- chatgpt [<slug> …]          Aufträge für ChatGPT nach Output/chatgpt-bilder/ (ohne Slug: alle ohne gewähltes Banner)
 //   npm run serie -- banner-vergleich            ChatGPT-Bilder zuschneiden, beide Banner nebeneinander (VERGLEICH.html)
 //   npm run serie -- banner-wahl <slug> claude|chatgpt   Banner übernehmen, KI-Hinweis setzen, Seite neu bauen
@@ -43,7 +44,8 @@ const pageOptions = (reihe, project) => ({
   maxWords: reihe.reihe === 'sims4' ? 250 : 200,
   // visual packs need a real in-game image; a pack without visuals (sounds only) says shot: false
   needsShot: reihe.reihe === 'java' && /R/.test(project.art) && project.shot !== false,
-  bannerFrom: project.banner?.from || null
+  bannerFrom: project.banner?.from || null,
+  needsBanner: reihe.banner !== false
 });
 
 function pageFiles(reihe, project) {
@@ -81,7 +83,9 @@ function handover(reihe, project, page, zips) {
     `1. Im CurseForge-Konto für **${game.name}** ein neues Projekt anlegen${page.class ? ` (Projektart: **${page.class}**)` : ''}.`,
     '2. Name, Summary und Kategorie von unten eintragen. Im Beschreibungs-Editor auf **Markdown** stellen und die Beschreibung einfügen.',
     '3. `logo.png` als Logo hochladen.',
-    `4. Unter **Images** \`banner.png\` hochladen und als Hauptbild markieren, dazu \`cover.png\`${fs.existsSync(path.join(outDir(reihe.reihe, project), 'shot-1.png')) ? ' und die `shot-*.png`' : ''}.`,
+    reihe.banner === false
+      ? '4. Unter **Images** `cover.png` hochladen und als Hauptbild markieren.'
+      : `4. Unter **Images** \`banner.png\` hochladen und als Hauptbild markieren, dazu \`cover.png\`${fs.existsSync(path.join(outDir(reihe.reihe, project), 'shot-1.png')) ? ' und die `shot-*.png`' : ''}.`,
     '5. **Keine Datei hochladen.** Lizenz: All Rights Reserved.',
     `6. Projekt-ID eintragen: \`npm run serie -- id ${project.slug} <Projekt-ID>\`. Das ist dein Go, die erste Datei geht abends von selbst hoch.`,
     '',
@@ -119,11 +123,13 @@ async function seite() {
   fs.copyFileSync(logoFile, path.join(dir, 'logo.png'));
   const { writeCover } = await import('../tools/serie/cover.js');
   await writeCover({ reihe: reihe.reihe, name: page.name, tagline: page.cover?.tagline, bullets: page.cover?.bullets, kicker: page.cover?.kicker, logo: fs.readFileSync(logoFile) }, path.join(dir, 'cover.png'));
-  const { writeBanner } = await import('../tools/serie/cover.js');
-  await writeBanner({ reihe: reihe.reihe, name: page.name, tagline: page.cover?.tagline, kicker: page.cover?.kicker, logo: fs.readFileSync(logoFile) }, path.join(dir, 'banner-claude.png'));
-  const chosen = project.banner?.from && path.join(dir, `banner-${project.banner.from}.png`);
-  if (chosen && fs.existsSync(chosen)) fs.copyFileSync(chosen, path.join(dir, 'banner.png'));
-  else if (fs.existsSync(path.join(dir, 'banner.png'))) fs.rmSync(path.join(dir, 'banner.png'));
+  if (reihe.banner !== false) {
+    const { writeBanner } = await import('../tools/serie/cover.js');
+    await writeBanner({ reihe: reihe.reihe, name: page.name, tagline: page.cover?.tagline, kicker: page.cover?.kicker, logo: fs.readFileSync(logoFile) }, path.join(dir, 'banner-claude.png'));
+    const chosen = project.banner?.from && path.join(dir, `banner-${project.banner.from}.png`);
+    if (chosen && fs.existsSync(chosen)) fs.copyFileSync(chosen, path.join(dir, 'banner.png'));
+    else if (fs.existsSync(path.join(dir, 'banner.png'))) fs.rmSync(path.join(dir, 'banner.png'));
+  }
   const shotDir = path.join(src, 'shots');
   if (fs.existsSync(shotDir)) fs.readdirSync(shotDir).filter(f => f.endsWith('.png')).sort().forEach((f, i) => fs.copyFileSync(path.join(shotDir, f), path.join(dir, `shot-${i + 1}.png`)));
   const zips = listReleaseProjects().includes(project.slug) ? loadReleaseProject(project.slug).versions.map(v => `V${v.version}: ${v.file} (${v.status === 'due' ? 'wartet' : 'online'})`) : [];
@@ -138,6 +144,7 @@ async function seite() {
 function bannerCandidates(slugs) {
   const out = [];
   for (const reihe of loadReihen()) {
+    if (reihe.banner === false && !slugs.length) continue; // rows without a banner (WoW)
     for (const project of reihe.projects) {
       if (slugs.length ? !slugs.includes(project.slug) : project.banner) continue;
       const page = loadPage(reihe, project);
@@ -177,15 +184,16 @@ async function bannerVergleich() {
     const dir = outDir(e.reihe.reihe, e.project);
     const claude = await renderClaudeBanner(e);
     const source = findChatgptBanner(chatgptDir(e.reihe.reihe, e.project));
-    let chatgpt = null;
+    const painted = path.join(dir, 'banner-chatgpt.png');
+    let chatgpt = fs.existsSync(painted) ? painted : null; // painted through the API earlier
     let problem = null;
     if (source) {
       try {
-        chatgpt = path.join(dir, 'banner-chatgpt.png');
-        fs.writeFileSync(chatgpt, await cropBanner(fs.readFileSync(source)));
+        fs.writeFileSync(painted, await cropBanner(fs.readFileSync(source)));
+        chatgpt = painted;
       } catch (err) { chatgpt = null; problem = `Bild unbrauchbar: ${err.message}`; }
     }
-    console.log(`${chatgpt ? '✓' : '·'} ${e.page.name}: ${chatgpt ? 'beide Banner da' : problem || 'nur mein Banner (kein ChatGPT-Bild im Ordner)'}`);
+    console.log(`${chatgpt ? '✓' : '·'} ${e.page.name}: ${chatgpt ? 'beide Banner da' : problem || 'nur das gestaltete Banner (noch kein gemaltes)'}`);
     rows.push({ title: `${e.reihe.title} ${e.project.nr}/33`, reihe: e.reihe.reihe, name: e.page.name, claude, chatgpt, problem });
   }
   if (!rows.length) { console.log('Kein Projekt wartet auf ein Banner.'); return; }
@@ -193,6 +201,26 @@ async function bannerVergleich() {
   const file = path.join(CHATGPT_ROOT, 'VERGLEICH.html');
   fs.writeFileSync(file, await comparisonHtml(rows));
   console.log(`✓ ${file}`);
+}
+
+// The painted banner through the image API (costs OpenAI credit), saved next to the designed one.
+async function bannerGemalt() {
+  const slugs = argv.slice(1).filter(a => !a.startsWith('--'));
+  if (!slugs.length) fail('Aufruf: npm run serie -- banner-gemalt <slug> [<slug> …] [--force]');
+  const { generateImage } = await import('./lib/images.js');
+  await Promise.all(bannerCandidates(slugs).map(async e => {
+    if (e.reihe.banner === false) { console.log(`· ${e.page.name}: diese Reihe hat kein Banner`); return; }
+    const dir = outDir(e.reihe.reihe, e.project);
+    fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, 'banner-chatgpt.png');
+    if (fs.existsSync(file) && !flag(argv, '--force')) { console.log(`· ${e.page.name}: gemaltes Banner gibt es schon (neu mit --force)`); return; }
+    try {
+      const { raw, banner } = await paintBanner({ reiheKey: e.reihe.reihe, project: e.project, page: e.page, logo: fs.readFileSync(e.logo), model: config.images?.model, generate: generateImage });
+      fs.writeFileSync(path.join(dir, 'banner-gemalt-roh.png'), raw);
+      fs.writeFileSync(file, banner);
+      console.log(`✓ ${file}`);
+    } catch (err) { console.log(`✗ ${e.page.name}: ${err.message}`); }
+  }));
 }
 
 async function bannerWahl() {
@@ -344,5 +372,6 @@ else if (cmd === 'namen') await namen();
 else if (cmd === 'banner') await banner();
 else if (cmd === 'chatgpt') chatgpt();
 else if (cmd === 'banner-vergleich') await bannerVergleich();
+else if (cmd === 'banner-gemalt') await bannerGemalt();
 else if (cmd === 'banner-wahl') await bannerWahl();
-else fail('Aufruf: npm run serie -- heute | stand | plan | logo <slug> | seite <slug> | banner <slug> | chatgpt [<slug> …] | banner-vergleich | banner-wahl <slug> claude|chatgpt | id <slug> <Projekt-ID> | vorrat <slug> … | namen');
+else fail('Aufruf: npm run serie -- heute | stand | plan | logo <slug> | seite <slug> | banner <slug> | banner-gemalt <slug> | chatgpt [<slug> …] | banner-vergleich | banner-wahl <slug> claude|chatgpt | id <slug> <Projekt-ID> | vorrat <slug> … | namen');

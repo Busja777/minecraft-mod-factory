@@ -8,7 +8,8 @@ import { assertNotFlat, CF_MAX_IMAGE_BYTES } from './images.js';
 // visual packs need a real in-game image) plus the house style: short, always the same four parts.
 //   page:  { name, summary, category, description (Markdown), logoPrompt, cover: { tagline, bullets } }
 //   files: { logo, cover, banner, shots: [paths] }
-//   opts:  { maxWords, needsShot, bannerFrom: 'claude' | 'chatgpt' }  (chatgpt → the banner is AI art too)
+//   opts:  { maxWords, needsShot, needsBanner (false for rows without a banner, e.g. WoW),
+//            bannerFrom: 'claude' | 'chatgpt' }  (chatgpt = painted by the image model → AI art too)
 // → [{ id, level: 'ok'|'warn'|'error', label, detail }]
 
 export const AI_LOGO_NOTE = '*(The logo is AI-generated.)*';
@@ -45,7 +46,7 @@ async function imageCheck(id, label, file, [w, h], { flat = false } = {}) {
   return res(id, 'ok', label, `${w}×${h} px, ${(buf.length / 1000).toFixed(0)} KB`);
 }
 
-export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null } = {}) {
+export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null, needsBanner = true } = {}) {
   const out = [];
   const name = String(page.name || '').trim();
   if (!name) out.push(res('name', 'error', 'Titel', 'fehlt'));
@@ -90,9 +91,13 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
 
   out.push(await imageCheck('logo', 'Logo', files.logo, [400, 400], { flat: true }));
   out.push(await imageCheck('cover', 'Titelbild', files.cover, COVER_SIZE));
-  const banner = await imageCheck('banner', 'Banner', files.banner, BANNER_SIZE, { flat: true });
-  if (banner.level === 'error' && banner.detail === 'fehlt') banner.detail = 'noch nicht gewählt (npm run serie -- banner-wahl <slug> claude|chatgpt)';
-  out.push(banner);
+  if (needsBanner) {
+    const banner = await imageCheck('banner', 'Banner', files.banner, BANNER_SIZE, { flat: true });
+    if (banner.level === 'error' && banner.detail === 'fehlt') banner.detail = 'noch nicht gewählt (npm run serie -- banner-wahl <slug> claude|chatgpt)';
+    out.push(banner);
+  } else {
+    out.push(res('banner', 'ok', 'Banner', 'für diese Reihe nicht nötig'));
+  }
   const shots = (files.shots || []).filter(f => fs.existsSync(f));
   if (needsShot && !shots.length) out.push(res('shots', 'error', 'Bild aus dem Spiel', 'fehlt – für optische Pakete Pflicht'));
   else out.push(res('shots', 'ok', 'Bilder aus dem Spiel', shots.length ? `${shots.length}` : 'keine (nicht Pflicht)'));

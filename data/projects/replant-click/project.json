@@ -1,0 +1,22 @@
+{
+  "slug": "replant-click",
+  "game": "java",
+  "name": "Replant Click",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ReplantClick-1.0.jar",
+      "changelog": "## Replant Click 1.0\n\nFirst release.\n\n- Right-click a fully grown wheat, carrot, potato or beetroot crop to harvest it and replant it in one go.\n- The loot is the same as breaking the crop with the item in your hand, so Fortune works. One seed of it is planted again.\n- Sneaking turns it off, so you can still place blocks next to crops. Bone meal keeps its normal use.\n- Only the server needs the mod: players without it still harvest with a right-click.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}

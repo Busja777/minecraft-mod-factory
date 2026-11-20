@@ -131,6 +131,14 @@ export async function cropBanner(buf) {
   return out;
 }
 
+// The painted banner without the operator's ChatGPT window: the same image model through the API,
+// with the logo as reference and the same brief. generate: generateImage from lib/images.js.
+// → { raw (what the model painted), banner (720×340 PNG) }
+export async function paintBanner({ reiheKey, project, page, logo, model, generate }) {
+  const raw = await generate({ model, size: '1536x1024', references: [logo], prompt: chatgptPrompt(reiheKey, project, page) });
+  return { raw, banner: await cropBanner(raw) };
+}
+
 const dataUri = async file => `data:image/jpeg;base64,${(await sharp(file).jpeg({ quality: 88 }).toBuffer()).toString('base64')}`;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

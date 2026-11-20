@@ -204,7 +204,8 @@ test('Villager Birthday Reminders: one letter per villager, sent on the birthday
 test('Villager Birthday Reminders: the page passes the text checks', async () => {
   const page = JSON.parse(fs.readFileSync(path.join(packOf('villager-birthday-reminders').dir, 'page.json'), 'utf-8'));
   page.description = page.description.join('\n');
-  const results = await checkPage(page, {});
+  // the AI note depends on which banner was chosen (tests/serie.test.js checks it against the plan)
+  const results = await checkPage(page, {}, { bannerFrom: page.description.endsWith('*(The logo and banner are AI-generated.)*') ? 'chatgpt' : null });
   const text = results.filter(r => ['name', 'summary', 'description', 'category'].includes(r.id));
   assert.deepEqual(text.filter(r => r.level !== 'ok'), []);
   assert.match(page.description, /SMAPI/);

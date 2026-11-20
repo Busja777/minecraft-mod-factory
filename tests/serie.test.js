@@ -8,7 +8,7 @@ import { execFileSync } from 'node:child_process';
 import { REIHEN, loadReihe, loadReihen, findSerieProject, plannedDate, outDir, projectDir, addStock, stateOf, reiheStand, registerProject } from '../scripts/lib/serie.js';
 import { checkPage, pageOk, section, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE } from '../scripts/lib/page-check.js';
 import { coverHtml, renderCover, bannerHtml, renderBanner, THEMES, SIZE } from '../tools/serie/cover.js';
-import { writeChatgptFolder, findChatgptBanner, cropBanner, chatgptPrompt, kindOf } from '../scripts/lib/banner.js';
+import { writeChatgptFolder, findChatgptBanner, cropBanner, chatgptPrompt, kindOf, paintBanner } from '../scripts/lib/banner.js';
 import { loadReleaseProject } from '../scripts/lib/releases.js';
 import { awaitsFirstFile, activeAccounts } from '../scripts/lib/games.js';
 
@@ -248,7 +248,7 @@ test('every project with a page in the repo passes the text checks and has its l
       if (Array.isArray(page.description)) page.description = page.description.join('\n');
       assert.equal(page.name, project.name, `${project.slug}: page name and plan name differ`);
       assert.ok(page.logoPrompt && page.cover?.tagline && page.cover?.bullets?.length === 3, `${project.slug}: logoPrompt and cover are needed`);
-      const results = await checkPage(page, { logo: path.join(dir, 'logo.png') }, { maxWords: reihe.reihe === 'sims4' ? 250 : 200 });
+      const results = await checkPage(page, { logo: path.join(dir, 'logo.png') }, { maxWords: reihe.reihe === 'sims4' ? 250 : 200, bannerFrom: project.banner?.from || null, needsBanner: reihe.banner !== false });
       const failed = results.filter(r => r.level === 'error' && !['cover', 'banner', 'shots'].includes(r.id));
       assert.deepEqual(failed, [], `${project.slug}: ${failed.map(r => `${r.label}: ${r.detail}`).join(' | ')}`);
     }
@@ -292,35 +292,57 @@ test('npm run serie: ChatGPT brief, comparison and choice of the banner', { time
   fs.mkdirSync(path.join(dir, 'data', 'serie'), { recursive: true });
   for (const k of REIHEN) fs.copyFileSync(path.join(REPO, 'data', 'serie', `${k}.json`), path.join(dir, 'data', 'serie', `${k}.json`));
   fs.writeFileSync(path.join(dir, 'data', 'cf-projects.json'), '[]');
-  const src = path.join(dir, 'tools', 'wow', 'projects', 'gold-diary');
+  const src = path.join(dir, 'tools', 'java', 'projects', 'stonecutter-woodworks');
   fs.mkdirSync(src, { recursive: true });
-  for (const f of ['page.json', 'logo.png']) fs.copyFileSync(path.join(REPO, 'tools', 'wow', 'projects', 'gold-diary', f), path.join(src, f));
+  for (const f of ['page.json', 'logo.png']) fs.copyFileSync(path.join(REPO, 'tools', 'java', 'projects', 'stonecutter-woodworks', f), path.join(src, f));
   const run = (...args) => execFileSync(process.execPath, [path.join(REPO, 'scripts', 'serie.js'), ...args], { cwd: dir, env: { PATH: process.env.PATH, HOME: process.env.HOME, NOW: '2026-11-21T10:00:00Z' }, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
 
-  assert.match(run('chatgpt', 'gold-diary'), /1 Auftrag/);
-  const brief = path.join(dir, 'Output', 'chatgpt-bilder', 'wow-01-gold-diary');
+  assert.match(run('chatgpt', 'stonecutter-woodworks'), /1 Auftrag/);
+  const brief = path.join(dir, 'Output', 'chatgpt-bilder', 'java-01-stonecutter-woodworks');
   assert.ok(fs.existsSync(path.join(brief, 'auftrag.md')));
-  assert.throws(() => run('banner-wahl', 'gold-diary', 'chatgpt'), /banner-chatgpt.png fehlt/);
+  assert.throws(() => run('banner-wahl', 'stonecutter-woodworks', 'chatgpt'), /banner-chatgpt.png fehlt/);
 
   // what ChatGPT painted: 1536×1024 with big squares
   const w = 1536, h = 1024;
   const raw = Buffer.from(Array.from({ length: w * h * 3 }, (_, i) => { const p = Math.floor(i / 3); return ((Math.floor((p % w) / 64) + Math.floor(Math.floor(p / w) / 64)) % 2) * 200 + 30; }));
   await sharp(raw, { raw: { width: w, height: h, channels: 3 } }).png().toFile(path.join(brief, 'chatgpt-banner.png'));
-  assert.match(run('banner-vergleich', 'gold-diary'), /Gold Diary: beide Banner da/);
-  const out = path.join(dir, 'Output', 'serie', 'wow', '01-gold-diary');
+  assert.match(run('banner-vergleich', 'stonecutter-woodworks'), /Stonecutter Woodworks: beide Banner da/);
+  const out = path.join(dir, 'Output', 'serie', 'java', '01-stonecutter-woodworks');
   for (const f of ['banner-claude.png', 'banner-chatgpt.png']) assert.deepEqual(Object.values((({ width, height }) => ({ width, height }))(await sharp(path.join(out, f)).metadata())), [720, 340], f);
-  assert.match(fs.readFileSync(path.join(dir, 'Output', 'chatgpt-bilder', 'VERGLEICH.html'), 'utf-8'), /<title>Banner-Vergleich<\/title>[\s\S]*Gold Diary/);
+  assert.match(fs.readFileSync(path.join(dir, 'Output', 'chatgpt-bilder', 'VERGLEICH.html'), 'utf-8'), /<title>Banner-Vergleich<\/title>[\s\S]*Stonecutter Woodworks/);
 
-  const chosen = run('banner-wahl', 'gold-diary', 'chatgpt');
+  const chosen = run('banner-wahl', 'stonecutter-woodworks', 'chatgpt');
   assert.match(chosen, /Banner von ChatGPT gewählt/);
   assert.match(chosen, /✓ Banner: 720×340/);
   const page = JSON.parse(fs.readFileSync(path.join(src, 'page.json'), 'utf-8'));
   assert.equal(page.description.at(-1), AI_LOGO_BANNER_NOTE);
-  assert.deepEqual(loadReihe('wow', path.join(dir, 'data', 'serie')).projects[0].banner, { from: 'chatgpt', at: '2026-11-21' });
+  assert.deepEqual(loadReihe('java', path.join(dir, 'data', 'serie')).projects[0].banner, { from: 'chatgpt', at: '2026-11-21' });
   assert.ok(fs.readFileSync(path.join(out, 'banner.png')).equals(fs.readFileSync(path.join(out, 'banner-chatgpt.png'))));
   assert.match(fs.readFileSync(path.join(out, 'curseforge.md'), 'utf-8'), /`banner.png` hochladen und als Hauptbild/);
 
-  run('banner-wahl', 'gold-diary', 'claude');
+  run('banner-wahl', 'stonecutter-woodworks', 'claude');
   assert.equal(JSON.parse(fs.readFileSync(path.join(src, 'page.json'), 'utf-8')).description.at(-1), AI_LOGO_NOTE, 'back to the logo note');
   assert.ok(fs.readFileSync(path.join(out, 'banner.png')).equals(fs.readFileSync(path.join(out, 'banner-claude.png'))));
+});
+
+test('rows without a banner (WoW): the page check does not ask for one', async () => {
+  assert.equal(loadReihe('wow').banner, false);
+  const files = await images(tmp(), { banner: null });
+  const banner = (await checkPage(goodPage(), files, { needsBanner: false })).find(r => r.id === 'banner');
+  assert.equal(banner.level, 'ok');
+  assert.match(banner.detail, /nicht nötig/);
+});
+
+test('painted banner through the image API: the logo is the reference, the result is cut to 720×340', async () => {
+  const w = 1536, h = 1024;
+  const painted = await sharp(Buffer.from(Array.from({ length: w * h * 3 }, (_, i) => { const p = Math.floor(i / 3); return ((Math.floor((p % w) / 64) + Math.floor(Math.floor(p / w) / 64)) % 2) * 200 + 30; })), { raw: { width: w, height: h, channels: 3 } }).png().toBuffer();
+  const calls = [];
+  const page = { ...goodPage(), logoPrompt: 'An open diary.', cover: { tagline: 'Know it.', bullets: ['a', 'b', 'c'] } };
+  const { raw, banner } = await paintBanner({ reiheKey: 'java', project: loadReihe('java').projects[0], page, logo: Buffer.from('LOGO'), model: 'm', generate: async o => { calls.push(o); return painted; } });
+  assert.equal(raw, painted);
+  const meta = await sharp(banner).metadata();
+  assert.deepEqual([meta.width, meta.height], [720, 340]);
+  assert.equal(calls[0].size, '1536x1024');
+  assert.deepEqual(calls[0].references, [Buffer.from('LOGO')]);
+  assert.match(calls[0].prompt, /a Minecraft: Java Edition data pack/);
 });

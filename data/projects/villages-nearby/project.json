@@ -1,0 +1,19 @@
+{
+  "slug": "villages-nearby",
+  "game": "java",
+  "name": "Villages Nearby",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "VillagesNearby-1.0.zip",
+      "changelog": "## Villages Nearby 1.0\n\nFirst release.\n\n- Villages spawn about 2.4 times as often: one village attempt every 22 chunks instead of every 34 (at least 6 chunks apart instead of 8).\n- Plains, desert, savanna, snowy and taiga villages keep their vanilla chances and still only appear in their usual biomes.\n- Only land generated after the pack is added gets the extra villages; existing chunks do not change.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1"
+      ]
+    }
+  ]
+}

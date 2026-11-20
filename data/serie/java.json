@@ -22,7 +22,11 @@
         "Bambus und Netherholz",
         "Stämme",
         "26.1-Format"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 2,
@@ -35,7 +39,11 @@
         "mehr Geräusche",
         "Varianten"
       ],
-      "shot": false
+      "shot": false,
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 3,
@@ -47,7 +55,11 @@
         "+15 Tierzucht",
         "+15 Kochen",
         "EP-Belohnungen"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 4,
@@ -59,7 +71,11 @@
         "Außenposten und Tempel",
         "drei Stufen als eigene Dateien",
         "26.1"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 5,
@@ -71,7 +87,11 @@
         "Stein",
         "Glas und Ton",
         "Werkzeug-Recycling"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 6,
@@ -83,7 +103,11 @@
         "Biom-Fänge",
         "Varianten",
         "Fortschritte"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 7,
@@ -95,7 +119,11 @@
         "Netherwarze und Kakao",
         "Flächen-Ernte",
         "NeoForge"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 8,

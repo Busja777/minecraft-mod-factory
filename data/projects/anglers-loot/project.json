@@ -1,0 +1,19 @@
+{
+  "slug": "anglers-loot",
+  "game": "java",
+  "name": "Anglers Loot",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "AnglersLoot-1.0.zip",
+      "changelog": "## Anglers Loot 1.0\n\nFirst release.\n\n- About half as much junk when fishing: the junk weight goes from 10 to 5.\n- Treasure about one and a half times as often: the treasure weight goes from 5 to 8, still only in open water.\n- Two new treasure catches: the heart of the sea (rare) and one to three bottles o' enchanting.\n- The vanilla treasures stay about as likely per cast as before, and Luck of the Sea still lowers junk and raises treasure; at level III no junk is caught at all.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1"
+      ]
+    }
+  ]
+}

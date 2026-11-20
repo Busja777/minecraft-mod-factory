@@ -16,6 +16,7 @@
     "Speed Needle",
     "Trip Recap"
   ],
+  "banner": false,
   "projects": [
     {
       "nr": 1,
