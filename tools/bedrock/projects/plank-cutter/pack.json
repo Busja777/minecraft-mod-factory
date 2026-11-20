@@ -1,0 +1,7 @@
+{
+  "kind": "behavior",
+  "name": "Plank Cutter",
+  "description": "Wood blocks in the stonecutter",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}

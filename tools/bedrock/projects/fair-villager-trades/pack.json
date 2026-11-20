@@ -1,0 +1,7 @@
+{
+  "kind": "behavior",
+  "name": "Fair Villager Trades",
+  "description": "Villagers ask about a third fewer emeralds",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}
