@@ -18,6 +18,7 @@
     "java": "node tools/java/build.js",
     "stardew": "node tools/stardew/build.js",
     "serie": "node scripts/serie.js",
+    "radar": "node scripts/radar.js",
     "guide": "node tools/guide-pdf/build.js",
     "improve": "node scripts/improve.js",
     "publish": "node scripts/publish.js",
