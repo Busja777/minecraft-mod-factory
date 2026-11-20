@@ -96,8 +96,8 @@ Diese Anleitung erklärt zuerst das große Bild, dann die einmalige Einrichtung,
   <li class="you"><b class="t">Starter freigeben</b>Im Finder <span class="path">Macros/</span> öffnen und <b>CurseForge.command</b> doppelklicken. Meldet macOS „nicht verifizierter Entwickler“: Rechtsklick → <b>Öffnen</b> → <b>Öffnen</b>. Dasselbe einmal für <b>Studio.command</b>.</li>
   <li class="you"><b class="t">Terminal im Projektordner öffnen</b><kbd>⌘</kbd> + <kbd>Leertaste</kbd> drücken, <b>Terminal</b> tippen, <kbd>↩</kbd>. Im Terminal-Fenster eingeben:<br><code>cd ~/Desktop/minecraft-mod-factory</code> und <kbd>↩</kbd>.<br>
     <span class="small">Damit bist du im Projektordner. Hier tippst du die Befehle aus dieser Anleitung ein und bestätigst jeden mit <kbd>↩</kbd>. Öffnest du später ein neues Terminal-Fenster, gibst du die <code>cd</code>-Zeile wieder zuerst ein.</span></li>
-  <li class="you"><b class="t">Im Helfer-Chrome bei CurseForge einloggen</b>Im Terminal eingeben: <code>npm run cf -- login</code>. Ein eigenes Chrome-Fenster öffnet sich. Dort ganz normal bei CurseForge einloggen (Passwort, 2FA). Danach im Terminal <kbd>↩</kbd>.<br>
-    <span class="small">Das Fenster merkt sich den Login. Dein normales Chrome bleibt unberührt. Alternativ: Claude „bitte Login öffnen“ schreiben und das Fenster nach dem Login einfach schließen.</span></li>
+  <li class="you"><b class="t">Einmal bei CurseForge einloggen</b>Im Terminal eingeben: <code>npm run cf -- login</code>. Ein <b>normales</b> Chrome-Fenster öffnet sich, getrennt von deinem eigenen Chrome. Dort bei CurseForge einloggen, auch „Mit Google anmelden“ geht hier. Danach dieses Chrome mit <kbd>⌘Q</kbd> beenden.<br>
+    <span class="small">Das Profil merkt sich den Login, der Helfer nutzt ihn ab jetzt. Fragt macOS nach dem Schlüsselbund („Chrome Safe Storage“): „Immer erlauben“. Im Helfer-Fenster selbst lehnt Google jede Anmeldung ab („Anmeldung nicht möglich“), weil es ferngesteuert ist. Deshalb der Login immer über diesen Befehl.</span></li>
   <li class="you"><b class="t">Erinnerung einschalten</b>Im Terminal einmal eingeben:<br><code>npm run studio -- zeitplan-installieren</code><br>
     <span class="small">Dein Mac prüft dann alle 30 Minuten die Termine. Wartet nach dem Abend-Upload etwas auf dich, kommt gegen 21:15 Uhr eine Mitteilung „CurseForge-Helfer: Heute: 1 Beschreibung …“. Entfernen: <code>npm run studio -- zeitplan-entfernen</code>.</span></li>
   <li><b class="t">Probelauf ohne Klick</b>Im Terminal: <code>npm run cf -- heute --dry-run</code>. Es öffnet sich nichts; du siehst nur die Liste, z. B. „Heute: 1 Beschreibung“ mit dem Punkt „Beschreibung nachziehen: The Last Ninjas V1.2“. Oder schreib Claude: „zeig mir, was heute ansteht“.</li>
@@ -136,7 +136,7 @@ Diese Anleitung erklärt zuerst das große Bild, dann die einmalige Einrichtung,
   <li><b class="t">Aufräumen, ganz von selbst</b>Der Helfer prüft bei CurseForge, ob die neue Beschreibung angekommen ist, schließt das passende GitHub-Issue und speichert den Stand (<span class="path">data/</span>) auf GitHub.</li>
   <li><b class="t">Abschluss</b>Im Terminal (oder bei Claude) steht „Heute erledigt“ mit ✓ pro Punkt. Bei Weg A schließt du das Chrome-Fenster selbst, bei Weg B schließt es sich nach ein paar Sekunden.</li>
 </ol>
-<p class="small">Wartet der Helfer auf einen Login oder ein Captcha, löst du das im Fenster; er macht danach weiter. Bei Weg B wartet er bis zu 15 Minuten, dann bricht er ab. Nichts geht verloren: Offene Punkte stehen beim nächsten Go wieder auf der Liste.</p>
+<p class="small">Wartet der Helfer auf ein Captcha oder eine Sicherheitsprüfung, löst du das im Fenster; er macht danach weiter. Bei Weg B wartet er bis zu 15 Minuten, dann bricht er ab. Bist du ausgeloggt, bricht er sofort ab und sagt dir Bescheid: dann <code>npm run cf -- login</code>. Nichts geht verloren: Offene Punkte stehen beim nächsten Go wieder auf der Liste.</p>
 
 <!-- ───────────────────────── Teil 3 ───────────────────────── -->
 <div class="page"></div>
@@ -200,7 +200,7 @@ Diese Anleitung erklärt zuerst das große Bild, dann die einmalige Einrichtung,
   <tr><td><code>npm run cf -- heute</code></td><td>Liste des Tages, <kbd>↩</kbd> = Go für alles</td></tr>
   <tr><td><code>npm run cf -- heute --dry-run</code></td><td>Nur die Liste zeigen, nichts öffnen</td></tr>
   <tr><td><code>npm run cf</code></td><td>Menü: einzelne Aufgabe, Login (<kbd>l</kbd>), Kalibrierung (<kbd>i</kbd>)</td></tr>
-  <tr><td><code>npm run cf -- login</code></td><td>Helfer-Chrome zum Einloggen öffnen</td></tr>
+  <tr><td><code>npm run cf -- login</code></td><td>Normales Chrome mit dem Helfer-Profil zum Einloggen öffnen</td></tr>
   <tr><td><code>npm run cf -- seite</code></td><td>Nur die offenen Beschreibungen nachziehen</td></tr>
   <tr><td><code>npm run cf -- publish --skinpack &lt;slug&gt;</code></td><td>Neues Projekt komplett (Create → Media → File)</td></tr>
   <tr><td><code>npm run cf -- update --skinpack &lt;slug&gt;</code></td><td>Update von Hand hochladen (mit <code>--version 1.3</code> gezielt)</td></tr>
@@ -214,8 +214,9 @@ Diese Anleitung erklärt zuerst das große Bild, dann die einmalige Einrichtung,
   <tr><td>„Heute ist nichts offen“</td><td>Alles erledigt. Nichts zu tun.</td></tr>
   <tr><td>„⚠ … Feld nicht gefunden“</td><td>Dieses Feld selbst ausfüllen und Claude Bescheid geben. Claude passt den Helfer an (bei Bedarf mit Menü <kbd>i</kbd> für diese Seite).</td></tr>
   <tr><td>„dein Klick wurde nicht erkannt“</td><td>Hast du gespeichert, ist alles gut: Der Punkt verschwindet beim nächsten Go von selbst. Sonst einfach beim nächsten Go nochmal.</td></tr>
-  <tr><td>„Abgebrochen“ beim Login</td><td>Login dauerte länger als 15 Minuten. Neu starten und einloggen.</td></tr>
-  <tr><td>„Fenster ist schon offen“</td><td>Das alte Helfer-Chrome schließen und neu starten.</td></tr>
+  <tr><td>„nicht bei CurseForge eingeloggt“ oder Google: „Anmeldung nicht möglich“</td><td>Helfer-Fenster mit <kbd>⌘Q</kbd> beenden, <code>npm run cf -- login</code>, im normalen Chrome einloggen, <kbd>⌘Q</kbd>. Dann neu starten.</td></tr>
+  <tr><td>„Abgebrochen“ bei einer Sicherheitsprüfung</td><td>Die Prüfung blieb länger als 15 Minuten offen. Neu starten, wenn du Zeit hast.</td></tr>
+  <tr><td>„Fenster ist schon offen“</td><td>Das alte Helfer-Chrome mit <kbd>⌘Q</kbd> beenden und neu starten.</td></tr>
   <tr><td>Kein Abend-Update, obwohl eines fällig war</td><td>Claude fragen. Der Lauf ist auf GitHub unter Actions → „Evening — update a due project“ zu sehen.</td></tr>
   <tr><td>„git pull hat nicht geklappt“</td><td>Der Starter arbeitet mit dem lokalen Stand weiter. Claude Bescheid geben.</td></tr>
 </table>

@@ -18,6 +18,7 @@ import { listTasks, dayPlan } from './lib/cf-browser/tasks.js';
 import { pullIfClean, commitData, closeUpdateIssue } from './lib/cf-browser/tidy.js';
 import { runSteps, formatSummary } from './lib/cf-browser/runner.js';
 import { URLS } from './lib/cf-browser/selectors.js';
+import { CHROME_BIN, helperLaunchOptions, plainChromeArgs, profileInUse } from './lib/cf-browser/chrome.js';
 import { arg } from './lib/github-output.js';
 import { getDescription } from './platforms/curseforge-core.js';
 import { pageState, pageBehind, tracksPage } from './lib/page-state.js';
@@ -69,9 +70,9 @@ function fail(msg) {
 async function openBrowser() {
   fs.mkdirSync(PROFILE, { recursive: true });
   try {
-    return await chromium.launchPersistentContext(PROFILE, { channel: 'chrome', headless: false, slowMo: 250, viewport: null });
+    return await chromium.launchPersistentContext(PROFILE, helperLaunchOptions());
   } catch (e) {
-    if (/ProcessSingleton|already in use|SingletonLock/i.test(e.message)) fail('Das CurseForge-Fenster ist schon offen. Erst schließen, dann neu starten.');
+    if (/ProcessSingleton|already in use|SingletonLock/i.test(e.message)) fail('Das CurseForge-Fenster ist schon offen. Erst mit ⌘Q beenden, dann neu starten.');
     fail(`Google Chrome ließ sich nicht starten.\n  ${e.message.split('\n')[0]}`);
   }
 }
@@ -364,19 +365,21 @@ async function recordResults(task, data, plan, found, results = []) {
   }
 }
 
+// Login in a plain Chrome window on the helper profile: no automation attached, so Google accepts
+// the sign-in. The helper later reuses the CurseForge session from this profile (chrome.js).
 async function login() {
-  const context = await openBrowser();
-  const page = await pageOf(context);
-  await page.goto(URLS.home);
-  if (handsFree) {
-    console.log('\nBitte im Chrome-Fenster bei CurseForge einloggen und das Fenster danach schließen. Ich warte so lange.');
-    await waitForClose(context);
-  } else {
-    await ask('Bitte im Browser bei CurseForge einloggen. Wenn du eingeloggt bist, hier Enter drücken.');
-    await context.close();
-  }
-  console.log('✓ Login gespeichert. Ab jetzt bist du im CurseForge-Fenster automatisch eingeloggt.');
+  if (!fs.existsSync(CHROME_BIN)) fail(`Google Chrome nicht gefunden (${CHROME_BIN}).`);
+  if (profileInUse(PROFILE)) fail('Das CurseForge-Fenster des Helfers ist noch offen. Erst mit ⌘Q beenden, dann neu starten.');
+  fs.mkdirSync(PROFILE, { recursive: true });
   closeInput();
+  console.log('\nEin normales Chrome-Fenster öffnet sich (getrennt von deinem eigenen Chrome).');
+  console.log('1. Dort bei CurseForge einloggen, auch „Mit Google anmelden“ geht hier.');
+  console.log('2. Wenn du eingeloggt bist: dieses Chrome mit ⌘Q beenden. Ich warte so lange.');
+  const started = Date.now();
+  const r = spawnSync(CHROME_BIN, plainChromeArgs(PROFILE, URLS.home), { stdio: 'ignore' });
+  if (r.error) fail(`Chrome ließ sich nicht starten: ${r.error.message}`);
+  if (Date.now() - started < 5000) fail('Chrome hat sich sofort wieder geschlossen. Läuft das Helfer-Fenster noch? Erst mit ⌘Q beenden, dann neu starten.');
+  console.log('✓ Login gespeichert. Der Helfer nutzt ab jetzt diese Anmeldung.');
 }
 
 async function inspect() {

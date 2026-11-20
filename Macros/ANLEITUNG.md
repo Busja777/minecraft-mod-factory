@@ -35,9 +35,10 @@ Die `.jar`-Uploads der Mods laufen weiterhin automatisch über die API. Dafür b
 
 1. **Doppelklick auf `Macros/CurseForge.command`** im Projektordner.
    - Beim allerersten Mal meldet macOS eventuell „nicht verifizierter Entwickler“. Dann **Rechtsklick → Öffnen → Öffnen**. Das ist nur einmal nötig.
-2. Im Menü **`l`** tippen und Enter drücken. Es öffnet sich ein eigenes Chrome-Fenster.
-3. Dort **bei CurseForge einloggen**, ganz normal. Danach im Terminal Enter drücken.
-   Das Fenster merkt sich den Login. Es ist ein eigenes Profil, dein normales Chrome bleibt unberührt.
+2. Im Menü **`l`** tippen und Enter drücken (oder im Terminal `npm run cf -- login`). Es öffnet sich ein **normales** Chrome-Fenster mit dem eigenen Profil des Helfers.
+3. Dort **bei CurseForge einloggen**, auch „Mit Google anmelden“ geht hier. Danach dieses Chrome mit **⌘Q** beenden.
+   Das Profil merkt sich den Login, dein normales Chrome bleibt unberührt. Fragt macOS nach dem Schlüsselbund („Chrome Safe Storage“), „Immer erlauben“ klicken.
+   Warum ein normales Fenster? Im ferngesteuerten Helfer-Fenster lehnt Google jede Anmeldung ab („Anmeldung nicht möglich“). Das wird nicht umgangen.
 4. **Probelauf** (das Tool ist anhand der Screenshots aus deiner `Anleitung_CF.docx` eingestellt):
    `CurseForge.command` starten, „Cover & Media: Glowing Samurai“ wählen und zuschauen. Am Ende **nicht** auf Apply klicken, sondern Fenster schließen.
    Steht in der Zusammenfassung „⚠ … nicht gefunden“, dann im Menü **`i`** wählen, genau diese Seite öffnen, Enter drücken, `q` tippen und Claude Bescheid geben. Claude trägt die echten Namen ein.
@@ -104,7 +105,7 @@ npm run cf -- inspect                              # Seiten für die Kalibrierun
 
 - Es läuft **sichtbar** in Google Chrome, in normalem Tempo, ein Projekt pro Lauf.
 - Es klickt **nie** auf *Create*, *Save*, *Upload*, *Submit*, *Delete* usw. Das ist fest eingebaut und getestet.
-- Kommt eine **Login- oder „Bist du ein Mensch?“-Prüfung**, hält es an. Du löst sie selbst im Browser (und drückst Enter, wenn du am Terminal sitzt). Prüfungen werden nie umgangen.
+- Kommt eine **„Bist du ein Mensch?“-Prüfung**, hält es an. Du löst sie selbst im Browser (und drückst Enter, wenn du am Terminal sitzt). Landet der Helfer auf einer **Login-Seite**, bricht er ab und sagt dir, dass du `npm run cf -- login` ausführen sollst. Prüfungen werden nie umgangen.
 - Login-Daten liegen nur auf deinem Mac (`~/Library/Application Support/cf-uploader/`) und nie im Git-Repo.
 
 ---
@@ -116,7 +117,7 @@ npm run cf -- inspect                              # Seiten für die Kalibrierun
 | „⚠ … Feld nicht gefunden“ | Dieses Feld selbst ausfüllen. Wenn es immer wieder passiert, hat CurseForge die Seite geändert: Kalibrierung (Menü `i`) für diese Seite wiederholen und Claude Bescheid geben. Angepasst wird nur `scripts/lib/cf-browser/selectors.js`. |
 | „👉 … nicht gefunden. Bitte selbst klicken“ | Den Knopf selbst klicken und Enter drücken. Danach macht das Tool weiter. |
 | „Das CurseForge-Fenster ist schon offen“ | Das alte Fenster schließen und neu starten. |
-| Ausgeloggt | Menü `l` und neu einloggen. |
+| Ausgeloggt / Google: „Anmeldung nicht möglich“ | Helfer-Fenster mit ⌘Q beenden, `npm run cf -- login`, im normalen Chrome einloggen, ⌘Q. |
 | Keine offenen Aufgaben, obwohl ein Issue da ist | Der Abend-Workflow hat die Version vielleicht noch nicht freigegeben. Gezielt geht es mit `npm run cf -- update --skinpack <slug> --version 1.3`. |
 | `git pull` meldet Fehler | Das Tool arbeitet mit dem lokalen Stand weiter. Den Fehler später in Ruhe klären oder Claude fragen. |
 
