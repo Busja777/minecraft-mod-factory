@@ -8,8 +8,9 @@ import { assertNotFlat, CF_MAX_IMAGE_BYTES } from './images.js';
 // visual packs need a real in-game image) plus the house style: short, always the same four parts.
 //   page:  { name, summary, category, description (Markdown), logoPrompt, cover: { tagline, bullets } }
 //   files: { logo, cover, banner, shots: [paths] }
-//   opts:  { maxWords, needsShot, needsBanner (false for rows without a banner, e.g. WoW),
-//            bannerFrom: 'claude' | 'chatgpt' }  (chatgpt = painted by the image model → AI art too)
+//   opts:  { minWords, maxWords, needsShot, needsBanner (false for rows without a banner, e.g. WoW),
+//            bannerFrom: 'claude' | 'chatgpt' (chatgpt = painted by the image model → AI art too),
+//            detail: true → a long page: "## In detail" with one "### " part per feature }
 // → [{ id, level: 'ok'|'warn'|'error', label, detail }]
 
 export const AI_LOGO_NOTE = '*(The logo is AI-generated.)*';
@@ -17,6 +18,11 @@ export const AI_LOGO_BANNER_NOTE = '*(The logo and banner are AI-generated.)*';
 // The note a description ends with, depending on where the chosen banner comes from.
 export const aiNote = bannerFrom => (bannerFrom === 'chatgpt' ? AI_LOGO_BANNER_NOTE : AI_LOGO_NOTE);
 export const SECTIONS = ['Features', 'How to use', 'Good to know'];
+// Words per row. WoW pages are long ("short on top, in depth below"): successful addon pages have
+// about 440 words, and the details carry the search terms players use. The others stay short.
+const WORDS = { wow: [250, 450], sims4: [100, 250] };
+export const wordsFor = reiheKey => WORDS[reiheKey] || [100, 200];
+export const longPage = reiheKey => reiheKey === 'wow';
 export const COVER_SIZE = [1280, 720];
 export const BANNER_SIZE = [720, 340];
 
@@ -46,7 +52,7 @@ async function imageCheck(id, label, file, [w, h], { flat = false } = {}) {
   return res(id, 'ok', label, `${w}×${h} px, ${(buf.length / 1000).toFixed(0)} KB`);
 }
 
-export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null, needsBanner = true } = {}) {
+export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null, needsBanner = true, detail = false } = {}) {
   const out = [];
   const name = String(page.name || '').trim();
   if (!name) out.push(res('name', 'error', 'Titel', 'fehlt'));
@@ -78,13 +84,18 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
     for (const title of SECTIONS) if (section(description, title) === null) problems.push(`Abschnitt „${title}“ fehlt`);
     const bullets = (section(description, 'Features') || '').split('\n').filter(l => /^- \S/.test(l)).length;
     if (section(description, 'Features') !== null && (bullets < 3 || bullets > 5)) problems.push(`${bullets} Stichpunkte unter Features (3 bis 5)`);
+    if (detail) {
+      const parts = (section(description, 'In detail') || '').split('\n').filter(l => /^### \S/.test(l)).length;
+      if (section(description, 'In detail') === null) problems.push('Abschnitt „In detail“ fehlt (lange Seite)');
+      else if (parts < 2) problems.push(`${parts} Teile unter „In detail“ (mindestens 2, je „### …“)`);
+    }
     if (FILLER.test(description)) problems.push(`Floskel: „${description.match(FILLER)[0]}“`);
     if (/https?:\/\//.test(description)) problems.push('enthält einen Link');
     if (/[äöüÄÖÜß]/.test(description)) problems.push('sieht deutsch aus');
     if (!/changelog/i.test(description)) problems.push('Hinweis auf den Changelog für spätere Funktionen fehlt');
     if (!description.endsWith(note)) problems.push(`endet nicht mit dem KI-Hinweis ${note}`);
   }
-  out.push(problems.length ? res('description', 'error', 'Beschreibung', problems.join('; ')) : res('description', 'ok', 'Beschreibung', `${count} Wörter, ${SECTIONS.length} Abschnitte`));
+  out.push(problems.length ? res('description', 'error', 'Beschreibung', problems.join('; ')) : res('description', 'ok', 'Beschreibung', `${count} Wörter, ${SECTIONS.length + (detail ? 1 : 0)} Abschnitte`));
 
   if (!String(page.category || '').trim()) out.push(res('category', 'error', 'Kategorie', 'fehlt'));
   else out.push(res('category', 'ok', 'Kategorie', page.category));

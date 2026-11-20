@@ -2,7 +2,7 @@ import './lib/load-secrets.js';
 import fs from 'fs';
 import path from 'path';
 import { REIHEN, loadReihe, loadReihen, saveReihe, findSerieProject, projectDir, outDir, plannedDate, addStock, reiheStand, registerProject } from './lib/serie.js';
-import { checkPage, pageOk, aiNote, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE } from './lib/page-check.js';
+import { checkPage, pageOk, aiNote, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE, wordsFor, longPage } from './lib/page-check.js';
 import { CHATGPT_ROOT, chatgptDir, writeChatgptFolder, findChatgptBanner, cropBanner, comparisonHtml, paintBanner } from './lib/banner.js';
 import { loadProjects, saveProjects } from './lib/cf-projects.js';
 import { loadReleaseProject, listReleaseProjects, releaseFile } from './lib/releases.js';
@@ -41,7 +41,9 @@ function loadPage(reihe, project) {
 }
 
 const pageOptions = (reihe, project) => ({
-  maxWords: reihe.reihe === 'sims4' ? 250 : 200,
+  minWords: wordsFor(reihe.reihe)[0],
+  maxWords: wordsFor(reihe.reihe)[1],
+  detail: longPage(reihe.reihe),
   // visual packs need a real in-game image; a pack without visuals (sounds only) says shot: false
   needsShot: reihe.reihe === 'java' && /R/.test(project.art) && project.shot !== false,
   bannerFrom: project.banner?.from || null,
