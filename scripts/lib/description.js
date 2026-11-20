@@ -40,11 +40,13 @@ const SKIN_FOOTER = `## How to install
 Made for Minecraft Bedrock Edition.`;
 
 // versions: published + current versions in chronological order. The first one is the base release.
-export function renderDescription({ kind, name, legend, versions = [], body = '', footer }) {
+// collection: URL of the pack's "all skins" image (fixed address, renewed with every update).
+export function renderDescription({ kind, name, legend, versions = [], body = '', footer, collection }) {
   if (!['mod', 'skinpack'].includes(kind)) throw new Error(`Unknown project kind "${kind}"`);
   if (!legend || !legend.trim()) throw new Error(`Description for ${name} needs a legend`);
   const [base, ...updates] = versions;
   const out = [`# ${name}`, legend.trim(), AI_NOTE];
+  if (collection) out.push(img(collection, `All ${name} skins`));
 
   if (kind === 'skinpack') {
     if (!base) throw new Error(`Skin pack ${name} has no base version`);

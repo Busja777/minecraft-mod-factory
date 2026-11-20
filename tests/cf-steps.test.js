@@ -24,6 +24,7 @@ const allPlans = () => [
   buildSteps({ cmd: 'new', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
   buildSteps({ cmd: 'media', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
   buildSteps({ cmd: 'update', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
+  buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack }),
   buildSteps({ cmd: 'publish', kind: 'mod', id: 'autosort' }, { config, meta })
 ];
 
@@ -126,4 +127,30 @@ test('menu: new projects are published in one run, waiting uploads and media cho
   assert.deepEqual(todo.map(t => `${t.cmd}:${t.id}`), ['publish:autosort', 'update:glowing-samurai', 'publish:neon-ninja']);
   assert.equal(todo[1].version, '1.1');
   assert.deepEqual(more.map(t => `${t.cmd}:${t.id}`), ['media:glowing-samurai', 'media:quickstack']);
+});
+
+test('seite: only the description of the newest published version, the gallery is never touched', () => {
+  const plan = buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack });
+  const order = plan.steps.map(s => s.target ? `${s.target}${s.arg ? `:${s.arg}` : ''}` : s.action);
+  assert.deepEqual(order, ['manual', 'learnProjectUrl', 'projectTab:Description', 'descriptionEditorType', 'description', 'waitFor']);
+  assert.ok(!plan.steps.some(s => ['addMedia', 'mediaFile', 'mediaTitle', 'editMedia'].includes(s.target) || s.arg === 'Media'), 'no gallery step for updates');
+  assert.match(step(plan, 'description').value, /^# Glowing Samurai[\s\S]*## How to install/);
+  assert.deepEqual(plan.steps.at(-1).until, { check: 'description' });
+  assert.equal(plan.title, 'Beschreibung nachziehen: Glowing Samurai V1.1');
+  assert.deepEqual(plan.page, { version: '1.1' });
+  assert.throws(() => buildSteps({ cmd: 'seite', kind: 'skinpack', id: 'glowing-samurai', version: '1.2' }, { config, pack }), /keine veröffentlichte Version/);
+  assert.throws(() => buildSteps({ cmd: 'seite', kind: 'mod', id: 'autosort' }, { config, meta }), /nur für Skinpacks/);
+});
+
+test('menu: a description follow-up appears after an upload and disappears once CurseForge shows it', () => {
+  const p = makePack();
+  p.versions[1] = { ...p.versions[1], fileId: 99, manual: false };
+  const projects = [{ modId: 'glowing-samurai', kind: 'skinpack', name: 'Glowing Samurai', status: 'published', projectId: 1498885 }];
+  const ids = packs => listTasks({ projects, packs });
+  const open = ids([p]);
+  assert.deepEqual(open.todo.map(t => `${t.cmd}:${t.label}`), ['seite:Beschreibung nachziehen: Glowing Samurai V1.1']);
+  assert.deepEqual(ids([{ ...p, page: { descriptionThrough: '1.1' } }]).todo, []);
+  const filled = ids([{ ...p, page: { filled: { version: '1.1' } } }]);
+  assert.deepEqual(filled.todo, []);
+  assert.match(filled.more[0].label, /schon ausgefüllt/);
 });

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { openRenderer, flatten, composeRow } from '../tools/skin-render/render.js';
+import { openRenderer, flatten, composeRow, composeGrid } from '../tools/skin-render/render.js';
 import { resolveView, viewFor } from '../tools/skin-render/views.js';
 import { loadPack, savePack, packDir } from './lib/skinpacks.js';
 import { arg, flag } from './lib/github-output.js';
@@ -48,5 +48,18 @@ try {
   }
 } finally {
   await renderer.close();
+}
+// "All skins" image at a fixed path: published versions plus the one that is released next. The
+// description links to it, so it has to stay under this exact name (see scripts/lib/description.js).
+const COLLECTION = 'media/collection.png';
+const nextDue = pack.versions.find(v => v.status === 'due');
+const singles = pack.versions
+  .filter(v => v.status === 'published' || v === nextDue)
+  .flatMap(v => v.skins.map(s => path.join(dir, 'media', `v${v.version}`, s.file)))
+  .filter(f => fs.existsSync(f));
+if (singles.length) {
+  fs.writeFileSync(path.join(dir, COLLECTION), await composeGrid(singles.map(f => fs.readFileSync(f)), { background }));
+  pack.collection = COLLECTION;
+  console.log(`Collection: ${singles.length} skins → ${COLLECTION}`);
 }
 savePack(pack);

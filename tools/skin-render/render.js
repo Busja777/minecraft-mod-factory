@@ -101,3 +101,22 @@ export async function composeRow(renders, { cellHeight = 400, gap = 40, pad = 28
   const composites = cells.map(c => { const left = x; x += c.info.width + gap; return { input: c.data, top: pad, left }; });
   return sharp({ create: { width, height: cellHeight, channels: 4, background } }).composite(composites).png().toBuffer();
 }
+
+// Grid of finished single renders (flattened PNGs) for the "all skins" image of a pack: every figure
+// trimmed to its outline, same cell size, `columns` per row. 4 columns of 200 px stay under the
+// 850 px CurseForge allows for images.
+export async function composeGrid(images, { columns = 4, cellWidth = 200, cellHeight = 300, pad = 14, background = BACKGROUND } = {}) {
+  if (!images.length) throw new Error('composeGrid needs at least one image');
+  const cols = Math.min(columns, images.length);
+  const rows = Math.ceil(images.length / cols);
+  const cells = await Promise.all(images.map(async img => {
+    const trimmed = await sharp(img).trim({ background, threshold: 12 }).toBuffer().catch(() => img);
+    return sharp(trimmed).resize({ width: cellWidth - 2 * pad, height: cellHeight - 2 * pad, fit: 'contain', background }).toBuffer({ resolveWithObject: true });
+  }));
+  const composites = cells.map((c, i) => ({
+    input: c.data,
+    left: (i % cols) * cellWidth + Math.round((cellWidth - c.info.width) / 2),
+    top: Math.floor(i / cols) * cellHeight + Math.round((cellHeight - c.info.height) / 2)
+  }));
+  return sharp({ create: { width: cols * cellWidth, height: rows * cellHeight, channels: 4, background } }).composite(composites).png().toBuffer();
+}

@@ -38,6 +38,11 @@ export async function downloadFile(file, fetchImpl = fetch) {
   return Buffer.from(await res.arrayBuffer());
 }
 
+// Project description as CurseForge stores it (HTML).
+export async function getDescription(projectId, { key, fetchImpl } = {}) {
+  return (await get(`/mods/${projectId}/description`, key, fetchImpl)) || '';
+}
+
 // Marks pack versions as published when CurseForge already has a file with the same .mcpack name.
 export function syncPackWithFiles(pack, files) {
   const byName = new Map(files.map(f => [f.fileName.toLowerCase(), f]));

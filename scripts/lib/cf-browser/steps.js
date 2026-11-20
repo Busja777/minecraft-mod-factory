@@ -3,11 +3,12 @@ import { skinpackKitFields, modKitFields, skinpackUpdateSection, versionImageUrl
 import { changelogFor } from '../skinpacks.js';
 import { pickUpdateVersion } from '../macro-bundle.js';
 import { URLS, PROJECT_ID_IN_URL } from './selectors.js';
+import { latestPublished } from '../page-state.js';
 
 // Pure step lists for the CurseForge browser tool, in the order of Input/Anleitung_CF.docx:
 //   Create Project (Choose Game → General → Description → License) → Media → File.
 // A step: { title, action, target?, arg?, value?, optional?, until? }
-//   actions: goto | click | fill | select | multiselect | upload | check | manual | waitFor | captureProjectId
+//   actions: goto | click | fill | select | multiselect | upload | check | manual | waitFor | captureProjectId | learnProjectUrl
 // No step ever clicks a final button (Create / Apply / Add File in the form): waitFor steps wait
 // until YOU clicked it.
 
@@ -55,6 +56,17 @@ function mediaSteps(f, { wait }) {
   ];
 }
 
+// Existing project: replace the whole description. waitFor ends when CurseForge shows the new text
+// (check 'description', supplied by cf.js through the Core API) — the helper never clicks Save.
+function descriptionSteps(f) {
+  return [
+    { title: 'Reiter Description', action: 'click', target: 'projectTab', arg: 'Description' },
+    { title: 'Editor auf Markdown', action: 'select', target: 'descriptionEditorType', value: 'Markdown', optional: true },
+    { title: 'Beschreibung (Legende, Skins mit Story, Updates mit Screenshots)', action: 'fill', target: 'description', value: f.description.trimEnd() },
+    { title: 'Warten auf „Save“', action: 'waitFor', value: 'Bitte die Beschreibung prüfen und selbst auf „Save“ klicken. Ich warte, bis CurseForge den neuen Text zeigt …', until: { check: 'description' }, timeout: 90 * 1000 }
+  ];
+}
+
 function fileSteps(file, { changelog, gameVersions, wait }) {
   return [
     { title: 'Reiter Files', action: 'click', target: 'projectTab', arg: 'Files' },
@@ -86,7 +98,7 @@ function skinFile(pack, config, v) {
   };
 }
 
-// task: { cmd: 'new'|'media'|'update'|'publish', kind: 'skinpack'|'mod', id, version?, projectId? }
+// task: { cmd: 'new'|'media'|'update'|'publish'|'seite', kind: 'skinpack'|'mod', id, version?, projectId? }
 // → { title, steps, clipboard?, notes: [], record?: { version } }
 export function buildSteps(task, { config, pack, meta }) {
   const { cmd, kind } = task;
@@ -118,6 +130,20 @@ export function buildSteps(task, { config, pack, meta }) {
       clipboard: skinpackUpdateSection(pack, v),
       notes: [sf.note, 'Der neue Beschreibungsabschnitt ist in der Zwischenablage: unter Description VOR „How to install“ einfügen.'],
       record: { version: v.version }
+    };
+  }
+
+  // Description of an existing project after an update. The gallery is deliberately left alone:
+  // skin packs only get gallery images when the project is new; update screenshots are part of the description.
+  if (cmd === 'seite') {
+    if (kind !== 'skinpack') throw new Error('„Beschreibung nachziehen“ gibt es nur für Skinpacks.');
+    const v = task.version ? pack.versions.find(x => x.version === task.version) : latestPublished(pack);
+    if (!v || v.status !== 'published') throw new Error(`${pack.name} hat keine veröffentlichte Version${task.version ? ` ${task.version}` : ''}.`);
+    return {
+      title: `Beschreibung nachziehen: ${pack.name} V${v.version}`,
+      steps: [openProject(projectId, pack.name), { title: 'Projekt-Adresse merken', action: 'learnProjectUrl', projectId }, ...descriptionSteps(f)],
+      notes: ['Die bisherige Beschreibung wird komplett ersetzt. Erst speichern, wenn sie im Feld gut aussieht.', 'Die Galerie bleibt, wie sie ist: Screenshots von Updates stehen in der Beschreibung.'],
+      page: { version: v.version }
     };
   }
 

@@ -86,6 +86,55 @@ test('publish flow: Create → Media → File, filled in the Anleitung order, fi
   assert.match(state.changelog, /## V1\.0[\s\S]*!\[V1\.0 skins\]\(https:\/\/raw\.githubusercontent\.com\//);
 });
 
+test('description follow-up: the description is filled, Save stays with the user, Media is never opened', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  await page.evaluate(() => show('edit'));
+  const pack = JSON.parse(fs.readFileSync('./data/skins/the-last-ninjas/pack.json', 'utf-8'));
+  const plan = buildSteps({ cmd: 'seite', kind: 'skinpack', id: pack.slug, projectId: pack.cfProjectId, version: '1.2' }, { config, pack });
+  const steps = plan.steps.filter(s => s.action !== 'manual').map(s => (s.action === 'waitFor' ? { ...s, timeout: 15000, checkEvery: 200 } : s));
+  // The user: saves once the description is in the field.
+  let stop = false;
+  const user = (async () => {
+    while (!stop) {
+      await page.evaluate(() => {
+        const visible = id => { const el = document.getElementById(id); return el && el.offsetParent !== null; };
+        if (visible('save-desc') && document.getElementById('desc').value && !window.log.includes('save')) document.getElementById('save-desc').click();
+      }).catch(() => {});
+      await new Promise(r => setTimeout(r, 200));
+    }
+  })();
+  const asked = [];
+  // Stand-in for the Core API read-back: true once the saved description contains the new section.
+  const checks = { description: () => page.evaluate(() => /Added in V1\.2/.test(window.savedDescription || '')) };
+  const { results } = await runSteps(page, steps, { ...quiet, checks, ask: async q => { asked.push(q); return ''; } });
+  stop = true; await user;
+
+  const notOk = results.filter(r => r.status !== 'ok');
+  assert.deepEqual(notOk, [], `not ok: ${JSON.stringify(notOk)}`);
+  assert.deepEqual(asked, [], 'the saved description was recognised without asking');
+  const state = await page.evaluate(() => ({ log: window.log, editor: document.getElementById('desc-editor').value, saved: window.savedDescription, mediaShown: document.querySelector('[data-panel=media]').offsetParent !== null, upload: document.getElementById('cover').files.length }));
+  assert.deepEqual(state.log, ['save'], 'Save clicked exactly once — by the user');
+  assert.equal(state.editor, 'Markdown');
+  assert.match(state.saved, /^# The Last Ninjas[\s\S]*- \*\*Neon Shogun\*\* — [\s\S]*## How to install/);
+  assert.match(state.saved, /!\[All The Last Ninjas skins\]\(https:\/\/raw\.githubusercontent\.com\/[^)]+\/media\/collection\.png\)/);
+  assert.match(state.saved, /## Added in V1\.2[\s\S]*!\[V1\.2 preview\]\([^)]+v1\.2-skins\.png\)/, 'the update screenshot is in the description');
+  assert.equal(state.mediaShown, false, 'the Media tab was never opened');
+  assert.equal(state.upload, 0, 'nothing uploaded to the gallery');
+});
+
+test('without a read-back the helper asks instead of guessing that Save was clicked', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const asked = [];
+  const { results } = await runSteps(page, [{ title: 'Warten auf „Save“', action: 'waitFor', value: 'Bitte speichern', until: { check: 'description' } }], { ...quiet, ask: async q => { asked.push(q); return ''; } });
+  assert.equal(results[0].status, 'ok');
+  assert.match(asked[0], /Wenn du gespeichert hast/);
+  assert.deepEqual(await page.evaluate(() => window.log), []);
+});
+
 test('never clicks Create or Apply, and no second "Add File" once the form is filled', async t => {
   if (skip) return t.skip(skip);
   const page = await browser.newPage();
@@ -131,4 +180,65 @@ test('waits for the user while a security check page is shown', async t => {
   });
   assert.equal(asks, 1);
   assert.equal(results[0].status, 'ok');
+});
+
+// ── Hands-free (started from the chat, nobody at the terminal) ────────────────────────────────────
+
+test('hands-free: the description run waits for the operator\'s Save by watching, never by asking', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  await page.evaluate(() => show('edit'));
+  const pack = JSON.parse(fs.readFileSync('./data/skins/the-last-ninjas/pack.json', 'utf-8'));
+  const plan = buildSteps({ cmd: 'seite', kind: 'skinpack', id: pack.slug, projectId: pack.cfProjectId, version: '1.2' }, { config, pack });
+  const steps = plan.steps.filter(s => s.action !== 'manual').map(s => (s.action === 'waitFor' ? { ...s, checkEvery: 200 } : s));
+  // The operator saves two seconds after the field was filled.
+  let stop = false, filledAt = 0;
+  const user = (async () => {
+    while (!stop) {
+      const filled = await page.evaluate(() => !!document.getElementById('desc').value).catch(() => false);
+      if (filled && !filledAt) filledAt = Date.now();
+      if (filledAt && Date.now() - filledAt > 2000) await page.evaluate(() => { if (!window.log.includes('save')) document.getElementById('save-desc').click(); }).catch(() => {});
+      await new Promise(r => setTimeout(r, 200));
+    }
+  })();
+  const checks = { description: () => page.evaluate(() => /Added in V1\.2/.test(window.savedDescription || '')) };
+  const { results } = await runSteps(page, steps, { ...quiet, checks, handsFree: true, ask: async () => { throw new Error('asked in a hands-free run'); } });
+  stop = true; await user;
+  assert.deepEqual(results.filter(r => r.status !== 'ok'), []);
+  assert.deepEqual(await page.evaluate(() => window.log), ['save'], 'Save clicked once, by the operator');
+});
+
+test('hands-free: an unseen click is reported, a missing page stops the task, nothing blocks on Enter', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const ask = async () => { throw new Error('asked in a hands-free run'); };
+  const targets = { ...TARGETS, nope: [{ css: '#does-not-exist' }] };
+  const { results } = await runSteps(page, [
+    { title: 'Projektseite öffnen', action: 'manual', value: 'Öffne die Projektseite.' },
+    { title: 'Nav', action: 'click', target: 'nope' },
+    { title: 'Warten auf „Save“', action: 'waitFor', value: 'Bitte speichern', until: { check: 'description' } }
+  ], { ...quiet, timeout: 300, handsFree: true, ask, targets });
+  assert.deepEqual(results.map(r => r.status), ['manual', 'manual', 'manual']);
+  assert.match(results[2].detail, /nicht erkannt/);
+  assert.deepEqual(await page.evaluate(() => window.log), [], 'no final button was clicked');
+});
+
+test('hands-free: a login or security check is never automated, the run waits and then gives up', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent('<title>Just a moment...</title><p>Checking</p>');
+  const logs = [];
+  // The operator solves the check after a moment.
+  setTimeout(() => page.setContent(html).catch(() => {}), 600);
+  const { results } = await runSteps(page, [{ title: 'Create A Project', action: 'click', target: 'startProject' }], {
+    ...quiet, log: l => logs.push(l), handsFree: true, humanWait: 5000, ask: async () => { throw new Error('asked'); }
+  });
+  assert.equal(results[0].status, 'ok');
+  assert.equal(logs.filter(l => /Sicherheitsprüfung/.test(l)).length, 1, 'said once, then waited');
+
+  const stuck = await browser.newPage();
+  await stuck.setContent('<title>Just a moment...</title>');
+  await assert.rejects(runSteps(stuck, [{ title: 'x', action: 'click', target: 'startProject' }], { ...quiet, handsFree: true, humanWait: 400, ask: async () => '' }), /Abgebrochen/);
 });

@@ -7,8 +7,11 @@ import { TARGETS, FORBIDDEN_CLICK, FORBIDDEN_AFTER_EDIT, PROJECT_ID_IN_URL } fro
 //   untouched (FORBIDDEN_AFTER_EDIT), because CurseForge's submit buttons share those names.
 // - Missing field → no crash: noted as "do it yourself"; missing navigation → asks the user.
 // - waitFor steps pause until the user did the final click (URL change / element gone).
+// - handsFree: nobody sits at the terminal (the run was started from the chat). Every pause then
+//   watches the browser instead of waiting for Enter; the final clicks stay the operator's.
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+const HANDS_FREE_WAIT = 15 * 60 * 1000; // how long a hands-free run waits for the operator's own click
 const xpathLiteral = s => (s.includes("'") ? `concat('${s.split("'").join(`', "'", '`)}')` : `'${s}'`);
 const INPUTS = "self::input[not(@type='hidden') and not(@type='file') and not(@type='checkbox') and not(@type='radio')] or self::textarea or self::select or @role='combobox' or @contenteditable='true'";
 
@@ -136,35 +139,53 @@ async function perform(page, step, loc, state) {
   }
 }
 
-// Waits until the user did the final click. until: { url: RegExp } | { gone: targetKey }
-async function waitForUser(page, step, { ask, log, targets, poll = 1000 }) {
+// Waits until the user did the final click; → true when it was seen (or confirmed with Enter). until: { url: RegExp } | { gone: targetKey } | { check: name }
+// check: an async function from `checks` that looks at the result itself (e.g. the Core API shows the
+// new description). Without such a function the user confirms with Enter.
+async function waitForUser(page, step, { ask, log, targets, checks = {}, poll = 1000, handsFree = false }) {
   log(`⏸  ${step.value}`);
-  const deadline = Date.now() + (step.timeout ?? 20 * 60 * 1000);
+  const check = step.until?.check ? checks[step.until.check] : null;
+  if (step.until?.check && !check) { if (!handsFree) await ask('Wenn du gespeichert hast, hier Enter drücken.'); return !handsFree; }
+  const deadline = Date.now() + Math.max(step.timeout ?? 20 * 60 * 1000, handsFree ? HANDS_FREE_WAIT : 0);
+  let nextCheck = 0;
   while (Date.now() < deadline) {
-    if (step.until?.url && step.until.url.test(page.url())) return;
+    if (check && Date.now() >= nextCheck) {
+      if (await check().catch(() => false)) return true;
+      nextCheck = Date.now() + (step.checkEvery ?? 5000);
+    }
+    if (step.until?.url && step.until.url.test(page.url())) return true;
     if (step.until?.gone) {
       const loc = await resolveTarget(page, targets[step.until.gone], { timeout: 0 });
-      if (!loc) return;
+      if (!loc) return true;
     }
     await sleep(poll);
   }
-  await ask('Ich habe deinen Klick nicht erkannt. Wenn du fertig bist, Enter drücken.');
+  if (handsFree) { log('  Ich habe deinen Klick nicht erkannt und mache mit dem nächsten Punkt weiter.'); return false; }
+  await ask(check ? 'CurseForge zeigt die Änderung noch nicht (das kann ein paar Minuten dauern). Wenn du gespeichert hast, Enter drücken.' : 'Ich habe deinen Klick nicht erkannt. Wenn du fertig bist, Enter drücken.');
+  return true;
 }
 
-async function captureProjectId(page, { ask }) {
+async function captureProjectId(page, { ask, handsFree }) {
   const m = PROJECT_ID_IN_URL.exec(page.url());
   if (m) return Number(m[1]);
+  if (handsFree) return null;
   const typed = (await ask('Projekt-ID nicht in der Adresse gefunden. Bitte die Zahl von der Projektseite eintippen (oder Enter zum Überspringen):')) || '';
   return /^\d+$/.test(typed.trim()) ? Number(typed.trim()) : null;
 }
 
 // → { results: [{ title, status: 'ok'|'manual'|'skipped', detail? }], context: { projectId?, projectUrl? } }
-export async function runSteps(page, steps, { ask, log = console.log, timeout = 10000, pause = 400, targets = TARGETS, context = {} } = {}) {
+export async function runSteps(page, steps, { ask, log = console.log, timeout = 10000, pause = 400, targets = TARGETS, context = {}, checks = {}, handsFree = false, humanWait = HANDS_FREE_WAIT } = {}) {
   const results = [];
   const state = { dirty: false };
   for (const step of steps) {
+    let told = false;
+    const humanDeadline = Date.now() + humanWait;
     for (let reason = await needsHuman(page); reason; reason = await needsHuman(page)) {
-      await ask(`⏸  Im Browser wartet ${reason}. Bitte selbst erledigen, dann hier Enter drücken.`);
+      if (!handsFree) { await ask(`⏸  Im Browser wartet ${reason}. Bitte selbst erledigen, dann hier Enter drücken.`); continue; }
+      // Login and "are you human" checks are never automated: watch until the operator solved them.
+      if (!told) { log(`⏸  Im Browser wartet ${reason}. Bitte selbst erledigen, ich warte.`); told = true; }
+      if (Date.now() > humanDeadline) throw new Error(`Im Browser wartet weiter ${reason}. Abgebrochen, bitte neu starten, wenn du Zeit hast.`);
+      await sleep(Math.min(2000, humanWait));
     }
     if (step.action !== 'waitFor') log(`→ ${step.title}`);
     try {
@@ -172,13 +193,18 @@ export async function runSteps(page, steps, { ask, log = console.log, timeout = 
         await page.goto(typeof step.value === 'function' ? step.value(context) : step.value, { waitUntil: 'domcontentloaded' });
         state.dirty = false;
       } else if (step.action === 'manual') {
+        if (handsFree) throw new Error(step.value);
         await ask(`👉 ${step.value} Danach Enter drücken.`);
         state.dirty = false;
       } else if (step.action === 'waitFor') {
-        await waitForUser(page, step, { ask, log, targets });
+        const seen = await waitForUser(page, step, { ask, log, targets, checks, handsFree });
         state.dirty = false;
+        if (!seen) { results.push({ title: step.title, status: 'manual', detail: 'dein Klick wurde nicht erkannt' }); continue; }
+      } else if (step.action === 'learnProjectUrl') {
+        // After the user opened the project page by hand once, its address is remembered (cf.js).
+        if (step.projectId && page.url().includes(String(step.projectId))) { context.projectId = step.projectId; context.projectUrl = page.url(); }
       } else if (step.action === 'captureProjectId') {
-        context.projectId = await captureProjectId(page, { ask });
+        context.projectId = await captureProjectId(page, { ask, handsFree });
         context.projectUrl = page.url();
         if (!context.projectId) throw new Error('Projekt-ID unbekannt, bitte selbst in data/cf-projects.json eintragen');
         log(`  ✓ Projekt-ID ${context.projectId}`);
@@ -203,6 +229,7 @@ export async function runSteps(page, steps, { ask, log = console.log, timeout = 
           if (step.optional) { results.push({ title: step.title, status: 'skipped' }); continue; }
           if (step.action === 'click') {
             // Navigation: without it the next steps make no sense, so let the user do it now.
+            if (handsFree) throw new Error('Knopf nicht gefunden');
             await ask(`👉 „${step.title}“ nicht gefunden. Bitte im Browser selbst klicken, dann Enter drücken.`);
             results.push({ title: step.title, status: 'manual', detail: 'von dir geklickt' });
             continue;
