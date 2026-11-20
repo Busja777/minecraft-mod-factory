@@ -23,6 +23,7 @@ import { arg, flag } from './lib/github-output.js';
 //   npm run serie -- banner-wahl <slug> claude|chatgpt   Banner übernehmen, KI-Hinweis setzen, Seite neu bauen
 //   npm run serie -- id <slug> <projectId>       Projekt eintragen = Go für die erste Datei
 //   npm run serie -- vorrat <slug> --version 1.0 --file <Pfad> --changelog <Pfad .md> [--game-versions "a,b"] [--version-types "a,b"]
+//                                                [--ab YYYY-MM-DD]  Saison-Update: geht frühestens an diesem Tag hoch
 //   npm run serie -- namen [<reihe>] [--alle]    Namen gegen CurseForge prüfen
 const argv = process.argv.slice(2);
 const cmd = argv[0];
@@ -279,8 +280,8 @@ function vorrat() {
   const list = name => (arg(argv, name, '') || '').split(',').map(s => s.trim()).filter(Boolean);
   const { reihe, project } = findSerieProject(loadReihen(), slug);
   try {
-    const v = addStock(reihe, project, { version, file, changelog: fs.readFileSync(changelog, 'utf-8'), gameVersions: list('--game-versions'), versionTypes: list('--version-types') });
-    console.log(`✓ ${project.name} V${v.version} liegt im Vorrat (${releaseFile(slug, v.file)}).`);
+    const v = addStock(reihe, project, { version, file, changelog: fs.readFileSync(changelog, 'utf-8'), gameVersions: list('--game-versions'), versionTypes: list('--version-types'), preferFrom: arg(argv, '--ab') });
+    console.log(`✓ ${project.name} V${v.version} liegt im Vorrat (${releaseFile(slug, v.file)})${v.preferFrom ? `, frühestens ab ${de(v.preferFrom)}` : ''}.`);
   } catch (e) { fail(e.message); }
 }
 

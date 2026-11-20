@@ -34,7 +34,11 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
    - [x] Nr. 2 bis 7 gebaut und im Vorrat (Hushed World, Calm Creepers, Anglers Haul, Fair Villager Trades, Tidy Endermen, Uncraft Kit). Gentle Ghasts geht als Update in Calm Creepers auf (Fair Play), Platz 26 ist jetzt Gentle Nights.
    - [ ] Nr. 8 bis 14 bauen (Vorsprung halten: unter 5 gebauten Projekten braucht die Reihe eine Bau-Nacht).
    - [ ] Radar: neue `bedrock-samples`-Version → alle Bedrock-Packs dagegen prüfen.
-7. [ ] Saisonkalender mit Winter-Updates, danach der wöchentliche Trend-Radar.
+7. Zeitgefühl:
+   - [x] Saisonkalender: Versionen mit „frühestens ab“ (`--ab`), Kalender für die Nacht-Sitzung.
+   - [ ] Winter-Updates bauen (Fresh Splashes, Seasonal Care Packages), sobald die Projekte gebaut sind.
+   - [ ] Update-Reihenfolge „Kompatibilität zuerst“ nach einem neuen Spiel-Update.
+   - [ ] Wöchentlicher Trend-Radar (CurseForge-Lese-API).
 8. [ ] An einem echten Abend prüfen, ob der Abend-Lauf zwischen 18 und 21 Uhr startet.
 9. [ ] Ersten Lauf der Nacht-Sitzung lesen (PR da, Tests grün, von selbst gemergt?).
 

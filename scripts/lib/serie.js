@@ -52,11 +52,11 @@ export function ensureStockProject(reihe, project, root) {
 }
 
 // Puts a built, checked file into the stock. → the version entry
-export function addStock(reihe, project, { version, file, changelog, gameVersions, versionTypes }, root) {
+export function addStock(reihe, project, { version, file, changelog, gameVersions, versionTypes, preferFrom }, root) {
   if (!fs.existsSync(file)) throw new Error(`Datei fehlt: ${file}`);
   const rp = ensureStockProject(reihe, project, root);
   if (versionTypes?.length) rp.versionTypes = versionTypes;
-  const v = addVersion(rp, { version, file: path.basename(file), changelog, gameVersions });
+  const v = addVersion(rp, { version, file: path.basename(file), changelog, gameVersions, preferFrom });
   saveReleaseProject(rp, root);
   fs.copyFileSync(file, releaseFile(project.slug, v.file, root));
   return v;
