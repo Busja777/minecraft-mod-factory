@@ -101,3 +101,20 @@ test('the evening cron fires every BUCKET_MINUTES, off the full and half hour, a
   assert.ok(to * 60 + 59 >= end - BUCKET_MINUTES, 'fires until the window closes');
 });
 
+
+import { updateDoneToday } from '../scripts/lib/schedule.js';
+
+test('updateDoneToday: only a finished, successful update of the same account counts', () => {
+  const job = (name, conclusion, status = 'completed') => ({ name, status, conclusion });
+  // Two triggers close together: the second leg waits for the first and must then stand down.
+  assert.equal(updateDoneToday([job('update-minecraft', 'success')], 'minecraft'), true);
+  // A failed earlier attempt may be retried by a later fire.
+  assert.equal(updateDoneToday([job('update-minecraft', 'failure')], 'minecraft'), false);
+  // A run still waiting behind this one must not make this one stand down (else nobody uploads).
+  assert.equal(updateDoneToday([job('update-minecraft', null, 'queued'), job('update-minecraft', null, 'in_progress')], 'minecraft'), false);
+  // Other accounts and gate jobs do not count.
+  assert.equal(updateDoneToday([job('update-stardewvalley', 'success'), job('gate', 'success')], 'minecraft'), false);
+  // Runs from before the per-account split named the job just "update".
+  assert.equal(updateDoneToday([job('update', 'success')], 'minecraft', { legacy: 'minecraft' }), true);
+  assert.equal(updateDoneToday([job('update', 'success')], 'stardewvalley', { legacy: 'minecraft' }), false);
+});
