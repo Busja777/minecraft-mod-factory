@@ -14,3 +14,8 @@ previews/
 Macros/aktuell/
 Output/
 Input/
+# Fabric mods of the Java series: Gradle state and build outputs
+tools/java/fabric/.gradle/
+tools/java/fabric/build/
+tools/java/projects/*/build/
+tools/java/projects/*/.gradle/

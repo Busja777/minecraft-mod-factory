@@ -1,0 +1,37 @@
+{
+  "name": "Villager Birthday Reminders",
+  "summary": "A friendly letter waits in your mailbox whenever a villager has a birthday, with a gift idea they love.",
+  "class": "Mods",
+  "category": "Events",
+  "logoPrompt": "A wooden farm mailbox with its little red flag raised and a letter with a ribbon-tied gift box sticking out of it",
+  "cover": {
+    "tagline": "Never miss a villager's birthday again.",
+    "bullets": [
+      "A letter on every birthday",
+      "One loved gift per villager",
+      "Only villagers you have met"
+    ]
+  },
+  "description": [
+    "**Villager Birthday Reminders puts a short letter in your mailbox on the morning of each villager's birthday, so you never miss the day.**",
+    "",
+    "## Features",
+    "- A letter arrives on the morning of every birthday, every year.",
+    "- Each letter suggests one gift that villager loves, picked from the game's gift data.",
+    "- Covers 33 villagers of Pelican Town and the valley, from Abigail to the Wizard.",
+    "- Letters only come for villagers you have already met, so nothing is spoiled.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Play as usual and check your mailbox on the next birthday.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. It only adds letters: no new items, no changes to villagers.",
+    "- Ginger Island villagers are not included yet.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

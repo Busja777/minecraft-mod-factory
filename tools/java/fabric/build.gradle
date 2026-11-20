@@ -1,0 +1,85 @@
+// Shared build of every Fabric mod in tools/java/projects/<slug>/ (see settings.gradle).
+// Called by tools/java/build.js:
+//   gradlew :<slug>:test                         JUnit tests of the pure logic (src/test/java)
+//   gradlew :<slug>:runGametest                  in-world tests on a headless game test server (src/gametest, optional)
+//   gradlew :<slug>:build -PmodVersion=1.0       → projects/<slug>/build/libs/<slug>-1.0.jar (remapped, upload-ready)
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'fabric-loom' version '1.7-SNAPSHOT' apply false
+}
+
+subprojects {
+    apply plugin: 'fabric-loom'
+
+    def pack = new JsonSlurper().parse(file('pack.json'))
+    def modId = pack.modId as String
+
+    version = findProperty('modVersion') ?: '0.0.0-dev'
+    group = rootProject.maven_group
+    base { archivesName = project.name }
+
+    repositories {
+        maven { url 'https://maven.fabricmc.net/' }
+        mavenCentral()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+        modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
+
+        testImplementation platform("org.junit:junit-bom:${rootProject.junit_version}")
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 21
+    }
+
+    processResources {
+        inputs.property 'version', project.version
+        filesMatching('fabric.mod.json') { expand version: project.version }
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging { events 'failed'; exceptionFormat 'full' }
+    }
+
+    // Optional in-world tests: src/gametest holds a second small mod (its own fabric.mod.json with a
+    // "fabric-gametest" entrypoint) that only exists in this run, never in the released jar.
+    if (file('src/gametest').isDirectory()) {
+        sourceSets {
+            gametest {
+                compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+                runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+            }
+        }
+        loom {
+            mods {
+                "${modId}" { sourceSet sourceSets.main }
+                "${modId}-gametest" { sourceSet sourceSets.gametest }
+            }
+            runs {
+                gametest {
+                    server()
+                    name 'Game Test'
+                    source sourceSets.gametest
+                    vmArg '-Dfabric-api.gametest'
+                    vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.get().asFile}/gametest/junit.xml"
+                    runDir 'build/gametest'
+                    ideConfigGenerated false
+                }
+            }
+        }
+    }
+}

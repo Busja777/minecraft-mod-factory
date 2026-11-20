@@ -1,0 +1,24 @@
+// One Gradle build for every Fabric mod of the Java series.
+// A mod is a folder tools/java/projects/<slug>/ whose pack.json says "kind": "mod"; it becomes the
+// subproject :<slug> with its sources in that folder (src/main, src/test, src/gametest).
+// Adding a mod needs no edit here: the folders are found from their pack.json.
+import groovy.json.JsonSlurper
+
+pluginManagement {
+    repositories {
+        maven { url 'https://maven.fabricmc.net/' }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'java-series-mods'
+
+def projectsDir = new File(settingsDir, '../projects').canonicalFile
+(projectsDir.listFiles() ?: []).findAll { it.isDirectory() }.sort { it.name }.each { dir ->
+    def packJson = new File(dir, 'pack.json')
+    if (!packJson.isFile()) return
+    def pack = new JsonSlurper().parse(packJson)
+    if (pack.kind != 'mod') return
+    include ":${dir.name}"
+    project(":${dir.name}").projectDir = dir
+}

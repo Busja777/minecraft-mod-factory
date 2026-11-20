@@ -1,0 +1,37 @@
+{
+  "name": "Anglers Loot",
+  "summary": "Fishing pays off more often, with half the junk, more treasure and a rare chance at a heart of the sea.",
+  "class": "Data Packs",
+  "category": "Adventure",
+  "logoPrompt": "A small open wooden treasure chest dripping with water, a fishing hook caught on its lid and a glowing blue orb inside, in blocky voxel style",
+  "cover": {
+    "tagline": "Less junk, more treasure on every cast.",
+    "bullets": [
+      "About half as much junk",
+      "More treasure in open water",
+      "Heart of the sea and XP bottles"
+    ]
+  },
+  "description": [
+    "**Anglers Loot makes fishing more rewarding: about half as much junk, more treasure and two new treasure catches.**",
+    "",
+    "## Features",
+    "- About half as much junk: leather boots, bowls and rotten flesh come up half as often as in vanilla.",
+    "- Treasure comes about one and a half times as often, still only in open water.",
+    "- New treasure catches: the rare heart of the sea and bottles o' enchanting, one to three at a time.",
+    "- Enchanted books, saddles, name tags and the other vanilla treasures stay about as likely as before.",
+    "- Luck of the Sea still helps: at level III you catch no junk at all.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then fish with any fishing rod.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. Works with every fishing rod, in singleplayer and on servers; players need nothing installed.",
+    "- It changes the vanilla fishing loot, so another pack that changes fishing loot can override it or be overridden by it.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

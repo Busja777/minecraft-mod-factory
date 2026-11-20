@@ -4,7 +4,7 @@ import AdmZip from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { listPacks, packOf, generate, checkPack, buildZip, PACK_FORMAT } from '../tools/java/lib.js';
+import { listPacks, packOf, generate, checkPack, buildZip, PACK_FORMAT, isMod } from '../tools/java/lib.js';
 import { versionDir } from '../tools/java/vanilla.js';
 
 // The vanilla reference data is downloaded once by `npm run java -- test`; without it these tests
@@ -16,9 +16,11 @@ const vanillaOf = version => {
 };
 const skip = !ready('1.21.1') && 'vanilla 1.21.1 not downloaded yet (npm run java -- test)';
 const buf = o => Buffer.from(JSON.stringify(o));
+// Fabric mods are checked in tests/fabric.test.js; these tests are for data and resource packs.
+const packSlugs = () => listPacks().filter(slug => !isMod(packOf(slug)));
 
 test('Java: every pack folder is complete', () => {
-  for (const slug of listPacks()) {
+  for (const slug of packSlugs()) {
     const pack = packOf(slug);
     assert.ok(PACK_FORMAT[pack.mc], `${slug}: unknown Minecraft version`);
     assert.ok(pack.gameVersions.includes(pack.mc), `${slug}: gameVersions must include ${pack.mc}`);
@@ -26,7 +28,7 @@ test('Java: every pack folder is complete', () => {
   }
 });
 
-for (const slug of listPacks()) {
+for (const slug of packSlugs()) {
   test(`Java ${slug}: the pack passes the vanilla checks and zips with pack.mcmeta`, { skip }, async () => {
     const pack = packOf(slug);
     const vanilla = vanillaOf(pack.mc);

@@ -5,18 +5,23 @@ import sharp from 'sharp';
 import { pathToFileURL, fileURLToPath } from 'url';
 import { registry, itemTagExists } from './vanilla.js';
 
-// Data packs and resource packs of the Minecraft Java series.
+// Data packs, resource packs and Fabric mods of the Minecraft Java series.
 // Layout: tools/java/projects/<slug>/
 //   pack.json      { kind: 'data' | 'resource', name, description, mc: '1.21.1', gameVersions: ['1.21', '1.21.1'] }
+//                  or { kind: 'mod', name, description, mc, modId, gameVersions: ['1.21.1', 'Fabric', 'Java 21', 'Server', 'Client'] }
 //   pack.js        export default async ({ vanilla, version }) => ({ 'data/<ns>/recipe/x.json': {…}, … })
 //   page.json, logo.png, changelogs/<version>.md, shots/ (in-game screenshots)
 // The pack is generated, checked against the vanilla registries of its Minecraft version and zipped
 // with pack.mcmeta and pack.png (the logo at 128 px).
+// A mod is Java code instead of pack.js (src/main/java, src/test/java); it is built and tested by the
+// shared Gradle build in tools/java/fabric/, so generate, checkPack and buildZip are only for packs.
 export const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const PROJECTS = path.join(HERE, 'projects');
 
 // pack_format per Minecraft version (data, resource). Source: the version.json inside the jars.
 export const PACK_FORMAT = { '1.21.1': { data: 48, resource: 34 } };
+export const KINDS = ['data', 'resource', 'mod'];
+export const isMod = pack => pack.kind === 'mod';
 
 // Folders a 1.21 data pack uses (singular since 1.21; the old plural names are ignored by the game).
 const DATA_FOLDERS = new Set(['recipe', 'advancement', 'loot_table', 'tags', 'function', 'predicate', 'item_modifier', 'structure', 'worldgen', 'enchantment', 'trim_material', 'trim_pattern', 'damage_type', 'banner_pattern', 'painting_variant', 'jukebox_song', 'chat_type', 'dimension', 'dimension_type', 'enchantment_provider', 'wolf_variant']);
@@ -32,8 +37,9 @@ export function packOf(slug, root = PROJECTS) {
   const file = path.join(dir, 'pack.json');
   if (!fs.existsSync(file)) throw new Error(`No pack "${slug}" under ${root}`);
   const meta = JSON.parse(fs.readFileSync(file, 'utf-8'));
-  if (!['data', 'resource'].includes(meta.kind)) throw new Error(`${slug}: kind must be data or resource`);
+  if (!KINDS.includes(meta.kind)) throw new Error(`${slug}: kind must be data, resource or mod`);
   if (!PACK_FORMAT[meta.mc]) throw new Error(`${slug}: unknown Minecraft version ${meta.mc}`);
+  if (meta.kind === 'mod' && !/^[a-z][a-z0-9_]{1,63}$/.test(meta.modId || '')) throw new Error(`${slug}: a mod needs a modId (lowercase letters, digits, _)`);
   return { slug, dir, ...meta };
 }
 
@@ -128,6 +134,7 @@ export function checkPack(pack, files, vanilla) {
 }
 
 export const zipName = (pack, version) => `${pack.name.replace(/[^A-Za-z0-9]+/g, '')}-${version}.zip`;
+export const jarName = (pack, version) => `${pack.name.replace(/[^A-Za-z0-9]+/g, '')}-${version}.jar`;
 
 export async function buildZip(pack, files, version, outDir) {
   if (!/^\d+\.\d+(\.\d+)?$/.test(version)) throw new Error(`Invalid version "${version}"`);

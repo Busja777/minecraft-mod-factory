@@ -1,0 +1,8 @@
+{
+  "name": "Villager Birthday Reminders",
+  "description": "A letter on the morning of every villager's birthday, with a gift idea.",
+  "uniqueId": "SevEvolution.VillagerBirthdayReminders",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}
