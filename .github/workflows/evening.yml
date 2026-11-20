@@ -6,6 +6,9 @@ name: Evening — update a due project
 # whose slot falls into the next 10 minutes or has passed (catch-up). Each account updates at most
 # one project per day: its projects take turns (longest without an update first), each at least 23 days after its last
 # upload (config.updateIntervalDays). Accounts without a published project have no leg.
+# Trigger: an external timer (cron-job.org, see Macros/ANLEITUNG-wecker.md) dispatches this
+# workflow every 10 minutes in the window, because GitHub's own cron drops and delays fires. The
+# cron below stays as a backup; the recheck in the update job keeps it to one upload per account.
 on:
   schedule:
     # Every 10 minutes at uneven minutes: GitHub drops and delays many fires at :00 and :30
@@ -76,6 +79,7 @@ jobs:
       group: ${{ matrix.account == 'minecraft' && 'mod-factory' || format('mod-factory-{0}', matrix.account) }}
       cancel-in-progress: false
     permissions:
+      actions: read
       contents: write
       issues: write
 
@@ -100,11 +104,22 @@ jobs:
         with:
           node-version: '22'
 
+      # Two fires close together (external timer and GitHub cron) can both pass the gate; the second
+      # leg waits for the first here (concurrency) and then stands down. A forced run always goes.
+      - name: Check no other run finished this account's update today
+        id: recheck
+        if: ${{ !inputs.force }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/schedule-gate.js --window evening --recheck "${{ matrix.account }}"
+
       - name: Install Node dependencies
+        if: steps.recheck.outputs.done != 'true'
         run: npm ci
 
       - name: Pick due project
         id: select
+        if: steps.recheck.outputs.done != 'true'
         env:
           CF_CORE_API_KEY: ${{ secrets.CF_CORE_API_KEY }}
           MODE: update

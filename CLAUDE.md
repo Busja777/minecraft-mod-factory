@@ -9,6 +9,7 @@
 ## Freigabe-Ablauf (Studio, `scripts/lib/review.js`)
 `zur-pruefung` → (Notizen) → `ueberarbeiten` → (Claude erledigt) → `zur-pruefung` → **Go** → `geplant` (Termin im Morgenfenster an einem Upload-Tag, max. 1 neues Projekt pro Tag) → `faellig` → Komplettlauf `npm run cf -- publish` → `veroeffentlicht`.
 - Nur **neue** Projekte brauchen Go. Updates bestehender Projekte laufen ohne Freigabe: höchstens 1 Update pro Tag, abends zur Zufallszeit zwischen 18 und 21 Uhr; die Packs kommen reihum dran (am längsten ohne Update zuerst), jedes frühestens 23 Tage nach seinem letzten Upload (echtes Datum von CurseForge). Jede Datei bekommt alle Game-Versionen der Vorgänger-Datei plus die neuesten Minecraft-Versionen.
+- Den Abend-Lauf (`evening.yml`) startet ein externer Wecker (cron-job.org, `Macros/ANLEITUNG-wecker.md`), weil GitHubs Cron Starts verschluckt; der GitHub-Cron bleibt als Reserve. Doppelte Starts sind abgesichert (Gate plus `schedule-gate.js --recheck` direkt vor dem Upload).
 - Go ist gesperrt bei offenen Notizen oder roten Prüfungen (`scripts/lib/checks.js`: Bildgrößen, < 2 MB, Name/Summary-Regeln, KI-Hinweis, Screenshots, MCPEDL, .mcpack).
 - Zustand pro Projekt in `data/skins/<slug>/review.json` bzw. `data/mods/<id>/review.json` (in Git).
 
