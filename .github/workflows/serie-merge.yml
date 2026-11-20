@@ -1,0 +1,67 @@
+name: Series — merge content from the nightly build
+
+# The nightly build session opens pull requests from branches serie/auto-…. When the tests are
+# green and the pull request only changes content (scripts/lib/serie-guard.js), it is merged
+# without the operator. Everything else stays open for the operator.
+#
+# This workflow runs from the default branch and never checks out or runs code of the pull
+# request: the decision is made by the guard script on main from the list of changed files.
+on:
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Find the pull request of this test run
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_REF: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          number=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --head "$HEAD_REF" --json number,headRefOid --jq ".[] | select(.headRefOid == \"$HEAD_SHA\") | .number" | head -1)
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+          if [ -z "$number" ]; then echo "No open pull request for $HEAD_REF at $HEAD_SHA"; fi
+      - name: Decide
+        id: guard
+        if: steps.pr.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.pr.outputs.number }}
+          PR_HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          PR_BASE_REPO: ${{ github.repository }}
+          PR_HEAD_REF: ${{ github.event.workflow_run.head_branch }}
+          CI_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          PR_FILES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$NUMBER/files" --jq '.[] | .filename, (.previous_filename // empty)')
+          export PR_FILES
+          node scripts/serie-guard.js
+      - name: Merge
+        if: steps.guard.outputs.merge == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.pr.outputs.number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: gh pr merge "$NUMBER" --repo "$GITHUB_REPOSITORY" --merge --match-head-commit "$HEAD_SHA" --delete-branch
+      - name: Say why it stays open
+        if: steps.pr.outputs.number != '' && steps.guard.outputs.merge != 'true' && startsWith(github.event.workflow_run.head_branch, 'serie/auto-')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.pr.outputs.number }}
+          REASONS: ${{ steps.guard.outputs.reasons }}
+        run: gh pr comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Not merged automatically: $REASONS. This pull request waits for the operator."

@@ -21,21 +21,28 @@ const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 const realPack = () => ({ ...JSON.parse(fs.readFileSync('./data/skins/glowing-samurai/pack.json', 'utf-8')), lastGameVersions: ['1.21', '26.3', '26.10'] });
 const quiet = { log: () => {}, timeout: 1500, pause: 0 };
 
-// Plays the user: clicks Create / Apply / Add File once the tool has filled the form.
+// Plays the user: clicks Create / Apply / Add File, but like a real user only after the helper
+// said it is waiting for that click ("⏸ …"). Clicking as soon as the button is visible raced the
+// helper under load: the page moved on while it was still filling the form.
 function simulateUser(page) {
   let stop = false;
+  let waiting = false;
   const loop = (async () => {
     while (!stop) {
-      await page.evaluate(() => {
-        const visible = id => { const el = document.getElementById(id); return el && el.offsetParent !== null; };
-        if (visible('create') && document.getElementById('desc').value && !window.log.includes('create')) document.getElementById('create').click();
-        if (visible('apply') && document.getElementById('media-title').value === 'MCPEDL') document.getElementById('apply').click();
-        if (visible('submit-file') && document.getElementById('changelog').value) document.getElementById('submit-file').click();
-      }).catch(() => {});
-      await new Promise(r => setTimeout(r, 300));
+      if (waiting) {
+        const clicked = await page.evaluate(() => {
+          const visible = id => { const el = document.getElementById(id); return el && el.offsetParent !== null; };
+          if (visible('create') && document.getElementById('desc').value && !window.log.includes('create')) { document.getElementById('create').click(); return true; }
+          if (visible('apply') && document.getElementById('media-title').value === 'MCPEDL') { document.getElementById('apply').click(); return true; }
+          if (visible('submit-file') && document.getElementById('changelog').value) { document.getElementById('submit-file').click(); return true; }
+          return false;
+        }).catch(() => false);
+        if (clicked) waiting = false;
+      }
+      await new Promise(r => setTimeout(r, 100));
     }
   })();
-  return () => { stop = true; return loop; };
+  return { stop: () => { stop = true; return loop; }, log: line => { if (String(line).startsWith('⏸')) waiting = true; } };
 }
 
 test('publish flow: Create → Media → File, filled in the Anleitung order, final clicks left to the user', async t => {
@@ -44,10 +51,10 @@ test('publish flow: Create → Media → File, filled in the Anleitung order, fi
   await page.setContent(html);
   const plan = buildSteps({ cmd: 'publish', kind: 'skinpack', id: 'glowing-samurai' }, { config, pack: realPack() });
   const steps = plan.steps.filter(s => s.action !== 'goto').map(s => (s.action === 'waitFor' ? { ...s, timeout: 15000 } : s));
-  const stopUser = simulateUser(page);
+  const user = simulateUser(page);
   const asked = [];
-  const { results, context } = await runSteps(page, steps, { ...quiet, ask: async q => { asked.push(q); return ''; } });
-  await stopUser();
+  const { results, context } = await runSteps(page, steps, { ...quiet, log: user.log, ask: async q => { asked.push(q); return ''; } });
+  await user.stop();
 
   const notOk = results.filter(r => r.status !== 'ok');
   assert.deepEqual(notOk, [], `not ok: ${JSON.stringify(notOk)}`);
