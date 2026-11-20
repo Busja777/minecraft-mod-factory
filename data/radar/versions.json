@@ -1,0 +1,10 @@
+{
+  "checked": "2026-11-20",
+  "note": "Baseline for the radar: the newest versions seen per source. A change against this file is what the day-one machine reacts to.",
+  "minecraftJava": { "release": "26.3", "snapshot": "26.4-snapshot-10", "source": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json" },
+  "minecraftBedrockSamples": { "preview": "v1.26.70.26-preview", "source": "https://github.com/Mojang/bedrock-samples/releases" },
+  "wowRetail": { "newest": "12.1.7", "source": "https://wow.curseforge.com/api/game/versions" },
+  "wowForever": { "newest": "1.60.1", "source": "https://wow.curseforge.com/api/game/versions" },
+  "stardewValley": { "newest": "1.6.15", "source": "https://stardewvalley.curseforge.com/api/game/versions" },
+  "smapi": { "newest": "4.5.2", "source": "https://github.com/Pathoschild/SMAPI/releases" }
+}
