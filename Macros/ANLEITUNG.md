@@ -123,9 +123,15 @@ Vier Reihen mit je 33 Projekten: World of Warcraft, Minecraft Java, Stardew Vall
 **Dein Tag (pro Projekt etwa 10 Minuten):**
 
 1. `npm run serie -- heute` zeigt pro Reihe, welches Projekt du anlegst und in welchem Ordner alles liegt.
-2. Ordner öffnen, zum Beispiel `Output/serie/wow/01-gold-diary/`. Darin liegen `curseforge.md` (Name, Summary, Kategorie, Beschreibung), `logo.png` und `cover.png`.
-3. Auf https://authors.curseforge.com im Konto des Spiels ein neues Projekt anlegen: Texte einfügen (im Editor auf **Markdown** stellen), Logo hochladen, das Titelbild unter **Images** hochladen und als Hauptbild markieren. **Keine Datei hochladen.**
+2. Ordner öffnen, zum Beispiel `Output/serie/wow/01-gold-diary/`. Darin liegen `curseforge.md` (Name, Summary, Kategorie, Beschreibung), `logo.png`, `cover.png` und `banner.png`.
+3. Auf https://authors.curseforge.com im Konto des Spiels ein neues Projekt anlegen: Texte einfügen (im Editor auf **Markdown** stellen), Logo hochladen, unter **Images** das Banner als Hauptbild und das Titelbild hochladen. **Keine Datei hochladen.**
 4. Die Projekt-ID eintragen: `npm run serie -- id gold-diary 123456`. **Das ist dein Go.** Die erste Datei geht am selben Abend von selbst hoch.
+
+**Banner (720 × 340), bevor ein Projekt angelegt wird:** Ich gestalte ein Banner, ChatGPT malt ein zweites, und du nimmst das bessere.
+
+1. Im Ordner `Output/chatgpt-bilder/` steht in `LIES-MICH.md`, was zu tun ist. Kurz: pro Projektordner `logo.png` in ChatGPT anhängen, den Text aus `auftrag.md` einfügen, das Bild als `chatgpt-banner.png` zurück in den Ordner legen.
+2. Dann „Go Banner“ an Claude. Du bekommst beide Banner nebeneinander und sagst pro Projekt „Claude“ oder „ChatGPT“.
+3. Erst danach steht das Projekt bei `npm run serie -- heute` als „Anlegen“.
 
 Du kannst Projekte auch auf Vorrat anlegen, zum Beispiel sieben am Sonntag. Hochgeladen wird trotzdem nur eines pro Reihe und Tag. Fehlt abends die ID, lädt die Reihe an dem Tag nichts hoch und rutscht um einen Tag.
 

@@ -6,8 +6,9 @@ import path from 'path';
 import sharp from 'sharp';
 import { execFileSync } from 'node:child_process';
 import { REIHEN, loadReihe, loadReihen, findSerieProject, plannedDate, outDir, projectDir, addStock, stateOf, reiheStand, registerProject } from '../scripts/lib/serie.js';
-import { checkPage, pageOk, section, AI_LOGO_NOTE } from '../scripts/lib/page-check.js';
-import { coverHtml, renderCover, THEMES, SIZE } from '../tools/serie/cover.js';
+import { checkPage, pageOk, section, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE } from '../scripts/lib/page-check.js';
+import { coverHtml, renderCover, bannerHtml, renderBanner, THEMES, SIZE } from '../tools/serie/cover.js';
+import { writeChatgptFolder, findChatgptBanner, cropBanner, chatgptPrompt, kindOf } from '../scripts/lib/banner.js';
 import { loadReleaseProject } from '../scripts/lib/releases.js';
 import { awaitsFirstFile, activeAccounts } from '../scripts/lib/games.js';
 
@@ -119,12 +120,13 @@ const goodPage = () => ({
   ].join('\n')
 });
 
-async function images(dir, { logo = [400, 400], cover = [1280, 720], flat = false } = {}) {
+async function images(dir, { logo = [400, 400], cover = [1280, 720], banner = [720, 340], flat = false } = {}) {
   const noise = (w, h) => sharp(Buffer.from(Array.from({ length: w * h * 3 }, (_, i) => (i * 37 + (i >> 3) * 11) % 256)), { raw: { width: w, height: h, channels: 3 } }).png().toBuffer();
   const plain = (w, h) => sharp({ create: { width: w, height: h, channels: 3, background: '#224466' } }).png().toBuffer();
   fs.writeFileSync(path.join(dir, 'logo.png'), flat ? await plain(...logo) : await noise(...logo));
   fs.writeFileSync(path.join(dir, 'cover.png'), await noise(...cover));
-  return { logo: path.join(dir, 'logo.png'), cover: path.join(dir, 'cover.png'), shots: [] };
+  if (banner) fs.writeFileSync(path.join(dir, 'banner.png'), await noise(...banner));
+  return { logo: path.join(dir, 'logo.png'), cover: path.join(dir, 'cover.png'), banner: path.join(dir, 'banner.png'), shots: [] };
 }
 const level = (results, id) => results.find(r => r.id === id).level;
 
@@ -171,6 +173,58 @@ test('page check: images', async () => {
   assert.equal(level(await checkPage(goodPage(), { ...files, shots: [files.cover] }, { needsShot: true }), 'shots'), 'ok');
 });
 
+test('page check: the banner is required, 720×340, and a ChatGPT banner changes the AI note', async () => {
+  const missing = (await checkPage(goodPage(), await images(tmp(), { banner: null }))).find(r => r.id === 'banner');
+  assert.equal(missing.level, 'error');
+  assert.match(missing.detail, /noch nicht gewählt/);
+  assert.equal(level(await checkPage(goodPage(), await images(tmp(), { banner: [1280, 720] })), 'banner'), 'error');
+  const files = await images(tmp());
+  const desc = r => r.find(x => x.id === 'description');
+  assert.match(desc(await checkPage(goodPage(), files, { bannerFrom: 'chatgpt' })).detail, /The logo and banner are AI-generated/);
+  const chatgptPage = { ...goodPage(), description: goodPage().description.replace(AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE) };
+  assert.equal(desc(await checkPage(chatgptPage, files, { bannerFrom: 'chatgpt' })).level, 'ok');
+  assert.equal(desc(await checkPage(chatgptPage, files, { bannerFrom: 'claude' })).level, 'error', 'my banner keeps the logo note');
+});
+
+test('banner: rendered at exactly 720×340 in the row\'s look', async () => {
+  const logo = fs.readFileSync((await images(tmp())).logo);
+  assert.match(bannerHtml({ reihe: 'java', name: 'Stone <Cutter>', tagline: 'Cut & go.', logo }), /Stone &lt;Cutter&gt;[\s\S]*Cut &amp; go\./);
+  assert.throws(() => bannerHtml({ reihe: 'java', name: 'x', logo }), /needs a tagline/);
+  const meta = await sharp(await renderBanner({ reihe: 'wow', name: 'Gold Diary', tagline: 'Know what your play session was worth.', logo })).metadata();
+  assert.deepEqual([meta.width, meta.height, meta.format], [720, 340, 'png']);
+});
+
+test('ChatGPT brief: one folder per project with the paste-ready text and the logo', async () => {
+  const root = tmp();
+  const reihe = loadReihe('wow');
+  const project = reihe.projects[0];
+  const page = { ...goodPage(), logoPrompt: 'An open diary with gold coins.', cover: { tagline: 'Know what your play session was worth.', bullets: ['a', 'b', 'c'] } };
+  const logo = (await images(tmp())).logo;
+  const written = writeChatgptFolder([{ reiheKey: 'wow', project, page, logo }], root);
+  assert.equal(written.length, 1);
+  assert.equal(path.basename(written[0].dir), 'wow-01-gold-diary');
+  for (const f of ['STIL.md', 'LIES-MICH.md', 'wow-01-gold-diary/auftrag.md', 'wow-01-gold-diary/logo.png']) assert.ok(fs.existsSync(path.join(root, f)), f);
+  const prompt = fs.readFileSync(path.join(root, 'wow-01-gold-diary', 'auftrag.md'), 'utf-8');
+  assert.match(prompt, /"Gold Diary", a World of Warcraft addon/);
+  assert.match(prompt, /the line "Know what your play session was worth\."/);
+  assert.match(prompt, /1536 × 1024[\s\S]*720 × 340/);
+  assert.match(prompt, /Do not show: game logos/);
+  assert.match(fs.readFileSync(path.join(root, 'LIES-MICH.md'), 'utf-8'), /chatgpt-banner\.png/);
+  assert.equal(findChatgptBanner(written[0].dir), null);
+  assert.equal(kindOf('java', { art: 'D' }), 'data pack');
+  assert.equal(kindOf('java', { art: 'M' }), 'mod');
+  assert.match(chatgptPrompt('stardew', loadReihe('stardew').projects[0], page), /a Stardew Valley mod/);
+});
+
+test('ChatGPT pictures are cut to 720×340 from the middle; small or flat ones are refused', async () => {
+  // a checkerboard of 64 px squares: still busy after scaling down, unlike pixel noise
+  const board = (w, h) => sharp(Buffer.from(Array.from({ length: w * h * 3 }, (_, i) => { const p = Math.floor(i / 3); return ((Math.floor((p % w) / 64) + Math.floor(Math.floor(p / w) / 64)) % 2) * 220 + 20; })), { raw: { width: w, height: h, channels: 3 } }).png().toBuffer();
+  const meta = await sharp(await cropBanner(await board(1536, 1024))).metadata();
+  assert.deepEqual([meta.width, meta.height], [720, 340]);
+  await assert.rejects(cropBanner(await board(600, 300)), /mindestens 720×340/);
+  await assert.rejects(cropBanner(await sharp({ create: { width: 1536, height: 1024, channels: 3, background: '#335577' } }).png().toBuffer()), /flat colour/);
+});
+
 test('cover: one theme per row, text is escaped, three bullets are required', async () => {
   const logo = fs.readFileSync((await images(tmp())).logo);
   const html = coverHtml({ reihe: 'wow', name: 'Gold <Diary>', tagline: 'Know & see.', bullets: ['a', 'b', 'c'], logo });
@@ -195,7 +249,7 @@ test('every project with a page in the repo passes the text checks and has its l
       assert.equal(page.name, project.name, `${project.slug}: page name and plan name differ`);
       assert.ok(page.logoPrompt && page.cover?.tagline && page.cover?.bullets?.length === 3, `${project.slug}: logoPrompt and cover are needed`);
       const results = await checkPage(page, { logo: path.join(dir, 'logo.png') }, { maxWords: reihe.reihe === 'sims4' ? 250 : 200 });
-      const failed = results.filter(r => r.level === 'error' && !['cover', 'shots'].includes(r.id));
+      const failed = results.filter(r => r.level === 'error' && !['cover', 'banner', 'shots'].includes(r.id));
       assert.deepEqual(failed, [], `${project.slug}: ${failed.map(r => `${r.label}: ${r.detail}`).join(' | ')}`);
     }
   }
@@ -230,4 +284,43 @@ test('npm run serie: stock, status, plan and the ID step', () => {
   const plan = fs.readFileSync(path.join(dir, 'Output', 'serie', 'PLAN.md'), 'utf-8');
   assert.match(plan, /\| 2 \| 21\.11\. \| Level Clock \| Addon \(Retail \+ Forever\) \|.*\| angelegt \|/);
   assert.match(plan, /## The Sims 4 \(Start 27\.11\.\)/);
+});
+
+test('npm run serie: ChatGPT brief, comparison and choice of the banner', { timeout: 120000 }, async () => {
+  const dir = tmp();
+  fs.writeFileSync(path.join(dir, 'config.json'), JSON.stringify(config));
+  fs.mkdirSync(path.join(dir, 'data', 'serie'), { recursive: true });
+  for (const k of REIHEN) fs.copyFileSync(path.join(REPO, 'data', 'serie', `${k}.json`), path.join(dir, 'data', 'serie', `${k}.json`));
+  fs.writeFileSync(path.join(dir, 'data', 'cf-projects.json'), '[]');
+  const src = path.join(dir, 'tools', 'wow', 'projects', 'gold-diary');
+  fs.mkdirSync(src, { recursive: true });
+  for (const f of ['page.json', 'logo.png']) fs.copyFileSync(path.join(REPO, 'tools', 'wow', 'projects', 'gold-diary', f), path.join(src, f));
+  const run = (...args) => execFileSync(process.execPath, [path.join(REPO, 'scripts', 'serie.js'), ...args], { cwd: dir, env: { PATH: process.env.PATH, HOME: process.env.HOME, NOW: '2026-11-21T10:00:00Z' }, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+
+  assert.match(run('chatgpt', 'gold-diary'), /1 Auftrag/);
+  const brief = path.join(dir, 'Output', 'chatgpt-bilder', 'wow-01-gold-diary');
+  assert.ok(fs.existsSync(path.join(brief, 'auftrag.md')));
+  assert.throws(() => run('banner-wahl', 'gold-diary', 'chatgpt'), /banner-chatgpt.png fehlt/);
+
+  // what ChatGPT painted: 1536×1024 with big squares
+  const w = 1536, h = 1024;
+  const raw = Buffer.from(Array.from({ length: w * h * 3 }, (_, i) => { const p = Math.floor(i / 3); return ((Math.floor((p % w) / 64) + Math.floor(Math.floor(p / w) / 64)) % 2) * 200 + 30; }));
+  await sharp(raw, { raw: { width: w, height: h, channels: 3 } }).png().toFile(path.join(brief, 'chatgpt-banner.png'));
+  assert.match(run('banner-vergleich', 'gold-diary'), /Gold Diary: beide Banner da/);
+  const out = path.join(dir, 'Output', 'serie', 'wow', '01-gold-diary');
+  for (const f of ['banner-claude.png', 'banner-chatgpt.png']) assert.deepEqual(Object.values((({ width, height }) => ({ width, height }))(await sharp(path.join(out, f)).metadata())), [720, 340], f);
+  assert.match(fs.readFileSync(path.join(dir, 'Output', 'chatgpt-bilder', 'VERGLEICH.html'), 'utf-8'), /<title>Banner-Vergleich<\/title>[\s\S]*Gold Diary/);
+
+  const chosen = run('banner-wahl', 'gold-diary', 'chatgpt');
+  assert.match(chosen, /Banner von ChatGPT gewählt/);
+  assert.match(chosen, /✓ Banner: 720×340/);
+  const page = JSON.parse(fs.readFileSync(path.join(src, 'page.json'), 'utf-8'));
+  assert.equal(page.description.at(-1), AI_LOGO_BANNER_NOTE);
+  assert.deepEqual(loadReihe('wow', path.join(dir, 'data', 'serie')).projects[0].banner, { from: 'chatgpt', at: '2026-11-21' });
+  assert.ok(fs.readFileSync(path.join(out, 'banner.png')).equals(fs.readFileSync(path.join(out, 'banner-chatgpt.png'))));
+  assert.match(fs.readFileSync(path.join(out, 'curseforge.md'), 'utf-8'), /`banner.png` hochladen und als Hauptbild/);
+
+  run('banner-wahl', 'gold-diary', 'claude');
+  assert.equal(JSON.parse(fs.readFileSync(path.join(src, 'page.json'), 'utf-8')).description.at(-1), AI_LOGO_NOTE, 'back to the logo note');
+  assert.ok(fs.readFileSync(path.join(out, 'banner.png')).equals(fs.readFileSync(path.join(out, 'banner-claude.png'))));
 });

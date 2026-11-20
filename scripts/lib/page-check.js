@@ -7,13 +7,17 @@ import { assertNotFlat, CF_MAX_IMAGE_BYTES } from './images.js';
 // "like a tldr", one sentence, not copied from the description; avatar 400x400, not a solid colour;
 // visual packs need a real in-game image) plus the house style: short, always the same four parts.
 //   page:  { name, summary, category, description (Markdown), logoPrompt, cover: { tagline, bullets } }
-//   files: { logo, cover, shots: [paths] }
-//   opts:  { maxWords, needsShot }
+//   files: { logo, cover, banner, shots: [paths] }
+//   opts:  { maxWords, needsShot, bannerFrom: 'claude' | 'chatgpt' }  (chatgpt → the banner is AI art too)
 // → [{ id, level: 'ok'|'warn'|'error', label, detail }]
 
 export const AI_LOGO_NOTE = '*(The logo is AI-generated.)*';
+export const AI_LOGO_BANNER_NOTE = '*(The logo and banner are AI-generated.)*';
+// The note a description ends with, depending on where the chosen banner comes from.
+export const aiNote = bannerFrom => (bannerFrom === 'chatgpt' ? AI_LOGO_BANNER_NOTE : AI_LOGO_NOTE);
 export const SECTIONS = ['Features', 'How to use', 'Good to know'];
 export const COVER_SIZE = [1280, 720];
+export const BANNER_SIZE = [720, 340];
 
 const NAME_AVOID = /\b(minecraft|bedrock|java edition|world of warcraft|warcraft|wow|the sims|sims 4|stardew|addons?|mods?|plugins?|data ?packs?|resource ?packs?|texture ?packs?|content ?packs?|v?\d+\.\d+(\.\d+)?)\b/i;
 const FILLER = /\b(adds items to the game|changes the vanilla game|must[- ]have|game[- ]changer|best .{0,20} ever|take your .{0,30} to the next level|look no further|unleash|elevate your|seamless(ly)? integrat)/i;
@@ -36,12 +40,12 @@ async function imageCheck(id, label, file, [w, h], { flat = false } = {}) {
   if (buf.length >= CF_MAX_IMAGE_BYTES) return res(id, 'error', label, `${(buf.length / 1e6).toFixed(2)} MB – CurseForge erlaubt unter 2 MB`);
   if (meta.width !== w || meta.height !== h) return res(id, 'error', label, `${meta.width}×${meta.height} statt ${w}×${h} px`);
   if (flat) {
-    try { await assertNotFlat(buf); } catch (e) { return res(id, 'error', label, 'sieht nach Flächenfarbe oder Verlauf aus – das lehnt CurseForge ab'); }
+    try { await assertNotFlat(buf); } catch (e) { return res(id, 'error', label, 'sieht nach Flächenfarbe oder Verlauf aus'); }
   }
   return res(id, 'ok', label, `${w}×${h} px, ${(buf.length / 1000).toFixed(0)} KB`);
 }
 
-export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false } = {}) {
+export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null } = {}) {
   const out = [];
   const name = String(page.name || '').trim();
   if (!name) out.push(res('name', 'error', 'Titel', 'fehlt'));
@@ -63,7 +67,8 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
   else out.push(res('summary', 'ok', 'Summary', `${summary.length}/150 Zeichen`));
 
   const problems = [];
-  const count = words(description.replace(AI_LOGO_NOTE, '')).length;
+  const note = aiNote(bannerFrom);
+  const count = words(description.replace(AI_LOGO_BANNER_NOTE, '').replace(AI_LOGO_NOTE, '')).length;
   if (!description) problems.push('fehlt');
   else {
     if (count < minWords || count > maxWords) problems.push(`${count} Wörter (${minWords} bis ${maxWords})`);
@@ -76,7 +81,7 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
     if (/https?:\/\//.test(description)) problems.push('enthält einen Link');
     if (/[äöüÄÖÜß]/.test(description)) problems.push('sieht deutsch aus');
     if (!/changelog/i.test(description)) problems.push('Hinweis auf den Changelog für spätere Funktionen fehlt');
-    if (!description.endsWith(AI_LOGO_NOTE)) problems.push('endet nicht mit dem KI-Hinweis zum Logo');
+    if (!description.endsWith(note)) problems.push(`endet nicht mit dem KI-Hinweis ${note}`);
   }
   out.push(problems.length ? res('description', 'error', 'Beschreibung', problems.join('; ')) : res('description', 'ok', 'Beschreibung', `${count} Wörter, ${SECTIONS.length} Abschnitte`));
 
@@ -85,6 +90,9 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
 
   out.push(await imageCheck('logo', 'Logo', files.logo, [400, 400], { flat: true }));
   out.push(await imageCheck('cover', 'Titelbild', files.cover, COVER_SIZE));
+  const banner = await imageCheck('banner', 'Banner', files.banner, BANNER_SIZE, { flat: true });
+  if (banner.level === 'error' && banner.detail === 'fehlt') banner.detail = 'noch nicht gewählt (npm run serie -- banner-wahl <slug> claude|chatgpt)';
+  out.push(banner);
   const shots = (files.shots || []).filter(f => fs.existsSync(f));
   if (needsShot && !shots.length) out.push(res('shots', 'error', 'Bild aus dem Spiel', 'fehlt – für optische Pakete Pflicht'));
   else out.push(res('shots', 'ok', 'Bilder aus dem Spiel', shots.length ? `${shots.length}` : 'keine (nicht Pflicht)'));
