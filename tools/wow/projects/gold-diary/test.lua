@@ -1,27 +1,6 @@
--- luajit test/run.lua <addon folder>   (run from tools/wow/gold-diary, or through npm test)
-local here = arg[0]:match("^(.*)/[^/]*$") or "."
-local dir = arg[1] or (here .. "/../src/GoldDiary")
-
-local passed, failed = 0, 0
-local function test(name, fn)
-  local fresh = dofile(here .. "/wow.lua") -- every test gets a fresh client
-  local before = {}
-  for k in pairs(_G) do before[k] = true end
-  fresh.install()
-  local installed = {}
-  for k in pairs(_G) do if not before[k] then installed[k] = true end end
-  GoldDiaryDB = nil
-  local ok, err = pcall(fn, fresh, installed, before)
-  for k in pairs(_G) do if not before[k] then _G[k] = nil end end
-  if ok then passed = passed + 1 else failed = failed + 1; print("FAIL " .. name .. "\n  " .. tostring(err)) end
-end
-
-local function eq(a, b, msg)
-  if a ~= b then error((msg or "") .. " expected " .. tostring(b) .. ", got " .. tostring(a), 2) end
-end
-
+-- Tests for Gold Diary, run by tools/wow/client/run.lua.
 local function boot(wow, money)
-  local ns = wow.load(dir, "GoldDiary")
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
   wow.money = money or 0
   wow.fire("ADDON_LOADED", "GoldDiary")
   wow.fire("PLAYER_LOGIN")
@@ -303,6 +282,3 @@ test("/gd report prints today and the session to chat", function(wow)
   eq(wow.chat[1]:match("Today: earned 50s 00c, spent 10s 00c, net 40s 00c%.") ~= nil, true)
   eq(wow.chat[2]:match("This session: net 40s 00c%.") ~= nil, true)
 end)
-
-print(string.format("%d passed, %d failed", passed, failed))
-os.exit(failed == 0 and 0 or 1)

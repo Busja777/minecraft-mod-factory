@@ -1,0 +1,36 @@
+{
+  "slug": "gold-diary",
+  "game": "wow",
+  "name": "Gold Diary",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "GoldDiary-1.0.zip",
+      "changelog": "## Gold Diary 1.0\n\nFirst release.\n\n- Tracks every change to your gold and sorts it by source: loot, quests, vendor, repairs, Auction House, mail, trainer, flight paths, trade, barber & transmog and more.\n- Window with three views: this session, today and the last 7 days.\n- Shows earned, spent and net gold, plus your net gold per hour for the session.\n- Gold you move into or out of the Warband bank or a guild bank is listed on its own and does not count as earned or spent.\n- Open it with `/gd` or `/golddiary`. `/gd reset` starts a new session.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "GoldDiary-1.1.zip",
+      "changelog": "## Gold Diary 1.1\n\n- New **Characters** view: every character you have logged in with, richest first, in class colours, with the total gold of your whole account.\n- The character you are playing is marked with a star.\n- `/gd forget Name-Realm` removes a character you deleted or no longer play.",
+      "status": "due"
+    },
+    {
+      "version": "1.2",
+      "file": "GoldDiary-1.2.zip",
+      "changelog": "## Gold Diary 1.2\n\n- New **History** view: the last 13 days, one row per day with gold earned and spent.\n- Shows your net gold over those days, the average per active day and your best day.\n- Gold Diary now has an entry in the addon menu next to the minimap: click it to open the diary, hover it to see today's net gold.\n- The window is a little wider so long gold amounts fit.",
+      "status": "due"
+    },
+    {
+      "version": "1.3",
+      "file": "GoldDiary-1.3.zip",
+      "changelog": "## Gold Diary 1.3\n\n- Gold Diary now speaks **German, French and Spanish** (Spain and Latin America). Everything else stays in English.\n- New command `/gd report`: prints today's gold earned, spent and net, plus your session result, to the chat.\n- Dates in the History view follow your client's language.",
+      "status": "due"
+    }
+  ]
+}
