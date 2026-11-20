@@ -446,11 +446,17 @@
     "cfName": "Yubi's Easter Skins",
     "projectId": 1496747,
     "status": "published",
-    "version": "1.0",
-    "lastPublishedAt": "2026-03-27T09:52:22.007Z",
-    "nextUpdateDue": "2026-04-20T20:29:10.231Z",
-    "updateCount": 0,
-    "files": [],
+    "version": "1.1",
+    "lastPublishedAt": "2026-11-20T20:45:31.400Z",
+    "nextUpdateDue": "2026-12-15T04:16:07.409Z",
+    "updateCount": 1,
+    "files": [
+      {
+        "fileId": 9722275,
+        "version": "1.1",
+        "uploadedAt": "2026-11-20T20:45:31.400Z"
+      }
+    ],
     "game": "bedrock"
   },
   {
