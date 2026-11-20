@@ -1,0 +1,7 @@
+{
+  "kind": "behavior",
+  "name": "Anglers Haul",
+  "description": "More treasure and less junk when fishing",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}

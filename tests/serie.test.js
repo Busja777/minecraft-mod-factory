@@ -346,3 +346,10 @@ test('painted banner through the image API: the logo is the reference, the resul
   assert.deepEqual(calls[0].references, [Buffer.from('LOGO')]);
   assert.match(calls[0].prompt, /a Minecraft: Java Edition data pack/);
 });
+
+test('page check: a logo motif must not name a creature of the game', async () => {
+  const motif = async logoPrompt => (await checkPage({ ...goodPage(), logoPrompt }, {}, { needsBanner: false })).find(r => r.id === 'logoPrompt');
+  assert.match((await motif('A green creeper in front of a house')).detail, /„creeper“/);
+  assert.match((await motif('A tall Enderman holding a block')).detail, /Enderman/);
+  assert.equal(await motif('A brass bell wrapped in a wool scarf'), undefined);
+});

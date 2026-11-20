@@ -1,0 +1,18 @@
+{
+  "slug": "uncraft-kit",
+  "game": "bedrockaddons",
+  "name": "Uncraft Kit",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "UncraftKit-1.0.mcpack",
+      "changelog": "## Uncraft Kit 1.0\n\nFirst release.\n\n- Wool of all 16 colours gives 4 string.\n- Quartz block, quartz pillar and chiseled quartz block give 4 nether quartz.\n- Blocks of clay, snow, glowstone, amethyst, bricks, nether bricks, honeycomb, resin bricks and chiseled resin bricks give back their 4 pieces.\n- Blue ice gives 9 packed ice, packed ice gives 9 ice, a dripstone block gives 4 pointed dripstone: 31 recipes.\n- Every amount is what the cheapest vanilla recipe needs for the block, so no loop creates items.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}

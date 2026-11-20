@@ -1,0 +1,18 @@
+{
+  "slug": "calm-creepers",
+  "game": "bedrockaddons",
+  "name": "Calm Creepers",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "CalmCreepers-1.0.mcpack",
+      "changelog": "## Calm Creepers 1.0\n\nFirst release.\n\n- Creeper explosions no longer destroy blocks: normal and charged creepers, whether they light their own fuse or a player lights it with flint and steel.\n- Blast power, fuse time, damage and knockback stay exactly as in the unchanged game.\n- TNT, ghasts, withers, end crystals and every other explosion are not touched.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}

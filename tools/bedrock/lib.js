@@ -62,6 +62,8 @@ const RECIPE_KEYS = ['minecraft:recipe_shaped', 'minecraft:recipe_shapeless', 'm
 // Folders a behavior / resource pack of the series uses; anything else needs a look first.
 const BP_FOLDERS = new Set(['recipes', 'loot_tables', 'trading', 'entities', 'spawn_rules', 'items', 'blocks', 'functions', 'texts']);
 const RP_FOLDERS = new Set(['sounds', 'texts', 'sounds.json']);
+// Resource files the game merges with vanilla's per entry instead of replacing them.
+const MERGED = new Set(['rp/sounds/sound_definitions.json']);
 
 // Every string under the given keys anywhere in a JSON value.
 function collect(value, keys, found = []) {
@@ -101,10 +103,13 @@ export function checkPack(pack, files, samples) {
     const side = p.slice(0, 2);
     const original = vanilla(samples, side, rel);
     // Replacing a vanilla file: same format version and the same top-level shape as vanilla's own.
+    // A few resource files are merged with vanilla's entry by entry (a pack lists only the events
+    // it changes); for those only the format version must match, the sound check below covers the rest.
+    const merged = MERGED.has(p);
     if (original) {
       if (original.format_version !== j.format_version) problems.push(`${p}: replaces a vanilla file of format ${original.format_version} with ${j.format_version}`);
       const missing = shape(original).filter(k => !shape(j).includes(k) && !/^(components|component_groups|events)\./.test(k) && !/^minecraft:entity\.(components|component_groups|events)\./.test(k));
-      if (missing.length) problems.push(`${p}: drops ${missing.slice(0, 3).join(', ')} of the vanilla file`);
+      if (missing.length && !merged) problems.push(`${p}: drops ${missing.slice(0, 3).join(', ')} of the vanilla file`);
     }
     if (rel.startsWith('recipes/')) {
       if (rel.split('/').length > 2) problems.push(`${p}: recipes lie flat in recipes/ like vanilla's (sub-folders are not proven to load)`);
@@ -118,11 +123,14 @@ export function checkPack(pack, files, samples) {
         if (!j[key].unlock && /shaped|shapeless/.test(key)) problems.push(`${p}: recipes since 1.20.10 need "unlock" (else the recipe book never shows them)`);
       }
     }
-    for (const id of collect(j, ['item'])) if (isVanilla(id) && !items.has(strip(id))) problems.push(`${p}: unknown item ${id}`);
+    // A replaced vanilla file may keep the ids Mojang's own file uses (old ones such as coal:0 or
+    // banner:4 in the trade tables); any other id must be in the item list.
+    const inherited = new Set(original ? collect(original, ['item', 'name']) : []);
+    for (const id of collect(j, ['item'])) if (isVanilla(id) && !inherited.has(id) && !items.has(strip(id))) problems.push(`${p}: unknown item ${id}`);
     if (rel.startsWith('loot_tables/') || rel.startsWith('trading/')) {
       for (const e of collect(j, ['name'])) {
         if (e.startsWith('loot_tables/')) { if (!ownLoot.has(e) && !vanilla(samples, 'bp', e)) problems.push(`${p}: loot table ${e} does not exist`); }
-        else if (isVanilla(e) && !items.has(strip(e)) && !blocks.has(strip(e))) problems.push(`${p}: unknown item ${e}`);
+        else if (isVanilla(e) && !inherited.has(e) && !items.has(strip(e)) && !blocks.has(strip(e))) problems.push(`${p}: unknown item ${e}`);
       }
     }
     if (rel.startsWith('spawn_rules/') || rel.startsWith('entities/')) {

@@ -21,6 +21,10 @@ export const COVER_SIZE = [1280, 720];
 export const BANNER_SIZE = [720, 340];
 
 const NAME_AVOID = /\b(minecraft|bedrock|java edition|world of warcraft|warcraft|wow|the sims|sims 4|stardew|addons?|mods?|plugins?|data ?packs?|resource ?packs?|texture ?packs?|content ?packs?|v?\d+\.\d+(\.\d+)?)\b/i;
+// Official characters and creatures of Minecraft may not be the subject of a logo (CurseForge:
+// no copyrighted imagery in the avatar; our own banner brief forbids them too). The image model
+// draws exactly what the prompt names, so the prompt must not name them.
+export const GAME_CREATURES = /\b(creepers?|endermen|enderman|villagers?|wandering trader|zombies?|skeletons?|piglins?|ghasts?|withers?|warden|sniffers?|allay|axolotls?|steve|alex|herobrine|endermite|shulkers?|blazes?|frostbite|iron golem|snow golem|pillagers?|vindicators?|evokers?|ravagers?|phantoms?|guardians?|drowned|husks?|strays?|breeze|armadillos?|mooshrooms?)\b/i;
 const FILLER = /\b(adds items to the game|changes the vanilla game|must[- ]have|game[- ]changer|best .{0,20} ever|take your .{0,30} to the next level|look no further|unleash|elevate your|seamless(ly)? integrat)/i;
 
 const res = (id, level, label, detail = '') => ({ id, level, label, detail });
@@ -86,6 +90,7 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
   }
   out.push(problems.length ? res('description', 'error', 'Beschreibung', problems.join('; ')) : res('description', 'ok', 'Beschreibung', `${count} Wörter, ${SECTIONS.length} Abschnitte`));
 
+  if (GAME_CREATURES.test(String(page.logoPrompt || ''))) out.push(res('logoPrompt', 'error', 'Logo-Motiv', `nennt „${String(page.logoPrompt).match(GAME_CREATURES)[0]}“ – keine Figuren aus dem Spiel im Logo`));
   if (!String(page.category || '').trim()) out.push(res('category', 'error', 'Kategorie', 'fehlt'));
   else out.push(res('category', 'ok', 'Kategorie', page.category));
 

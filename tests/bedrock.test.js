@@ -87,6 +87,13 @@ test('Bedrock: the checks catch what the game would not read', { skip }, () => {
   has(/fishing.json: replaces a vanilla file of format/);
   has(/fishing.json: loot table loot_tables\/gameplay\/fishing\/nope.json does not exist/);
   has(/fishing.json: unknown item minecraft:fishy/);
+  // a replaced vanilla file keeps Mojang's own old ids, but gets no new unknown ones
+  const trades = samples => JSON.parse(fs.readFileSync(path.join(samples.bp, 'trading', 'economy_trades', 'fisherman_trades.json'), 'utf-8').replace(/\/\/[^\n]*/g, ''));
+  const kept = checkPack(pack, { 'bp/trading/economy_trades/fisherman_trades.json': buf(trades(samples)) }, samples);
+  assert.deepEqual(kept.filter(p => /unknown item/.test(p)), []);
+  const wrong = trades(samples);
+  wrong.tiers[0].groups[0].trades[0].gives[0].item = 'minecraft:fishy_fish';
+  assert.ok(checkPack(pack, { 'bp/trading/economy_trades/fisherman_trades.json': buf(wrong) }, samples).some(p => /unknown item minecraft:fishy_fish/.test(p)));
   has(/Recipes\/d.json: paths must be lowercase/);
   has(/e.json: not valid JSON/);
   has(/sub\/f.json: recipes lie flat in recipes\//);
@@ -99,4 +106,6 @@ test('Bedrock: the checks catch what the game would not read', { skip }, () => {
   assert.ok(sounds.some(p => /mob.villager.idle points to sounds\/mob\/villager\/idle9/.test(p)), sounds.join('\n'));
   assert.ok(sounds.some(p => /unknown vanilla sound event mob.cow.mooo/.test(p)), sounds.join('\n'));
   assert.ok(sounds.some(p => /volume 2 outside/.test(p)), sounds.join('\n'));
+  // the game merges sound_definitions.json per event: a pack lists only the events it changes
+  assert.ok(!sounds.some(p => /drops/.test(p)), sounds.join('\n'));
 });

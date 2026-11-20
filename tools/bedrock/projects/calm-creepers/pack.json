@@ -1,0 +1,7 @@
+{
+  "kind": "behavior",
+  "name": "Calm Creepers",
+  "description": "Creeper blasts leave blocks intact",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}

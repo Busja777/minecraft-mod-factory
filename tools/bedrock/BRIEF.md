@@ -47,7 +47,8 @@ pack is generated from code and checked against Mojang's official bedrock-sample
   "minEngine": [1, 26, 60], "gameVersions": ["26.60"] }`
 - `pack.js`, `page.json` (name, summary, `"class": "Addons"`, category from: Utility, Vanilla+,
   Survival, Mobs, Food, Tools and Weapons, Miscellaneous; `logoPrompt` in blocky voxel style
-  without text; `cover` with tagline and exactly three bullets), `changelogs/1.0.md`.
+  without text and without any creature or character of the game (no creeper, villager,
+  enderman …: page-check refuses them); `cover` with tagline and exactly three bullets), `changelogs/1.0.md`.
 
 ## Check
 `npm run bedrock -- test <slug>` must pass, then `node --test tests/bedrock.test.js`.

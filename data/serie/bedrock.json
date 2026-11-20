@@ -34,22 +34,30 @@
       "art": "R",
       "was": "Leisere Dorfbewohner, Kühe, Portale und Regen",
       "updates": [
+        "fahrender Händler und Lamas",
         "Stufen wählbar (drei Packs in einem)",
-        "mehr Geräusche (Schafe, Hühner, Fledermäuse)",
-        "Truhen und Türen"
-      ]
+        "Schafe, Hühner, Fledermäuse"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 3,
       "slug": "calm-creepers",
       "name": "Calm Creepers",
       "art": "B",
-      "was": "Creeper zerstören keine Blöcke mehr, Schaden bleibt",
+      "was": "Explosionen von Creepern (auch geladenen) zerstören keine Blöcke mehr, Schaden bleibt",
       "updates": [
-        "geladene Creeper ebenso",
-        "Ghast-Feuerbälle optional",
-        "TNT bleibt unverändert, Hinweis im Pack"
-      ]
+        "Ghast-Feuerbälle zerstören nichts (statt eines eigenen Projekts)",
+        "Wither-Schädel wählbar",
+        "Hinweise zu TNT und Endkristallen im Pack"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 4,
@@ -61,7 +69,11 @@
         "Biom-Fänge",
         "Herz des Meeres selten",
         "Erfahrungsfläschchen"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 5,
@@ -73,7 +85,11 @@
         "fahrender Händler",
         "Bücher günstiger",
         "Stufen leicht/fair"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 6,
@@ -85,7 +101,11 @@
         "Endermen in Dörfern ruhiger",
         "Shulker-Feinschliff",
         "nächste Version"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 7,
@@ -97,7 +117,11 @@
         "Stein und Glas",
         "Werkzeug einschmelzen",
         "neue Blöcke der nächsten Version"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 8,
@@ -317,14 +341,14 @@
     },
     {
       "nr": 26,
-      "slug": "gentle-ghasts",
-      "name": "Gentle Ghasts",
+      "slug": "gentle-nights",
+      "name": "Gentle Nights",
       "art": "B",
-      "was": "Ghast-Feuerbälle zerstören keine Blöcke",
+      "was": "Weniger Zombies, Skelette, Spinnen und Creeper an der Oberfläche (Spawn-Gewichte halbiert), Höhlen bleiben wie sie sind",
       "updates": [
-        "Feuer aus",
-        "Stufen",
-        "Feinschliff"
+        "Stufen wählbar",
+        "Nether und Ende",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {

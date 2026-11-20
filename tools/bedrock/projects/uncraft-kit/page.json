@@ -1,0 +1,38 @@
+{
+  "name": "Uncraft Kit",
+  "summary": "Craft wool, quartz, clay, glowstone, ice and other packed blocks back into the pieces you made them from.",
+  "class": "Addons",
+  "category": "Utility",
+  "logoPrompt": "A crafting table with a quartz block on top splitting apart into four shiny white quartz crystals, a few loose curls of string lying beside it, in blocky voxel style",
+  "cover": {
+    "tagline": "Undo the block you crafted too soon.",
+    "bullets": [
+      "Wool back to string",
+      "Quartz, clay, glowstone, ice",
+      "Never more than went in"
+    ]
+  },
+  "description": [
+    "**Uncraft Kit adds crafting recipes that turn packed blocks back into their materials, for when you made one too many.**",
+    "",
+    "## Features",
+    "- Wool of all 16 colours gives 4 string.",
+    "- Quartz blocks, pillars and chiseled quartz give 4 nether quartz each.",
+    "- Clay, snow, glowstone, amethyst, bricks, nether bricks, honeycomb blocks and resin bricks give back their 4 pieces.",
+    "- Blue ice gives 9 packed ice, packed ice 9 ice and a dripstone block 4 pointed dripstone.",
+    "- Amounts match the vanilla recipes: never more than went in.",
+    "",
+    "## How to use",
+    "Import the .mcpack, then turn it on under Behavior Packs when you create or edit a world. Put one block alone into a crafting grid; the recipe book shows each recipe once you carry its block.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft Bedrock 26.60 and newer. It only adds recipes, so it is safe to add to or remove from a world.",
+    "- Hay bales, slime and iron blocks already come apart in vanilla and stay as they are.",
+    "- Like every behavior pack, it turns off achievements in the world it is added to.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

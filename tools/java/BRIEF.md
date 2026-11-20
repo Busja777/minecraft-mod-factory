@@ -55,7 +55,8 @@ a window (1.21.5 and newer); the game's error messages name the file.
 - `changelogs/1.0.md` (English, same style as Stonecutter Woodworks')
 - `page.json` with `name`, `summary`, `category` (one of the CurseForge categories given in your
   brief), `logoPrompt` (one sentence describing a single centred object for an icon in blocky
-  voxel style; no text, no Mojang logos, no copied mob faces), `cover` { `tagline` ≤ 45
+  voxel style; no text, no Mojang logos, no creature or character of the game such as a
+  creeper, villager or enderman: page-check refuses them), `cover` { `tagline` ≤ 45
   characters, `bullets`: exactly 3, each ≤ 34 characters }, `description` (array of lines). It
   describes only what V1.0 does and says it is made for Java Edition 1.21 and 1.21.1.
 
