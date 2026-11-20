@@ -36,6 +36,22 @@ export function findSerieProject(reihen, slug) {
 export const projectDir = (reiheKey, slug, toolsRoot = './tools') => path.join(toolsRoot, reiheKey, 'projects', slug);
 export const outDir = (reiheKey, project, outRoot = './Output/serie') => path.join(outRoot, reiheKey, `${String(project.nr).padStart(2, '0')}-${project.slug}`);
 
+// The painted banner stays with the project (it cannot be painted the same way twice and the cloud
+// sessions have no Output/ folder); the designed banner and the title image are rendered again
+// from the logo whenever they are needed.
+export const paintedBannerFile = (reiheKey, slug, toolsRoot) => path.join(projectDir(reiheKey, slug, toolsRoot), 'banner-painted.png');
+
+// The images a project with a page still lacks, in the order they are made: the logo first, the
+// painted banner needs it. A row without banners (WoW) and a project whose banner is chosen need none.
+export function missingImages(reihe, project, toolsRoot) {
+  const dir = projectDir(reihe.reihe, project.slug, toolsRoot);
+  if (!fs.existsSync(path.join(dir, 'page.json'))) return [];
+  const out = [];
+  if (!fs.existsSync(path.join(dir, 'logo.png'))) out.push('logo');
+  if (reihe.banner !== false && !project.banner && !fs.existsSync(paintedBannerFile(reihe.reihe, project.slug, toolsRoot))) out.push('banner');
+  return out;
+}
+
 // Planned day of project nr: start + nr - 1 (calendar days, no time zone involved).
 export function plannedDate(reihe, nr) {
   const [y, m, d] = reihe.start.split('-').map(Number);

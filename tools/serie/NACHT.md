@@ -34,13 +34,21 @@ a workflow by hand.
 4. **New projects** of the row that needs them most, in plan order (`data/serie/<reihe>.json`),
    at most 4 per night. Follow `tools/<reihe>/BRIEF.md`. For each one: source, tests,
    `changelogs/1.0.md`, `page.json`; build with `npm run <reihe> -- bau <slug> --version 1.0`;
-   put the file into the stock with `npm run serie -- vorrat …`. Images (logo, banner, title
-   image) are made by a workflow after the merge; do not create them.
-5. **Updates** for projects that are online and have fewer than 2 versions waiting, at most 6
+   put the file into the stock with `npm run serie -- vorrat …`. Images (logo, painted banner)
+   are made by the workflow `serie-bilder.yml` every morning; do not create them.
+5. **Images of the pages:** for each project that has `logo.png` and `banner-painted.png` in its
+   folder but no `banner` choice in `data/serie/<reihe>.json`, look at both images (read the
+   PNG files). Choose with `npm run serie -- banner-wahl <slug> chatgpt` when the painted banner
+   spells the name and the line correctly, reads well and shows nothing forbidden (game logos,
+   official characters, brand names, a game interface); otherwise `… claude` (the designed
+   banner). Compare each new logo with the other logos of its row: when two are too alike,
+   change the `logoPrompt` in `page.json` to a different motif and delete the new `logo.png`
+   and its `banner-painted.png`, so the workflow paints new ones.
+6. **Updates** for projects that are online and have fewer than 2 versions waiting, at most 6
    per night. One real change per version, taken from the project's planned updates in
    `data/serie/<reihe>.json` (or from a reported problem). Source, tests, `changelogs/<version>.md`,
    build, `npm run serie -- vorrat`. Never a version without a change a player would notice.
-6. Run `npm test` again. Everything green: commit, push, open the pull request with a short
+7. Run `npm test` again. Everything green: commit, push, open the pull request with a short
    list of what was built. Something red that you cannot fix: leave that project out of the
    commit and say so in the pull request.
 
