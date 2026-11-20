@@ -14,7 +14,7 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
 
 ## Für dich (laufend)
 
-- [ ] Projekte anlegen. Bis der Browser-Helfer erweitert ist: von Hand nach `Output/serie/<reihe>/<nr>-<slug>/curseforge.md`, dann `npm run serie -- id <slug> <Projekt-ID>`. Danach: `npm run cf -- serie`, nur noch auf Create klicken.
+- [ ] Projekte anlegen: `npm run cf -- serie` (nach dem Merge von #30), nur noch auf Create und Apply klicken. 14 Minecraft-Projekte (Java 7, Bedrock 7) warten schon.
 
 ## Für Claude, in dieser Reihenfolge
 
@@ -28,7 +28,7 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
    - [ ] Ladetest gegen jede Minecraft-Version zwischen 1.21.5 und 26.2, damit klar ist, welche davon unsere Zwei-Versionen-Dateien lesen (das Spiel überspringt unbekannte Felder still, zum Beispiel bei der Angel-Beute).
    - [ ] Radar auch für die Versionslisten von CurseForge (WoW, Stardew) und für Bedrock-Packs.
 4. [ ] Bilder ohne dich (`serie-bilder.yml`), Fenster-Vorschauen für WoW, längere WoW-Beschreibungen (Stichwortzeile, Abschnitt pro Funktion, Befehlstabelle, bis etwa 450 Wörter).
-5. [ ] Browser-Helfer füllt das Anlegen-Formular für alle Spiele (`npm run cf -- serie`).
+5. [x] Browser-Helfer füllt das Anlegen-Formular für alle Spiele (`npm run cf -- serie`); der erste echte Lauf je Spiel ist ein Probelauf.
 6. Bedrock-Reihe statt Sims:
    - [x] Rahmen `tools/bedrock/`, Plan der 33 (`data/serie/bedrock.json`, Namen geprüft), eigenes Bein, Sims entfernt, Nr. 1 Plank Cutter im Vorrat.
    - [x] Nr. 2 bis 7 gebaut und im Vorrat (Hushed World, Calm Creepers, Anglers Haul, Fair Villager Trades, Tidy Endermen, Uncraft Kit). Gentle Ghasts geht als Update in Calm Creepers auf (Fair Play), Platz 26 ist jetzt Gentle Nights.
