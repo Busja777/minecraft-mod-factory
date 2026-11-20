@@ -23,7 +23,9 @@ export const URLS = {
   projects: 'https://authors.curseforge.com/#/projects',
   // Project dashboard by numeric id. Learned automatically after the first "Create" (cf.js stores
   // the observed URL with {id}); null = unknown yet → the tool asks you to open the page yourself.
-  project: null
+  project: null,
+  // cf.js uses this while `project` has not been learned: the projects list address plus the id.
+  projectGuess: 'https://authors.curseforge.com/#/projects/{id}'
 };
 
 // The edit page after "Create" shows the numeric project id in its URL.

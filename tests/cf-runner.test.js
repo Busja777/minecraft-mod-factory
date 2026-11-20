@@ -181,3 +181,64 @@ test('waits for the user while a security check page is shown', async t => {
   assert.equal(asks, 1);
   assert.equal(results[0].status, 'ok');
 });
+
+// ── Hands-free (started from the chat, nobody at the terminal) ────────────────────────────────────
+
+test('hands-free: the description run waits for the operator\'s Save by watching, never by asking', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  await page.evaluate(() => show('edit'));
+  const pack = JSON.parse(fs.readFileSync('./data/skins/the-last-ninjas/pack.json', 'utf-8'));
+  const plan = buildSteps({ cmd: 'seite', kind: 'skinpack', id: pack.slug, projectId: pack.cfProjectId, version: '1.2' }, { config, pack });
+  const steps = plan.steps.filter(s => s.action !== 'manual').map(s => (s.action === 'waitFor' ? { ...s, checkEvery: 200 } : s));
+  // The operator saves two seconds after the field was filled.
+  let stop = false, filledAt = 0;
+  const user = (async () => {
+    while (!stop) {
+      const filled = await page.evaluate(() => !!document.getElementById('desc').value).catch(() => false);
+      if (filled && !filledAt) filledAt = Date.now();
+      if (filledAt && Date.now() - filledAt > 2000) await page.evaluate(() => { if (!window.log.includes('save')) document.getElementById('save-desc').click(); }).catch(() => {});
+      await new Promise(r => setTimeout(r, 200));
+    }
+  })();
+  const checks = { description: () => page.evaluate(() => /Added in V1\.2/.test(window.savedDescription || '')) };
+  const { results } = await runSteps(page, steps, { ...quiet, checks, handsFree: true, ask: async () => { throw new Error('asked in a hands-free run'); } });
+  stop = true; await user;
+  assert.deepEqual(results.filter(r => r.status !== 'ok'), []);
+  assert.deepEqual(await page.evaluate(() => window.log), ['save'], 'Save clicked once, by the operator');
+});
+
+test('hands-free: an unseen click is reported, a missing page stops the task, nothing blocks on Enter', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const ask = async () => { throw new Error('asked in a hands-free run'); };
+  const targets = { ...TARGETS, nope: [{ css: '#does-not-exist' }] };
+  const { results } = await runSteps(page, [
+    { title: 'Projektseite öffnen', action: 'manual', value: 'Öffne die Projektseite.' },
+    { title: 'Nav', action: 'click', target: 'nope' },
+    { title: 'Warten auf „Save“', action: 'waitFor', value: 'Bitte speichern', until: { check: 'description' } }
+  ], { ...quiet, timeout: 300, handsFree: true, ask, targets });
+  assert.deepEqual(results.map(r => r.status), ['manual', 'manual', 'manual']);
+  assert.match(results[2].detail, /nicht erkannt/);
+  assert.deepEqual(await page.evaluate(() => window.log), [], 'no final button was clicked');
+});
+
+test('hands-free: a login or security check is never automated, the run waits and then gives up', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.setContent('<title>Just a moment...</title><p>Checking</p>');
+  const logs = [];
+  // The operator solves the check after a moment.
+  setTimeout(() => page.setContent(html).catch(() => {}), 600);
+  const { results } = await runSteps(page, [{ title: 'Create A Project', action: 'click', target: 'startProject' }], {
+    ...quiet, log: l => logs.push(l), handsFree: true, humanWait: 5000, ask: async () => { throw new Error('asked'); }
+  });
+  assert.equal(results[0].status, 'ok');
+  assert.equal(logs.filter(l => /Sicherheitsprüfung/.test(l)).length, 1, 'said once, then waited');
+
+  const stuck = await browser.newPage();
+  await stuck.setContent('<title>Just a moment...</title>');
+  await assert.rejects(runSteps(stuck, [{ title: 'x', action: 'click', target: 'startProject' }], { ...quiet, handsFree: true, humanWait: 400, ask: async () => '' }), /Abgebrochen/);
+});

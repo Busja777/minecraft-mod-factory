@@ -46,3 +46,31 @@ export function listTasks({ projects, packs, reviews }) {
   }
   return { todo, more, waitingForGo };
 }
+
+// The day's list for `npm run cf -- heute`: everything that waits for the operator, in the order it
+// is worked through in one browser window. Files first (the description describes them), then new
+// projects, then descriptions. A new project only counts once its planned date has come (Studio:
+// geplant → faellig); earlier it is listed as "planned" and left alone.
+// → { tasks, planned, counts: { uploads, projects, pages }, summary }
+const DAY_ORDER = { update: 0, publish: 1, seite: 2 };
+export function dayPlan({ todo, waitingForGo = 0, reviews, now = new Date() }) {
+  const due = t => {
+    const r = reviews?.[t.id];
+    return t.cmd !== 'publish' || !r || r.status === 'faellig' || (r.status === 'geplant' && new Date(r.slot) <= now);
+  };
+  const known = todo.filter(t => t.cmd in DAY_ORDER);
+  const tasks = known.filter(due).sort((a, b) => DAY_ORDER[a.cmd] - DAY_ORDER[b.cmd]);
+  const planned = known.filter(t => !due(t)).length;
+  const n = cmd => tasks.filter(t => t.cmd === cmd).length;
+  const counts = { uploads: n('update'), projects: n('publish'), pages: n('seite') };
+  const parts = [
+    counts.pages && `${counts.pages} ${counts.pages === 1 ? 'Beschreibung' : 'Beschreibungen'}`,
+    counts.projects && `${counts.projects} ${counts.projects === 1 ? 'neues Projekt' : 'neue Projekte'}`,
+    counts.uploads && `${counts.uploads} ${counts.uploads === 1 ? 'Upload' : 'Uploads'} von Hand`
+  ].filter(Boolean);
+  const later = [
+    planned && `${planned} ${planned === 1 ? 'neues Projekt ist' : 'neue Projekte sind'} für später geplant`,
+    waitingForGo && `${waitingForGo} ${waitingForGo === 1 ? 'wartet' : 'warten'} im Studio auf dein Go`
+  ].filter(Boolean);
+  return { tasks, planned, counts, summary: `${parts.length ? `Heute: ${parts.join(', ')}` : 'Heute ist nichts offen'}${later.length ? ` (${later.join(', ')})` : ''}` };
+}

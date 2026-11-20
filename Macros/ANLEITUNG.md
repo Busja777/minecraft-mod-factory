@@ -44,17 +44,20 @@ Die `.jar`-Uploads der Mods laufen weiterhin automatisch über die API. Dafür b
 
 ---
 
-## Im Alltag
+## Im Alltag: einmal am Tag „Go“
 
-1. GitHub-Issue kommt (neues Projekt oder Skinpack-Update).
-2. **Doppelklick auf `CurseForge.command`.** Das Tool holt die neuesten Daten (`git pull`, nur wenn gerade keine lokalen Änderungen offen sind) und zeigt die offenen Aufgaben:
+Die Dateien der Updates lädt der Abend-Lauf selbst hoch (ein Pack pro Abend zwischen 18 und 21 Uhr). Auf dich wartet nur, was keine Schnittstelle hat: die **Beschreibung** nach jedem Update und **neue Projekte** nach deinem Go im Studio. Gegen 21:15 Uhr kommt eine Mac-Mitteilung, wenn etwas offen ist (einmalig einrichten: `npm run studio -- zeitplan-installieren`).
+
+1. **Doppelklick auf `CurseForge.command`**, wann immer du Zeit hast. Das Tool holt die neuesten Daten (`git pull`, nur wenn gerade keine lokalen Änderungen offen sind) und zeigt die Liste des Tages:
    ```
-   Offene Aufgaben:
-     1) Skinpack-Update hochladen: Glowing Samurai V1.3
-   Weitere:
-     2) Cover & Media: Glowing Samurai
+   Heute: 1 Beschreibung
+     1) Beschreibung nachziehen: Yubi's Easter Skins V1.1
+   Enter = Go (alles nacheinander) · m = Menü · q = Beenden
    ```
-3. Nummer eintippen und Enter drücken. Chrome öffnet sich und füllt alles aus. **Nicht ins Fenster klicken, solange es arbeitet.**
+2. **Enter drücken.** Chrome öffnet sich und arbeitet alle Punkte nacheinander im selben Fenster ab. Du klickst pro Punkt nur **Save**, **Create**, **Apply** oder **Add File**. **Nicht ins Fenster klicken, solange es arbeitet.**
+   - Danach räumt der Helfer selbst auf: Er trägt Projekt-ID und Upload ein, committet und pusht die Daten und schließt das GitHub-Issue, sobald CurseForge die neue Beschreibung zeigt.
+   - **Oder du schreibst Claude „Go“.** Claude startet denselben Ablauf (`npm run cf -- heute --ohne-enter`). Chrome öffnet sich bei dir, der Helfer erkennt deine Klicks selbst, eine Enter-Taste braucht es nicht. Login und Sicherheitsprüfungen löst weiter nur du.
+3. Mit `m` kommst du ins Menü für einzelne Aufgaben (z. B. „Cover & Media“). Nummer eintippen und Enter drücken.
 4. Im Terminal steht die Zusammenfassung:
    ```
    ✓ 6 Schritte erledigt, ⚠ 1 bitte selbst prüfen:
@@ -76,13 +79,14 @@ Die `.jar`-Uploads der Mods laufen weiterhin automatisch über die API. Dafür b
 2. Es erkennt die neue **Projekt-ID** selbst und trägt sie ein.
 3. **Media:** Es lädt das Cover hoch und setzt den Titel **MCPEDL**. Du klickst **Apply**.
 4. **File:** Es lädt die `.mcpack` hoch, setzt Game-Versionen, Release und den Changelog mit Screenshots. Du klickst **Add File**.
-5. Es fragt „Hochgeladen? (j/n)“ und plant danach das nächste Update (frühestens nach 23 Tagen).
+5. Es erkennt deinen Klick auf **Add File**, trägt den Upload ein und plant das nächste Update (frühestens nach 23 Tagen).
 
-Danach im Terminal des Repos committen und pushen. Die Bilder in Beschreibung und Changelog werden erst nach dem Push sichtbar.
+Committen und pushen erledigt der Helfer danach selbst. Die Bilder in Beschreibung und Changelog werden erst nach dem Push sichtbar.
 
 ### Für Terminal-Fans
 ```bash
 cd ~/Desktop/minecraft-mod-factory
+npm run cf -- heute                                # Liste des Tages, ein Go für alles (--dry-run: nur zeigen)
 npm run cf                                         # Menü
 npm run cf -- publish --skinpack <slug>            # neues Projekt komplett (Create → Media → File)
 npm run cf -- new    --skinpack <slug>             # oder --mod <id>
@@ -91,6 +95,7 @@ npm run cf -- update --skinpack <slug> [--version 1.3]
 npm run cf -- seite  [--skinpack <slug>]           # Beschreibung nach einem Upload (ohne Angabe: alle offenen)
 npm run cf -- login                                # neu einloggen
 npm run cf -- inspect                              # Seiten für die Kalibrierung speichern
+# --account <name>   eigenes Chrome-Profil (Login) pro CurseForge-Account
 ```
 
 ---
@@ -99,7 +104,7 @@ npm run cf -- inspect                              # Seiten für die Kalibrierun
 
 - Es läuft **sichtbar** in Google Chrome, in normalem Tempo, ein Projekt pro Lauf.
 - Es klickt **nie** auf *Create*, *Save*, *Upload*, *Submit*, *Delete* usw. Das ist fest eingebaut und getestet.
-- Kommt eine **Login- oder „Bist du ein Mensch?“-Prüfung**, hält es an. Du löst sie selbst im Browser und drückst Enter. Prüfungen werden nie umgangen.
+- Kommt eine **Login- oder „Bist du ein Mensch?“-Prüfung**, hält es an. Du löst sie selbst im Browser (und drückst Enter, wenn du am Terminal sitzt). Prüfungen werden nie umgangen.
 - Login-Daten liegen nur auf deinem Mac (`~/Library/Application Support/cf-uploader/`) und nie im Git-Repo.
 
 ---

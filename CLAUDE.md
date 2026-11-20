@@ -13,6 +13,7 @@
 - Zustand pro Projekt in `data/skins/<slug>/review.json` bzw. `data/mods/<id>/review.json` (in Git).
 
 ## CurseForge-Helfer (`npm run cf`)
+- **Tages-Go:** Schreibt der Betreiber „Go“ (für den Tag, die Uploads, die Beschreibungen), dann `npm run cf -- heute --ohne-enter` im Hintergrund starten und die Ausgabe berichten. Vorher mit `npm run cf -- heute --dry-run` zeigen, was ansteht. Der Helfer füllt aus und erkennt die Klicks selbst; Save / Create / Apply / Add File klickt immer der Betreiber. Danach committet und pusht der Helfer `data/` selbst und schließt das Update-Issue.
 - Klickt nie selbst auf Create / Save / Apply / Upload / Add File im Formular (`FORBIDDEN_CLICK`, `FORBIDDEN_AFTER_EDIT` in `scripts/lib/cf-browser/selectors.js`). Daran nichts lockern.
 - Alle Seiten-Ziele stehen in `selectors.js`. Wenn CurseForge seine Seiten ändert, nur dort anpassen (`npm run cf -- inspect` speichert die echte Seitenstruktur).
 - Keine Umgehung von Login-, Captcha- oder Cloudflare-Prüfungen. Der Helfer wartet, bis der Betreiber sie selbst löst.

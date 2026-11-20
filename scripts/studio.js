@@ -61,6 +61,9 @@ function tick() {
   const waiting = loadUnits({ now: now(), persist: false }).filter(u => u.review.status === 'faellig').length;
   for (const name of due) notify('Minecraft Studio', `Jetzt veröffentlichen: ${name} – Studio öffnen`);
   console.log(`${now().toISOString()} tick: ${due.length} neu fällig, ${waiting} insgesamt fällig`);
+  // The helper's daily reminder: after the evening upload it says what waits for the operator
+  // (descriptions, due new projects). Real runs only; it pulls and reads CurseForge.
+  if (!process.env.NOW) spawnSync(process.execPath, [path.join(REPO, 'scripts', 'cf.js'), 'heute', '--melden', '--ohne-enter'], { cwd: REPO, stdio: 'inherit' });
 }
 
 function installSchedule() {
@@ -84,7 +87,7 @@ function installSchedule() {
   spawnSync('launchctl', ['bootout', `gui/${uid}`, PLIST]);
   const r = spawnSync('launchctl', ['bootstrap', `gui/${uid}`, PLIST], { encoding: 'utf-8' });
   if (r.status !== 0) throw new Error(`launchctl: ${r.stderr || r.stdout}`);
-  console.log(`✓ Zeitplan aktiv: alle 30 Minuten werden Termine geprüft.\n  Protokoll: ${log}\n  Entfernen: npm run studio -- zeitplan-entfernen`);
+  console.log(`✓ Zeitplan aktiv: alle 30 Minuten werden Termine geprüft; nach dem Abend-Upload kommt eine Mitteilung, was auf dich wartet.\n  Protokoll: ${log}\n  Entfernen: npm run studio -- zeitplan-entfernen`);
 }
 
 function removeSchedule() {
