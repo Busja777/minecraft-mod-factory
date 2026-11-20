@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs';
+import { spawnSync } from 'node:child_process';
 import { guardPullRequest, isContent, AUTO_BRANCH } from '../scripts/lib/serie-guard.js';
 
 const repo = 'Busja777/minecraft-mod-factory';
@@ -54,4 +55,14 @@ test('the merge workflow decides on main and never runs the pull request\'s code
   assert.doesNotMatch(yml, /run:[^\n]*\$\{\{ github\.event\.workflow_run\.head_branch/, 'branch names only through env');
   assert.match(yml, /--match-head-commit/);
   assert.match(fs.readFileSync('.github/workflows/ci.yml', 'utf-8'), /^name: Tests$/m);
+});
+
+// A workflow file that does not parse never runs, and GitHub only says so after the push.
+// serie-merge.yml shipped once with a plain "run:" line that contained ": " and was invalid YAML.
+const noRuby = spawnSync('ruby', ['-ryaml', '-e', 'puts 1']).status !== 0 && 'ruby is not installed';
+test('every workflow file is valid YAML with triggers and jobs', { skip: noRuby }, () => {
+  for (const f of fs.readdirSync('.github/workflows').filter(n => n.endsWith('.yml'))) {
+    const r = spawnSync('ruby', ['-ryaml', '-e', 'y = YAML.load_file(ARGV[0]); abort("no jobs") unless y["jobs"].is_a?(Hash) && !y["jobs"].empty?; abort("no trigger") unless y.key?("on") || y.key?(true)', `.github/workflows/${f}`], { encoding: 'utf-8' });
+    assert.equal(r.status, 0, `${f}: ${r.stderr.trim()}`);
+  }
 });

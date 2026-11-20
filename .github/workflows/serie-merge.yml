@@ -64,4 +64,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           NUMBER: ${{ steps.pr.outputs.number }}
           REASONS: ${{ steps.guard.outputs.reasons }}
-        run: gh pr comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Not merged automatically: $REASONS. This pull request waits for the operator."
+        run: |
+          gh pr comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Not merged automatically: $REASONS. This pull request waits for the operator."
