@@ -4,12 +4,13 @@ import { loadProjects, saveProjects, pickForUpdate, syncLastUpload, findUnassign
 import { listFiles } from './platforms/curseforge-core.js';
 import { loadPack, hasDueVersion, listPacks } from './lib/skinpacks.js';
 import { loadReleaseProject, listReleaseProjects } from './lib/releases.js';
-import { accountOf } from './lib/games.js';
+import { accountOf, awaitsFirstFile } from './lib/games.js';
 import { localParts } from './lib/schedule.js';
 import { setOutputs } from './lib/github-output.js';
 
 // Decides what this run does. MODE:
-//   update        → due project (oldest due first) or, with INPUT_MOD_ID, that project; nothing due → skip
+//   update        → first file of a series project, else the due project (oldest due first) or,
+//                   with INPUT_MOD_ID, that project; nothing due → skip
 //   scheduled-new → new mod if today (local) is in config.newModDays and the kit backlog is below maxPendingKits; else skip
 //   new           → always a new mod
 //   auto          → update if something is due, else scheduled-new logic (manual convenience)
@@ -65,6 +66,11 @@ function pickUpdate() {
     if (!eligible(target)) throw new Error(`"${requested}" has no prepared next version`);
     return target;
   }
+  // Series: a project whose page exists and that waits for its first file goes before any update
+  // (lowest series number first). Entering the project ID was the operator's Go for it.
+  const launch = projects.filter(inAccount).filter(p => awaitsFirstFile(p) && eligible(p))
+    .sort((a, b) => (a.serie?.nr ?? 1e9) - (b.serie?.nr ?? 1e9))[0];
+  if (launch) return launch;
   return pickForUpdate(projects.filter(inAccount), { now, minIntervalDays, eligible });
 }
 
@@ -83,7 +89,7 @@ if (mode === 'new') {
   result = { mode: 'new', modId: '', reason: 'manual' };
 } else if (mode === 'update') {
   const target = pickUpdate();
-  result = target ? { mode: 'update', modId: target.modId, reason: requested ? 'manual' : 'due' } : { mode: 'skip', modId: '', reason: 'nothing-due' };
+  result = target ? { mode: 'update', modId: target.modId, reason: requested ? 'manual' : target.status === 'pending' ? 'first-file' : 'due' } : { mode: 'skip', modId: '', reason: 'nothing-due' };
 } else if (mode === 'scheduled-new') {
   result = scheduledNew();
 } else if (mode === 'auto') {

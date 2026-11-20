@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Prepared file updates for any game with an upload API: data/projects/<slug>/
-//   project.json  { slug, game, name, cfProjectId, lastGameVersions: [names],
+//   project.json  { slug, game, name, cfProjectId (null until the page exists), versionTypes?, lastGameVersions: [names],
 //                   versions: [{ version, file, changelog, displayName?, gameVersions?: [names],
 //                                status: 'due'|'published', fileId, publishedAt }] }
 //   files/<file>  the upload of each version
@@ -32,9 +32,10 @@ export function saveReleaseProject(project, root = PROJECTS_ROOT) {
   return dir;
 }
 
+// projectId: null → stock is prepared before the CurseForge page exists (series projects).
 export function newReleaseProject({ slug, game, name, projectId }) {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug || '')) throw new Error(`Invalid slug "${slug}" (lowercase letters, digits, hyphens)`);
-  if (!Number.isInteger(projectId)) throw new Error(`Invalid CurseForge projectId "${projectId}"`);
+  if (projectId !== null && !Number.isInteger(projectId)) throw new Error(`Invalid CurseForge projectId "${projectId}"`);
   return { slug, game, name, cfProjectId: projectId, lastGameVersions: [], versions: [] };
 }
 

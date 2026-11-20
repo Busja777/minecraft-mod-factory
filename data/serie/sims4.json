@@ -1,0 +1,413 @@
+{
+  "reihe": "sims4",
+  "game": "sims4",
+  "title": "The Sims 4",
+  "start": "2026-11-27",
+  "logoStyle": "Clean glossy 3D icon, soft studio light, friendly rounded shapes, pastel gradient backdrop with subtle depth",
+  "arts": {
+    "T": "Tuning-Anpassung",
+    "S": "Script-Mod",
+    "M": "Merkmal",
+    "K": "Karriere",
+    "A": "Bestreben"
+  },
+  "reserve": [],
+  "projects": [
+    {
+      "nr": 1,
+      "slug": "homework-helper",
+      "name": "Homework Helper",
+      "art": "T",
+      "was": "Hausaufgaben doppelt so schnell",
+      "updates": [
+        "Stufen",
+        "Schulprojekte",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 2,
+      "slug": "fresh-longer",
+      "name": "Fresh Longer",
+      "art": "T",
+      "was": "Essen verdirbt langsamer",
+      "updates": [
+        "Stufen",
+        "Kühlschrank-Bonus",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 3,
+      "slug": "simoleon-diary",
+      "name": "Simoleon Diary",
+      "art": "S",
+      "was": "Haushaltsbuch: Einnahmen und Ausgaben nach Quelle",
+      "updates": [
+        "Wochenbericht",
+        "Export",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 4,
+      "slug": "morning-person-trait",
+      "name": "Morning Person Trait",
+      "art": "M",
+      "was": "Merkmal mit guten Morgen und müden Abenden",
+      "updates": [
+        "mehr Stimmungen",
+        "Vorlieben",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 5,
+      "slug": "librarian-career",
+      "name": "Librarian Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "zweiter Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 6,
+      "slug": "quick-showers",
+      "name": "Quick Showers",
+      "art": "T",
+      "was": "Kürzere Duschen und Bäder",
+      "updates": [
+        "Stufen",
+        "Kinder",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 7,
+      "slug": "birthday-heads-up",
+      "name": "Birthday Heads-Up",
+      "art": "S",
+      "was": "Erinnerung, bevor ein Sim altert",
+      "updates": [
+        "Tage einstellbar",
+        "Haushalt/Stadt",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 8,
+      "slug": "homebody-trait",
+      "name": "Homebody Trait",
+      "art": "M",
+      "was": "Merkmal: zu Hause glücklich, unterwegs angespannt",
+      "updates": [
+        "mehr Stimmungen",
+        "Vorlieben",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 9,
+      "slug": "bakery-clerk-career",
+      "name": "Bakery Clerk Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 10,
+      "slug": "easy-garden",
+      "name": "Easy Garden",
+      "art": "T",
+      "was": "Pflanzen brauchen seltener Wasser",
+      "updates": [
+        "Stufen",
+        "Unkraut",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 11,
+      "slug": "needs-alarm",
+      "name": "Needs Alarm",
+      "art": "S",
+      "was": "Meldung, wenn ein Bedürfnis kritisch wird",
+      "updates": [
+        "Schwellen",
+        "je Sim",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 12,
+      "slug": "daydreamer-trait",
+      "name": "Daydreamer Trait",
+      "art": "M",
+      "was": "Merkmal: verträumt, kreativ, leicht abgelenkt",
+      "updates": [
+        "mehr Stimmungen",
+        "Vorlieben",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 13,
+      "slug": "park-ranger-career",
+      "name": "Park Ranger Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 14,
+      "slug": "party-time",
+      "name": "Party Time",
+      "art": "T",
+      "was": "Längere Partys und Events",
+      "updates": [
+        "Stufen",
+        "Ziele leichter",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 15,
+      "slug": "auto-save-guardian",
+      "name": "Auto Save Guardian",
+      "art": "S",
+      "was": "Speichert regelmäßig in wechselnde Stände",
+      "updates": [
+        "Abstand",
+        "Anzahl Stände",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 16,
+      "slug": "penny-pincher-trait",
+      "name": "Penny Pincher Trait",
+      "art": "M",
+      "was": "Merkmal: freut sich über Sparen, leidet beim Ausgeben",
+      "updates": [
+        "mehr Stimmungen",
+        "Rabatt",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 17,
+      "slug": "radio-host-career",
+      "name": "Radio Host Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 18,
+      "slug": "kids-learn-faster",
+      "name": "Kids Learn Faster",
+      "art": "T",
+      "was": "Kinder lernen Fähigkeiten schneller",
+      "updates": [
+        "Stufen",
+        "Kleinkinder",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 19,
+      "slug": "wake-up-call",
+      "name": "Wake-Up Call",
+      "art": "S",
+      "was": "Wecker für Sims",
+      "updates": [
+        "je Wochentag",
+        "je Sim",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 20,
+      "slug": "chatterbox-trait",
+      "name": "Chatterbox Trait",
+      "art": "M",
+      "was": "Merkmal: redet gern, einsam ohne Gespräche",
+      "updates": [
+        "mehr Stimmungen",
+        "Vorlieben",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 21,
+      "slug": "car-mechanic-career",
+      "name": "Car Mechanic Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 22,
+      "slug": "fair-bills",
+      "name": "Fair Bills",
+      "art": "T",
+      "was": "Rechnungen in drei Stufen",
+      "updates": [
+        "Stufen",
+        "Fälligkeit",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 23,
+      "slug": "skill-journal",
+      "name": "Skill Journal",
+      "art": "S",
+      "was": "Wochenübersicht der gelernten Fähigkeiten",
+      "updates": [
+        "Meldungen",
+        "Export",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 24,
+      "slug": "shy-soul-trait",
+      "name": "Shy Soul Trait",
+      "art": "M",
+      "was": "Merkmal: schüchtern bei Fremden, treu bei Freunden",
+      "updates": [
+        "mehr Stimmungen",
+        "Vorlieben",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 25,
+      "slug": "paramedic-career",
+      "name": "Paramedic Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 26,
+      "slug": "calm-phones",
+      "name": "Calm Phones",
+      "art": "T",
+      "was": "Sims greifen seltener von selbst zum Handy",
+      "updates": [
+        "Stufen",
+        "Kinder",
+        "Patch-Pflege"
+      ]
+    },
+    {
+      "nr": 27,
+      "slug": "household-report",
+      "name": "Household Report",
+      "art": "S",
+      "was": "Schreibt eine Haushalts-Übersicht als Textdatei",
+      "updates": [
+        "mehr Angaben",
+        "Wochenlauf",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 28,
+      "slug": "lifelong-learner-aspiration",
+      "name": "Lifelong Learner Aspiration",
+      "art": "A",
+      "was": "Bestreben rund ums Lernen",
+      "updates": [
+        "Belohnungsmerkmal",
+        "Kinder-Fassung",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 29,
+      "slug": "bookshop-clerk-teen-job",
+      "name": "Bookshop Clerk Teen Job",
+      "art": "K",
+      "was": "Teenager-Nebenjob",
+      "updates": [
+        "Zufallsereignisse",
+        "Aufstieg",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 30,
+      "slug": "museum-guide-career",
+      "name": "Museum Guide Career",
+      "art": "K",
+      "was": "Karriere mit 8 Stufen",
+      "updates": [
+        "Zufallsereignisse",
+        "Zweig",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 31,
+      "slug": "self-made-sim-aspiration",
+      "name": "Self-Made Sim Aspiration",
+      "art": "A",
+      "was": "Bestreben: Geld verdienen ohne Karriere",
+      "updates": [
+        "Belohnungsmerkmal",
+        "Stufen",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 32,
+      "slug": "dog-walker-teen-job",
+      "name": "Dog Walker Teen Job",
+      "art": "K",
+      "was": "Teenager-Nebenjob",
+      "updates": [
+        "Zufallsereignisse",
+        "Aufstieg",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 33,
+      "slug": "perfect-host-aspiration",
+      "name": "Perfect Host Aspiration",
+      "art": "A",
+      "was": "Bestreben rund um Partys",
+      "updates": [
+        "Belohnungsmerkmal",
+        "Stufen",
+        "Deutsch"
+      ]
+    }
+  ]
+}

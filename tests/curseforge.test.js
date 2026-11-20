@@ -195,3 +195,17 @@ test('uploadFile builds the file URL from the game\'s section', async () => {
   assert.equal(r.url, 'https://www.curseforge.com/stardewvalley/mods/4242/files/55');
   assert.match(f.calls[0].init.body.toString(), /filename="CozyFarm-1.1.zip"/);
 });
+
+test('exactVersions: only the named versions, the main game type wins, unknown names throw', async () => {
+  const { exactVersions } = await import('../scripts/platforms/curseforge.js');
+  const catalog = {
+    types: [{ id: 1, name: 'Minecraft 1.21' }, { id: 2, name: 'Modloader' }, { id: 3, name: 'Java' }, { id: 4, name: 'Environment' }, { id: 9, name: 'Bukkit' }],
+    versions: [
+      { id: 90, name: '1.21.1', gameVersionTypeID: 9 }, { id: 10, name: '1.21.1', gameVersionTypeID: 1 }, { id: 11, name: '1.21.4', gameVersionTypeID: 1 },
+      { id: 20, name: 'Fabric', gameVersionTypeID: 2 }, { id: 30, name: 'Java 21', gameVersionTypeID: 3 }, { id: 40, name: 'Server', gameVersionTypeID: 4 }
+    ]
+  };
+  assert.deepEqual(exactVersions(catalog, ['1.21.1', 'fabric', 'Java 21', 'Server']).ids, [10, 20, 30, 40]);
+  assert.throws(() => exactVersions(catalog, ['1.21.1', 'NeoForge']), /no game version named "NeoForge"/);
+  assert.throws(() => exactVersions(catalog, []), /needs its game versions/);
+});

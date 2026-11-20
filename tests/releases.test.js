@@ -41,6 +41,7 @@ test('a project round-trips and the skin pack helpers pick its next due version'
 test('newReleaseProject and addVersion refuse incomplete or duplicate input', () => {
   assert.throws(() => newReleaseProject({ slug: 'Cozy Farm', game: 'x', name: 'x', projectId: 1 }), /Invalid slug/);
   assert.throws(() => newReleaseProject({ slug: 'cozy', game: 'x', name: 'x', projectId: 'abc' }), /projectId/);
+  assert.equal(newReleaseProject({ slug: 'cozy', game: 'x', name: 'x', projectId: null }).cfProjectId, null, 'stock before the page exists');
   const p = newReleaseProject({ slug: 'cozy', game: 'stardewvalley', name: 'Cozy', projectId: 1 });
   const v = addVersion(p, { version: '1.0', file: 'a.zip', changelog: ' text \n', gameVersions: ['1.6.15'], displayName: 'Cozy 1.0' });
   assert.deepEqual(v, { version: '1.0', file: 'a.zip', changelog: 'text', status: 'due', displayName: 'Cozy 1.0', gameVersions: ['1.6.15'] });
@@ -137,6 +138,31 @@ test('select-mode: the first file of a new project only starts when asked for by
   const asked = run(dir, 'select-mode.js', [], { MODE: 'update', ACCOUNT: 'stardewvalley', INPUT_MOD_ID: 'cozy-farm' });
   assert.match(asked, /::output modId=cozy-farm/);
   assert.match(asked, /::output kind=file/);
+});
+
+test('select-mode: a series project with its ID entered gets its first file by itself, before any update', () => {
+  const dir = repo({ entry: { status: 'pending', lastPublishedAt: null, autoStart: true, serie: { reihe: 'stardew', nr: 3 } }, published: false });
+  const out = run(dir, 'select-mode.js', [], { MODE: 'update', ACCOUNT: 'stardewvalley' });
+  assert.match(out, /::output modId=cozy-farm/);
+  assert.match(out, /::output reason=first-file/);
+  assert.match(out, /::output kind=file/);
+  // the gate opens a leg for an account that only has such a waiting project
+  const gate = run(dir, 'schedule-gate.js', ['--window', 'evening', '--per-account'], { NOW: '2026-11-20T19:55:00Z' });
+  assert.ok(JSON.parse(/::output matrix=(.*)/.exec(gate)[1]).some(l => l.account === 'stardewvalley'));
+  // other accounts never see it
+  assert.match(run(dir, 'select-mode.js', [], { MODE: 'update', ACCOUNT: 'minecraft' }), /::output mode=skip/);
+});
+
+test('release.js: a Minecraft Java file needs its exact game versions', () => {
+  const dir = repo();
+  const file = path.join(dir, 'data', 'projects', 'cozy-farm', 'project.json');
+  const p = JSON.parse(fs.readFileSync(file, 'utf-8'));
+  p.game = 'java';
+  fs.writeFileSync(file, JSON.stringify(p));
+  assert.throws(() => run(dir, 'release.js', ['--project', 'cozy-farm', '--dry-run']), /needs its game versions/);
+  p.versions[1].gameVersions = ['1.21.1', 'Fabric'];
+  fs.writeFileSync(file, JSON.stringify(p));
+  assert.match(run(dir, 'release.js', ['--project', 'cozy-farm', '--dry-run']), /checked, nothing uploaded \[dry-run\]/);
 });
 
 test('schedule-gate --per-account: one leg per account, a forced run starts exactly one', () => {

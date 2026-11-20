@@ -68,6 +68,8 @@ test('config.json: every game is complete and every project belongs to a known g
     assert.match(g.tokenEnv, /^CF_API_TOKEN(_[A-Z0-9_]+)?$/);
   }
   assert.equal(gameOf(real, 'bedrock').gameEndpoint, real.bedrock.gameEndpoint);
-  assert.equal(gameOf(real, 'java').account, gameOf(real, 'bedrock').account, 'one account, one update per day');
+  assert.notEqual(gameOf(real, 'java').account, gameOf(real, 'bedrock').account, 'Java and Bedrock are two legs: one upload per day each');
+  assert.equal(gameOf(real, 'java').tokenEnv, gameOf(real, 'bedrock').tokenEnv, 'but they share the Minecraft account\'s token');
+  assert.equal(gameOf(real, 'java').carryNewer, false, 'a Java file only fits the versions it was built for');
   for (const p of JSON.parse(fs.readFileSync('./data/cf-projects.json', 'utf-8'))) gameOf(real, gameKeyOf(p));
 });

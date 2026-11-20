@@ -136,6 +136,22 @@ export function carryForwardVersions(catalog, { include = [], prefix = null, typ
 
 // Bedrock files list many game versions (e.g. 1.21.x and 26.0 … 26.60): the versions of the previous
 // file, everything starting with `prefix` and every newer Minecraft release (27.0, …).
+// Exactly the given version names, nothing newer: for files that only run on the versions they
+// were built for (a Minecraft Java jar). A name that exists in several version types resolves to
+// the main game type ("Minecraft 1.21"), then to any other. Unknown names throw. → { ids, names }
+export function exactVersions(catalog, names = [], { label = 'game' } = {}) {
+  if (!names.length) throw new Error(`A ${label} file needs its game versions (none given)`);
+  const typeName = id => catalog.types.find(t => t.id === id)?.name || '';
+  const rank = v => (/^minecraft \d/i.test(typeName(v.gameVersionTypeID)) ? 0 : /modloader|^java$|^environment$/i.test(typeName(v.gameVersionTypeID)) ? 1 : 2);
+  const ids = [];
+  for (const name of names) {
+    const hits = catalog.versions.filter(v => eq(name)(v.name)).sort((a, b) => rank(a) - rank(b));
+    if (!hits.length) throw new Error(`CurseForge has no ${label} version named "${name}"`);
+    ids.push(hits[0].id);
+  }
+  return { ids: [...new Set(ids)], names: [...names] };
+}
+
 export function bedrockVersions(catalog, { prefix = '26.', include = [] } = {}) {
   return carryForwardVersions(catalog, { prefix, include, numericOnly: true, label: 'Bedrock' });
 }

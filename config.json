@@ -53,11 +53,12 @@
   "games": {
     "java": {
       "name": "Minecraft Java",
-      "account": "minecraft",
+      "account": "minecraft-java",
       "tokenEnv": "CF_API_TOKEN",
       "gameEndpoint": "minecraft",
       "gameId": 432,
-      "urlSection": "minecraft/mc-mods"
+      "urlSection": "minecraft/mc-mods",
+      "carryNewer": false
     },
     "bedrock": {
       "name": "Minecraft Bedrock",
