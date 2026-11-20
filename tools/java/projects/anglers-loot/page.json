@@ -26,7 +26,7 @@
     "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then fish with any fishing rod.",
     "",
     "## Good to know",
-    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. Works with every fishing rod, in singleplayer and on servers; players need nothing installed.",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Works with every fishing rod, in singleplayer and on servers; players need nothing installed.",
     "- It changes the vanilla fishing loot, so another pack that changes fishing loot can override it or be overridden by it.",
     "- New features arrive with updates, see each file's changelog.",
     "",

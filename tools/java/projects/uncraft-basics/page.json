@@ -26,7 +26,7 @@
     "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then put one block alone into a crafting grid. Each recipe shows up in the recipe book once you carry its block.",
     "",
     "## Good to know",
-    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. It only adds recipes, so it is safe to add to or remove from an existing world.",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only adds recipes, so it is safe to add to or remove from an existing world.",
     "- Works in singleplayer and on servers; players need nothing installed.",
     "- New features arrive with updates, see each file's changelog.",
     "",

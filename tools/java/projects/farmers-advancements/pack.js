@@ -1,7 +1,7 @@
 // Farmers Advancements: a new advancement tab "Farmer's Almanac" with 30 goals about crops, animals,
 // farm food and farm tools, so a peaceful farm world has something to work towards.
-// Every criterion copies the shape of a vanilla 1.21.1 advancement:
-//   placed_block + block_state_property      (husbandry/plant_seed)
+// Every criterion copies the shape of a vanilla advancement of the Minecraft version it is written for:
+//   placed_block + "is this block"            (husbandry/plant_seed)
 //   inventory_changed + items                 (husbandry/obtain_netherite_hoe; "count" is the item predicate's stack size)
 //   bred_animals + child entity_properties    (husbandry/bred_all_animals)
 //   tame_animal + entity entity_properties    (husbandry/complete_catalogue)
@@ -11,27 +11,47 @@
 const NS = 'farmers_advancements';
 const id = name => `${NS}:${name}`;
 
-// ── criteria in vanilla shape ─────────────────────────────────────────────────────────────────
-const planted = block => ({
-  trigger: 'minecraft:placed_block',
-  conditions: { location: [{ condition: 'minecraft:block_state_property', block: `minecraft:${block}` }] }
+// ── what the Minecraft versions read differently ──────────────────────────────────────────────
+// Compared in the vanilla files of data pack format 48 (Minecraft 1.21.1) and 121 (Minecraft 26.3):
+//                           format 48                                   format 121
+//   conditions of a trigger a list: [{ condition: "minecraft:x", … }]   one object: { type: "minecraft:x", … }
+//   "is this block"         block_state_property + "block"              match_block + "blocks" (block_state_property is gone)
+//   entity type             predicate { type: … }                       predicate { "minecraft:entity_type": … }
+//   display icon            { id, count: 1 }                            { id }
+//   background of the root  minecraft:textures/block/x.png              minecraft:block/x
+// The same in both: item predicates (items, count { min }), location_check and its block predicate,
+// text components, frames, requirements, rewards and all six trigger ids.
+// The versions between the two have not been looked at, so the pack refuses to guess for them.
+const OLD_SHAPE = 48;
+const NEW_SHAPE = 121;
+function isNew(format) {
+  if (format <= OLD_SHAPE) return false;
+  if (format >= NEW_SHAPE) return true;
+  throw new Error(`farmers-advancements is written for data pack format ${OLD_SHAPE} (Minecraft 1.21.1) and ${NEW_SHAPE} or newer (26.3); format ${format} has not been compared with its vanilla files`);
+}
+const condition = (format, type, fields) => (isNew(format) ? { type: `minecraft:${type}`, ...fields } : [{ condition: `minecraft:${type}`, ...fields }]);
+const isBlock = (format, block) => (isNew(format)
+  ? condition(format, 'match_block', { blocks: `minecraft:${block}` })
+  : condition(format, 'block_state_property', { block: `minecraft:${block}` }));
+const isEntity = (format, entity) => condition(format, 'entity_properties', {
+  entity: 'this',
+  predicate: isNew(format) ? { 'minecraft:entity_type': `minecraft:${entity}` } : { type: `minecraft:${entity}` }
 });
+const icon = (format, item) => (isNew(format) ? { id: `minecraft:${item}` } : { id: `minecraft:${item}`, count: 1 });
+const texture = (format, name) => (isNew(format) ? `minecraft:${name}` : `minecraft:textures/${name}.png`);
+
+// ── criteria in vanilla shape ─────────────────────────────────────────────────────────────────
+const planted = (format, block) => ({ trigger: 'minecraft:placed_block', conditions: { location: isBlock(format, block) } });
 const has = (item, count) => ({
   trigger: 'minecraft:inventory_changed',
   conditions: { items: [{ items: item.startsWith('#') ? item : `minecraft:${item}`, ...(count ? { count: { min: count } } : {}) }] }
 });
-const bred = entity => ({
-  trigger: 'minecraft:bred_animals',
-  conditions: { child: [{ condition: 'minecraft:entity_properties', entity: 'this', predicate: { type: `minecraft:${entity}` } }] }
-});
-const tamed = entity => ({
-  trigger: 'minecraft:tame_animal',
-  conditions: { entity: [{ condition: 'minecraft:entity_properties', entity: 'this', predicate: { type: `minecraft:${entity}` } }] }
-});
+const bred = (format, entity) => ({ trigger: 'minecraft:bred_animals', conditions: { child: isEntity(format, entity) } });
+const tamed = (format, entity) => ({ trigger: 'minecraft:tame_animal', conditions: { entity: isEntity(format, entity) } });
 const ate = item => ({ trigger: 'minecraft:consume_item', conditions: { item: { items: `minecraft:${item}` } } });
-const usedOn = block => ({
+const usedOn = (format, block) => ({
   trigger: 'minecraft:item_used_on_block',
-  conditions: { location: [{ condition: 'minecraft:location_check', predicate: { block: { blocks: `minecraft:${block}` } } }] }
+  conditions: { location: condition(format, 'location_check', { predicate: { block: { blocks: `minecraft:${block}` } } }) }
 });
 
 // ── tables ────────────────────────────────────────────────────────────────────────────────────
@@ -86,13 +106,14 @@ export const REWARDS = {
 // ── the tree ──────────────────────────────────────────────────────────────────────────────────
 // Each entry: { name, parent, icon, title, description, frame, criteria, all }
 // all = true: every criterion is needed; otherwise any one of them is enough.
-export function tree() {
+// format: the data pack format the criteria are written for; the tree itself is the same for every version.
+export function tree(format) {
   const list = [];
   const add = (name, parent, icon, title, description, criteria, { frame = 'task', all = false } = {}) =>
     list.push({ name, parent, icon, title, description, frame, criteria, all });
 
   for (const [name, block, icon, parent, title, desc] of PLANTING) {
-    add(`planting/${name}`, parent, icon, title, desc, { [name]: planted(block) }, { frame: name === 'pitcher' ? 'goal' : 'task' });
+    add(`planting/${name}`, parent, icon, title, desc, { [name]: planted(format, block) }, { frame: name === 'pitcher' ? 'goal' : 'task' });
   }
 
   add('harvest/wheat_stack', 'planting/wheat', 'wheat', 'Full Sheaf', 'Hold a full stack of 64 wheat', { wheat: has('wheat', 64) }, { frame: 'goal' });
@@ -101,12 +122,12 @@ export function tree() {
     'Collect every crop at least once: wheat, carrot, potato, beetroot, pumpkin, melon slice, sweet berries, nether wart, torchflower and pitcher plant',
     Object.fromEntries(CROPS.map(c => [c, has(c)])), { frame: 'challenge', all: true });
 
-  for (const [entity, name, parent, title, desc] of BREEDING) add(`animals/${name}`, parent, BREED_ICON[entity], title, desc, { [entity]: bred(entity) });
+  for (const [entity, name, parent, title, desc] of BREEDING) add(`animals/${name}`, parent, BREED_ICON[entity], title, desc, { [entity]: bred(format, entity) });
   add('animals/milk', 'animals/breed_cow', 'milk_bucket', 'Fresh From the Cow', 'Fill a bucket with milk', { milk: has('milk_bucket') });
   add('animals/eggs', 'animals/breed_chicken', 'egg', 'Egg Basket', 'Hold a full stack of 16 eggs', { eggs: has('egg', 16) }, { frame: 'goal' });
   add('animals/breed_all', 'animals/breed_rabbit', 'golden_carrot', 'Full Barnyard', 'Breed cows, sheep, pigs, chickens and rabbits',
-    Object.fromEntries(BREEDING.map(([entity]) => [entity, bred(entity)])), { frame: 'challenge', all: true });
-  add('animals/tame_horse', 'root', 'saddle', 'Plow Horse', 'Tame a horse', { horse: tamed('horse') });
+    Object.fromEntries(BREEDING.map(([entity]) => [entity, bred(format, entity)])), { frame: 'challenge', all: true });
+  add('animals/tame_horse', 'root', 'saddle', 'Plow Horse', 'Tame a horse', { horse: tamed(format, 'horse') });
 
   for (const [item, name, parent, title, desc] of COOKING) add(`cooking/${name}`, parent, item, title, desc, { [item]: ate(item) });
   add('cooking/feast', 'cooking/beetroot_soup', 'cake', 'Harvest Feast',
@@ -114,7 +135,7 @@ export function tree() {
     Object.fromEntries(FEAST.map(f => [f, ate(f)])), { frame: 'challenge', all: true });
 
   add('tools/any_hoe', 'root', 'wooden_hoe', 'Hoe Down', 'Get any hoe', { hoe: has('#minecraft:hoes') });
-  add('tools/compost', 'tools/any_hoe', 'composter', 'Nothing Goes to Waste', 'Put something into a composter', { compost: usedOn('composter') });
+  add('tools/compost', 'tools/any_hoe', 'composter', 'Nothing Goes to Waste', 'Put something into a composter', { compost: usedOn(format, 'composter') });
   add('tools/diamond_hoe', 'tools/any_hoe', 'diamond_hoe', 'Diamond Harvest', 'Get a diamond hoe', { diamond_hoe: has('diamond_hoe') }, { frame: 'goal' });
   return list;
 }
@@ -143,8 +164,9 @@ export function checkTree(list) {
 const text = t => ({ text: t });
 const requirements = (criteria, all) => (all ? Object.keys(criteria).map(k => [k]) : [Object.keys(criteria)]);
 
-export default async function () {
-  const list = tree();
+// Called once per Minecraft version; the same 31 files under the same paths for every version.
+export default async function ({ format }) {
+  const list = tree(format);
   if (list.length !== 30) throw new Error(`expected 30 advancements below the root, got ${list.length}`);
   checkTree(list);
 
@@ -153,11 +175,11 @@ export default async function () {
   files[`data/${NS}/advancement/root.json`] = {
     criteria: rootCriteria,
     display: {
-      icon: { id: 'minecraft:wheat', count: 1 },
+      icon: icon(format, 'wheat'),
       title: text("Farmer's Almanac"),
       description: text('Pick up wheat seeds and start a farm'),
       frame: 'task',
-      background: 'minecraft:textures/block/farmland_moist.png',
+      background: texture(format, 'block/farmland_moist'),
       show_toast: false,
       announce_to_chat: false
     },
@@ -167,7 +189,7 @@ export default async function () {
     const adv = {
       parent: id(a.parent),
       criteria: a.criteria,
-      display: { icon: { id: `minecraft:${a.icon}`, count: 1 }, title: text(a.title), description: text(a.description), frame: a.frame },
+      display: { icon: icon(format, a.icon), title: text(a.title), description: text(a.description), frame: a.frame },
       requirements: requirements(a.criteria, a.all)
     };
     if (REWARDS[a.name]) adv.rewards = { experience: REWARDS[a.name] };

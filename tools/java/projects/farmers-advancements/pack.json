@@ -3,5 +3,6 @@
   "name": "Farmers Advancements",
   "description": "30 farming advancements in their own tab",
   "mc": "1.21.1",
-  "gameVersions": ["1.21", "1.21.1"]
+  "also": ["26.3"],
+  "gameVersions": ["1.21", "1.21.1", "26.3"]
 }
