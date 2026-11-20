@@ -1,0 +1,33 @@
+{
+  "name": "Level Clock",
+  "summary": "Shows your experience per hour, the time until the next level and your rested bonus while you level.",
+  "category": "Quests & Leveling",
+  "logoPrompt": "A round brass pocket watch with its lid open, a plain glowing blue dial with two hands and simple tick marks, and a small golden arrow pointing upwards rising from behind the top of the watch",
+  "cover": {
+    "tagline": "See how long the next level will take.",
+    "bullets": ["Experience per hour", "Time until the next level", "Rested bonus at a glance"]
+  },
+  "description": [
+    "**Level Clock tells you how fast you are levelling: one small window with your experience per hour, the time left until the next level and your rested bonus.**",
+    "",
+    "## Features",
+    "- Experience per hour for the current session, counted correctly across level-ups.",
+    "- Estimated time until the next level, plus the experience you still need.",
+    "- Rested bonus as a percentage of your level.",
+    "- Session experience and session time in a small window you can drag anywhere. Its position is remembered.",
+    "",
+    "## How to use",
+    "Type `/lc` (or `/levelclock`) to open or close the clock. `/lc reset` starts a new session. Escape closes the window.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and no chat parsing, it only reads your experience bar.",
+    "- The first rate appears after one minute of play.",
+    "- The estimate uses the whole session, so a long break slows it down. Use `/lc reset` after a pause.",
+    "- At maximum level the window says so instead of showing numbers.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

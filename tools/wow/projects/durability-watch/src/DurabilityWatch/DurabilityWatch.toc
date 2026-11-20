@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Durability Watch
+## Notes: Shows the condition of your gear in percent and warns you before something breaks.
+## Version: @version@
+## SavedVariables: DurabilityWatchDB
+## IconTexture: Interface\Icons\Trade_BlackSmithing
+
+Locale.lua
+Core.lua
+Watch.lua
+UI.lua
+Commands.lua

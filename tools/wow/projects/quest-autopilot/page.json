@@ -1,0 +1,37 @@
+{
+  "name": "Quest Autopilot",
+  "summary": "Accepts quests and hands them in on its own, pauses while you hold Shift and leaves every reward choice to you.",
+  "category": "Quests & Leveling",
+  "logoPrompt": "A rolled parchment scroll tied with a red ribbon, standing slightly tilted, with a small brass compass resting against it whose needle glows softly",
+  "cover": {
+    "tagline": "Level with fewer clicks.",
+    "bullets": [
+      "Accepts and hands in quests",
+      "Hold Shift to pause",
+      "Reward choices stay yours"
+    ]
+  },
+  "description": [
+    "**Quest Autopilot accepts quests and hands them in for you, so levelling takes fewer clicks and you keep moving.**",
+    "",
+    "## Features",
+    "- Accepts a quest as soon as a quest giver offers it.",
+    "- Hands in finished quests and takes the reward when there is nothing to choose.",
+    "- Works through quest givers with several quests: finished ones first, then new ones.",
+    "- Stops when a quest offers several rewards and tells you in chat, so you pick yourself.",
+    "- Hold Shift while you talk to someone to pause it for that conversation.",
+    "",
+    "## How to use",
+    "It works right after installing. Type `/qa` (or `/questautopilot`) to see the current state. `/qa off` and `/qa on` switch everything, `/qa accept` and `/qa turnin` switch one half.",
+    "",
+    "## Good to know",
+    "- Works on Retail. It never hands in a quest that asks for gold.",
+    "- Repeatable quests are handed in once but never taken again on their own, so your items are safe.",
+    "- There is no window, only a chat line now and then. Your settings apply to all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

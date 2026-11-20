@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Level Clock
+## Notes: Shows XP per hour, the time until your next level and your rested bonus.
+## Version: @version@
+## SavedVariables: LevelClockDB
+## IconTexture: Interface\Icons\INV_Misc_PocketWatch_01
+
+Locale.lua
+Core.lua
+Tracker.lua
+UI.lua

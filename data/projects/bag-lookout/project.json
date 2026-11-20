@@ -1,0 +1,18 @@
+{
+  "slug": "bag-lookout",
+  "game": "wow",
+  "name": "Bag Lookout",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "BagLookout-1.0.zip",
+      "changelog": "## Bag Lookout 1.0\n\nFirst release.\n\n- A small counter shows your free and total bag slots, for example \"Bags 12/98\". It turns yellow at or below your warning threshold and red when no slot is left.\n- One warning in the middle of the screen with a sound when your free slots drop to the threshold (5 by default), and one more when the bags are full. No repeats while you keep looting; it warns again only after you made room above the threshold.\n- The reagent bag is counted on its own: click the counter to show or hide it.\n- Drag the counter where you like it. `/bl lock` locks it in place, `/bl hide` and `/bl show` hide and show it.\n- `/bl` or `/baglookout` shows the state and the commands. `/bl threshold <0-50>` sets the warning point, `/bl sound on` or `off` switches the sound.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "Durability Watch",
+  "summary": "Keeps an eye on how worn your equipped gear is and warns you in time, before an item breaks in the middle of a fight.",
+  "category": "Bags & Inventory",
+  "logoPrompt": "A steel knight's helmet with a small crack and a few scratches, a glowing round gauge with a needle pointing to the red zone set in front of its lower edge",
+  "cover": {
+    "tagline": "Repair before your gear breaks.",
+    "bullets": ["Gear condition in percent", "Warning before an item breaks", "Repair cost at the vendor"]
+  },
+  "description": [
+    "**Durability Watch shows the condition of your gear in percent and warns you before anything breaks, so you never find out at the worst moment.**",
+    "",
+    "## Features",
+    "- A small display with your overall gear condition and the most worn item, in green, yellow or red.",
+    "- Mouse over it to see every damaged item with its slot.",
+    "- One warning on screen and in chat when an item drops to your warning level. The next one comes after a repair.",
+    "- At a vendor that can repair, one chat line tells you what a full repair costs.",
+    "",
+    "## How to use",
+    "It starts on its own. Drag the display where you like it. Type `/dw` to see the state and all commands. `/dw warn 30` sets the warning level, `/dw lock` locks the display, `/dw hide` and `/dw show` hide or show it.",
+    "",
+    "## Good to know",
+    "- Works on Retail. It only reads the durability of your equipped items.",
+    "- It never repairs for you, it only tells you the price.",
+    "- The warning level starts at 25% and can be set from 5 to 90.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

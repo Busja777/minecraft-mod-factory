@@ -1,0 +1,10 @@
+## Interface: 120105, 120107
+## Title: Quest Autopilot
+## Notes: Accepts quests and hands them in for you. Hold Shift to pause.
+## Version: @version@
+## SavedVariables: QuestAutopilotDB
+
+Locale.lua
+Core.lua
+Autopilot.lua
+Commands.lua

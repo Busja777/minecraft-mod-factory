@@ -1,0 +1,18 @@
+{
+  "slug": "flight-minutes",
+  "game": "wow",
+  "name": "Flight Minutes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FlightMinutes-1.0.zip",
+      "changelog": "## Flight Minutes 1.0\n\nFirst release.\n\n- Times every flight path you take and remembers how long each route lasts. It ships without any data: every time is measured on your own flights.\n- From the second flight on a route, a small frame shows your destination and a countdown until you land.\n- On a new route the frame shows the time flown so far, and after landing the measured time is printed in chat.\n- Keeps an average of the last five flights per route. Alliance and Horde routes are stored apart.\n- Drag the frame to move it, the position is saved.\n- `/fm` or `/flightminutes` shows how many routes are known, `/fm list` lists them with their times, `/fm forget` clears all routes.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

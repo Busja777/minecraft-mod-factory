@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Bag Lookout
+## Notes: Counts your free bag slots and warns you before your bags are full.
+## Version: @version@
+## SavedVariables: BagLookoutDB
+## IconTexture: Interface\Icons\INV_Misc_Bag_10
+
+Locale.lua
+Core.lua
+Lookout.lua
+UI.lua
+Commands.lua

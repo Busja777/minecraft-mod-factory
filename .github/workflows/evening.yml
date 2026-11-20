@@ -2,13 +2,15 @@ name: Evening — update a due project
 
 # One leg per CurseForge account (config.games.<key>.account; Java and Bedrock share "minecraft").
 # Every account draws its own random time between 18:00 and 21:00 Europe/Berlin per day
-# (config.windows.evening); the cron fires every 30 minutes from 17:30 and the gate starts the legs
-# whose slot falls into this half hour. Each account updates at most one project per day: its
-# projects take turns (longest without an update first), each at least 23 days after its last
+# (config.windows.evening); the cron fires every 10 minutes from 17:04 and the gate starts the legs
+# whose slot falls into the next 10 minutes or has passed (catch-up). Each account updates at most
+# one project per day: its projects take turns (longest without an update first), each at least 23 days after its last
 # upload (config.updateIntervalDays). Accounts without a published project have no leg.
 on:
   schedule:
-    - cron: '*/30 17-20 * * *'
+    # Every 10 minutes at uneven minutes: GitHub drops and delays many fires at :00 and :30
+    # (until 2026-11-20 the 30-minute cron fired once a day around 02:00, never in the window).
+    - cron: '4-59/10 17-20 * * *'
       timezone: Europe/Berlin
   workflow_dispatch:
     inputs:

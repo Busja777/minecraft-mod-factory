@@ -1,0 +1,36 @@
+{
+  "name": "Farmers Advancements",
+  "summary": "Thirty new advancements for crops, animals and farm food in their own tab, so a quiet farm world has goals too.",
+  "class": "Data Packs",
+  "category": "Adventure",
+  "logoPrompt": "A single golden wheat bundle tied with a red ribbon standing on a block of moist farmland, in blocky voxel style",
+  "cover": {
+    "tagline": "Thirty goals for your farm, in one new tab.",
+    "bullets": [
+      "Plant every crop",
+      "Breed the whole barnyard",
+      "Cook a harvest feast"
+    ]
+  },
+  "description": [
+    "**Farmers Advancements adds a new advancement tab, Farmer's Almanac, with 30 goals for anyone who would rather farm than fight.**",
+    "",
+    "## Features",
+    "- Planting goals for wheat, carrots, potatoes, beetroot, pumpkins, melons, sweet berries, nether wart, torchflowers and pitcher pods.",
+    "- Harvest and animal goals: a full stack of wheat, a basket of eggs, fresh milk and breeding cows, sheep, pigs, chickens and rabbits.",
+    "- Farm food and farm tools: bread, pies and soups, hoes and the composter.",
+    "- Three challenges: collect every crop, breed every farm animal and eat a full harvest feast. Some advancements give experience, none give items.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Pick up wheat seeds and the new tab opens in the advancements screen.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. It only adds advancements, so it is safe to add to an existing world.",
+    "- Works in singleplayer and on servers; players need nothing installed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

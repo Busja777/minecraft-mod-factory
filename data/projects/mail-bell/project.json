@@ -1,0 +1,18 @@
+{
+  "slug": "mail-bell",
+  "game": "wow",
+  "name": "Mail Bell",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MailBell-1.0.zip",
+      "changelog": "## Mail Bell 1.0\n\nFirst release.\n\n- Rings a bell and prints one chat line when new mail arrives. The sound plays on the Master channel, so you hear it even with sound effects muted.\n- Mail that was already there when you log in does not ring, and the bell rings at most once every 30 seconds.\n- Remembers which of your characters have unread mail. A character counts as done once you have emptied its mailbox or closed it with no new mail left.\n- A few seconds after login, one chat line names your other characters with mail waiting.\n- `/mb` or `/mailbell` shows that list and the settings. `/mb sound on|off` and `/mb login on|off` switch the bell and the login list, `/mb forget Name-Realm` removes a character.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

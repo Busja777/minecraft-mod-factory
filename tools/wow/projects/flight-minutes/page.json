@@ -1,0 +1,32 @@
+{
+  "name": "Flight Minutes",
+  "summary": "Learns how long your flight paths take and shows a countdown to the landing from the second flight on.",
+  "category": "Map & Minimap",
+  "logoPrompt": "A round brass pocket stopwatch with a plain dial without numerals and one glowing hand, with a pair of small feathered wings spread from its sides, tilted slightly",
+  "cover": {
+    "tagline": "Know when you land, on every flight path.",
+    "bullets": ["Countdown until you land", "Learns routes while you fly", "No setup, no data to download"]
+  },
+  "description": [
+    "**Flight Minutes times every flight path you take and, from your second trip on a route, counts down the minutes and seconds until you land.**",
+    "",
+    "## Features",
+    "- Learns each route while you fly. It ships without any data: every time is measured on your own flights.",
+    "- On a known route a small frame shows your destination and a countdown such as \"Landing in 2:41\".",
+    "- On a new route it shows the time flown so far and prints the measured time in chat after landing.",
+    "- Keeps an average of your last five flights per route.",
+    "",
+    "## How to use",
+    "Just fly. Drag the small frame to move it, the position is saved. `/fm` (or `/flightminutes`) tells you how many routes are known, `/fm list` shows them with their times, `/fm forget` clears all routes.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and nothing to set up.",
+    "- Times are shared by all characters of one faction on your account. Alliance and Horde routes are kept apart.",
+    "- A flight you end early with the stop button is not counted.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

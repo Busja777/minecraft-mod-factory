@@ -1,0 +1,33 @@
+{
+  "name": "Junk Butler",
+  "summary": "Sells your grey items and repairs your gear whenever you open a vendor, then sums it up in one chat line.",
+  "category": "Bags & Inventory",
+  "logoPrompt": "A polished brass service bell resting on top of a small worn leather sack that is tied with a rope, a few dull grey trinkets and bent coins spilling out at its base",
+  "cover": {
+    "tagline": "Sell the junk, fix the gear, move on.",
+    "bullets": ["Sells grey items at every vendor", "Repairs your gear on the way", "One chat line with the totals"]
+  },
+  "description": [
+    "**Junk Butler tidies up at every vendor: it sells your grey items, repairs your gear and tells you the result in one chat line.**",
+    "",
+    "## Features",
+    "- Sells every grey item that has a vendor price as soon as you open a vendor, a few items at a time.",
+    "- Repairs all your gear at vendors that can repair, paid from your own gold.",
+    "- One chat line: how many items were sold, for how much, and what the repair cost.",
+    "- Hold Shift while you open a vendor to skip both for that visit.",
+    "",
+    "## How to use",
+    "Install it and talk to a vendor, nothing else is needed. `/jb` (or `/junkbutler`) shows the settings. `/jb sell` and `/jb repair` switch each half on or off.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data, it only acts while a vendor window is open.",
+    "- If your gold is short, it tries the repair once more after the sale and tells you when it is still short.",
+    "- Sold something by mistake? The vendor's buyback tab has it.",
+    "- Settings are shared by all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

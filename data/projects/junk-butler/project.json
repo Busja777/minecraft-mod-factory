@@ -1,0 +1,18 @@
+{
+  "slug": "junk-butler",
+  "game": "wow",
+  "name": "Junk Butler",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "JunkButler-1.0.zip",
+      "changelog": "## Junk Butler 1.0\n\nFirst release.\n\n- Sells every grey item that has a vendor price as soon as you open a vendor, a few items at a time.\n- Repairs all your gear at vendors that can repair, paid from your own gold. If your gold is short, it tries once more after the sale.\n- One chat line tells you how many items were sold, for how much, and what the repair cost.\n- Hold Shift while you open a vendor to skip both for that visit.\n- `/jb` or `/junkbutler` shows the settings. `/jb sell` and `/jb repair` switch each half on or off.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

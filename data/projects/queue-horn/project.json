@@ -1,0 +1,18 @@
+{
+  "slug": "queue-horn",
+  "game": "wow",
+  "name": "Queue Horn",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "QueueHorn-1.0.zip",
+      "changelog": "## Queue Horn 1.0\n\nFirst release.\n\n- Alerts when the Dungeon Finder or Raid Finder has a group for you, when someone else starts a ready check, when a battleground or arena is ready and when a pet battle match is found.\n- Every alert plays one sound on the Master channel, so you hear it even with the effects sound turned down, flashes the game icon in your taskbar or dock and shows a short message in the middle of the screen.\n- The same alert never plays twice within 5 seconds. A battleground or arena queue is announced once per pop.\n- Each alert and the icon flash can be switched on or off: `/qh lfg off`, `/qh ready off`, `/qh pvp off`, `/qh pet off`, `/qh flash off`.\n- `/qh` or `/queuehorn` shows the settings, `/qh test` plays the alert once. Settings are shared by all your characters.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Stonecutter Woodworks",
+  "summary": "Use the stonecutter for wood: turn planks into stairs, slabs, fences, doors and more, one block at a time.",
+  "class": "Data Packs",
+  "category": "Utility",
+  "logoPrompt": "A stonecutter block with its round saw blade spinning, a neat stack of wooden planks beside it and fresh wood shavings flying from the blade",
+  "cover": {
+    "tagline": "Cut wood like stone, one plank at a time.",
+    "bullets": [
+      "Stairs, slabs, fences, doors",
+      "Eight kinds of wood",
+      "No more wasted planks"
+    ]
+  },
+  "description": [
+    "**Stonecutter Woodworks lets the stonecutter cut wood: put planks in and pick exactly the block you need, one at a time.**",
+    "",
+    "## Features",
+    "- Turns planks into stairs, slabs, fences, fence gates, doors, trapdoors and pressure plates.",
+    "- Covers oak, spruce, birch, jungle, acacia, dark oak, mangrove and cherry.",
+    "- One plank gives two slabs or one of every other block, close to the crafting table amounts.",
+    "- No more leftover stairs when you only needed three.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then place a stonecutter and put planks into it.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. It only adds recipes, so it is safe to add to or remove from an existing world.",
+    "- Works in singleplayer and on servers; players need nothing installed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
