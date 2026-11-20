@@ -23,7 +23,9 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
 3. Tag-eins-Maschine:
    - [x] Radar für Java (`npm run radar`, `radar.yml`), echter Ladetest für 26.x, eine Datei für mehrere Minecraft-Versionen.
    - [ ] Die vier Packs, die laut `data/radar/java.json` auf 26.3 noch nicht laden, anpassen (Stonecutter Woodworks, Farmers Advancements, Uncraft Basics, Anglers Loot). Hush und Villages Nearby sind bereit.
-   - [ ] Drei Vorab-Projekte für Minecraft 26.4 „Deep Freeze“ (voraussichtlich Mitte Dezember).
+   - [x] Vorab-Projekt für Minecraft 26.4: Ice Cave Advancements (18 Fortschritte, Java-Platz 25, wartet auf 26.4). Die Steinsäger-Rezepte für die neuen Ziegel bringt das Spiel selbst mit; Beute für den Frost-Zombie ist zu dünn für ein eigenes Projekt (gehört in Mob Drops Plus).
+   - [ ] Vorab anlegen: Projekt-ID schon eintragen können, bevor die Datei im Vorrat liegt (heute verlangt `serie id` eine Datei). Dann geht ein Vorab-Projekt am Erscheinungstag abends hoch. Berührt den Upload-Ablauf, braucht eigene Tests.
+   - [ ] Ladetest gegen jede Minecraft-Version zwischen 1.21.5 und 26.2, damit klar ist, welche davon unsere Zwei-Versionen-Dateien lesen (das Spiel überspringt unbekannte Felder still, zum Beispiel bei der Angel-Beute).
    - [ ] Radar auch für die Versionslisten von CurseForge (WoW, Stardew) und für Bedrock-Packs.
 4. [ ] Bilder ohne dich (`serie-bilder.yml`), Fenster-Vorschauen für WoW, längere WoW-Beschreibungen (Stichwortzeile, Abschnitt pro Funktion, Befehlstabelle, bis etwa 450 Wörter).
 5. [ ] Browser-Helfer füllt das Anlegen-Formular für alle Spiele (`npm run cf -- serie`).

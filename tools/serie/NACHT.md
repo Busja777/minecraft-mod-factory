@@ -44,6 +44,16 @@ a workflow by hand.
    list of what was built. Something red that you cannot fix: leave that project out of the
    commit and say so in the pull request.
 
+## Projects prepared ahead of a game version
+
+A project with `"waitsFor": "<version>"` (in its `pack.json` and in `data/serie/<reihe>.json`) is
+built against a test version of that game version and must not go into the stock before the
+version is released. Each night: if `data/radar/versions.json` shows the release, set `"mc"` to
+the release in `pack.json`, remove `"waitsFor"` in both files, build V1.0 against the release
+(the game loads it in the build), check its page and put it into the stock. Until then, keep it
+building against the newest test version: when the radar reports a problem for it, fix it like
+any other project.
+
 ## Rules that keep the series alive
 
 - Nothing unchecked goes into the stock. A project you could not check stays out.
