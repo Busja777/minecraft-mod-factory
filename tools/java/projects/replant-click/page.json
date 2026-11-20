@@ -1,0 +1,36 @@
+{
+  "name": "Replant Click",
+  "summary": "Right-click ripe wheat, carrots, potatoes or beetroots to harvest them and plant the next crop in the same move.",
+  "class": "Mods",
+  "category": "Farming",
+  "logoPrompt": "A single bright orange carrot popping up out of a farmland block, with a glowing green circular arrow looping around it",
+  "cover": {
+    "tagline": "Harvest and replant with one click.",
+    "bullets": [
+      "Wheat, carrots, potatoes",
+      "Fortune still counts",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Replant Click lets you farm with right-clicks: click a fully grown crop and it drops its harvest and starts growing again on the spot.**",
+    "",
+    "## Features",
+    "- Works on wheat, carrots, potatoes and beetroots once they are fully grown; young crops stay as they are.",
+    "- One seed from the harvest goes back into the ground, the rest drops for you, so a field never needs replanting by hand.",
+    "- The harvest counts as broken with the item in your hand, so a Fortune hoe still gives more.",
+    "- No trampled farmland, no broken blocks, no empty spots in your field.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Right-click a ripe crop with an empty hand or any tool. Sneak to place blocks next to crops as usual; bone meal keeps working too.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players can join without installing anything.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

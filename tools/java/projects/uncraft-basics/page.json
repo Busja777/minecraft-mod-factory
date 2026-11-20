@@ -1,0 +1,37 @@
+{
+  "name": "Uncraft Basics",
+  "summary": "Craft wool, quartz, clay, glowstone, ice and other packed blocks back into the materials you made them from.",
+  "class": "Data Packs",
+  "category": "Utility",
+  "logoPrompt": "A crafting table with a white wool block on top that is coming apart into loose pieces of string",
+  "cover": {
+    "tagline": "Take packed blocks apart again.",
+    "bullets": [
+      "Wool back to string",
+      "Quartz, clay, glowstone, ice",
+      "Never more than went in"
+    ]
+  },
+  "description": [
+    "**Uncraft Basics adds crafting recipes that turn packed blocks back into their materials, for the times you crafted one block too many.**",
+    "",
+    "## Features",
+    "- Wool of all 16 colours gives 4 string.",
+    "- Quartz block, quartz pillar and chiseled quartz block give 4 nether quartz each.",
+    "- Clay, snow, glowstone, amethyst, bricks, nether bricks and honeycomb blocks give back their 4 pieces.",
+    "- Blue ice gives 9 packed ice, packed ice 9 ice and dripstone block 4 pointed dripstone.",
+    "- Amounts match the vanilla recipes, so you never get more than went in.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then put one block alone into a crafting grid. Each recipe shows up in the recipe book once you carry its block.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. It only adds recipes, so it is safe to add to or remove from an existing world.",
+    "- Works in singleplayer and on servers; players need nothing installed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

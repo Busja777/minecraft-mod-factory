@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "replantclick",
+  "version": "${version}",
+  "name": "Replant Click",
+  "description": "Right-click a fully grown crop to harvest it and replant it in one go. Works on the server alone; players need nothing installed.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.replantclick.ReplantClick"]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

@@ -88,3 +88,55 @@ export async function writeCover(options, file) {
   fs.writeFileSync(file, await renderCover(options));
   return file;
 }
+
+// ── Banner: 720×340, the wide image of the gallery ────────────────────────────────────────────
+// Same look as the title image, cut down to what reads at this size: logo, row, name, one line.
+export const BANNER_SIZE = [720, 340];
+
+export function bannerHtml({ reihe, name, tagline, kicker, logo }) {
+  const t = THEMES[reihe];
+  if (!t) throw new Error(`No banner theme for "${reihe}"`);
+  if (!tagline) throw new Error(`Banner of ${name} needs a tagline`);
+  const [w, h] = BANNER_SIZE;
+  const nameSize = name.length <= 12 ? 56 : name.length <= 18 ? 46 : name.length <= 24 ? 38 : 33;
+  const logoUri = `data:image/png;base64,${logo.toString('base64')}`;
+  return `<!doctype html><html><head><meta charset="utf-8"><style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: ${w}px; height: ${h}px; }
+  body { background: ${t.bg}; color: ${t.ink}; font-family: ${t.body}; display: flex; align-items: center; gap: 34px; padding: 0 40px; overflow: hidden; position: relative; }
+  body::before { content: ''; position: absolute; inset: 12px; border: 1.5px solid ${t.frame}; border-radius: 18px; opacity: .55; }
+  body::after { content: ''; position: absolute; right: -150px; top: -170px; width: 460px; height: 460px; border-radius: 50%; background: radial-gradient(closest-side, ${t.accent} 0%, transparent 100%); opacity: .18; }
+  .logo { flex: none; width: 240px; height: 240px; border-radius: 34px; background: center/cover url('${logoUri}'); box-shadow: 0 16px 36px rgba(0,0,0,.36), 0 0 0 4px ${t.frame}; position: relative; z-index: 1; }
+  .text { flex: 1; min-width: 0; position: relative; z-index: 1; }
+  .kicker { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: ${t.accent}; font-weight: 700; margin-bottom: 10px; }
+  h1 { font-family: ${t.font}; font-weight: ${t.weight}; font-size: ${nameSize}px; line-height: 1.02; letter-spacing: -.01em; margin-bottom: 14px; text-wrap: balance; }
+  .tagline { font-size: 19px; line-height: 1.3; color: ${t.soft}; font-weight: 500; }
+</style></head><body>
+  <div class="logo"></div>
+  <div class="text">
+    <div class="kicker">${esc(kicker || t.kicker)}</div>
+    <h1>${esc(name)}</h1>
+    <div class="tagline">${esc(tagline)}</div>
+  </div>
+</body></html>`;
+}
+
+// → PNG buffer, exactly 720×340. Rendered at twice the size and scaled down, so the type stays sharp.
+export async function renderBanner(options) {
+  const { default: sharp } = await import('sharp');
+  const [w, h] = BANNER_SIZE;
+  const browser = await launch();
+  try {
+    const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+    await page.setContent(bannerHtml(options));
+    const big = await page.screenshot({ type: 'png' });
+    return await sharp(big).resize(w, h).png().toBuffer();
+  } finally {
+    await browser.close();
+  }
+}
+
+export async function writeBanner(options, file) {
+  fs.writeFileSync(file, await renderBanner(options));
+  return file;
+}

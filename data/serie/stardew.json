@@ -19,7 +19,11 @@
         "Erinnerung am Vortag",
         "Insel-Bewohner",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 2,

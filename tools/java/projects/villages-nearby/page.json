@@ -1,0 +1,36 @@
+{
+  "name": "Villages Nearby",
+  "summary": "Villages show up far more often in freshly explored land, so a new world gives you neighbours within a short walk.",
+  "class": "Data Packs",
+  "category": "Adventure",
+  "logoPrompt": "A small village house with a wooden door, a glowing window and a bell on a post beside it, standing on a grass block",
+  "cover": {
+    "tagline": "More villages, shorter walks.",
+    "bullets": [
+      "About 2.4 times as many villages",
+      "All five village types",
+      "New and existing worlds"
+    ]
+  },
+  "description": [
+    "**Villages Nearby makes villages appear more often, so you meet your first neighbours after a short walk instead of a long trek.**",
+    "",
+    "## Features",
+    "- About 2.4 times as many villages in newly generated land.",
+    "- Plains, desert, savanna, snowy and taiga villages keep their usual biomes and chances.",
+    "- Villages still keep some distance from each other, so they do not pile up.",
+    "",
+    "## How to use",
+    "Pick the zip under Data Packs when you create a new world, or put it into the `datapacks` folder of an existing world and open the world again. Then explore.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21 and 1.21.1.",
+    "- Works on new and existing worlds, but only land generated after the pack is added gets the extra villages. Chunks you have already visited do not change.",
+    "- Works in singleplayer and on servers. Because it changes world generation, Minecraft may show its \"experimental settings\" notice when you open the world.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

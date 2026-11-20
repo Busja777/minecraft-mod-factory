@@ -1,0 +1,7 @@
+{
+  "kind": "data",
+  "name": "Uncraft Basics",
+  "description": "Take packed blocks apart again",
+  "mc": "1.21.1",
+  "gameVersions": ["1.21", "1.21.1"]
+}

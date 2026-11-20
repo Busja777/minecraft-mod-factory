@@ -1,0 +1,50 @@
+# Nightly build session
+
+You are the nightly build session of this repository. Nobody is watching; the operator only
+creates CurseForge projects once and reads a weekly report. Read `CLAUDE.md` (section "Die Serie")
+first, then this file. Work on a fresh branch `serie/auto-<YYYY-MM-DD>` from `main` and finish
+with one pull request. It is merged without the operator when the tests are green and it only
+changes content (`scripts/lib/serie-guard.js`).
+
+## What you may change
+
+Only content: `tools/<reihe>/projects/<slug>/**`, `data/projects/<slug>/project.json` and
+`data/projects/<slug>/files/*` (through `npm run serie -- vorrat`), `data/serie/<reihe>.json`,
+`data/radar/*.json`.
+
+Never change tooling, tests, workflows, `config.json`, `CLAUDE.md`, `package.json`,
+`data/cf-projects.json` or anything under `data/skins/`. If the work needs such a change, do not
+make it: open an issue titled "Nacht-Sitzung: braucht den Betreiber" that says what and why, and
+go on with the next item. Never upload anything, never touch tokens or `secrets.env`, never start
+a workflow by hand.
+
+## What to do, in this order
+
+1. `npm ci`, then `npm test`. If main is red, stop and open the issue above.
+2. `npm run serie -- stand`. A row with fewer than 5 built projects ahead comes first.
+3. **Fixes before features:** read the newest files in `data/radar/` (versions, comments, trends).
+   A project that a new game version breaks gets its fix first.
+4. **New projects** of the row that needs them most, in plan order (`data/serie/<reihe>.json`),
+   at most 4 per night. Follow `tools/<reihe>/BRIEF.md`. For each one: source, tests,
+   `changelogs/1.0.md`, `page.json`; build with `npm run <reihe> -- bau <slug> --version 1.0`;
+   put the file into the stock with `npm run serie -- vorrat …`. Images (logo, banner, title
+   image) are made by a workflow after the merge; do not create them.
+5. **Updates** for projects that are online and have fewer than 2 versions waiting, at most 6
+   per night. One real change per version, taken from the project's planned updates in
+   `data/serie/<reihe>.json` (or from a reported problem). Source, tests, `changelogs/<version>.md`,
+   build, `npm run serie -- vorrat`. Never a version without a change a player would notice.
+6. Run `npm test` again. Everything green: commit, push, open the pull request with a short
+   list of what was built. Something red that you cannot fix: leave that project out of the
+   commit and say so in the pull request.
+
+## Rules that keep the series alive
+
+- Nothing unchecked goes into the stock. A project you could not check stays out.
+- Every name is checked with `npm run serie -- namen` before it is built; a taken name gets a new
+  one in `data/serie/<reihe>.json`.
+- Similar content belongs in one project, not in several. Do not split a project to fill slots.
+- Page texts follow `scripts/lib/page-check.js`. They describe what the first version does.
+- When a game is not available to test in (Stardew, Bedrock, WoW Forever), say so nowhere as
+  "tested"; keep to documented formats and guard every optional call.
+- Review what you built before you commit it: read the code once more, weigh every uncertainty,
+  and drop what you would not put your name on.

@@ -22,7 +22,11 @@
         "Bambus und Netherholz",
         "Stämme",
         "26.1-Format"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 2,
@@ -35,7 +39,11 @@
         "mehr Geräusche",
         "Varianten"
       ],
-      "shot": false
+      "shot": false,
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 3,
@@ -47,19 +55,27 @@
         "+15 Tierzucht",
         "+15 Kochen",
         "EP-Belohnungen"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 4,
-      "slug": "fresh-splashes",
-      "name": "Fresh Splashes",
-      "art": "R",
-      "was": "300 neue Sprüche im Titelbild",
+      "slug": "villages-nearby",
+      "name": "Villages Nearby",
+      "art": "D",
+      "was": "Dörfer erscheinen häufiger in neuen Gebieten",
       "updates": [
-        "+150",
-        "Feiertage",
-        "deutsche Ausgabe"
-      ]
+        "Außenposten und Tempel",
+        "drei Stufen als eigene Dateien",
+        "26.1"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 5,
@@ -71,46 +87,30 @@
         "Stein",
         "Glas und Ton",
         "Werkzeug-Recycling"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 6,
-      "slug": "more-trim-materials",
-      "name": "More Trim Materials",
-      "art": "DR",
-      "was": "8 neue Besatz-Materialien für Rüstung",
+      "slug": "anglers-loot",
+      "name": "Anglers Loot",
+      "art": "D",
+      "was": "Angel-Beute: mehr Schätze, weniger Müll",
       "updates": [
-        "+6",
-        "Namen in 5 Sprachen",
-        "26.1"
-      ]
+        "Biom-Fänge",
+        "Varianten",
+        "Fortschritte"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 7,
-      "slug": "sleep-tally",
-      "name": "Sleep Tally",
-      "art": "M",
-      "was": "Zeigt „3 von 5 schlafen“, überspringt die Nacht ab einstellbarem Anteil",
-      "updates": [
-        "Einstellungen",
-        "AFK zählt nicht",
-        "NeoForge"
-      ]
-    },
-    {
-      "nr": 8,
-      "slug": "villages-nearby",
-      "name": "Villages Nearby",
-      "art": "D",
-      "was": "Dörfer häufiger, drei Stufen",
-      "updates": [
-        "Außenposten und Tempel",
-        "Varianten",
-        "26.1"
-      ]
-    },
-    {
-      "nr": 9,
       "slug": "replant-click",
       "name": "Replant Click",
       "art": "M",
@@ -118,6 +118,34 @@
       "updates": [
         "Netherwarze und Kakao",
         "Flächen-Ernte",
+        "NeoForge"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
+    },
+    {
+      "nr": 8,
+      "slug": "fresh-splashes",
+      "name": "Fresh Splashes",
+      "art": "R",
+      "was": "300 neue Sprüche im Titelbild",
+      "updates": [
+        "+150",
+        "Feiertage",
+        "deutsche Ausgabe"
+      ]
+    },
+    {
+      "nr": 9,
+      "slug": "owner-safe-pets",
+      "name": "Owner Safe Pets",
+      "art": "M",
+      "was": "Gezähmte Tiere nehmen keinen Schaden von ihrem Besitzer, auch nicht durch Pfeile oder Schwung-Treffer",
+      "updates": [
+        "Schutz vor Lava und Ertrinken",
+        "Einstellungen",
         "NeoForge"
       ]
     },
@@ -135,14 +163,14 @@
     },
     {
       "nr": 11,
-      "slug": "anglers-loot",
-      "name": "Anglers Loot",
-      "art": "D",
-      "was": "Angel-Beute: mehr Schätze, weniger Müll",
+      "slug": "more-trim-materials",
+      "name": "More Trim Materials",
+      "art": "DR",
+      "was": "8 neue Besatz-Materialien für Rüstung",
       "updates": [
-        "Biom-Fänge",
-        "Varianten",
-        "Fortschritte"
+        "+6",
+        "Namen in 5 Sprachen",
+        "26.1"
       ]
     },
     {

@@ -1,0 +1,55 @@
+name: Tests
+
+# Runs the whole test suite for every pull request and for main. The series' automatic merge
+# (serie-merge.yml) only acts on a green run of this workflow.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: LuaJIT for the WoW addon tests
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq luajit
+      - name: Cache game reference data and Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/mod-factory
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: series-${{ runner.os }}-${{ hashFiles('tools/java/fabric/gradle.properties', 'tools/java/fabric/gradle/wrapper/gradle-wrapper.properties', 'tools/java/lib.js', 'tools/stardew/wiki.js') }}
+          restore-keys: series-${{ runner.os }}-
+      - run: npm ci
+      # The pack checks need Mojang's reference data and the official schemas once; with them in
+      # place the tests below run them instead of skipping.
+      - name: Fetch reference data and check every project
+        env:
+          JAVA_21: ${{ env.JAVA_HOME }}/bin/java
+        run: |
+          npm run -s wow -- test
+          npm run -s java -- test
+          npm run -s stardew -- test
+      - name: npm test
+        env:
+          JAVA_21: ${{ env.JAVA_HOME }}/bin/java
+        run: npm test

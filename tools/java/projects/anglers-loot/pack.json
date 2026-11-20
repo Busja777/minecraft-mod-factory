@@ -1,0 +1,7 @@
+{
+  "kind": "data",
+  "name": "Anglers Loot",
+  "description": "Less junk and more treasure when fishing",
+  "mc": "1.21.1",
+  "gameVersions": ["1.21", "1.21.1"]
+}
