@@ -37,6 +37,18 @@ assets, `sounds.json` = the vanilla sound definitions, `asset-index.json` = ever
 - Do not commit, push, upload, generate images or create a logo. Do not download anything else
   from the internet; everything you need is in the cache.
 
+## More than one Minecraft version
+A pack can serve newer Minecraft versions in the same zip: `"also": ["26.3"]` in `pack.json`
+(and the release names in `"gameVersions"`). `pack.js` is then called once per version with
+`{ vanilla, version, format, registry }`; `format` is that version's data (or resource) pack
+format (1.21.1: 48, 26.3: 121). Write each file the way the version reads it, for example a
+recipe ingredient is `{ "item": "minecraft:oak_planks" }` up to format 56 and the plain string
+`"minecraft:oak_planks"` from format 57 on. Always copy the format from that version's own
+vanilla files. Every file of the newest version must also exist for the older one (an overlay
+can replace files, not hide them). `npm run java -- test <slug>` checks each version against its
+data and lets Minecraft itself load the finished data pack where the version can do that without
+a window (1.21.5 and newer); the game's error messages name the file.
+
 ## Files to deliver (all under tools/java/projects/<slug>/)
 - `pack.json`: `{ kind, name, description (short, shown in the game's pack list), mc: "1.21.1", gameVersions: ["1.21", "1.21.1"] }`
 - `pack.js`

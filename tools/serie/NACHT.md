@@ -23,19 +23,44 @@ a workflow by hand.
 1. `npm ci`, then `npm test`. If main is red, stop and open the issue above.
 2. `npm run serie -- stand`. A row with fewer than 5 built projects ahead comes first.
 3. **Fixes before features:** read the newest files in `data/radar/` (versions, comments, trends).
-   A project that a new game version breaks gets its fix first.
+   A project that a new game version breaks gets its fix first. `data/radar/java.json` lists
+   every Java pack against the newest Minecraft release and test version with the game's own
+   error messages. To make a pack serve a new release as well: let `pack.js` write each file the
+   way that version reads it (it gets `format`, compare the vanilla files of both versions in
+   `~/.cache/mod-factory/minecraft/<version>/data/`), add the release to `"also"` and to
+   `"gameVersions"` in `pack.json`, and build a new version (`tools/java/BRIEF.md`, "More than
+   one Minecraft version"). Only released versions go into `"also"`, never a test version. New
+   game version support is a real change and gets its own changelog line.
 4. **New projects** of the row that needs them most, in plan order (`data/serie/<reihe>.json`),
    at most 4 per night. Follow `tools/<reihe>/BRIEF.md`. For each one: source, tests,
    `changelogs/1.0.md`, `page.json`; build with `npm run <reihe> -- bau <slug> --version 1.0`;
-   put the file into the stock with `npm run serie -- vorrat …`. Images (logo, banner, title
-   image) are made by a workflow after the merge; do not create them.
-5. **Updates** for projects that are online and have fewer than 2 versions waiting, at most 6
+   put the file into the stock with `npm run serie -- vorrat …`. Images (logo, painted banner)
+   are made by the workflow `serie-bilder.yml` every morning; do not create them.
+5. **Images of the pages:** for each project that has `logo.png` and `banner-painted.png` in its
+   folder but no `banner` choice in `data/serie/<reihe>.json`, look at both images (read the
+   PNG files). Choose with `npm run serie -- banner-wahl <slug> chatgpt` when the painted banner
+   spells the name and the line correctly, reads well and shows nothing forbidden (game logos,
+   official characters, brand names, a game interface); otherwise `… claude` (the designed
+   banner). Compare each new logo with the other logos of its row: when two are too alike,
+   change the `logoPrompt` in `page.json` to a different motif and delete the new `logo.png`
+   and its `banner-painted.png`, so the workflow paints new ones.
+6. **Updates** for projects that are online and have fewer than 2 versions waiting, at most 6
    per night. One real change per version, taken from the project's planned updates in
    `data/serie/<reihe>.json` (or from a reported problem). Source, tests, `changelogs/<version>.md`,
    build, `npm run serie -- vorrat`. Never a version without a change a player would notice.
-6. Run `npm test` again. Everything green: commit, push, open the pull request with a short
+7. Run `npm test` again. Everything green: commit, push, open the pull request with a short
    list of what was built. Something red that you cannot fix: leave that project out of the
    commit and say so in the pull request.
+
+## Projects prepared ahead of a game version
+
+A project with `"waitsFor": "<version>"` (in its `pack.json` and in `data/serie/<reihe>.json`) is
+built against a test version of that game version and must not go into the stock before the
+version is released. Each night: if `data/radar/versions.json` shows the release, set `"mc"` to
+the release in `pack.json`, remove `"waitsFor"` in both files, build V1.0 against the release
+(the game loads it in the build), check its page and put it into the stock. Until then, keep it
+building against the newest test version: when the radar reports a problem for it, fix it like
+any other project.
 
 ## Rules that keep the series alive
 

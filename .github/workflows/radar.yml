@@ -1,0 +1,63 @@
+name: Radar
+
+# The day-one machine (scripts/radar.js): reads the public version sources every night, checks
+# every Java pack against the newest Minecraft release and test version and writes data/radar/.
+# No AI, no upload, no secrets. The nightly build session reads the result (tools/serie/NACHT.md).
+on:
+  schedule:
+    - cron: '40 22 * * *'   # 23:40 in Berlin (winter), before the nightly build session
+  workflow_dispatch:
+
+concurrency:
+  group: radar
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      # Minecraft 1.21.x runs on Java 21, 26.x needs Java 25. The last one listed is the default.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            25
+            21
+      - name: Cache game reference data
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mod-factory
+          # A new key (and so a new saved cache) only when the baseline names a new version.
+          key: radar-${{ runner.os }}-${{ hashFiles('data/radar/versions.json') }}
+          restore-keys: |
+            radar-${{ runner.os }}-
+            series-${{ runner.os }}-
+      - run: npm ci
+      - name: Read the sources and check the packs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/radar.js
+      - name: Commit the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/radar/
+          if git diff --staged --quiet; then
+            echo "Nothing new."
+            exit 0
+          fi
+          git commit -m "radar: versions and pack checks [skip ci]"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi
+            sleep 5
+          done
+          exit 1
