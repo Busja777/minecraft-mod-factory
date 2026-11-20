@@ -342,7 +342,11 @@
         "Belohnungen und Feinschliff",
         "Deutsch und weitere Sprachen"
       ],
-      "waitsFor": "26.4"
+      "waitsFor": "26.4",
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-20"
+      }
     },
     {
       "nr": 26,
