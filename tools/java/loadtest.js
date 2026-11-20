@@ -46,10 +46,10 @@ export function loadTest(version, zips) {
   if (!supportsLoadTest(version)) throw new Error(`Minecraft ${version} has no headless load test (needs 1.21.5 or newer)`);
   const java = javaFor(versionInfo(version).java);
   if (!java) throw new Error(`Java ${versionInfo(version).java} is missing for Minecraft ${version}`);
-  const work = path.join(versionDir(version), 'gametest');
+  // Its own folder per run, so two checks at the same time do not see each other's packs.
+  const work = fs.mkdtempSync(path.join(versionDir(version), 'gametest-'));
   const packs = path.join(work, 'packs');
-  fs.rmSync(packs, { recursive: true, force: true });
-  fs.mkdirSync(packs, { recursive: true });
+  fs.mkdirSync(packs);
   for (const zip of zips) fs.copyFileSync(zip, path.join(packs, path.basename(zip)));
   const r = spawnSync(java, ['-DbundlerMainClass=net.minecraft.gametest.Main', '-jar', path.join(versionDir(version), 'server.jar'), '--packs', 'packs', '--universe', 'world'],
     { cwd: work, encoding: 'utf-8', maxBuffer: 256 * 1024 * 1024, timeout: 10 * 60 * 1000 });
@@ -58,6 +58,6 @@ export function loadTest(version, zips) {
   const errors = parseLoadLog(log);
   const missing = zips.map(z => path.basename(z)).filter(n => !included.includes(n));
   for (const n of missing) errors.push({ registry: null, element: null, message: `the game did not accept ${n} as a pack` });
-  fs.rmSync(path.join(work, 'world'), { recursive: true, force: true });
+  fs.rmSync(work, { recursive: true, force: true });
   return { ok: errors.length === 0, included, errors, exit: r.status, log };
 }
