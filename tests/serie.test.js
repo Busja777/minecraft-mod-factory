@@ -45,7 +45,7 @@ test('planned days: one project per day from the row\'s start', () => {
   assert.equal(plannedDate(by.wow, 33), '2026-12-22');
   assert.equal(plannedDate(by.java, 33), '2026-12-25');
   assert.equal(plannedDate(by.stardew, 33), '2026-12-27');
-  assert.equal(plannedDate(by.sims4, 33), '2026-12-29');
+  assert.equal(plannedDate(by.bedrock, 33), '2027-01-01');
   assert.equal(outDir('wow', by.wow.projects[0]), path.join('Output', 'serie', 'wow', '01-gold-diary'));
   assert.equal(projectDir('wow', 'gold-diary'), path.join('tools', 'wow', 'projects', 'gold-diary'));
   assert.throws(() => findSerieProject(loadReihen(), 'nope'), /Kein Serien-Projekt/);
@@ -283,7 +283,7 @@ test('npm run serie: stock, status, plan and the ID step', () => {
   run('plan');
   const plan = fs.readFileSync(path.join(dir, 'Output', 'serie', 'PLAN.md'), 'utf-8');
   assert.match(plan, /\| 2 \| 21\.11\. \| Level Clock \| Addon \(Retail \+ Forever\) \|.*\| angelegt \|/);
-  assert.match(plan, /## The Sims 4 \(Start 27\.11\.\)/);
+  assert.match(plan, /## Minecraft Bedrock Add-ons \(Start 30\.11\.\)/);
 });
 
 test('npm run serie: ChatGPT brief, comparison and choice of the banner', { timeout: 120000 }, async () => {

@@ -41,7 +41,7 @@ jobs:
             ~/.cache/mod-factory
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: series-${{ runner.os }}-${{ hashFiles('tools/java/fabric/gradle.properties', 'tools/java/fabric/gradle/wrapper/gradle-wrapper.properties', 'tools/java/lib.js', 'tools/stardew/wiki.js') }}
+          key: series-${{ runner.os }}-${{ hashFiles('tools/java/fabric/gradle.properties', 'tools/java/fabric/gradle/wrapper/gradle-wrapper.properties', 'tools/java/lib.js', 'tools/stardew/wiki.js', 'tools/bedrock/samples.js') }}
           restore-keys: series-${{ runner.os }}-
       - run: npm ci
       # The pack checks need Mojang's reference data and the official schemas once; with them in
@@ -53,6 +53,7 @@ jobs:
           npm run -s wow -- test
           npm run -s java -- test
           npm run -s stardew -- test
+          npm run -s bedrock -- test
       - name: npm test
         env:
           JAVA_21: ${{ env.JAVA_HOME }}/bin/java

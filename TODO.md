@@ -29,7 +29,10 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
    - [ ] Radar auch für die Versionslisten von CurseForge (WoW, Stardew) und für Bedrock-Packs.
 4. [ ] Bilder ohne dich (`serie-bilder.yml`), Fenster-Vorschauen für WoW, längere WoW-Beschreibungen (Stichwortzeile, Abschnitt pro Funktion, Befehlstabelle, bis etwa 450 Wörter).
 5. [ ] Browser-Helfer füllt das Anlegen-Formular für alle Spiele (`npm run cf -- serie`).
-6. [ ] Bedrock-Reihe statt Sims: `tools/bedrock/`, die ersten sieben Packs, Sims aus `data/serie/` entfernen.
+6. Bedrock-Reihe statt Sims:
+   - [x] Rahmen `tools/bedrock/`, Plan der 33 (`data/serie/bedrock.json`, Namen geprüft), eigenes Bein, Sims entfernt, Nr. 1 Plank Cutter im Vorrat.
+   - [ ] Nr. 2 bis 7 bauen (Hushed World, Calm Creepers, Anglers Haul, Fair Villager Trades, Tidy Endermen, Uncraft Kit).
+   - [ ] Radar: neue `bedrock-samples`-Version → alle Bedrock-Packs dagegen prüfen.
 7. [ ] Saisonkalender mit Winter-Updates, danach der wöchentliche Trend-Radar.
 8. [ ] An einem echten Abend prüfen, ob der Abend-Lauf zwischen 18 und 21 Uhr startet.
 9. [ ] Ersten Lauf der Nacht-Sitzung lesen (PR da, Tests grün, von selbst gemergt?).

@@ -41,7 +41,7 @@ function loadPage(reihe, project) {
 }
 
 const pageOptions = (reihe, project) => ({
-  maxWords: reihe.reihe === 'sims4' ? 250 : 200,
+  maxWords: 200,
   // visual packs need a real in-game image; a pack without visuals (sounds only) says shot: false
   needsShot: reihe.reihe === 'java' && /R/.test(project.art) && project.shot !== false,
   bannerFrom: project.banner?.from || null,
