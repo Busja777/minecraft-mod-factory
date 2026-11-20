@@ -75,8 +75,7 @@
         "Zeiten für alle Charaktere",
         "Dauer im Flugkarten-Tooltip",
         "Ankunfts-Ton"
-      ],
-      "nameChecked": false
+      ]
     },
     {
       "nr": 6,
@@ -400,8 +399,7 @@
         "Favoriten",
         "zuletzt benutzt",
         "andere Realms"
-      ],
-      "nameChecked": false
+      ]
     },
     {
       "nr": 33,

@@ -26,9 +26,9 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 A project of another game is created **once by hand** on CurseForge; from then on the evening run uploads its prepared versions through the upload API (file + changelog only, the page stays as created).
 
 - **Games** live in `config.json` → `games` (`gameEndpoint`, Core `gameId`, `urlSection`, optional `versionTypes`). Registered: Minecraft Java, Minecraft Bedrock, Stardew Valley, World of Warcraft, The Sims 4. A game only belongs there if `https://<slug>.curseforge.com/api/game/versions` returns its own version list with a token (an unknown slug answers with the placeholder list `1.0`; Hytale and inZOI have no upload API).
-- **Accounts:** every game is its own CurseForge account with its own upload token `CF_API_TOKEN_<ACCOUNT>` (e.g. `CF_API_TOKEN_STARDEWVALLEY`); Java and Bedrock share the account `minecraft` and `CF_API_TOKEN`. `npm run secrets:push` uploads every `CF_API_TOKEN_*` from `secrets.env`.
-- **Evening run:** one leg per account that owns a published project (job `update-<account>`), each with its own random slot between 18:00 and 21:00 and at most one update per day. A file gets every game version of the previous file plus all newer releases of the game.
-- **First file** of a project without any file never uploads by itself: `gh workflow run evening.yml -f force=true -f modId=<slug>`. A forced run needs `modId` or `account` and starts exactly one account.
+- **Accounts:** every game is its own CurseForge account with its own upload token `CF_API_TOKEN_<ACCOUNT>` (e.g. `CF_API_TOKEN_STARDEWVALLEY`); Java and Bedrock are in the same account and share `CF_API_TOKEN`. `npm run secrets:push` uploads every `CF_API_TOKEN_*` from `secrets.env`.
+- **Evening run:** one leg per `account` in `config.games` that has something to upload (job `update-<account>`; Java and Bedrock are two legs), each with its own random slot between 18:00 and 21:00 and at most one upload per day. A file gets every game version of the previous file plus all newer releases of the game; a Minecraft Java file gets exactly the versions it was built for (`carryNewer: false`).
+- **First file** of a project only uploads on the operator's word: for a series project that is entering its project ID (`npm run serie -- id`), otherwise `gh workflow run evening.yml -f force=true -f modId=<slug>`. A forced run needs `modId` or `account` and starts exactly one account.
 
 ```bash
 npm run projekt -- neu --game stardewvalley --id 123456 --name "Cozy Farm"      # register a project created by hand
@@ -38,6 +38,16 @@ node scripts/release.js --project cozy-farm --dry-run                           
 ```
 
 Storage: `data/projects/<slug>/project.json` and `data/projects/<slug>/files/`; the queue entry in `data/cf-projects.json` has `kind: "file"` and `game`.
+
+## The series: 33 projects per game, one upload per game and day
+
+`data/serie/<reihe>.json` holds four rows of 33 projects (World of Warcraft, Minecraft Java, Stardew Valley, The Sims 4) with their planned updates. Each row uploads one file per evening: a new project per day for 33 days, then updates in turns.
+
+- **Source** of a project: `tools/<reihe>/projects/<slug>/` (`page.json`, `logo.png`, `changelogs/`, code). Built, checked files go into the stock under `data/projects/<slug>/`, also before the CurseForge page exists.
+- **Page:** `npm run serie -- logo <slug>` makes the AI logo, `npm run serie -- seite <slug>` renders the title image (`tools/serie/cover.js`), writes the texts to `Output/serie/<reihe>/<nr>-<slug>/` and runs the page check (`scripts/lib/page-check.js`: title, one-sentence summary, short description in four fixed parts, image sizes).
+- **Go:** the operator creates the page by hand and runs `npm run serie -- id <slug> <projectId>`. That entry is `pending` with `autoStart`, so the row's evening leg uploads V1.0 before any update.
+- `npm run serie -- heute | stand | plan | namen` show the day, the head start per row, the calendar and free names.
+- **World of Warcraft:** `npm run wow -- bau <slug> --version 1.0` checks the addon (Lua 5.1 only, complete TOC, translations) and runs its Lua tests against a stand-in client (`tools/wow/client/`, needs LuaJIT) before it writes the zip.
 
 ## Skin packs (CurseForge Bedrock)
 

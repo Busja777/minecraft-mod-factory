@@ -358,8 +358,7 @@
         "+10",
         "leicht/fair",
         "Rezeptbuch"
-      ],
-      "nameChecked": false
+      ]
     },
     {
       "nr": 30,
@@ -395,8 +394,7 @@
         "Klick kopiert",
         "letzte 5 Tode",
         "NeoForge"
-      ],
-      "nameChecked": false
+      ]
     },
     {
       "nr": 33,
@@ -408,8 +406,7 @@
         "Menge",
         "Verlust einstellbar",
         "NeoForge"
-      ],
-      "nameChecked": false
+      ]
     }
   ]
 }

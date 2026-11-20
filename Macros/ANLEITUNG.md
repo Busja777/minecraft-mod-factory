@@ -116,6 +116,27 @@ Regeln wie bei den Skinpacks: pro Konto höchstens 1 Update am Tag zu einer Zufa
 
 ---
 
+## Die Serie: jeden Tag ein Projekt pro Spiel
+
+Vier Reihen mit je 33 Projekten: World of Warcraft, Minecraft Java, Stardew Valley und The Sims 4. Jede Reihe lädt abends genau eine Datei hoch. In den ersten 33 Tagen ist das jeden Tag ein neues Projekt, danach kommt reihum ein Update. Der ganze Plan steht in `Output/serie/PLAN.md` (`npm run serie -- plan` schreibt ihn neu).
+
+**Dein Tag (pro Projekt etwa 10 Minuten):**
+
+1. `npm run serie -- heute` zeigt pro Reihe, welches Projekt du anlegst und in welchem Ordner alles liegt.
+2. Ordner öffnen, zum Beispiel `Output/serie/wow/01-gold-diary/`. Darin liegen `curseforge.md` (Name, Summary, Kategorie, Beschreibung), `logo.png` und `cover.png`.
+3. Auf https://authors.curseforge.com im Konto des Spiels ein neues Projekt anlegen: Texte einfügen (im Editor auf **Markdown** stellen), Logo hochladen, das Titelbild unter **Images** hochladen und als Hauptbild markieren. **Keine Datei hochladen.**
+4. Die Projekt-ID eintragen: `npm run serie -- id gold-diary 123456`. **Das ist dein Go.** Die erste Datei geht am selben Abend von selbst hoch.
+
+Du kannst Projekte auch auf Vorrat anlegen, zum Beispiel sieben am Sonntag. Hochgeladen wird trotzdem nur eines pro Reihe und Tag. Fehlt abends die ID, lädt die Reihe an dem Tag nichts hoch und rutscht um einen Tag.
+
+**Einmal pro Konto:** unter *My API Tokens* ein Token erzeugen und in `secrets.env` eintragen (`CF_API_TOKEN_WOW`, `CF_API_TOKEN_STARDEWVALLEY`, `CF_API_TOKEN_SIMS4`; Java nutzt das Minecraft-Token), dann `npm run secrets:push`.
+
+**Stand ansehen:** `npm run serie -- stand` zeigt je Reihe, wie viele Projekte online, angelegt und fertig gebaut sind. Liegt der Vorsprung unter 5 fertigen Projekten, braucht die Reihe eine Bau-Nacht mit Claude.
+
+**Was nie passiert:** Es geht nichts Ungeprüftes hoch. Ist der Vorrat einer Reihe leer, pausiert sie.
+
+---
+
 ## Sicherheit: was das Tool tut und was nicht
 
 - Es läuft **sichtbar** in Google Chrome, in normalem Tempo, ein Projekt pro Lauf.
