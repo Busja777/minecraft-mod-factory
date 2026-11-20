@@ -1,0 +1,18 @@
+{
+  "slug": "anglers-haul",
+  "game": "bedrockaddons",
+  "name": "Anglers Haul",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "AnglersHaul-1.0.mcpack",
+      "changelog": "## Anglers Haul 1.0\n\nFirst release.\n\n- Fishing pulls up treasure more often: 8% of all catches instead of 5%.\n- Less junk: 7% of all catches instead of 10%. Fish stay at 85%.\n- Works the same in jungles, which keep their own fish and junk.\n- Luck of the Sea still adds treasure and removes junk on top: at level III a cast gives about 14% treasure and 1% junk.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}

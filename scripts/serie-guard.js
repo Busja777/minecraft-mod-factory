@@ -3,12 +3,14 @@ import { setOutputs } from './lib/github-output.js';
 
 // Decides whether a pull request of the nightly build session may be merged without the operator.
 // Called by .github/workflows/serie-merge.yml from the default branch, never from the PR's code.
-//   PR_HEAD_REPO, PR_BASE_REPO, PR_HEAD_REF, CI_CONCLUSION, PR_FILES (one path per line)
+//   PR_HEAD_REPO, PR_BASE_REPO, PR_HEAD_REF, PR_BASE_REF, DEFAULT_BRANCH, CI_CONCLUSION, PR_FILES (one path per line)
 const files = (process.env.PR_FILES || '').split('\n').map(s => s.trim()).filter(Boolean);
 const result = guardPullRequest({
   headRepo: process.env.PR_HEAD_REPO,
   baseRepo: process.env.PR_BASE_REPO,
   headRef: process.env.PR_HEAD_REF,
+  baseRef: process.env.PR_BASE_REF,
+  defaultBranch: process.env.DEFAULT_BRANCH,
   ciConclusion: process.env.CI_CONCLUSION,
   files
 });

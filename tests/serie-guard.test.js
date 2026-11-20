@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { guardPullRequest, isContent, AUTO_BRANCH } from '../scripts/lib/serie-guard.js';
 
 const repo = 'Busja777/minecraft-mod-factory';
-const ok = { headRepo: repo, baseRepo: repo, headRef: 'serie/auto-2026-11-21', ciConclusion: 'success' };
+const ok = { headRepo: repo, baseRepo: repo, headRef: 'serie/auto-2026-11-21', baseRef: 'main', defaultBranch: 'main', ciConclusion: 'success' };
 
 test('content of the series is merged without the operator', () => {
   const files = [
@@ -41,6 +41,9 @@ test('only green pull requests from serie/auto branches of this repository', () 
   assert.match(guardPullRequest({ ...ok, files, headRepo: 'someone/fork' }).reasons[0], /not in this repository/);
   assert.match(guardPullRequest({ ...ok, files, headRef: 'feat/new-rules' }).reasons[0], /not serie\/auto/);
   assert.match(guardPullRequest({ ...ok, files, headRef: 'serie/auto-' }).reasons[0], /not serie\/auto/);
+  // only into the default branch, never into a branch that waits for the operator
+  assert.match(guardPullRequest({ ...ok, files, baseRef: 'feat/radar' }).reasons[0], /targets "feat\/radar", not the default branch/);
+  assert.equal(guardPullRequest({ ...ok, files, defaultBranch: undefined }).merge, false);
   assert.match(guardPullRequest({ ...ok, files, ciConclusion: 'failure' }).reasons[0], /tests are failure/);
   assert.match(guardPullRequest({ ...ok, files, ciConclusion: undefined }).reasons[0], /tests are missing/);
   assert.match(guardPullRequest({ ...ok, files: [] }).reasons[0], /changes no files/);

@@ -68,6 +68,14 @@
       "gameId": 78022,
       "urlSection": "minecraft-bedrock/skins"
     },
+    "bedrockaddons": {
+      "name": "Minecraft Bedrock Add-ons",
+      "account": "minecraft-bedrock-addons",
+      "tokenEnv": "CF_API_TOKEN",
+      "gameEndpoint": "minecraft-bedrock",
+      "gameId": 78022,
+      "urlSection": "minecraft-bedrock/addons"
+    },
     "stardewvalley": {
       "name": "Stardew Valley",
       "gameEndpoint": "stardewvalley",

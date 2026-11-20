@@ -1,0 +1,37 @@
+{
+  "name": "Plank Cutter",
+  "summary": "Cut every kind of plank into stairs, slabs, doors and more in the stonecutter, one plank at a time and without waste.",
+  "class": "Addons",
+  "category": "Utility",
+  "logoPrompt": "A stonecutter block with its round saw blade spinning, cutting a stack of warm wooden planks into a neat little wooden staircase, wood shavings flying, in blocky voxel style",
+  "cover": {
+    "tagline": "Wood blocks straight from the stonecutter.",
+    "bullets": [
+      "Stairs, slabs, doors and more",
+      "All twelve kinds of wood",
+      "No leftover planks"
+    ]
+  },
+  "description": [
+    "**Plank Cutter lets the stonecutter work with wood: put in planks and pick the wooden block you need, one plank at a time.**",
+    "",
+    "## Features",
+    "- Stairs, slabs, fences, fence gates, doors, trapdoors and pressure plates from a single plank.",
+    "- Works for oak, spruce, birch, jungle, acacia, dark oak, mangrove, cherry, pale oak, bamboo, crimson and warped planks.",
+    "- One plank gives two slabs or one of everything else, close to what the crafting table gives.",
+    "- The crafting table recipes stay as they are.",
+    "",
+    "## How to use",
+    "Import the .mcpack, then turn it on under Behavior Packs when you create or edit a world. Place a stonecutter and put planks into it.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft Bedrock 26.60 and newer. It only adds recipes, so it is safe to add to or remove from an existing world.",
+    "- Like any behavior pack it can be used in singleplayer, on Realms and on servers; it needs no experimental features.",
+    "- Like every behavior pack, it turns off achievements in the world it is added to.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

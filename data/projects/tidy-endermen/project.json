@@ -1,0 +1,18 @@
+{
+  "slug": "tidy-endermen",
+  "game": "bedrockaddons",
+  "name": "Tidy Endermen",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "TidyEndermen-1.0.mcpack",
+      "changelog": "## Tidy Endermen 1.0\n\nFirst release.\n\n- Endermen no longer pick up blocks.\n- Endermen no longer place blocks.\n- Everything else about endermen is unchanged: health, attack, teleporting, anger when looked at, loot and spawning.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}
