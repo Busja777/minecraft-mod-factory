@@ -1,0 +1,412 @@
+{
+  "reihe": "java",
+  "game": "java",
+  "title": "Minecraft Java",
+  "start": "2026-11-23",
+  "logoStyle": "Blocky voxel art icon, crisp pixel edges, vibrant colours, soft glow, dark moody background",
+  "arts": {
+    "D": "Data Pack",
+    "R": "Resource Pack",
+    "DR": "Data Pack + Resource Pack",
+    "M": "Fabric-Mod 1.21.1"
+  },
+  "reserve": [],
+  "projects": [
+    {
+      "nr": 1,
+      "slug": "stonecutter-woodworks",
+      "name": "Stonecutter Woodworks",
+      "art": "D",
+      "was": "Holz im Steinsäger: Treppen, Stufen, Zäune, Türen",
+      "updates": [
+        "Bambus und Netherholz",
+        "Stämme",
+        "26.1-Format"
+      ]
+    },
+    {
+      "nr": 2,
+      "slug": "hush",
+      "name": "Hush",
+      "art": "R",
+      "was": "Leisere Dorfbewohner, Kühe, Portale, Regen",
+      "updates": [
+        "Stufen wählbar",
+        "mehr Geräusche",
+        "Varianten"
+      ]
+    },
+    {
+      "nr": 3,
+      "slug": "farmers-advancements",
+      "name": "Farmers Advancements",
+      "art": "D",
+      "was": "30 neue Fortschritte zu Ackerbau und Tieren",
+      "updates": [
+        "+15 Tierzucht",
+        "+15 Kochen",
+        "EP-Belohnungen"
+      ]
+    },
+    {
+      "nr": 4,
+      "slug": "fresh-splashes",
+      "name": "Fresh Splashes",
+      "art": "R",
+      "was": "300 neue Sprüche im Titelbild",
+      "updates": [
+        "+150",
+        "Feiertage",
+        "deutsche Ausgabe"
+      ]
+    },
+    {
+      "nr": 5,
+      "slug": "uncraft-basics",
+      "name": "Uncraft Basics",
+      "art": "D",
+      "was": "Rück-Rezepte (Wolle zu Faden, Quarzblock zu Quarz …)",
+      "updates": [
+        "Stein",
+        "Glas und Ton",
+        "Werkzeug-Recycling"
+      ]
+    },
+    {
+      "nr": 6,
+      "slug": "more-trim-materials",
+      "name": "More Trim Materials",
+      "art": "DR",
+      "was": "8 neue Besatz-Materialien für Rüstung",
+      "updates": [
+        "+6",
+        "Namen in 5 Sprachen",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 7,
+      "slug": "sleep-tally",
+      "name": "Sleep Tally",
+      "art": "M",
+      "was": "Zeigt „3 von 5 schlafen“, überspringt die Nacht ab einstellbarem Anteil",
+      "updates": [
+        "Einstellungen",
+        "AFK zählt nicht",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 8,
+      "slug": "villages-nearby",
+      "name": "Villages Nearby",
+      "art": "D",
+      "was": "Dörfer häufiger, drei Stufen",
+      "updates": [
+        "Außenposten und Tempel",
+        "Varianten",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 9,
+      "slug": "replant-click",
+      "name": "Replant Click",
+      "art": "M",
+      "was": "Rechtsklick erntet und pflanzt nach",
+      "updates": [
+        "Netherwarze und Kakao",
+        "Flächen-Ernte",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 10,
+      "slug": "numbered-hotbar-slots",
+      "name": "Numbered Hotbar Slots",
+      "art": "R",
+      "was": "Ziffern 1–9 auf der Schnellleiste",
+      "updates": [
+        "Farben",
+        "dezent",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 11,
+      "slug": "anglers-loot",
+      "name": "Anglers Loot",
+      "art": "D",
+      "was": "Angel-Beute: mehr Schätze, weniger Müll",
+      "updates": [
+        "Biom-Fänge",
+        "Varianten",
+        "Fortschritte"
+      ]
+    },
+    {
+      "nr": 12,
+      "slug": "fast-leaf-fall",
+      "name": "Fast Leaf Fall",
+      "art": "M",
+      "was": "Laub verschwindet schnell nach dem Fällen",
+      "updates": [
+        "Tempo",
+        "Feinschliff",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 13,
+      "slug": "six-more-enchantments",
+      "name": "Six More Enchantments",
+      "art": "D",
+      "was": "Sechs neue Verzauberungen (Reichweite, Schrittweite, Vitalität …)",
+      "updates": [
+        "+3",
+        "in Beute und Handel",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 14,
+      "slug": "afk-tag",
+      "name": "AFK Tag",
+      "art": "M",
+      "was": "Markiert abwesende Spieler in der Liste",
+      "updates": [
+        "zählt beim Schlafen nicht",
+        "Kick",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 15,
+      "slug": "shield-down-low",
+      "name": "Shield Down Low",
+      "art": "R",
+      "was": "Schild tiefer im Bild",
+      "updates": [
+        "Varianten",
+        "Totem kleiner",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 16,
+      "slug": "mob-drops-plus",
+      "name": "Mob Drops Plus",
+      "art": "D",
+      "was": "Sinnvolle Zusatz-Beute (Wüstenzombie: Sand …)",
+      "updates": [
+        "+10 Mobs",
+        "seltene Drops",
+        "Varianten"
+      ]
+    },
+    {
+      "nr": 17,
+      "slug": "join-greeter",
+      "name": "Join Greeter",
+      "art": "M",
+      "was": "Begrüßung, Regeln und Start-Set beim ersten Betreten",
+      "updates": [
+        "Farben und Platzhalter",
+        "Tagesnachricht",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 18,
+      "slug": "ore-abundance",
+      "name": "Ore Abundance",
+      "art": "D",
+      "was": "Mehr Erze in drei Stufen",
+      "updates": [
+        "einzelne Erze",
+        "Nether",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 19,
+      "slug": "sky-forecast",
+      "name": "Sky Forecast",
+      "art": "M",
+      "was": "/forecast sagt das Wetter voraus",
+      "updates": [
+        "Barometer",
+        "Gewitterwarnung",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 20,
+      "slug": "arrow-blocks",
+      "name": "Arrow Blocks",
+      "art": "R",
+      "was": "Pfeile auf Trichtern, Spendern, Beobachtern",
+      "updates": [
+        "mehr Blöcke",
+        "Farben",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 21,
+      "slug": "trigger-homes",
+      "name": "Trigger Homes",
+      "art": "D",
+      "was": "/trigger home, sethome, spawn ohne Mod",
+      "updates": [
+        "mehrere Homes",
+        "Abklingzeit",
+        "zurück zum Todesort"
+      ]
+    },
+    {
+      "nr": 22,
+      "slug": "griefing-rules",
+      "name": "Griefing Rules",
+      "art": "M",
+      "was": "Mob-Zerstörung getrennt regelbar",
+      "updates": [
+        "mehr Mobs",
+        "je Dimension",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 23,
+      "slug": "ripe-crop-marker",
+      "name": "Ripe Crop Marker",
+      "art": "R",
+      "was": "Reife Pflanzen klar erkennbar",
+      "updates": [
+        "mehr Pflanzen",
+        "dezent",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 24,
+      "slug": "patient-anvil",
+      "name": "Patient Anvil",
+      "art": "M",
+      "was": "Kein „Zu teuer“ am Amboss",
+      "updates": [
+        "Obergrenze",
+        "Umbenennen gratis",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 25,
+      "slug": "actionbar-coords",
+      "name": "Actionbar Coords",
+      "art": "D",
+      "was": "Koordinaten und Uhrzeit über der Leiste",
+      "updates": [
+        "Richtung und Biom",
+        "Farben",
+        "Todes-Koordinaten"
+      ]
+    },
+    {
+      "nr": 26,
+      "slug": "stack-more",
+      "name": "Stack More",
+      "art": "M",
+      "was": "Größere Stapel für Tränke, Eier, Schneebälle",
+      "updates": [
+        "Liste einstellbar",
+        "mehr Gegenstände",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 27,
+      "slug": "seamless-panes",
+      "name": "Seamless Panes",
+      "art": "R",
+      "was": "Glas ohne störende Ränder",
+      "updates": [
+        "gefärbtes Glas",
+        "Scheiben",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 28,
+      "slug": "double-door-buddy",
+      "name": "Double Door Buddy",
+      "art": "M",
+      "was": "Doppeltüren öffnen gemeinsam",
+      "updates": [
+        "Zauntore und Falltüren",
+        "Redstone-Ausnahme",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 29,
+      "slug": "recipes-you-missed",
+      "name": "Recipes You Missed",
+      "art": "D",
+      "was": "Rezepte für Namensschild, Glocke, Spinnweben …",
+      "updates": [
+        "+10",
+        "leicht/fair",
+        "Rezeptbuch"
+      ]
+    },
+    {
+      "nr": 30,
+      "slug": "bonemeal-more",
+      "name": "Bonemeal More",
+      "art": "M",
+      "was": "Knochenmehl wirkt auf Zuckerrohr, Kaktus, Netherwarze",
+      "updates": [
+        "Liste",
+        "Blumen",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 31,
+      "slug": "glint-colors",
+      "name": "Glint Colors",
+      "art": "R",
+      "was": "Verzauberungs-Schimmer in 8 Farben",
+      "updates": [
+        "mehr Farben",
+        "dezent",
+        "26.1"
+      ]
+    },
+    {
+      "nr": 32,
+      "slug": "where-i-died",
+      "name": "Where I Died",
+      "art": "M",
+      "was": "Todeskoordinaten im Chat",
+      "updates": [
+        "Klick kopiert",
+        "letzte 5 Tode",
+        "NeoForge"
+      ]
+    },
+    {
+      "nr": 33,
+      "slug": "bottled-levels",
+      "name": "Bottled Levels",
+      "art": "M",
+      "was": "Erfahrung in Flaschen abfüllen",
+      "updates": [
+        "Menge",
+        "Verlust einstellbar",
+        "NeoForge"
+      ]
+    }
+  ]
+}

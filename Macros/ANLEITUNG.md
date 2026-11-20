@@ -35,9 +35,10 @@ Die `.jar`-Uploads der Mods laufen weiterhin automatisch über die API. Dafür b
 
 1. **Doppelklick auf `Macros/CurseForge.command`** im Projektordner.
    - Beim allerersten Mal meldet macOS eventuell „nicht verifizierter Entwickler“. Dann **Rechtsklick → Öffnen → Öffnen**. Das ist nur einmal nötig.
-2. Im Menü **`l`** tippen und Enter drücken. Es öffnet sich ein eigenes Chrome-Fenster.
-3. Dort **bei CurseForge einloggen**, ganz normal. Danach im Terminal Enter drücken.
-   Das Fenster merkt sich den Login. Es ist ein eigenes Profil, dein normales Chrome bleibt unberührt.
+2. Im Menü **`l`** tippen und Enter drücken (oder im Terminal `npm run cf -- login`). Es öffnet sich ein **normales** Chrome-Fenster mit dem eigenen Profil des Helfers.
+3. Dort **bei CurseForge einloggen**, auch „Mit Google anmelden“ geht hier. Danach dieses Chrome mit **⌘Q** beenden.
+   Das Profil merkt sich den Login, dein normales Chrome bleibt unberührt. Fragt macOS nach dem Schlüsselbund („Chrome Safe Storage“), „Immer erlauben“ klicken.
+   Warum ein normales Fenster? Im ferngesteuerten Helfer-Fenster lehnt Google jede Anmeldung ab („Anmeldung nicht möglich“). Das wird nicht umgangen.
 4. **Probelauf** (das Tool ist anhand der Screenshots aus deiner `Anleitung_CF.docx` eingestellt):
    `CurseForge.command` starten, „Cover & Media: Glowing Samurai“ wählen und zuschauen. Am Ende **nicht** auf Apply klicken, sondern Fenster schließen.
    Steht in der Zusammenfassung „⚠ … nicht gefunden“, dann im Menü **`i`** wählen, genau diese Seite öffnen, Enter drücken, `q` tippen und Claude Bescheid geben. Claude trägt die echten Namen ein.
@@ -100,11 +101,47 @@ npm run cf -- inspect                              # Seiten für die Kalibrierun
 
 ---
 
+## Weitere Spiele: einmal anlegen, danach läuft es von selbst
+
+Für Stardew Valley, World of Warcraft und The Sims 4 gibt es keinen Helfer im Browser. Du legst ein Projekt **einmal von Hand** an, danach kommen die Updates abends von selbst (Datei + Changelog). Beschreibung und Bilder bleiben so, wie du sie angelegt hast.
+
+1. **Projekt anlegen:** auf https://authors.curseforge.com im Konto des Spiels, mit Name, Beschreibung, Logo und Bildern. Die Projekt-ID steht rechts auf der Projektseite.
+2. **Token des Kontos (einmal pro Konto):** im Konto unter *My API Tokens* ein Token erzeugen, in `secrets.env` als `CF_API_TOKEN_STARDEWVALLEY` (bzw. `_WOW`, `_SIMS4`) eintragen, dann `npm run secrets:push`.
+3. **Claude die Projekt-ID geben.** Claude trägt das Projekt ein und legt den Vorrat an Versionen an.
+4. **Erste Datei:** Liegt auf CurseForge noch keine Datei, startet die erste nur auf dein Wort. Danach läuft alles allein.
+
+Stand ansehen: `npm run projekt -- liste` zeigt pro Projekt, ob das Token da ist, wie viele Versionen vorbereitet sind und wann das nächste Update frühestens kommt.
+
+Regeln wie bei den Skinpacks: pro Konto höchstens 1 Update am Tag zu einer Zufallszeit zwischen 18 und 21 Uhr, jedes Projekt frühestens 23 Tage nach seiner letzten Datei. Ist nichts vorbereitet, passiert nichts.
+
+---
+
+## Die Serie: jeden Tag ein Projekt pro Spiel
+
+Vier Reihen mit je 33 Projekten: World of Warcraft, Minecraft Java, Stardew Valley und The Sims 4. Jede Reihe lädt abends genau eine Datei hoch. In den ersten 33 Tagen ist das jeden Tag ein neues Projekt, danach kommt reihum ein Update. Der ganze Plan steht in `Output/serie/PLAN.md` (`npm run serie -- plan` schreibt ihn neu).
+
+**Dein Tag (pro Projekt etwa 10 Minuten):**
+
+1. `npm run serie -- heute` zeigt pro Reihe, welches Projekt du anlegst und in welchem Ordner alles liegt.
+2. Ordner öffnen, zum Beispiel `Output/serie/wow/01-gold-diary/`. Darin liegen `curseforge.md` (Name, Summary, Kategorie, Beschreibung), `logo.png` und `cover.png`.
+3. Auf https://authors.curseforge.com im Konto des Spiels ein neues Projekt anlegen: Texte einfügen (im Editor auf **Markdown** stellen), Logo hochladen, das Titelbild unter **Images** hochladen und als Hauptbild markieren. **Keine Datei hochladen.**
+4. Die Projekt-ID eintragen: `npm run serie -- id gold-diary 123456`. **Das ist dein Go.** Die erste Datei geht am selben Abend von selbst hoch.
+
+Du kannst Projekte auch auf Vorrat anlegen, zum Beispiel sieben am Sonntag. Hochgeladen wird trotzdem nur eines pro Reihe und Tag. Fehlt abends die ID, lädt die Reihe an dem Tag nichts hoch und rutscht um einen Tag.
+
+**Einmal pro Konto:** unter *My API Tokens* ein Token erzeugen und in `secrets.env` eintragen (`CF_API_TOKEN_WOW`, `CF_API_TOKEN_STARDEWVALLEY`, `CF_API_TOKEN_SIMS4`; Java nutzt das Minecraft-Token), dann `npm run secrets:push`.
+
+**Stand ansehen:** `npm run serie -- stand` zeigt je Reihe, wie viele Projekte online, angelegt und fertig gebaut sind. Liegt der Vorsprung unter 5 fertigen Projekten, braucht die Reihe eine Bau-Nacht mit Claude.
+
+**Was nie passiert:** Es geht nichts Ungeprüftes hoch. Ist der Vorrat einer Reihe leer, pausiert sie.
+
+---
+
 ## Sicherheit: was das Tool tut und was nicht
 
 - Es läuft **sichtbar** in Google Chrome, in normalem Tempo, ein Projekt pro Lauf.
 - Es klickt **nie** auf *Create*, *Save*, *Upload*, *Submit*, *Delete* usw. Das ist fest eingebaut und getestet.
-- Kommt eine **Login- oder „Bist du ein Mensch?“-Prüfung**, hält es an. Du löst sie selbst im Browser (und drückst Enter, wenn du am Terminal sitzt). Prüfungen werden nie umgangen.
+- Kommt eine **„Bist du ein Mensch?“-Prüfung**, hält es an. Du löst sie selbst im Browser (und drückst Enter, wenn du am Terminal sitzt). Landet der Helfer auf einer **Login-Seite**, bricht er ab und sagt dir, dass du `npm run cf -- login` ausführen sollst. Prüfungen werden nie umgangen.
 - Login-Daten liegen nur auf deinem Mac (`~/Library/Application Support/cf-uploader/`) und nie im Git-Repo.
 
 ---
@@ -116,7 +153,7 @@ npm run cf -- inspect                              # Seiten für die Kalibrierun
 | „⚠ … Feld nicht gefunden“ | Dieses Feld selbst ausfüllen. Wenn es immer wieder passiert, hat CurseForge die Seite geändert: Kalibrierung (Menü `i`) für diese Seite wiederholen und Claude Bescheid geben. Angepasst wird nur `scripts/lib/cf-browser/selectors.js`. |
 | „👉 … nicht gefunden. Bitte selbst klicken“ | Den Knopf selbst klicken und Enter drücken. Danach macht das Tool weiter. |
 | „Das CurseForge-Fenster ist schon offen“ | Das alte Fenster schließen und neu starten. |
-| Ausgeloggt | Menü `l` und neu einloggen. |
+| Ausgeloggt / Google: „Anmeldung nicht möglich“ | Helfer-Fenster mit ⌘Q beenden, `npm run cf -- login`, im normalen Chrome einloggen, ⌘Q. |
 | Keine offenen Aufgaben, obwohl ein Issue da ist | Der Abend-Workflow hat die Version vielleicht noch nicht freigegeben. Gezielt geht es mit `npm run cf -- update --skinpack <slug> --version 1.3`. |
 | `git pull` meldet Fehler | Das Tool arbeitet mit dem lokalen Stand weiter. Den Fehler später in Ruhe klären oder Claude fragen. |
 

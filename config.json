@@ -50,6 +50,49 @@
     "source": "The source code is not publicly available",
     "galleryTitle": "MCPEDL"
   },
+  "games": {
+    "java": {
+      "name": "Minecraft Java",
+      "account": "minecraft-java",
+      "tokenEnv": "CF_API_TOKEN",
+      "gameEndpoint": "minecraft",
+      "gameId": 432,
+      "urlSection": "minecraft/mc-mods",
+      "carryNewer": false
+    },
+    "bedrock": {
+      "name": "Minecraft Bedrock",
+      "account": "minecraft",
+      "tokenEnv": "CF_API_TOKEN",
+      "gameEndpoint": "minecraft-bedrock",
+      "gameId": 78022,
+      "urlSection": "minecraft-bedrock/skins"
+    },
+    "stardewvalley": {
+      "name": "Stardew Valley",
+      "gameEndpoint": "stardewvalley",
+      "gameId": 669,
+      "urlSection": "stardewvalley/mods",
+      "versionTypes": [
+        "Game"
+      ]
+    },
+    "wow": {
+      "name": "World of Warcraft",
+      "gameEndpoint": "wow",
+      "gameId": 1,
+      "urlSection": "wow/addons",
+      "versionTypes": [
+        "WoW Retail"
+      ]
+    },
+    "sims4": {
+      "name": "The Sims 4",
+      "gameEndpoint": "sims4",
+      "gameId": 78062,
+      "urlSection": "sims4/mods"
+    }
+  },
   "skinRender": {
     "defaultView": "editor",
     "background": "#252538"

@@ -1,8 +1,10 @@
 import fs from 'fs';
 import { TARGETS, FORBIDDEN_CLICK, FORBIDDEN_AFTER_EDIT, PROJECT_ID_IN_URL } from './selectors.js';
+import { LOGIN_HINT } from './chrome.js';
 
 // Executes step lists from steps.js in a Playwright page.
-// - Guard before every step: login or "are you human" page → wait until the user solved it.
+// - Guard before every step: "are you human" page → wait until the user solved it; a login page
+//   stops the run with a hint to log in in plain Chrome (`npm run cf -- login`).
 // - Never clicks a final button (FORBIDDEN_CLICK); "Add File"/"Add Media" only while the form is
 //   untouched (FORBIDDEN_AFTER_EDIT), because CurseForge's submit buttons share those names.
 // - Missing field → no crash: noted as "do it yourself"; missing navigation → asks the user.
@@ -181,6 +183,8 @@ export async function runSteps(page, steps, { ask, log = console.log, timeout = 
     let told = false;
     const humanDeadline = Date.now() + humanWait;
     for (let reason = await needsHuman(page); reason; reason = await needsHuman(page)) {
+      // Google refuses sign-ins in this remote-controlled window; the login happens in plain Chrome.
+      if (reason === 'der Login') throw new Error(LOGIN_HINT);
       if (!handsFree) { await ask(`⏸  Im Browser wartet ${reason}. Bitte selbst erledigen, dann hier Enter drücken.`); continue; }
       // Login and "are you human" checks are never automated: watch until the operator solved them.
       if (!told) { log(`⏸  Im Browser wartet ${reason}. Bitte selbst erledigen, ich warte.`); told = true; }

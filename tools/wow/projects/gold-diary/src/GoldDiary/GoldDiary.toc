@@ -1,0 +1,14 @@
+## Interface: 120105, 120107
+## Title: Gold Diary
+## Notes: Shows where your gold comes from and where it goes.
+## Version: @version@
+## SavedVariables: GoldDiaryDB
+## IconTexture: Interface\Icons\INV_Misc_Coin_02
+## AddonCompartmentFunc: GoldDiary_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: GoldDiary_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: GoldDiary_OnAddonCompartmentLeave
+
+Locale.lua
+Core.lua
+Tracker.lua
+UI.lua

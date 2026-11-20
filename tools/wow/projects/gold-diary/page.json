@@ -1,0 +1,32 @@
+{
+  "name": "Gold Diary",
+  "summary": "See where your gold comes from and where it goes, by source, for your session, the day and the week.",
+  "category": "Auction & Economy",
+  "logoPrompt": "An open leather-bound diary lying at an angle, its pages glowing softly, with a small stack of shiny gold coins resting on the lower corner and one coin standing upright",
+  "cover": {
+    "tagline": "Know what your play session was worth.",
+    "bullets": ["Gold earned and spent, by source", "Session, today and the last 7 days", "Net gold per hour"]
+  },
+  "description": [
+    "**Gold Diary keeps a simple diary of your gold: every change is noted with its source, so you see what a session was worth and what eats your money.**",
+    "",
+    "## Features",
+    "- Sorts every gold change by source: loot, quests, vendor, repairs, Auction House, mail, trainer, flight paths, trade, barber and transmog.",
+    "- Three views: this session, today and the last 7 days, each with earned, spent and net gold.",
+    "- Net gold per hour for the current session.",
+    "- Gold moved to or from the Warband bank or a guild bank is listed on its own and never counts as earned or spent.",
+    "",
+    "## How to use",
+    "Type `/gd` (or `/golddiary`) to open or close the diary. `/gd reset` starts a new session. Escape closes the window.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and no chat parsing, so it behaves the same inside and outside of instances.",
+    "- A change is sorted by the window that is open at that moment. What it cannot explain is listed as Other.",
+    "- It records only while you are logged in. History is kept for 60 days.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

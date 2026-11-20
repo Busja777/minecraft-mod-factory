@@ -16,7 +16,8 @@ gh auth status >/dev/null 2>&1 || { echo "✗ gh ist nicht eingeloggt: gh auth l
 git check-ignore -q "$FILE" || { echo "✗ $FILE ist nicht gitignored – Abbruch"; exit 1; }
 chmod 600 "$FILE"
 
-is_allowed() { local k; for k in "${ALLOWED[@]}"; do [[ "$k" == "$1" ]] && return 0; done; return 1; }
+# Jedes weitere CurseForge-Konto hat sein eigenes Upload-Token: CF_API_TOKEN_<KONTO> (siehe config.json → games).
+is_allowed() { local k; [[ "$1" == CF_API_TOKEN_* ]] && return 0; for k in "${ALLOWED[@]}"; do [[ "$k" == "$1" ]] && return 0; done; return 1; }
 
 set_count=0
 while IFS= read -r line || [[ -n "$line" ]]; do
@@ -29,9 +30,9 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   if ! is_allowed "$key"; then echo "· $key ist eine Info, wird nicht hochgeladen"; continue; fi
 
   case "$key" in
-    CF_API_TOKEN)
+    CF_API_TOKEN|CF_API_TOKEN_*)
       [[ "$val" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]] \
-        || { echo "✗ CF_API_TOKEN ist keine UUID (Studios-Key erwischt?) – übersprungen"; continue; } ;;
+        || { echo "✗ $key ist keine UUID (Studios-Key erwischt?) – übersprungen"; continue; } ;;
     CF_CORE_API_KEY)
       [[ "$val" == '$2a$'* ]] || { echo "✗ CF_CORE_API_KEY ist kein Studios-Key (\$2a\$…) – übersprungen"; continue; } ;;
     ANTHROPIC_API_KEY)

@@ -1,0 +1,417 @@
+{
+  "reihe": "wow",
+  "game": "wow",
+  "title": "World of Warcraft",
+  "start": "2026-11-20",
+  "logoStyle": "Hand-painted fantasy game icon, warm gold rim light, rich saturated colours, soft dark vignette background, chunky readable shapes",
+  "arts": {
+    "R": "Addon (Retail)",
+    "RF": "Addon (Retail + Forever)",
+    "F": "Addon (Forever)"
+  },
+  "reserve": [
+    "Skip Seen Cutscenes",
+    "Playtime Diary",
+    "Hearth Timer",
+    "Speed Needle",
+    "Trip Recap"
+  ],
+  "projects": [
+    {
+      "nr": 1,
+      "slug": "gold-diary",
+      "name": "Gold Diary",
+      "art": "R",
+      "was": "Gold-Einnahmen und -Ausgaben nach Quelle",
+      "updates": [
+        "Charaktere-Übersicht",
+        "Verlauf und Minikarten-Menü",
+        "Deutsch, Französisch, Spanisch"
+      ]
+    },
+    {
+      "nr": 2,
+      "slug": "level-clock",
+      "name": "Level Clock",
+      "art": "RF",
+      "was": "EP pro Stunde, Zeit bis Level-Up, Erholungsbonus",
+      "updates": [
+        "Sitzungsverlauf",
+        "Fenster-Optionen",
+        "Level-Historie je Charakter"
+      ]
+    },
+    {
+      "nr": 3,
+      "slug": "quest-autopilot",
+      "name": "Quest Autopilot",
+      "art": "RF",
+      "was": "Nimmt Quests an und gibt sie ab, Umschalttaste pausiert",
+      "updates": [
+        "Ausnahmen (Dailys)",
+        "einzige Gesprächsoption wählen",
+        "Belohnungs-Hinweis"
+      ]
+    },
+    {
+      "nr": 4,
+      "slug": "junk-butler",
+      "name": "Junk Butler",
+      "art": "RF",
+      "was": "Verkauft Graues, repariert, zeigt die Summe",
+      "updates": [
+        "Ausnahmeliste",
+        "Gildenbank-Reparatur",
+        "Verkaufsprotokoll"
+      ]
+    },
+    {
+      "nr": 5,
+      "slug": "flight-minutes",
+      "name": "Flight Minutes",
+      "art": "RF",
+      "was": "Lernt Flugzeiten, zeigt Countdown",
+      "updates": [
+        "Zeiten für alle Charaktere",
+        "Dauer im Flugkarten-Tooltip",
+        "Ankunfts-Ton"
+      ]
+    },
+    {
+      "nr": 6,
+      "slug": "vendor-refill",
+      "name": "Vendor Refill",
+      "art": "RF",
+      "was": "Kauft beim Händler bis zur Wunschmenge nach",
+      "updates": [
+        "Profile je Charakter",
+        "Warnung bei knappem Vorrat",
+        "Auffüllen aus der Bank"
+      ]
+    },
+    {
+      "nr": 7,
+      "slug": "bag-lookout",
+      "name": "Bag Lookout",
+      "art": "RF",
+      "was": "Freie Taschenplätze, Warnung bei vollen Taschen",
+      "updates": [
+        "nach Taschentyp",
+        "Schwelle und Ton",
+        "Liste der wertlosesten Gegenstände"
+      ]
+    },
+    {
+      "nr": 8,
+      "slug": "durability-watch",
+      "name": "Durability Watch",
+      "art": "RF",
+      "was": "Haltbarkeit in Prozent, Warnung, Reparaturkosten",
+      "updates": [
+        "pro Rüstungsteil",
+        "Warnung vor Instanzen",
+        "Kostenverlauf"
+      ]
+    },
+    {
+      "nr": 9,
+      "slug": "alt-almanac",
+      "name": "Alt Almanac",
+      "art": "RF",
+      "was": "Alle Charaktere: Level, Gold, Ort, Erholung",
+      "updates": [
+        "Spielzeit",
+        "Sortieren und Filtern",
+        "Berufe"
+      ]
+    },
+    {
+      "nr": 10,
+      "slug": "mail-bell",
+      "name": "Mail Bell",
+      "art": "RF",
+      "was": "Meldet neue Post, merkt sich Post auf Twinks",
+      "updates": [
+        "Ablauf-Warnung",
+        "Ton wählbar",
+        "Auktionspost-Summe"
+      ]
+    },
+    {
+      "nr": 11,
+      "slug": "queue-horn",
+      "name": "Queue Horn",
+      "art": "R",
+      "was": "Lauter Ton bei Dungeon-Einladung und Bereitschaftscheck, auch bei stummem Spiel",
+      "updates": [
+        "Töne wählbar",
+        "Bildschirm-Blitz",
+        "weitere Anlässe"
+      ]
+    },
+    {
+      "nr": 12,
+      "slug": "polite-decline",
+      "name": "Polite Decline",
+      "art": "RF",
+      "was": "Lehnt Duelle und Einladungen von Fremden ab",
+      "updates": [
+        "Ausnahmen Freunde/Gilde",
+        "Antwort-Flüstern",
+        "Protokoll"
+      ]
+    },
+    {
+      "nr": 13,
+      "slug": "fishing-log",
+      "name": "Fishing Log",
+      "art": "RF",
+      "was": "Fänge je Zone, Fische pro Stunde",
+      "updates": [
+        "je Fischart",
+        "Bestwerte",
+        "Sitzungsfenster"
+      ]
+    },
+    {
+      "nr": 14,
+      "slug": "gather-tally",
+      "name": "Gather Tally",
+      "art": "RF",
+      "was": "Kräuter und Erze pro Sitzung und Stunde",
+      "updates": [
+        "Wert in Gold",
+        "Ziele",
+        "Notizen je Zone"
+      ]
+    },
+    {
+      "nr": 15,
+      "slug": "rep-session",
+      "name": "Rep Session",
+      "art": "RF",
+      "was": "Ruf pro Stunde, Zeit bis zur nächsten Stufe",
+      "updates": [
+        "mehrere Fraktionen",
+        "Verlauf",
+        "Meldung bei neuer Stufe"
+      ]
+    },
+    {
+      "nr": 16,
+      "slug": "death-diary",
+      "name": "Death Diary",
+      "art": "RF",
+      "was": "Tode nach Zone und Level",
+      "updates": [
+        "eigene Notiz",
+        "Statistik je Charakter",
+        "Serie ohne Tod (Hardcore)"
+      ]
+    },
+    {
+      "nr": 17,
+      "slug": "zone-notes",
+      "name": "Zone Notes",
+      "art": "RF",
+      "was": "Eigene Notizen je Zone, beim Betreten eingeblendet",
+      "updates": [
+        "auf der Weltkarte",
+        "Kategorien",
+        "Export/Import"
+      ]
+    },
+    {
+      "nr": 18,
+      "slug": "reset-clock",
+      "name": "Reset Clock",
+      "art": "RF",
+      "was": "Countdown bis Tages- und Wochenreset, Timer",
+      "updates": [
+        "mehrere Timer",
+        "Wochentags-Erinnerung",
+        "Server-/Ortszeit"
+      ]
+    },
+    {
+      "nr": 19,
+      "slug": "link-catcher",
+      "name": "Link Catcher",
+      "art": "RF",
+      "was": "Links im Chat anklickbar, Chat kopieren",
+      "updates": [
+        "ganzer Tab",
+        "Link-Verlauf",
+        "Farben"
+      ]
+    },
+    {
+      "nr": 20,
+      "slug": "met-before",
+      "name": "Met Before",
+      "art": "RF",
+      "was": "Merkt sich Mitspieler, eigene Notiz im Tooltip (in Retail-Instanzen eingeschränkt)",
+      "updates": [
+        "Daumen-Bewertung",
+        "Suche",
+        "Hinweis beim Gruppenbeitritt"
+      ]
+    },
+    {
+      "nr": 21,
+      "slug": "loot-wishes",
+      "name": "Loot Wishes",
+      "art": "RF",
+      "was": "Wunschliste, meldet Treffer bei Beute und Händlern",
+      "updates": [
+        "mehrere Listen",
+        "Quelle notieren",
+        "Erinnerung in der Zone"
+      ]
+    },
+    {
+      "nr": 22,
+      "slug": "macro-shelf",
+      "name": "Macro Shelf",
+      "art": "RF",
+      "was": "Makros sichern, als Text ex- und importieren",
+      "updates": [
+        "Sets",
+        "Rückgängig",
+        "Teilen-Code"
+      ]
+    },
+    {
+      "nr": 23,
+      "slug": "camera-plus",
+      "name": "Camera Plus",
+      "art": "RF",
+      "was": "Maximale Kameraentfernung, gespeicherte Positionen",
+      "updates": [
+        "Tasten",
+        "Sichtfeld",
+        "Kamera je Situation"
+      ]
+    },
+    {
+      "nr": 24,
+      "slug": "quiet-please",
+      "name": "Quiet Please",
+      "art": "RF",
+      "was": "Schaltet nervige Geräusche stumm",
+      "updates": [
+        "mehr Listen",
+        "Profile",
+        "Listen teilen"
+      ]
+    },
+    {
+      "nr": 25,
+      "slug": "chat-calc",
+      "name": "Chat Calc",
+      "art": "RF",
+      "was": "Rechner im Chat, auch mit Gold",
+      "updates": [
+        "Verlauf",
+        "Stapel und Prozent",
+        "Mini-Fenster"
+      ]
+    },
+    {
+      "nr": 26,
+      "slug": "pinboard-notes",
+      "name": "Pinboard Notes",
+      "art": "RF",
+      "was": "Verschiebbarer Notizzettel",
+      "updates": [
+        "mehrere Zettel",
+        "Checklisten",
+        "accountweit"
+      ]
+    },
+    {
+      "nr": 27,
+      "slug": "chore-list",
+      "name": "Chore List",
+      "art": "RF",
+      "was": "Eigene Tages- und Wochenaufgaben mit Reset",
+      "updates": [
+        "Vorlagen",
+        "alle Charaktere",
+        "Erinnerung beim Login"
+      ]
+    },
+    {
+      "nr": 28,
+      "slug": "login-bell",
+      "name": "Login Bell",
+      "art": "RF",
+      "was": "Ton, wenn Freunde oder Gilde online kommen",
+      "updates": [
+        "Lieblingsliste",
+        "Ruhezeiten",
+        "Verlauf"
+      ]
+    },
+    {
+      "nr": 29,
+      "slug": "emote-bar",
+      "name": "Emote Bar",
+      "art": "RF",
+      "was": "Leiste mit Lieblings-Emotes",
+      "updates": [
+        "mehrere Seiten",
+        "eigene Texte",
+        "Zufalls-Emote"
+      ]
+    },
+    {
+      "nr": 30,
+      "slug": "roll-call",
+      "name": "Roll Call",
+      "art": "F",
+      "was": "Sammelt /roll-Würfe, zeigt den Gewinner (Retail nur außerhalb von Instanzen)",
+      "updates": [
+        "Stechen",
+        "Bereichsfilter",
+        "Ansage im Gruppenchat"
+      ]
+    },
+    {
+      "nr": 31,
+      "slug": "perf-meter",
+      "name": "Perf Meter",
+      "art": "RF",
+      "was": "FPS, Latenz, Speicher der Addons",
+      "updates": [
+        "Top-Liste",
+        "Lag-Warnung",
+        "Verlaufskurve"
+      ]
+    },
+    {
+      "nr": 32,
+      "slug": "twink-post",
+      "name": "Twink Post",
+      "art": "RF",
+      "was": "Eigene Charaktere per Klick als Post-Empfänger",
+      "updates": [
+        "Favoriten",
+        "zuletzt benutzt",
+        "andere Realms"
+      ]
+    },
+    {
+      "nr": 33,
+      "slug": "screenshot-moments",
+      "name": "Screenshot Moments",
+      "art": "RF",
+      "was": "Automatische Screenshots bei Level-Up, Erfolg, seltener Beute",
+      "updates": [
+        "Anlässe wählbar",
+        "ohne UI",
+        "Zeitraffer"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,429 @@
+{
+  "reihe": "stardew",
+  "game": "stardewvalley",
+  "title": "Stardew Valley",
+  "start": "2026-11-25",
+  "logoStyle": "Cosy pixel art icon in a warm farm palette, chunky pixels, soft outline, gentle sunlit background",
+  "arts": {
+    "CP": "Content-Patcher-Paket"
+  },
+  "reserve": [],
+  "projects": [
+    {
+      "nr": 1,
+      "slug": "villager-birthday-reminders",
+      "name": "Villager Birthday Reminders",
+      "art": "CP",
+      "was": "Brief am Morgen jedes Geburtstags mit Geschenk-Tipp",
+      "updates": [
+        "Erinnerung am Vortag",
+        "Insel-Bewohner",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 2,
+      "slug": "more-to-say",
+      "name": "More to Say",
+      "art": "CP",
+      "was": "Neue Dialogzeilen für Linus und Willy (Jahreszeit, Wetter, Herzen)",
+      "updates": [
+        "Pam und Gus",
+        "Marnie und Robin",
+        "Evelyn, George, Zauberer"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 3,
+      "slug": "seasonal-care-packages",
+      "name": "Seasonal Care Packages",
+      "art": "CP",
+      "was": "Päckchen von Freunden je Jahreszeit",
+      "updates": [
+        "mehr Absender",
+        "Jahr 2",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 4,
+      "slug": "grandpas-letters",
+      "name": "Grandpa's Letters",
+      "art": "CP",
+      "was": "Briefe vom Großvater mit Tipps durchs erste Jahr",
+      "updates": [
+        "Jahr 2",
+        "ohne Gaben",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 5,
+      "slug": "machine-tempo",
+      "name": "Machine Tempo",
+      "art": "CP",
+      "was": "Fässer und Einmachgläser schneller, Faktor einstellbar",
+      "updates": [
+        "Käsepresse und Webstuhl",
+        "Kristallarium",
+        "Zapfhähne"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 6,
+      "slug": "joja-junk-mail",
+      "name": "Joja Junk Mail",
+      "art": "CP",
+      "was": "Witzige Werbebriefe von Joja",
+      "updates": [
+        "+20",
+        "Gutscheine",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 7,
+      "slug": "pierres-year-round-seeds",
+      "name": "Pierre's Year-Round Seeds",
+      "art": "CP",
+      "was": "Saat ganzjährig, Aufpreis einstellbar",
+      "updates": [
+        "Obstbäume",
+        "Blumen",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 8,
+      "slug": "welcome-kit",
+      "name": "Welcome Kit",
+      "art": "CP",
+      "was": "Startpaket per Post am ersten Tag",
+      "updates": [
+        "drei Größen",
+        "je Jahreszeit",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 9,
+      "slug": "generous-geodes",
+      "name": "Generous Geodes",
+      "art": "CP",
+      "was": "Bessere Geoden-Inhalte, drei Stufen",
+      "updates": [
+        "Omni-Geode",
+        "Artefakt-Truhen",
+        "Regler"
+      ]
+    },
+    {
+      "nr": 10,
+      "slug": "pen-pal-from-zuzu-city",
+      "name": "Pen Pal from Zuzu City",
+      "art": "CP",
+      "was": "Brief-Geschichte über zwei Jahre",
+      "updates": [
+        "Kapitel 2",
+        "Geschenke",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 11,
+      "slug": "fish-pond-bounty",
+      "name": "Fish Pond Bounty",
+      "art": "CP",
+      "was": "Bessere Teich-Erträge",
+      "updates": [
+        "mehr Fischarten",
+        "Regler",
+        "legendäre Fische"
+      ]
+    },
+    {
+      "nr": 12,
+      "slug": "junimo-thank-you-notes",
+      "name": "Junimo Thank-You Notes",
+      "art": "CP",
+      "was": "Dankesbrief der Junimos nach jedem fertigen Raum",
+      "updates": [
+        "kleine Gaben",
+        "Joja-Fassung",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 13,
+      "slug": "stocked-shelves",
+      "name": "Stocked Shelves",
+      "art": "CP",
+      "was": "Mehr Angebot bei Willy",
+      "updates": [
+        "Krobus",
+        "Sandy",
+        "Regler je Laden"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 14,
+      "slug": "gift-secret-notes",
+      "name": "Gift Secret Notes",
+      "art": "CP",
+      "was": "Neue Geheimnotizen verraten Lieblingsgeschenke",
+      "updates": [
+        "+10",
+        "Insel-Bewohner",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 15,
+      "slug": "faster-fruit-trees",
+      "name": "Faster Fruit Trees",
+      "art": "CP",
+      "was": "Obstbäume wachsen schneller",
+      "updates": [
+        "Regler",
+        "weitere Bäume",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 16,
+      "slug": "fresh-farm-tv-tips",
+      "name": "Fresh Farm TV Tips",
+      "art": "CP",
+      "was": "Neue Tipps in der Fernsehsendung",
+      "updates": [
+        "Jahr 2",
+        "Angel-Tipps",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 17,
+      "slug": "calmer-fish",
+      "name": "Calmer Fish",
+      "art": "CP",
+      "was": "Fische leichter zu fangen, drei Stufen",
+      "updates": [
+        "je Jahreszeit",
+        "legendäre Fische",
+        "Regler"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 18,
+      "slug": "camp-cooking",
+      "name": "Camp Cooking",
+      "art": "CP",
+      "was": "6 neue Rezepte mit eigenen Bildern",
+      "updates": [
+        "Wintersuppen",
+        "Fest-Snacks",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 19,
+      "slug": "fair-traveling-cart",
+      "name": "Fair Traveling Cart",
+      "art": "CP",
+      "was": "Preisdeckel beim fahrenden Händler",
+      "updates": [
+        "Regler",
+        "mehr Ware",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 20,
+      "slug": "giant-crop-luck",
+      "name": "Giant Crop Luck",
+      "art": "CP",
+      "was": "Riesenpflanzen häufiger",
+      "updates": [
+        "Regler",
+        "mehr Pflanzen",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 21,
+      "slug": "town-board-orders",
+      "name": "Town Board Orders",
+      "art": "CP",
+      "was": "6 neue Sonderaufträge rund um den Hof",
+      "updates": [
+        "Angeln und Bergbau",
+        "Belohnungen",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 22,
+      "slug": "bountiful-forage",
+      "name": "Bountiful Forage",
+      "art": "CP",
+      "was": "Mehr Sammelgut in Wald und Strand",
+      "updates": [
+        "je Jahreszeit",
+        "Regler",
+        "Insel"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 23,
+      "slug": "museum-rewards-plus",
+      "name": "Museum Rewards Plus",
+      "art": "CP",
+      "was": "Zusätzliche Museums-Belohnungen",
+      "updates": [
+        "+10",
+        "Briefe von Gunther",
+        "Deutsch"
+      ]
+    },
+    {
+      "nr": 24,
+      "slug": "happy-barn",
+      "name": "Happy Barn",
+      "art": "CP",
+      "was": "Tiere geben öfter und mehr",
+      "updates": [
+        "Regler je Tier",
+        "Preise",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 25,
+      "slug": "trash-treasures",
+      "name": "Trash Treasures",
+      "art": "CP",
+      "was": "Bessere Funde in Mülltonnen",
+      "updates": [
+        "je Tonne",
+        "seltene Funde",
+        "Regler"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 26,
+      "slug": "robins-fair-prices",
+      "name": "Robin's Fair Prices",
+      "art": "CP",
+      "was": "Gebäude günstiger und schneller gebaut",
+      "updates": [
+        "Regler",
+        "Ausbauten",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 27,
+      "slug": "monster-loot-refresh",
+      "name": "Monster Loot Refresh",
+      "art": "CP",
+      "was": "Sinnvollere Beute von Monstern",
+      "updates": [
+        "Schädelhöhle",
+        "seltene Beute",
+        "Regler"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 28,
+      "slug": "craft-it-sooner",
+      "name": "Craft It Sooner",
+      "art": "CP",
+      "was": "Sprinkler und Co. früher herstellbar",
+      "updates": [
+        "Regler",
+        "mehr Rezepte",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 29,
+      "slug": "festival-stalls-plus",
+      "name": "Festival Stalls Plus",
+      "art": "CP",
+      "was": "Mehr Ware an den Fest-Ständen",
+      "updates": [
+        "weitere Feste",
+        "Regler",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 30,
+      "slug": "tailoring-recipes-plus",
+      "name": "Tailoring Recipes Plus",
+      "art": "CP",
+      "was": "Neue Stoff-Kombinationen an der Nähmaschine",
+      "updates": [
+        "+20",
+        "Färben",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 31,
+      "slug": "sturdy-fences",
+      "name": "Sturdy Fences",
+      "art": "CP",
+      "was": "Zäune halten länger",
+      "updates": [
+        "Regler",
+        "je Zaunart",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 32,
+      "slug": "honest-sell-prices",
+      "name": "Honest Sell Prices",
+      "art": "CP",
+      "was": "Verkaufspreise einstellbar (Ernte, Tierprodukte, Veredeltes)",
+      "updates": [
+        "Regler je Gruppe",
+        "Vorlagen",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    },
+    {
+      "nr": 33,
+      "slug": "gentle-bundles",
+      "name": "Gentle Bundles",
+      "art": "CP",
+      "was": "Leichtere Bündel im Gemeindezentrum (höchstes Fehlerrisiko der Reihe)",
+      "updates": [
+        "Stufen",
+        "Remix-Bündel",
+        "Deutsch"
+      ],
+      "nameChecked": false
+    }
+  ]
+}

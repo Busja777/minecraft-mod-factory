@@ -63,3 +63,24 @@ test('localMidnightUtcIso gives the UTC instant of Berlin midnight in summer and
   // 23:30 UTC on Jul 15 is already Jul 16 in Berlin
   assert.equal(localMidnightUtcIso(new Date('2026-07-15T23:30:00Z'), TZ), '2026-07-15T22:00:00.000Z');
 });
+
+import { planAccounts } from '../scripts/lib/schedule.js';
+
+test('planAccounts: every account draws its own slot and runs at most once a day', () => {
+  const base = { accounts: ['minecraft', 'stardewvalley', 'wow'], dateKey: '2026-11-20', windowName: 'evening', salt: 'repo', start: 18 * 60, end: 21 * 60 };
+  const late = planAccounts({ ...base, nowMinutes: 20 * 60 + 50 });
+  assert.deepEqual(late.map(x => x.account), base.accounts);
+  for (const x of late) {
+    assert.ok(x.slot >= 18 * 60 && x.slot <= 21 * 60 - 20, 'slot inside the window');
+    assert.equal(x.run, true);
+  }
+  assert.ok(new Set(late.map(x => x.slot)).size > 1, 'the accounts do not share one slot');
+  assert.deepEqual(planAccounts({ ...base, nowMinutes: 20 * 60 + 50 }).map(x => x.slot), late.map(x => x.slot), 'same slots on every fire of the day');
+  assert.notDeepEqual(planAccounts({ ...base, dateKey: '2026-11-21', nowMinutes: 0 }).map(x => x.slot), late.map(x => x.slot));
+
+  const ran = planAccounts({ ...base, nowMinutes: 20 * 60 + 50, ran: new Set(['wow']) });
+  assert.deepEqual(ran.map(x => x.run), [true, true, false]);
+  assert.equal(ran[2].reason, 'already-ran-today');
+  assert.ok(planAccounts({ ...base, nowMinutes: 17 * 60 }).every(x => !x.run), 'before the window nothing starts');
+  assert.ok(planAccounts({ ...base, nowMinutes: 21 * 60 }).every(x => x.reason === 'window-over'));
+});

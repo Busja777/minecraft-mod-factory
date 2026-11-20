@@ -22,6 +22,12 @@ export async function findProjectBySlug({ gameSlug = 'minecraft-bedrock', slug, 
   return hits.find(m => m.slug === slug) || null;
 }
 
+// The project as CurseForge knows it (to check an id before registering it): { id, name, slug, gameId }
+export async function getProject(projectId, { key, fetchImpl } = {}) {
+  const m = await get(`/mods/${projectId}`, key, fetchImpl);
+  return { id: m.id, name: m.name, slug: m.slug, gameId: m.gameId };
+}
+
 // Newest first: [{ id, fileName, fileDate, gameVersions: [names], releaseType }]
 export async function listFiles(projectId, { key, fetchImpl, pageSize = 50 } = {}) {
   const files = await get(`/mods/${projectId}/files?pageSize=${pageSize}`, key, fetchImpl);

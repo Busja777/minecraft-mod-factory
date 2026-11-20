@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Anleitung: Studio, CurseForge-Helfer und Makros</title>
+<title>Anleitung: So funktioniert die Mod Factory</title>
 <style>
 @page { size: A4; margin: 15mm 16mm 16mm; }
 * { box-sizing: border-box; }
@@ -29,111 +29,216 @@ td { padding: 4px 7px; border-bottom: 1px solid #e3e8ef; vertical-align: top; }
 .step b { display: block; margin-bottom: 2px; }
 .step.you { background: #fff4d6; border-color: #ecd58b; }
 .arrow { align-self: center; color: #7a8699; font-size: 12pt; }
+.legend { font-size: 8.6pt; color: #5a6577; margin: -3px 0 8px; }
+.legend span { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin: 0 3px 0 8px; }
 .macro { border: 1px solid #d5dbe5; border-radius: 7px; padding: 8px 11px 4px; margin: 7px 0 9px; background: #f8faf8; break-inside: avoid; }
 .macro h3 { margin-top: 0; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .page { break-before: page; }
 .small { font-size: 8.8pt; color: #5a6577; }
+.steps { counter-reset: s; list-style: none; padding-left: 0; }
+.steps > li { counter-increment: s; position: relative; padding: 6px 10px 6px 38px; margin: 0 0 6px; border: 1px solid #d5dbe5; border-radius: 7px; background: #f8faf8; break-inside: avoid; }
+.steps > li::before { content: counter(s); position: absolute; left: 9px; top: 6px; width: 21px; height: 21px; border-radius: 50%; background: #2e7d32; color: #fff; font-weight: 700; font-size: 9.5pt; text-align: center; line-height: 21px; }
+.steps > li.you { background: #fffaf0; border-color: #ecd58b; }
+.steps > li.you::before { background: #c98a00; }
+.steps > li b.t { display: block; margin-bottom: 1px; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Studio, CurseForge-Helfer und Makros</h1>
-  <div class="sub">Minecraft Mod Factory &middot; Schritt-für-Schritt-Anleitung für den Betreiber &middot; Stand 18.11.2026</div>
+  <h1>So funktioniert die Mod Factory</h1>
+  <div class="sub">Schritt-für-Schritt-Anleitung für den Betreiber &middot; Studio, Abend-Updates, Tages-Go und CurseForge-Helfer &middot; Stand 20.11.2026</div>
 </header>
 
-<p>Alles liegt in <b>einem</b> Ordner: <span class="path">~/Desktop/minecraft-mod-factory</span>. Starter und Anleitungen findest du darin unter <span class="path" data-path="Macros">Macros/</span>.
-Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den <b>Browser-Helfer</b> (fertig, sofort nutzbar) und <b>Keyboard-Maestro-Makros</b> (baust du einmal selbst).</p>
+<p>Alles liegt in <b>einem</b> Ordner: <span class="path">~/Desktop/minecraft-mod-factory</span>. Die Doppelklick-Starter findest du darin unter <span class="path" data-path="Macros">Macros/</span>.
+Diese Anleitung erklärt zuerst das große Bild, dann die einmalige Einrichtung, dann deinen Alltag.</p>
 
-<h3>Welcher Weg wofür?</h3>
-<table>
-  <tr><th style="width:27%">Weg</th><th style="width:36%">Was er macht</th><th>Wann du ihn nimmst</th></tr>
-  <tr><td><b>Teil 1: Browser-Helfer</b><br><code>npm run cf</code></td><td>Öffnet ein eigenes Chrome-Fenster, füllt die Formulare aus und stoppt vor dem letzten Klick.</td><td><b>Hauptweg.</b> Nichts zu bauen, kennt alle Seiten schon.</td></tr>
-  <tr><td><b>Teil 2: Makros</b><br>Keyboard Maestro</td><td>Du drückst einen Hotkey in deinem normalen Chrome, das Makro füllt aus und stoppt.</td><td>Alternative, wenn du lieber in deinem eigenen Chrome arbeitest oder später andere Mac-Apps automatisieren willst.</td></tr>
-  <tr><td><b>Automatik</b><br>GitHub</td><td>Lädt Dateien über die CurseForge-Schnittstelle hoch, ganz ohne dich.</td><td>Für Updates. Stand heute noch nicht aktiv, siehe Teil 3.</td></tr>
-</table>
-
-<h3>Dein Alltag in vier Schritten</h3>
+<h3>Das große Bild</h3>
 <div class="flow">
-  <div class="step you"><b>1. Studio öffnen</b>Doppelklick auf <i>Studio.command</i></div><div class="arrow">&rarr;</div>
-  <div class="step you"><b>2. Prüfen</b>Notiz schreiben oder Go geben</div><div class="arrow">&rarr;</div>
-  <div class="step"><b>3. Ausfüllen lassen</b>Helfer oder Makro füllt das Formular</div><div class="arrow">&rarr;</div>
-  <div class="step you"><b>4. Letzter Klick</b>Du klickst Create, Apply oder Add File</div>
+  <div class="step"><b>1. Claude baut</b>Skins, Mods, Bilder, Texte</div><div class="arrow">&rarr;</div>
+  <div class="step you"><b>2. Du prüfst</b>im Studio: Notiz oder Go (nur neue Projekte)</div><div class="arrow">&rarr;</div>
+  <div class="step"><b>3. Automatik</b>abends 18–21 Uhr: ein Update hochladen</div><div class="arrow">&rarr;</div>
+  <div class="step you"><b>4. Tages-Go</b>einmal am Tag: Beschreibung &amp; Neues, du klickst Save</div>
 </div>
+<div class="legend"><span style="background:#fff4d6;border:1px solid #ecd58b"></span>machst du <span style="background:#eef3ee;border:1px solid #cfdccf"></span>läuft ohne dich</div>
+
+<h3>Wer macht was?</h3>
+<table>
+  <tr><th style="width:36%">Aufgabe</th><th style="width:26%">Wer</th><th>Warum so</th></tr>
+  <tr><td>Skins, Mods, Bilder und Texte bauen</td><td>Claude</td><td>In der Sitzung mit dir</td></tr>
+  <tr><td>Neues Projekt freigeben (<b>Go</b>)</td><td><b>Du</b>, im Studio</td><td>Nur neue Projekte brauchen Go, Updates nicht</td></tr>
+  <tr><td>Update-Datei + Changelog hochladen</td><td>Automatik (GitHub, abends)</td><td>Dafür gibt es eine CurseForge-Schnittstelle</td></tr>
+  <tr><td>Beschreibung nach einem Update anpassen</td><td>Helfer füllt aus, <b>du</b> klickst Save</td><td>Keine Schnittstelle bei CurseForge</td></tr>
+  <tr><td>Neues Projekt anlegen, Cover, Galerie</td><td>Helfer füllt aus, <b>du</b> klickst Create / Apply / Add File</td><td>Keine Schnittstelle bei CurseForge</td></tr>
+  <tr><td>Login, Captcha, 2FA</td><td><b>Immer du</b></td><td>Wird nie umgangen</td></tr>
+</table>
 
 <div class="box stop"><b>Drei Regeln, die immer gelten</b>
 <ul style="margin:3px 0 0">
   <li><b>Den letzten Klick machst du.</b> Weder Helfer noch Makro klicken auf Create, Save, Apply, Upload oder Add File.</li>
   <li><b>Login, Captcha und 2FA löst immer du.</b> Nichts davon wird umgangen. Der Helfer wartet so lange.</li>
-  <li><b>Ein Projekt pro Lauf, in normalem Tempo.</b> Kein Massenbetrieb.</li>
+  <li><b>Ein Projekt pro Lauf, in normalem Tempo.</b> Kein Massenbetrieb: höchstens ein Update und ein neues Projekt pro Tag.</li>
 </ul></div>
 
-<h3>Das Studio (dein Startpunkt)</h3>
-<p>Doppelklick auf <span class="path" data-path="Macros/Studio.command">Macros/Studio.command</span>. Dein Browser öffnet das Dashboard (läuft nur auf deinem Mac).</p>
-<table>
-  <tr><th style="width:24%">Abschnitt</th><th>Was du tust</th></tr>
-  <tr><td>Jetzt fällig</td><td>Der Termin ist da. „Jetzt veröffentlichen“ startet den Komplettlauf. Du klickst nur Create, Apply und Add File.</td></tr>
-  <tr><td>Wartet auf dein Go</td><td>Packs nacheinander prüfen. Passt alles: <b>Go</b>. Passt ein Teil nicht: dort <b>Ändern</b>, kurz schreiben was, am Ende <b>An Claude zurückgeben</b>.</td></tr>
-  <tr><td>Wartet auf Claude</td><td>Nichts. Sag Claude in der nächsten Sitzung „bearbeite die Studio-Notizen“.</td></tr>
-  <tr><td>Eingeplant</td><td>Nichts. Der Termin steht dran. „Go zurücknehmen“ geht jederzeit.</td></tr>
-  <tr><td>Updates</td><td>Nur zur Info. Updates bestehender Projekte brauchen kein Go.</td></tr>
-</table>
-<p class="small">Go ist gesperrt, solange Notizen offen sind oder eine automatische Prüfung rot ist. Der Grund steht direkt unter dem Knopf.</p>
+<h3>Deine zwei Starter</h3>
+<div class="cols">
+  <div class="box info"><b><span class="path" data-path="Macros/Studio.command">Studio.command</span></b><br>Öffnet das Studio im Browser. Dort prüfst du neue Skinpacks und Mods, schreibst Notizen oder gibst Go. Brauchst du nur, wenn etwas Neues wartet.</div>
+  <div class="box info"><b><span class="path" data-path="Macros/CurseForge.command">CurseForge.command</span></b><br>Zeigt die Liste des Tages. <kbd>↩</kbd> = Go: Der Helfer arbeitet alles in einem Chrome-Fenster ab. Statt Doppelklick kannst du Claude auch einfach „Go“ schreiben.</div>
+</div>
 
 <!-- ───────────────────────── Teil 1 ───────────────────────── -->
 <div class="page"></div>
-<h2>Teil 1: Der Browser-Helfer (Hauptweg)</h2>
-<p>Der Helfer füllt die CurseForge-Formulare aus, für die es keine Schnittstelle gibt: <b>neues Projekt anlegen</b>, <b>Cover und Media</b>, <b>Skinpack-Datei hochladen</b>. Am Ende hält er an.</p>
+<h2>Teil 1: Einmal einrichten (ca. 10 Minuten)</h2>
+<p>Das machst du nur ein einziges Mal. Danach läuft alles über Doppelklick oder „Go“ an Claude.</p>
 
-<h3>Einmalig einrichten (ca. 15 Minuten)</h3>
-<ol>
-  <li>Doppelklick auf <span class="path" data-path="Macros/CurseForge.command">Macros/CurseForge.command</span>. Meldet macOS beim ersten Mal „nicht verifizierter Entwickler“: Rechtsklick → Öffnen → Öffnen.</li>
-  <li>Im Menü <kbd>l</kbd> tippen und <kbd>↩</kbd> drücken. Es öffnet sich ein eigenes Chrome-Fenster.</li>
-  <li>Dort ganz normal bei CurseForge einloggen. Danach im Terminal <kbd>↩</kbd> drücken. Das Fenster merkt sich den Login. Dein normales Chrome bleibt unberührt.</li>
-  <li><b>Probelauf:</b> Starter erneut öffnen, „Cover &amp; Media: Glowing Samurai“ wählen und zuschauen. Am Ende <b>nicht</b> auf Apply klicken, sondern das Fenster schließen.</li>
-  <li>Steht in der Zusammenfassung „⚠ … nicht gefunden“: im Menü <kbd>i</kbd> wählen, genau diese Seite öffnen, <kbd>↩</kbd>, dann <kbd>q</kbd> und Claude Bescheid geben.</li>
+<ol class="steps">
+  <li class="you"><b class="t">Starter freigeben</b>Im Finder <span class="path">Macros/</span> öffnen und <b>CurseForge.command</b> doppelklicken. Meldet macOS „nicht verifizierter Entwickler“: Rechtsklick → <b>Öffnen</b> → <b>Öffnen</b>. Dasselbe einmal für <b>Studio.command</b>.</li>
+  <li class="you"><b class="t">Terminal im Projektordner öffnen</b><kbd>⌘</kbd> + <kbd>Leertaste</kbd> drücken, <b>Terminal</b> tippen, <kbd>↩</kbd>. Im Terminal-Fenster eingeben:<br><code>cd ~/Desktop/minecraft-mod-factory</code> und <kbd>↩</kbd>.<br>
+    <span class="small">Damit bist du im Projektordner. Hier tippst du die Befehle aus dieser Anleitung ein und bestätigst jeden mit <kbd>↩</kbd>. Öffnest du später ein neues Terminal-Fenster, gibst du die <code>cd</code>-Zeile wieder zuerst ein.</span></li>
+  <li class="you"><b class="t">Einmal bei CurseForge einloggen</b>Im Terminal eingeben: <code>npm run cf -- login</code>. Ein <b>normales</b> Chrome-Fenster öffnet sich, getrennt von deinem eigenen Chrome. Dort bei CurseForge einloggen, auch „Mit Google anmelden“ geht hier. Danach dieses Chrome mit <kbd>⌘Q</kbd> beenden.<br>
+    <span class="small">Das Profil merkt sich den Login, der Helfer nutzt ihn ab jetzt. Fragt macOS nach dem Schlüsselbund („Chrome Safe Storage“): „Immer erlauben“. Im Helfer-Fenster selbst lehnt Google jede Anmeldung ab („Anmeldung nicht möglich“), weil es ferngesteuert ist. Deshalb der Login immer über diesen Befehl.</span></li>
+  <li class="you"><b class="t">Erinnerung einschalten</b>Im Terminal einmal eingeben:<br><code>npm run studio -- zeitplan-installieren</code><br>
+    <span class="small">Dein Mac prüft dann alle 30 Minuten die Termine. Wartet nach dem Abend-Upload etwas auf dich, kommt gegen 21:15 Uhr eine Mitteilung „CurseForge-Helfer: Heute: 1 Beschreibung …“. Entfernen: <code>npm run studio -- zeitplan-entfernen</code>.</span></li>
+  <li><b class="t">Probelauf ohne Klick</b>Im Terminal: <code>npm run cf -- heute --dry-run</code>. Es öffnet sich nichts; du siehst nur die Liste, z. B. „Heute: 1 Beschreibung“ mit dem Punkt „Beschreibung nachziehen: The Last Ninjas V1.2“. Oder schreib Claude: „zeig mir, was heute ansteht“.</li>
+  <li class="you"><b class="t">Erstes echtes Go zusammen mit Claude</b>Schreib Claude „Go“, während du am Mac sitzt. Das erste Go ist zugleich die Kalibrierung: Findet der Helfer ein Feld auf der echten CurseForge-Seite nicht, passt Claude es sofort an. Danach läuft es jeden Tag gleich.</li>
 </ol>
 
-<h3>Im Alltag</h3>
-<ol>
-  <li>Doppelklick auf <span class="path">Macros/CurseForge.command</span>. Der Helfer holt die neuesten Daten und zeigt die offenen Aufgaben.</li>
-  <li>Nummer eintippen und <kbd>↩</kbd>. Chrome füllt alles aus. <b>Nicht ins Fenster klicken, solange es arbeitet.</b></li>
-  <li>Im Terminal steht, was erledigt ist und was du noch prüfen oder tun sollst.</li>
-  <li>Prüfen, Rest erledigen und <b>selbst abschicken</b>. Danach das Fenster schließen.</li>
-</ol>
+<div class="box warn"><b>Schon erledigt, nichts zu tun:</b> Die CurseForge-Zugangsschlüssel liegen in <span class="path" data-path="secrets.env.example">secrets.env</span> (nur auf deinem Mac) und als GitHub-Secrets. Der Abend-Lauf ist aktiv. Node und Chrome sind installiert.</div>
+
+<!-- ───────────────────────── Teil 2 ───────────────────────── -->
+<div class="page"></div>
+<h2>Teil 2: Dein Alltag, einmal am Tag „Go“</h2>
+<p>Wann es dir passt, einmal am Tag (am besten nach 21 Uhr oder am nächsten Morgen, wenn das Abend-Update durch ist):</p>
 
 <div class="cols">
-  <div class="box info"><b>Einmal am Tag „Go“</b><br>Der Starter zeigt die Liste des Tages. Mit Enter (oder „Go“ an Claude) setzt der Helfer jede neue Beschreibung ein, du klickst nur <b>Save</b>. Danach räumt er selbst auf. Die Galerie bleibt bei Updates unverändert.</div>
-  <div class="box info"><b>Bei neuen Projekten</b><br>Alles läuft in einem Durchgang: General → Description → License (du klickst <b>Create</b>), dann Media (du klickst <b>Apply</b>), dann File (du klickst <b>Add File</b>).</div>
+<div>
+<h3 style="margin-top:4px">Weg A: per Doppelklick</h3>
+<ol class="steps">
+  <li class="you"><b class="t">Doppelklick auf CurseForge.command</b>Der Helfer holt die neuesten Daten und zeigt die Liste des Tages.</li>
+  <li class="you"><b class="t"><kbd>↩</kbd> drücken = Go</b><kbd>m</kbd> = Menü (einzelne Aufgabe), <kbd>q</kbd> = Beenden.</li>
+</ol>
+</div>
+<div>
+<h3 style="margin-top:4px">Weg B: per Chat mit Claude</h3>
+<ol class="steps">
+  <li class="you"><b class="t">„Go“ schreiben</b>Claude zeigt dir zuerst, was ansteht.</li>
+  <li><b class="t">Claude startet den Helfer</b>Chrome öffnet sich auf deinem Mac. Keine Enter-Taste nötig: Der Helfer erkennt deine Klicks selbst.</li>
+</ol>
+</div>
 </div>
 
-<h3>Befehle für das Terminal</h3>
+<h3>Was dann passiert, Punkt für Punkt</h3>
+<ol class="steps">
+  <li><b class="t">Chrome öffnet sich und arbeitet die Liste ab</b>Reihenfolge: offene Uploads von Hand → fällige neue Projekte → Beschreibungen. <b>Nicht ins Fenster klicken, solange es arbeitet.</b></li>
+  <li><b class="t">Beschreibung nachziehen</b>Der Helfer öffnet die Projektseite, ersetzt die Beschreibung durch die neue (mit den neuen Skins und ihren Geschichten) und hält an.</li>
+  <li class="you"><b class="t">Du prüfst kurz und klickst Save</b>Der Helfer sieht deinen Klick und geht zum nächsten Punkt. Bei neuen Projekten klickst du nacheinander <b>Create</b>, <b>Apply</b> und <b>Add File</b>.</li>
+  <li><b class="t">Aufräumen, ganz von selbst</b>Der Helfer prüft bei CurseForge, ob die neue Beschreibung angekommen ist, schließt das passende GitHub-Issue und speichert den Stand (<span class="path">data/</span>) auf GitHub.</li>
+  <li><b class="t">Abschluss</b>Im Terminal (oder bei Claude) steht „Heute erledigt“ mit ✓ pro Punkt. Bei Weg A schließt du das Chrome-Fenster selbst, bei Weg B schließt es sich nach ein paar Sekunden.</li>
+</ol>
+<p class="small">Wartet der Helfer auf ein Captcha oder eine Sicherheitsprüfung, löst du das im Fenster; er macht danach weiter. Bei Weg B wartet er bis zu 15 Minuten, dann bricht er ab. Bist du ausgeloggt, bricht er sofort ab und sagt dir Bescheid: dann <code>npm run cf -- login</code>. Nichts geht verloren: Offene Punkte stehen beim nächsten Go wieder auf der Liste.</p>
+
+<!-- ───────────────────────── Teil 3 ───────────────────────── -->
+<div class="page"></div>
+<h2>Teil 3: Was abends automatisch passiert</h2>
+<p>Jeden Abend zu einer zufälligen Uhrzeit zwischen 18 und 21 Uhr läuft auf GitHub der Abend-Lauf. Du musst dafür nichts tun, auch der Mac darf aus sein.</p>
+<ol class="steps">
+  <li><b class="t">Ein Skinpack auswählen</b>Reihum: Das Pack, das am längsten kein Update hatte, kommt zuerst dran. Frühestens 23 Tage nach seinem letzten Upload. Das echte Datum liest der Lauf bei CurseForge nach.</li>
+  <li><b class="t">Pack bauen</b>Immer das komplette Pack mit allen Skins (alte + neue), dazu Vorschaubilder und ein Sammelbild für die Beschreibung.</li>
+  <li><b class="t">Minecraft-Versionen anhaken</b>Alle Versionen der vorigen Datei plus die neuesten Minecraft-Versionen.</li>
+  <li><b class="t">Hochladen</b>Datei und Changelog gehen über die Schnittstelle an CurseForge. CurseForge prüft die Datei kurz („under review“), dann ist sie öffentlich.</li>
+  <li><b class="t">Dir Bescheid geben</b>Ein GitHub-Issue „Skinpack-Update V… (…)“ entsteht. Beim nächsten Go steht „Beschreibung nachziehen“ auf deiner Liste; die Erinnerung meldet sich gegen 21:15 Uhr.</li>
+</ol>
+<div class="box info"><b>Galerie bei Updates:</b> bleibt unverändert. Die Bilder der neuen Skins stehen in der Beschreibung. Galeriebilder gibt es nur bei neuen Skinpacks.</div>
+
+<div class="page"></div>
+<h2>Teil 4: Neue Projekte (mit deinem Go)</h2>
+<ol class="steps">
+  <li><b class="t">Claude baut ein neues Skinpack oder einen Mod</b>Es landet im Studio unter „Wartet auf dein Go“.</li>
+  <li class="you"><b class="t">Doppelklick auf Studio.command und prüfen</b>Name, Summary, Logo, Cover, jeden Skin, Beschreibung, Datei. Passt ein Teil nicht: dort <b>Ändern</b>, kurz schreiben was, am Ende <b>An Claude zurückgeben</b>.</li>
+  <li class="you"><b class="t">Claude Bescheid geben</b>„Bearbeite die Studio-Notizen“. Claude setzt jede Notiz um, danach liegt das Pack wieder im Studio, geänderte Teile sind markiert.</li>
+  <li class="you"><b class="t">Go geben</b>Passt alles: <b>Go</b>. Go ist gesperrt, solange Notizen offen sind oder eine Prüfung rot ist (Bildgröße, Name, Dateigröße …). Der Grund steht direkt unter dem Knopf.</li>
+  <li><b class="t">Termin</b>Das Projekt bekommt einen Termin im Morgenfenster (6–12 Uhr) an einem Upload-Tag (Mo, Mi, Fr, Sa), höchstens ein neues Projekt pro Tag. „Go zurücknehmen“ geht bis dahin jederzeit.</li>
+  <li class="you"><b class="t">Am Termin: beim nächsten Tages-Go dabei</b>Das Projekt steht dann auf der Liste des Tages. Der Helfer füllt General, Description und License aus (du klickst <b>Create</b>), dann Media (du klickst <b>Apply</b>), dann die Datei (du klickst <b>Add File</b>). Danach gilt es im Studio als veröffentlicht.</li>
+</ol>
+
+<h3>Das Studio im Überblick</h3>
+<table>
+  <tr><th style="width:24%">Abschnitt</th><th>Was du tust</th></tr>
+  <tr><td>Jetzt fällig</td><td>Der Termin ist da. Beim nächsten Go dabei oder „Jetzt veröffentlichen“.</td></tr>
+  <tr><td>Wartet auf dein Go</td><td>Prüfen: Go oder Ändern.</td></tr>
+  <tr><td>Wartet auf Claude</td><td>Nichts. Claude „bearbeite die Studio-Notizen“ sagen.</td></tr>
+  <tr><td>Eingeplant</td><td>Nichts. Der Termin steht dran.</td></tr>
+  <tr><td>Updates</td><td>Nur zur Info. Updates laufen ohne Go.</td></tr>
+</table>
+
+<!-- ───────────────────────── Teil 5 ───────────────────────── -->
+<div class="page"></div>
+<h2>Teil 5: Takt, Befehle und Hilfe</h2>
+
+<h3>Der Takt auf einen Blick</h3>
+<table>
+  <tr><th style="width:26%">Was</th><th style="width:34%">Wann</th><th>Regel</th></tr>
+  <tr><td>Skinpack-Update</td><td>abends, Zufallszeit 18–21 Uhr</td><td>höchstens 1 pro Abend, reihum, je Pack frühestens nach 23 Tagen</td></tr>
+  <tr><td>Erinnerung</td><td>gegen 21:15 Uhr</td><td>nur wenn etwas wartet, einmal pro Tag</td></tr>
+  <tr><td>Tages-Go</td><td>wann es dir passt</td><td>einmal am Tag reicht; Offenes bleibt auf der Liste</td></tr>
+  <tr><td>Neues Projekt</td><td>Morgenfenster 6–12 Uhr, Mo/Mi/Fr/Sa</td><td>nur nach deinem Go, höchstens 1 pro Tag</td></tr>
+</table>
+
+<h3>Was du Claude schreiben kannst</h3>
+<table>
+  <tr><th style="width:36%">Du schreibst</th><th>Claude macht</th></tr>
+  <tr><td>„Go“</td><td>zeigt die Liste des Tages und startet den Helfer; du klickst Save / Create / Apply / Add File</td></tr>
+  <tr><td>„Was steht heute an?“</td><td>zeigt die Liste, ohne etwas zu öffnen</td></tr>
+  <tr><td>„Bearbeite die Studio-Notizen“</td><td>setzt deine Notizen aus dem Studio um</td></tr>
+  <tr><td>„Bitte mergen“</td><td>übernimmt eine fertige Änderung auf GitHub in den Hauptstand</td></tr>
+</table>
+
+<h3>Befehle für das Terminal (im Projektordner)</h3>
 <table>
   <tr><th style="width:52%">Befehl</th><th>Wirkung</th></tr>
-  <tr><td><code>npm run cf</code></td><td>Menü mit offenen Aufgaben</td></tr>
+  <tr><td><code>npm run cf -- heute</code></td><td>Liste des Tages, <kbd>↩</kbd> = Go für alles</td></tr>
+  <tr><td><code>npm run cf -- heute --dry-run</code></td><td>Nur die Liste zeigen, nichts öffnen</td></tr>
+  <tr><td><code>npm run cf</code></td><td>Menü: einzelne Aufgabe, Login (<kbd>l</kbd>), Kalibrierung (<kbd>i</kbd>)</td></tr>
+  <tr><td><code>npm run cf -- login</code></td><td>Normales Chrome mit dem Helfer-Profil zum Einloggen öffnen</td></tr>
+  <tr><td><code>npm run cf -- seite</code></td><td>Nur die offenen Beschreibungen nachziehen</td></tr>
   <tr><td><code>npm run cf -- publish --skinpack &lt;slug&gt;</code></td><td>Neues Projekt komplett (Create → Media → File)</td></tr>
-  <tr><td><code>npm run cf -- media --skinpack &lt;slug&gt;</code></td><td>Nur Cover und Media</td></tr>
-  <tr><td><code>npm run cf -- heute</code></td><td>Liste des Tages, ein Go für alles</td></tr>
-  <tr><td><code>npm run cf -- update --skinpack &lt;slug&gt;</code></td><td>Update hochladen (mit <code>--version 1.3</code> gezielt)</td></tr>
+  <tr><td><code>npm run cf -- update --skinpack &lt;slug&gt;</code></td><td>Update von Hand hochladen (mit <code>--version 1.3</code> gezielt)</td></tr>
+  <tr><td><code>npm run studio</code></td><td>Studio öffnen (wie der Doppelklick)</td></tr>
+  <tr><td><code>npm run bestand</code></td><td>Übersicht aller Packs und des Update-Plans</td></tr>
 </table>
 
 <h3>Wenn es hakt</h3>
 <table>
-  <tr><th style="width:40%">Problem</th><th>Lösung</th></tr>
-  <tr><td>„⚠ … Feld nicht gefunden“</td><td>Dieses Feld selbst ausfüllen. Passiert es immer wieder: Menü <kbd>i</kbd> für diese Seite und Claude Bescheid geben.</td></tr>
-  <tr><td>„👉 … Bitte selbst klicken“</td><td>Den Knopf selbst klicken und <kbd>↩</kbd> drücken. Danach macht der Helfer weiter.</td></tr>
-  <tr><td>„Fenster ist schon offen“</td><td>Das alte Fenster schließen und neu starten.</td></tr>
-  <tr><td>Keine Aufgabe, obwohl ein Issue da ist</td><td>Gezielt starten mit dem Befehl <code>update</code> aus der Tabelle oben.</td></tr>
+  <tr><th style="width:40%">Meldung / Problem</th><th>Lösung</th></tr>
+  <tr><td>„Heute ist nichts offen“</td><td>Alles erledigt. Nichts zu tun.</td></tr>
+  <tr><td>„⚠ … Feld nicht gefunden“</td><td>Dieses Feld selbst ausfüllen und Claude Bescheid geben. Claude passt den Helfer an (bei Bedarf mit Menü <kbd>i</kbd> für diese Seite).</td></tr>
+  <tr><td>„dein Klick wurde nicht erkannt“</td><td>Hast du gespeichert, ist alles gut: Der Punkt verschwindet beim nächsten Go von selbst. Sonst einfach beim nächsten Go nochmal.</td></tr>
+  <tr><td>„nicht bei CurseForge eingeloggt“ oder Google: „Anmeldung nicht möglich“</td><td>Helfer-Fenster mit <kbd>⌘Q</kbd> beenden, <code>npm run cf -- login</code>, im normalen Chrome einloggen, <kbd>⌘Q</kbd>. Dann neu starten.</td></tr>
+  <tr><td>„Abgebrochen“ bei einer Sicherheitsprüfung</td><td>Die Prüfung blieb länger als 15 Minuten offen. Neu starten, wenn du Zeit hast.</td></tr>
+  <tr><td>„Fenster ist schon offen“</td><td>Das alte Helfer-Chrome mit <kbd>⌘Q</kbd> beenden und neu starten.</td></tr>
+  <tr><td>Kein Abend-Update, obwohl eines fällig war</td><td>Claude fragen. Der Lauf ist auf GitHub unter Actions → „Evening — update a due project“ zu sehen.</td></tr>
+  <tr><td>„git pull hat nicht geklappt“</td><td>Der Starter arbeitet mit dem lokalen Stand weiter. Claude Bescheid geben.</td></tr>
 </table>
 
-<!-- ───────────────────────── Teil 2 ───────────────────────── -->
+<h3>Wo liegt was</h3>
+<table>
+  <tr><th style="width:42%">Ort</th><th>Inhalt</th></tr>
+  <tr><td><span class="path" data-path="Macros/Studio.command">Macros/Studio.command</span></td><td>Doppelklick: Studio</td></tr>
+  <tr><td><span class="path" data-path="Macros/CurseForge.command">Macros/CurseForge.command</span></td><td>Doppelklick: Liste des Tages und Go</td></tr>
+  <tr><td><span class="path" data-path="Macros/ANLEITUNG.md">Macros/ANLEITUNG.md</span></td><td>Kurzfassung als Text</td></tr>
+  <tr><td><span class="path" data-path="data">data/</span></td><td>Alle Packs, Mods, Termine und Prüfstände</td></tr>
+  <tr><td><span class="path">Output/</span></td><td>Gebaute Packs, Screenshots, Übersichten (nur auf deinem Mac)</td></tr>
+  <tr><td><span class="path" data-path="secrets.env.example">secrets.env</span></td><td>Zugangsschlüssel, nur auf deinem Mac, nie weitergeben</td></tr>
+</table>
+
+<!-- ───────────────────────── Anhang ───────────────────────── -->
 <div class="page"></div>
-<h2>Teil 2: Makros mit Keyboard Maestro anlegen</h2>
-<p>Die Makros machen dasselbe wie der Helfer, aber per Hotkey in deinem normalen Chrome. Du baust sie einmal. Danach musst du sie nie anpassen, weil sie immer dieselben Dateien lesen.</p>
+<h2>Anhang: Makros mit Keyboard Maestro (optional)</h2>
+<p>Brauchst du nicht, wenn du den Helfer nutzt. Die Makros machen dasselbe wie der Helfer, aber per Hotkey in deinem normalen Chrome. Du baust sie einmal. Danach musst du sie nie anpassen, weil sie immer dieselben Dateien lesen.</p>
 
 <h3>So hängen Befehl und Makro zusammen</h3>
-<p>Vor jedem Makro-Lauf füllst du den Übergabe-Ordner <span class="path" data-path="Macros">Macros/aktuell/</span> mit einem Befehl. Das Makro liest die Werte von dort.</p>
+<p>Vor jedem Makro-Lauf füllst du den Übergabe-Ordner <span class="path">Macros/aktuell/</span> mit einem Befehl. Das Makro liest die Werte von dort.</p>
 <table>
   <tr><th style="width:24%">Situation</th><th style="width:48%">Befehl im Terminal (im Projektordner)</th><th>Makro</th></tr>
   <tr><td>Neues Projekt, Mod</td><td><code>npm run macro -- --mod &lt;modId&gt;</code></td><td><kbd>⌃⌥N</kbd> Neues Projekt</td></tr>
@@ -168,7 +273,6 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
 <div class="box info"><b>Screenshot für die Bildsuche:</b> <kbd>⌃⇧⌘4</kbd> drücken und einen Rahmen nur um das Label ziehen (nicht um das leere Feld). Das Bild liegt dann in der Zwischenablage. Mit <kbd>⌘V</kbd> fügst du es ins Image-Feld der Aktion ein.<br>
 <b>Warum Bildsuche statt fester Koordinaten?</b> Das Makro findet das Label, egal wo das Fenster liegt oder wie weit gescrollt ist.</div>
 
-<div class="page"></div>
 <h3>Schritt 3: Hilfs-Makro „Datei wählen“ (das Herzstück)</h3>
 <p>Damit lädt jedes Makro Dateien hoch. Es bedient das Dateifenster von macOS.</p>
 <div class="macro">
@@ -217,16 +321,15 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
 </ol>
 </div>
 
-<div class="page"></div>
 <h3>Schritt 6: Makro „CF: Skinpack-Update“ <kbd>⌃⌥U</kbd></h3>
 <div class="macro">
-<p class="small">Starten, wenn die Projektseite des Skinpacks offen ist.</p>
+<p class="small">Nur nötig, wenn ein Update ausnahmsweise von Hand hochgeladen wird. Starten, wenn die Projektseite des Skinpacks offen ist.</p>
 <ol>
   <li>Werte laden: <code>datei-pfad.txt → CF_DateiPfad</code>, <code>changelog.md → CF_Changelog</code>, <code>beschreibungs-abschnitt.md → CF_Abschnitt</code>.</li>
   <li>Reiter <b>Files</b>, dann <b>Add File</b> anklicken und <b>Pause Until</b> (Found Image: Upload-Bereich).</li>
   <li>Klick auf den Upload-Bereich, dann <b>Execute a Subroutine</b> <code>Datei wählen</code> mit <code>%Variable%CF_DateiPfad%</code>.</li>
   <li>Changelog-Feld: <code>%Variable%CF_Changelog%</code>. Release Type <b>R</b> anklicken.</li>
-  <li>Game Versions: alle aktuellen <b>26.x</b> anhaken. Ändert sich die Liste oft, mach das beim Prüfen selbst.</li>
+  <li>Game Versions: alle Versionen der vorigen Datei plus die neuesten <b>26.x</b> anhaken.</li>
   <li><b>Alert:</b> „Datei bereit. Bitte prüfen und selbst hochladen.“</li>
   <li><b>Set Clipboard to Text</b> <code>%Variable%CF_Abschnitt%</code>, dann <b>Alert:</b> „Der neue Beschreibungsabschnitt ist in der Zwischenablage. In Description vor ‚How to install‘ einfügen.“</li>
 </ol>
@@ -258,40 +361,6 @@ Diese Anleitung zeigt beide Wege, CurseForge-Formulare ausfüllen zu lassen: den
   <tr><td>Makro läuft falsch weiter</td><td>Menüleisten-Icon von Keyboard Maestro → <b>Cancel All Macros</b>.</td></tr>
 </table>
 <div class="box info"><b>Tipp zum Bauen:</b> Bau jedes Makro, während das CurseForge-Formular daneben offen ist, und teste nach jedem zweiten Schritt mit dem <b>Try</b>-Knopf. Ein Projekt ausfüllen, ohne auf Create zu klicken, kostet nichts. Damit kannst du gefahrlos üben.</div>
-
-<!-- ───────────────────────── Teil 3 ───────────────────────── -->
-<div class="page"></div>
-<h2>Teil 3: Was läuft automatisch, was machst du?</h2>
-<table>
-  <tr><th style="width:34%">Aufgabe</th><th style="width:24%">Wer</th><th>Hinweis</th></tr>
-  <tr><td>Mods und Skins bauen, Bilder, Texte</td><td>Claude</td><td>In der Sitzung oder über GitHub</td></tr>
-  <tr><td>Neues Projekt freigeben (Go)</td><td><b>Du</b>, im Studio</td><td>Nur neue Projekte brauchen Go</td></tr>
-  <tr><td>Neues Projekt anlegen (Formular)</td><td>Helfer oder Makro, <b>du</b> klickst Create</td><td>CurseForge hat dafür keine Schnittstelle</td></tr>
-  <tr><td>Cover und Galerie</td><td>Helfer oder Makro, <b>du</b> klickst Apply</td><td>Keine Schnittstelle. Bei Skinpacks nur für neue Projekte.</td></tr>
-  <tr><td>Beschreibung ändern</td><td>Helfer oder Makro, <b>du</b> speicherst</td><td>Keine Schnittstelle. Nach einem Upload: „Beschreibung nachziehen“ im Helfer.</td></tr>
-  <tr><td>Datei und Changelog eines Updates hochladen</td><td>Automatik (Abend-Lauf)</td><td>Immer das komplette Pack mit allen Skins</td></tr>
-  <tr><td>Login, Captcha, 2FA</td><td><b>Immer du</b></td><td>Wird nie umgangen</td></tr>
-</table>
-
-<div class="box info"><b>Seit 19.11.2026 lädt der Abend-Lauf Updates selbst hoch.</b> Erster Upload: The Last Ninjas V1.2. Pro Abend höchstens ein Projekt (18–21 Uhr), reihum, je Projekt frühestens nach 23 Tagen. Jede Datei enthält alle Skins des Packs. Danach wartet nur noch die Beschreibung auf dich: einmal am Tag „Go“, ein Klick.</div>
-
-<h3>Der Takt</h3>
-<ul>
-  <li><b>Updates:</b> abends zwischen 19 und 22 Uhr, höchstens eines pro Abend, pro Projekt alle 22 bis 25 Tage, nur mit echten neuen Inhalten.</li>
-  <li><b>Neue Projekte:</b> nach deinem Go im Morgenfenster (6 bis 12 Uhr) an einem Upload-Tag, höchstens eines pro Tag.</li>
-  <li><b>Erinnerung zum Termin:</b> einmal <code>npm run studio -- zeitplan-installieren</code> ausführen. Dein Mac prüft dann alle 30 Minuten die Termine und meldet sich. Entfernen: <code>npm run studio -- zeitplan-entfernen</code>.</li>
-</ul>
-
-<h3>Wo liegt was</h3>
-<table>
-  <tr><th style="width:42%">Ort</th><th>Inhalt</th></tr>
-  <tr><td><span class="path" data-path="Macros/Studio.command">Macros/Studio.command</span></td><td>Doppelklick: Studio</td></tr>
-  <tr><td><span class="path" data-path="Macros/CurseForge.command">Macros/CurseForge.command</span></td><td>Doppelklick: CurseForge-Helfer</td></tr>
-  <tr><td><span class="path" data-path="Macros/ANLEITUNG.md">Macros/ANLEITUNG.md</span></td><td>Diese Anleitung als Text (Helfer)</td></tr>
-  <tr><td><span class="path" data-path="Macros/ANLEITUNG-keyboard-maestro.md">Macros/ANLEITUNG-keyboard-maestro.md</span></td><td>Diese Anleitung als Text (Makros)</td></tr>
-  <tr><td><span class="path">Macros/aktuell/</span></td><td>Übergabe-Ordner für die Makros</td></tr>
-  <tr><td><span class="path" data-path="secrets.env.example">secrets.env</span></td><td>Zugangsdaten, nur auf deinem Mac</td></tr>
-</table>
 
 </body>
 </html>

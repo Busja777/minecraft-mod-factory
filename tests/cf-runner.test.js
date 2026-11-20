@@ -242,3 +242,17 @@ test('hands-free: a login or security check is never automated, the run waits an
   await stuck.setContent('<title>Just a moment...</title>');
   await assert.rejects(runSteps(stuck, [{ title: 'x', action: 'click', target: 'startProject' }], { ...quiet, handsFree: true, humanWait: 400, ask: async () => '' }), /Abgebrochen/);
 });
+
+test('a login page stops the run with the plain-Chrome hint instead of waiting in the helper window', async t => {
+  if (skip) return t.skip(skip);
+  const page = await browser.newPage();
+  await page.route('https://sso.example.test/**', r => r.fulfill({ contentType: 'text/html', body: '<title>Sign in</title>' }));
+  await page.goto('https://sso.example.test/login?next=x');
+  const started = Date.now();
+  for (const handsFree of [true, false]) {
+    await assert.rejects(runSteps(page, [{ title: 'x', action: 'click', target: 'startProject' }], {
+      ...quiet, handsFree, humanWait: 5000, ask: async () => { throw new Error('asked'); }
+    }), /npm run cf -- login/);
+  }
+  assert.ok(Date.now() - started < 3000, 'no waiting');
+});
