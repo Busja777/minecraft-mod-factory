@@ -21,7 +21,7 @@ export function recordProjectId({ projects, pack, task, name, projectId }) {
 }
 
 // After the user confirmed "Add File": the version counts as published (uploaded by hand), and the
-// project's next update is scheduled (22–25 days, config.updateIntervalDays).
+// project's next update is scheduled (23–26 days, config.updateIntervalDays).
 export function recordUpload({ projects, pack, task, version, intervalDays, now = new Date(), rng }) {
   const v = pack.versions.find(x => x.version === version);
   if (!v) throw new Error(`${pack.name} hat keine Version ${version}`);

@@ -39,25 +39,29 @@ test('classify: resource packs and Java mods are listed, never counted as prepar
   assert.deepEqual([java.kind, java.group], ['Java', 'Java']);
 });
 
-test('simulateSchedule: one upload per evening, earliest due first, then the project waits', () => {
+test('simulateSchedule: one upload per evening at its slot, packs take turns, 23 days apart', () => {
   const entries = [
     { modId: 'old', kind: 'skinpack', status: 'published', projectId: 1, lastPublishedAt: '2026-03-28T00:00:00Z', nextUpdateDue: '2026-04-20T00:00:00Z' },
     { modId: 'mid', kind: 'skinpack', status: 'published', projectId: 2, lastPublishedAt: '2026-04-12T00:00:00Z', nextUpdateDue: '2026-05-06T00:00:00Z' },
-    { modId: 'fresh', kind: 'skinpack', status: 'published', projectId: 3, lastPublishedAt: '2026-11-19T18:05:00Z', nextUpdateDue: '2026-12-14T00:00:00Z' },
+    { modId: 'fresh', kind: 'skinpack', status: 'published', projectId: 3, lastPublishedAt: '2026-11-18T18:05:00Z', nextUpdateDue: '2026-12-14T00:00:00Z' },
     { modId: 'mod', kind: 'mod', status: 'published', projectId: 4, lastPublishedAt: '2026-01-01T00:00:00Z' }
   ];
   const packs = {
-    old: pack('old', [['1.0', 'published'], ['1.1', 'due']]),
+    old: pack('old', [['1.0', 'published'], ['1.1', 'due'], ['1.2', 'due']]),
     mid: pack('mid', [['1.0', 'published'], ['1.1', 'due'], ['1.2', 'due']]),
     fresh: pack('fresh', [['1.0', 'published'], ['1.1', 'due']])
   };
-  const plan = simulateSchedule({ entries, packs, now, evenings: 60, intervalDays: [22, 25] });
+  const slotOf = dateKey => 18 * 60 + Number(dateKey.slice(8)) % 160; // 18:00–20:40
+  const plan = simulateSchedule({ entries, packs, now, evenings: 90, intervalDays: [23, 26], slotOf });
+  // now = 19.11. 19:00 local, before the window end: today counts
   assert.deepEqual(plan.slice(0, 2).map(p => `${p.date} ${p.modId} ${p.version}`), ['2026-11-19 old 1.1', '2026-11-20 mid 1.1']);
-  assert.deepEqual(plan.map(p => p.modId), ['old', 'mid', 'fresh', 'mid']);
+  assert.equal(plan[0].time, '18:19');
+  assert.deepEqual(plan.map(p => p.modId), ['old', 'mid', 'fresh', 'old', 'mid'], 'everyone gets a turn before anyone gets a second one');
   assert.equal(new Set(plan.map(p => p.date)).size, plan.length, 'never two uploads on one evening');
-  const mid2 = plan.find(p => p.modId === 'mid' && p.version === '1.2');
-  assert.ok((Date.parse(mid2.date) - Date.parse('2026-11-20')) / 864e5 >= 22, 'at least 22 days between two updates of one project');
+  for (const p of plan) assert.ok(p.gapDays >= 23, `${p.modId} ${p.version} after ${p.gapDays} days`);
   assert.equal(entries[0].nextUpdateDue, '2026-04-20T00:00:00Z', 'the real entries are not touched');
+  const late = simulateSchedule({ entries, packs, now: new Date('2026-11-19T20:30:00Z'), evenings: 3, slotOf });
+  assert.equal(late[0].date, '2026-11-20', 'after 21:00 the plan starts tomorrow');
 });
 
 test('markdown and CSV list every project with its next step', () => {

@@ -1,4 +1,5 @@
 import { effectiveDue, DEFAULT_INTERVAL_DAYS } from './cf-projects.js';
+import { localParts, localMidnightUtcIso, formatMinutes } from './schedule.js';
 
 // Stock overview of every CurseForge project (npm run bestand). Pure functions: the script feeds
 // the CurseForge data, the local folder scan and the imported packs.
@@ -49,21 +50,31 @@ export function classify({ project, files = [], pack = null, stages = [], entry 
 
 // Plays the evening runs forward: each evening the earliest due project with a prepared version
 // uploads one version, then waits the mean interval. → [{ date, modId, name, version }]
-export function simulateSchedule({ entries, packs, now = new Date(), evenings = 60, intervalDays = DEFAULT_INTERVAL_DAYS }) {
+// Plays the evening runs forward: at most one upload per evening at that evening's slot time; the
+// projects take turns (longest without an update first, like pickForUpdate) and each waits at least
+// intervalDays[0] days. slotOf(dateKey) → minutes of day (scripts/lib/schedule.js slotFor); without it
+// every run counts as 20:00. Days that already had an upload are skipped.
+export function simulateSchedule({ entries, packs, now = new Date(), evenings = 60, intervalDays = DEFAULT_INTERVAL_DAYS, slotOf = null, windowEnd = 21 * 60, timeZone = 'Europe/Berlin' }) {
   const mean = (intervalDays[0] + intervalDays[1]) / 2;
   const state = entries
     .filter(e => e.kind === 'skinpack' && e.status === 'published' && Number.isInteger(e.projectId) && packs[e.modId])
     .map(e => ({ entry: { ...e }, queue: packs[e.modId].versions.filter(v => v.status === 'due').map(v => v.version), name: packs[e.modId].name }));
+  const uploadedOn = new Set(entries.filter(e => e.lastPublishedAt).map(e => localParts(new Date(e.lastPublishedAt), timeZone).dateKey));
+  const today = localParts(now, timeZone);
   const plan = [];
   for (let i = 0; i < evenings; i++) {
-    const evening = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i, 20));
+    const noon = new Date(Date.UTC(today.year, today.month - 1, today.day + i, 12));
+    const dateKey = localParts(noon, timeZone).dateKey;
+    const minutes = slotOf ? slotOf(dateKey) : 20 * 60;
+    const at = new Date(Date.parse(localMidnightUtcIso(noon, timeZone)) + minutes * 60000);
+    if (i === 0 && (today.minutesOfDay >= windowEnd || uploadedOn.has(dateKey))) continue;
     const pick = state
-      .filter(s => s.queue.length && effectiveDue(s.entry) <= evening)
-      .sort((a, b) => effectiveDue(a.entry) - effectiveDue(b.entry))[0];
+      .filter(s => s.queue.length && effectiveDue(s.entry, { minIntervalDays: intervalDays[0] }) <= at)
+      .sort((a, b) => Date.parse(a.entry.lastPublishedAt) - Date.parse(b.entry.lastPublishedAt))[0];
     if (!pick) continue;
-    plan.push({ date: day(evening), modId: pick.entry.modId, name: pick.name, version: pick.queue.shift() });
-    pick.entry.lastPublishedAt = evening.toISOString();
-    pick.entry.nextUpdateDue = new Date(evening.getTime() + mean * DAY).toISOString();
+    plan.push({ date: dateKey, time: formatMinutes(minutes), modId: pick.entry.modId, name: pick.name, version: pick.queue.shift(), gapDays: Math.floor((at - Date.parse(pick.entry.lastPublishedAt)) / DAY) });
+    pick.entry.lastPublishedAt = at.toISOString();
+    pick.entry.nextUpdateDue = new Date(at.getTime() + mean * DAY).toISOString();
   }
   return plan;
 }
@@ -102,8 +113,8 @@ export function renderMarkdown({ rows, schedule, localOnly = [], now = new Date(
     localOnly.length ? table(['Ordner', 'Stufen mit Skins', 'Skins (V1)'], localOnly.map(l => [l.folder, l.stages.filter(s => s.skins).map(s => s.stage).join(', ') || '–', l.stages.find(s => s.stage === 'V1')?.skins ?? '–'])) : '–',
     '',
     `## Fahrplan der nächsten Abende (${schedule.length} Updates)`,
-    'Simuliert mit einem Update pro Abend und im Schnitt 23,5 Tagen Abstand je Projekt. Die echten Termine streuen um 22–25 Tage.',
-    table(['Abend', 'Projekt', 'Version'], schedule.map(s => [de(s.date), s.name, `V${s.version}`]))
+    'Ein Update pro Abend zur Zufallszeit zwischen 18 und 21 Uhr. Die Packs kommen reihum dran (am längsten ohne Update zuerst), jedes frühestens 23 Tage nach seinem letzten Upload. Die Uhrzeit ist der Start des Laufs; die Datei ist wenige Minuten später auf CurseForge.',
+    table(['Abend', 'Uhrzeit', 'Projekt', 'Version', 'Tage seit letztem Update'], schedule.map(s => [de(s.date), s.time || '–', s.name, `V${s.version}`, s.gapDays ?? '–']))
   ];
   return out.join('\n') + '\n';
 }

@@ -173,7 +173,7 @@ if (published.length) {
   entry.version = published.at(-1).version;
   entry.lastPublishedAt = last.toISOString();
   entry.nextUpdateDue = nextDueDate({ now: last, intervalDays: config.updateIntervalDays || DEFAULT_INTERVAL_DAYS }).toISOString();
-  if (!lastUpload && !lastFile) warnings.push('no --last-upload given: first update waits the full 22–25 days from today');
+  if (!lastUpload && !lastFile) warnings.push('no --last-upload given: first update waits the full 23–26 days from today');
   if (!projectId) warnings.push('no --project given: updates start once the CurseForge projectId is set in data/cf-projects.json');
 } else {
   entry.status = 'pending';

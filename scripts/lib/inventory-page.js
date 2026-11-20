@@ -60,7 +60,7 @@ export function renderPage({ rows, schedule, localOnly = [], decisions = [], now
     m.items.push(s);
   }
   const timeline = months.map(m => `<div class="month"><h3>${esc(m.label)} <span class="muted">${m.items.length}</span></h3><ul>${m.items.map(s =>
-    `<li${s.date === today ? ' class="today"' : ''}><time datetime="${s.date}">${short(s.date)}</time><span>${esc(s.name)}</span><b>V${esc(s.version)}</b></li>`).join('')}</ul></div>`).join('');
+    `<li${s.date === today ? ' class="today"' : ''}><time datetime="${s.date}${s.time ? `T${s.time}` : ''}">${short(s.date)}${s.time ? ` <small>${s.time}</small>` : ''}</time><span>${esc(s.name)}</span><b>V${esc(s.version)}</b></li>`).join('')}</ul></div>`).join('');
 
   const bRows = B.map(r => { const [cls, label] = reason(r); return `<tr><td>${esc(r.name)}</td><td class="n">${num(r.downloads)}</td><td>${r.lastUpload ? de(r.lastUpload) : '–'}</td><td><span class="pill ${cls}">${label}</span></td><td class="muted">${esc(r.note)}</td></tr>`; }).join('');
   const smallRows = list => list.map(r => `<tr><td>${esc(r.name)}</td><td class="n">${num(r.downloads)}</td><td>${r.lastUpload ? de(r.lastUpload) : '–'}</td><td class="muted">${esc(r.note.replace(/^Resource Pack,?\s*/, ''))}</td></tr>`).join('');
@@ -153,7 +153,7 @@ ${decide}
 </section>
 
 <section aria-labelledby="h-cal">
-  <h2 id="h-cal">Fahrplan <small>ein Update pro Abend, pro Projekt im Schnitt alle 23,5 Tage (echt: 22–25)</small></h2>
+  <h2 id="h-cal">Fahrplan <small>ein Update pro Abend zur Zufallszeit zwischen 18 und 21 Uhr · reihum, jedes Pack frühestens nach 23 Tagen</small></h2>
   <div class="calendar">${timeline}</div>
 </section>
 

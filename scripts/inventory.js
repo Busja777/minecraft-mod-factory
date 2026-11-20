@@ -5,7 +5,9 @@ import path from 'path';
 import sharp from 'sharp';
 import { readMcpack } from './lib/mcpack.js';
 import { listPacks, loadPack } from './lib/skinpacks.js';
-import { loadProjects } from './lib/cf-projects.js';
+import { execSync } from 'child_process';
+import { loadProjects, syncLastUpload } from './lib/cf-projects.js';
+import { slotFor, parseHHMM } from './lib/schedule.js';
 import { listFiles } from './platforms/curseforge-core.js';
 import { classify, simulateSchedule, renderMarkdown, toCsv } from './lib/inventory.js';
 import { renderPage, renderPreview } from './lib/inventory-page.js';
@@ -76,6 +78,7 @@ for (const project of projects) {
   const stages = map.folder ? await scanFolder(path.join(ROOT, map.folder)) : [];
   const pack = packById[project.id] || null;
   const entry = pack ? entries.find(e => e.modId === pack.slug) : null;
+  if (entry) syncLastUpload(entry, files); // the real last upload, also when it was done by hand
   rows.push(classify({ project, files, pack, stages, entry, map, now }));
 }
 
@@ -90,7 +93,11 @@ for (const name of fs.readdirSync(skinRoot).sort()) {
   if (stages.some(s => s.skins)) localOnly.push({ folder: name, stages });
 }
 
-const schedule = simulateSchedule({ entries, packs, now, evenings: 150, intervalDays: config.updateIntervalDays });
+// The same daily slot the evening gate draws (scripts/schedule-gate.js: salt = GitHub repository).
+const repo = process.env.GITHUB_REPOSITORY || (execSync('git remote get-url origin', { encoding: 'utf-8' }).match(/github\.com[:/](.+?)(?:\.git)?\s*$/) || [])[1] || 'local';
+const [winStart, winEnd] = config.windows.evening.map(parseHHMM);
+const slotOf = dateKey => slotFor({ dateKey, windowName: 'evening', salt: repo, start: winStart, end: winEnd });
+const schedule = simulateSchedule({ entries, packs, now, evenings: 240, intervalDays: config.updateIntervalDays, slotOf, windowEnd: winEnd, timeZone: config.timezone });
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'BESTAND.md'), renderMarkdown({ rows, schedule, localOnly, now }));
 fs.writeFileSync(path.join(outDir, 'bestand.csv'), toCsv(rows));

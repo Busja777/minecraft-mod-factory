@@ -76,7 +76,7 @@ async function showOverview() {
     ${section('Wartet auf Claude', o.claude, c => card(c, link(c, 'Ansehen')), 'Claude holt die Notizen mit <code>npm run notes</code> ab. Danach liegt das Pack wieder hier bei dir.')}
     ${section('Eingeplant', o.geplant, c => card(c, link(c, 'Ansehen')), 'Neue Projekte gehen morgens (06–12 Uhr) an Upload-Tagen raus, höchstens eins pro Tag. Zum Termin meldet sich dein Mac.')}
     <h2>Updates bestehender Projekte <span class="zahl">${o.updates.length}</span></h2>
-    <p class="hinweis">Brauchen kein Go. Laufen abends (19–22 Uhr), alle 22–25 Tage.</p>
+    <p class="hinweis">Brauchen kein Go. 1 Update pro Abend zur Zufallszeit zwischen 18 und 21 Uhr, reihum, jedes Pack frühestens nach 23 Tagen.</p>
     ${o.updates.length ? `<div class="karten">${o.updates.map(u => `<div class="karte"><div class="mitte"><div class="titel">${esc(u.name)}</div><div class="meta">${esc(`aktuell V${u.version} · nächstes Update ab ${fmt(u.nextUpdateDue)}${u.waiting ? ` · V${u.waiting} wartet auf Upload` : ''}`)}</div></div></div>`).join('')}</div>` : '<p class="leer">Keine.</p>'}
     ${o.live.length ? section('Veröffentlicht', o.live, c => card(c)) : ''}
   `;

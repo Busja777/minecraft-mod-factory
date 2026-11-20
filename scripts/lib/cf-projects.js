@@ -8,7 +8,7 @@ import fs from 'fs';
 
 export const DEFAULT_PATH = './data/cf-projects.json';
 export const kindOf = p => p.kind || 'mod';
-export const DEFAULT_INTERVAL_DAYS = [22, 25];
+export const DEFAULT_INTERVAL_DAYS = [23, 26];
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function loadProjects(path = DEFAULT_PATH) {
@@ -67,17 +67,29 @@ export function effectiveDue(p, { minIntervalDays = DEFAULT_INTERVAL_DAYS[0] } =
   return new Date(Math.max(floor, stored));
 }
 
-// Picks the published project (mod or skin pack) whose due date is earliest and already reached;
-// null if none is due. `eligible` can exclude projects that have nothing to update (e.g. a skin
+// Picks the next published project (mod or skin pack) in the update cycle: among the projects whose
+// due date has passed (never sooner than minIntervalDays after the last upload), the one that has
+// gone longest without an update. So every project takes its turn before any project gets a second
+// one. null if none is due. `eligible` can exclude projects that have nothing to update (e.g. a skin
 // pack without a prepared next version).
 export function pickForUpdate(projects, { now = new Date(), minIntervalDays = DEFAULT_INTERVAL_DAYS[0], eligible = () => true } = {}) {
   const nowMs = now.getTime();
   const due = projects
     .filter(p => p.status === 'published' && Number.isInteger(p.projectId) && p.lastPublishedAt && eligible(p))
-    .map(p => ({ p, due: effectiveDue(p, { minIntervalDays }) }))
+    .map(p => ({ p, last: Date.parse(p.lastPublishedAt), due: effectiveDue(p, { minIntervalDays }) }))
     .filter(x => x.due.getTime() <= nowMs)
-    .sort((a, b) => a.due - b.due);
+    .sort((a, b) => a.last - b.last || a.due - b.due);
   return due.length ? due[0].p : null;
+}
+
+// Takes the real last upload from the project's CurseForge files (newest first, as listFiles returns
+// them), so a file uploaded by hand also counts. Returns true when lastPublishedAt moved forward.
+export function syncLastUpload(p, files) {
+  const newest = (files || []).map(f => Date.parse(f.fileDate)).filter(Number.isFinite).sort((a, b) => b - a)[0];
+  if (!newest || (p.lastPublishedAt && Date.parse(p.lastPublishedAt) >= newest)) return false;
+  p.lastPublishedAt = new Date(newest).toISOString();
+  p.nextUpdateDue = null; // effectiveDue falls back to lastPublishedAt + minIntervalDays
+  return true;
 }
 
 export function markPublished(projects, modId, { projectId, fileId, version, cfName, now = new Date(), intervalDays = DEFAULT_INTERVAL_DAYS, rng = Math.random }) {

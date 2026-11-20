@@ -9,7 +9,7 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 | Workflow | Window | What happens |
 |---|---|---|
 | `morning.yml` | 06:00–12:00, once per day at a random minute | 1) Uploads every pending mod whose CurseForge project ID you entered. 2) On `newModDays` (default Mon/Wed/Fri/Sat): Claude designs a new mod (incl. a short legend) → ChatGPT logo `<Name>.png` (400×400) and cover `<Name> Cover.png` (720×340) → source stored in `data/mods/<modId>/` → Gradle build (one auto-fix retry) → **project kit** committed and a GitHub issue (`cf-project-needed`) asks you to create the CurseForge project. |
-| `evening.yml` | 19:00–22:00, once per day at a random minute | Picks the published project whose per-project due date (random **22–25 days** after its last upload, never under 22) has passed, lets Claude implement one real improvement, bumps the minor version and uploads the new file with a changelog. Nothing due → nothing happens. |
+| `evening.yml` | 18:00–21:00, once per day at a random minute | Picks the next published project in the cycle (longest without an update first, at least **23 days** after its last upload as CurseForge reports it), lets Claude implement one real improvement, bumps the minor version and uploads the new file with a changelog. Nothing due → nothing happens. |
 
 **Your part:** create the project on https://authors.curseforge.com from the kit (name, summary, category, icon, description), put the numeric project ID into `data/cf-projects.json` (`"projectId": 123456`), commit, push. The next morning run uploads it. For an immediate upload run *Actions → Morning → Run workflow* with `force = true`.
 
@@ -23,7 +23,7 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 
 ## Skin packs (CurseForge Bedrock)
 
-Old packs from the local folder (`V1/`, `U1…Un/`) are imported once; afterwards the evening window releases one prepared version (`Un`) per pack every 22–25 days, mixed with mod updates (one update per evening in total).
+Old packs from the local folder (`V1/`, `U1…Un/`) are imported once; afterwards the evening window releases one prepared version (`Un`) per pack in turn, each pack at least 23 days apart, mixed with mod updates (one update per evening in total). Every upload ticks the game versions of the previous file plus the newest Minecraft releases.
 
 ```bash
 # 0. Overview of all projects: what is on CurseForge, what is prepared, the evening schedule
@@ -74,4 +74,4 @@ Gradle builds need Java 21. The CurseForge upload can be smoke-tested against a 
 
 ## Policy notes
 
-CurseForge forbids file updates made only to gain visibility and "multiple similar / low-effort projects". The update path therefore requires a real code change (hash check), a specific changelog and a per-project interval of 22–25 days (hard floor 22). Keep the volume of new projects moderate.
+CurseForge forbids file updates made only to gain visibility and "multiple similar / low-effort projects". The update path therefore requires a real code change (hash check), a specific changelog and a per-project interval of at least 23 days (23–26). Keep the volume of new projects moderate.

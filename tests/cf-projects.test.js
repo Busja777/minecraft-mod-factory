@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import {
   loadProjects, saveProjects, newEntry, upsertProject, findPending, findUnassigned,
-  pickForUpdate, markPublished, markRejected, nextDueDate, effectiveDue
+  pickForUpdate, markPublished, markRejected, nextDueDate, effectiveDue, syncLastUpload
 } from '../scripts/lib/cf-projects.js';
 
 const NOW = new Date('2026-11-01T10:00:00Z');
@@ -41,36 +41,46 @@ test('findPending / findUnassigned split on projectId', () => {
   assert.deepEqual(findUnassigned([waiting, ready, done]).map(p => p.modId), ['waiting']);
 });
 
-test('nextDueDate lies in [22, 25) days and follows the rng', () => {
-  assert.equal(nextDueDate({ now: NOW, rng: () => 0 }).toISOString(), daysAhead(22));
-  assert.equal(nextDueDate({ now: NOW, rng: () => 0.5 }).toISOString(), daysAhead(23.5));
-  assert.equal(nextDueDate({ now: NOW, rng: () => 0.999 }).getTime() < NOW.getTime() + 25 * DAY, true);
+test('nextDueDate lies in [23, 26) days and follows the rng', () => {
+  assert.equal(nextDueDate({ now: NOW, rng: () => 0 }).toISOString(), daysAhead(23));
+  assert.equal(nextDueDate({ now: NOW, rng: () => 0.5 }).toISOString(), daysAhead(24.5));
+  assert.equal(nextDueDate({ now: NOW, rng: () => 0.999 }).getTime() < NOW.getTime() + 26 * DAY, true);
   assert.throws(() => nextDueDate({ now: NOW, intervalDays: [25, 22] }), /Invalid updateIntervalDays/);
 });
 
-test('effectiveDue falls back to lastPublishedAt + 22d and never goes below that floor', () => {
+test('effectiveDue falls back to lastPublishedAt + 23d and never goes below that floor', () => {
   const legacy = published('legacy', 10);
-  assert.equal(effectiveDue(legacy).toISOString(), daysAhead(12));
+  assert.equal(effectiveDue(legacy).toISOString(), daysAhead(13));
   const handEdited = published('short', 10, { nextUpdateDue: daysAhead(1) });
-  assert.equal(effectiveDue(handEdited).toISOString(), daysAhead(12), 'floor wins over hand-edited due');
+  assert.equal(effectiveDue(handEdited).toISOString(), daysAhead(13), 'floor wins over hand-edited due');
   const normal = published('normal', 10, { nextUpdateDue: daysAhead(14) });
   assert.equal(effectiveDue(normal).toISOString(), daysAhead(14));
   assert.equal(effectiveDue(newEntry({ modId: 'x', name: 'X' })), null);
 });
 
-test('pickForUpdate picks the earliest due project and ignores not-yet-due ones', () => {
+test('pickForUpdate goes round the cycle: the due project with the oldest update comes first', () => {
   const projects = [
-    published('later', 30, { nextUpdateDue: daysAgo(1) }),
-    published('earliest', 30, { nextUpdateDue: daysAgo(5) }),
-    published('notdue', 30, { nextUpdateDue: daysAhead(2) })
+    published('recent', 30, { nextUpdateDue: daysAgo(5) }),
+    published('oldest', 200, { nextUpdateDue: daysAgo(1) }),
+    published('notdue', 300, { nextUpdateDue: daysAhead(2) })
   ];
-  assert.equal(pickForUpdate(projects, { now: NOW }).modId, 'earliest');
+  assert.equal(pickForUpdate(projects, { now: NOW }).modId, 'oldest');
+  assert.equal(pickForUpdate(projects, { now: NOW, eligible: p => p.modId !== 'oldest' }).modId, 'recent');
 });
 
-test('pickForUpdate returns null when nothing is due, honours the 22-day floor', () => {
+test('pickForUpdate returns null when nothing is due, honours the 23-day floor', () => {
   assert.equal(pickForUpdate([published('fresh', 3)], { now: NOW }), null);
-  assert.equal(pickForUpdate([published('fresh', 21, { nextUpdateDue: daysAgo(1) })], { now: NOW }), null, 'floor blocks');
-  assert.equal(pickForUpdate([published('legacy', 22)], { now: NOW }).modId, 'legacy', 'legacy entry without nextUpdateDue is due after 22d');
+  assert.equal(pickForUpdate([published('fresh', 22, { nextUpdateDue: daysAgo(1) })], { now: NOW }), null, 'floor blocks');
+  assert.equal(pickForUpdate([published('legacy', 23)], { now: NOW }).modId, 'legacy', 'legacy entry without nextUpdateDue is due after 23d');
+});
+
+test('syncLastUpload takes a newer CurseForge file (also one uploaded by hand)', () => {
+  const p = published('pack', 40, { nextUpdateDue: daysAgo(10) });
+  assert.equal(syncLastUpload(p, [{ fileDate: daysAgo(50) }]), false, 'older file changes nothing');
+  assert.equal(syncLastUpload(p, [{ fileDate: daysAgo(5) }, { fileDate: daysAgo(60) }]), true);
+  assert.equal(p.lastPublishedAt, daysAgo(5));
+  assert.equal(pickForUpdate([p], { now: NOW }), null, 'the hand upload restarts the 23 days');
+  assert.equal(syncLastUpload(p, []), false);
 });
 
 test('pickForUpdate skips rejected and pending projects', () => {
@@ -85,12 +95,12 @@ test('markPublished sets status, due date, records file, counts updates only aft
   assert.equal(projects[0].status, 'published');
   assert.equal(projects[0].updateCount, 0);
   assert.equal(projects[0].cfName, 'A Mod');
-  assert.equal(projects[0].nextUpdateDue, daysAhead(23.5));
+  assert.equal(projects[0].nextUpdateDue, daysAhead(24.5));
   markPublished(projects, 'a', { fileId: 2, version: '1.1.0', now: NOW, rng: () => 0 });
   assert.equal(projects[0].updateCount, 1);
   assert.equal(projects[0].version, '1.1.0');
   assert.equal(projects[0].files.length, 2);
-  assert.equal(projects[0].nextUpdateDue, daysAhead(22));
+  assert.equal(projects[0].nextUpdateDue, daysAhead(23));
 });
 
 test('markRejected flags the project and markPublished throws on unknown modId', () => {

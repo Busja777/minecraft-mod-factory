@@ -135,7 +135,7 @@ async function recordResults(task, data, plan, found) {
       const a = (await ask(`Hast du V${v.version} mit „Add File“ hochgeladen? (j/n)`)).trim().toLowerCase();
       if (a === 'j' || a === 'y') {
         recordUpload({ projects, pack: data.pack, task, version: v.version, intervalDays: config.updateIntervalDays });
-        console.log(`✓ V${v.version} als veröffentlicht markiert, nächstes Update in 22–25 Tagen.`);
+        console.log(`✓ V${v.version} als veröffentlicht markiert, nächstes Update frühestens in 23 Tagen.`);
         changed = true;
       }
     }

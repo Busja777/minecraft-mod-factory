@@ -1,10 +1,12 @@
 name: Evening — update a due project
 
-# Runs once per day at a randomized time between 19:00 and 22:00 Europe/Berlin,
-# updating at most one published project whose per-project due date (22–25 days) has passed.
+# Runs once per day at a random time between 18:00 and 21:00 Europe/Berlin (config.windows.evening;
+# the slot is drawn per day, the cron fires every 30 minutes from 17:30 and the gate waits for it).
+# Updates at most one project per day: the projects take turns (longest without an update first),
+# each at least 23 days after its last upload (config.updateIntervalDays).
 on:
   schedule:
-    - cron: '*/30 19-21 * * *'
+    - cron: '*/30 17-20 * * *'
       timezone: Europe/Berlin
   workflow_dispatch:
     inputs:
@@ -83,6 +85,7 @@ jobs:
       - name: Pick due project
         id: select
         env:
+          CF_CORE_API_KEY: ${{ secrets.CF_CORE_API_KEY }}
           MODE: update
           INPUT_MOD_ID: ${{ inputs.modId }}
         run: node scripts/select-mode.js
