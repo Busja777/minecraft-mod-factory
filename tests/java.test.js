@@ -94,9 +94,9 @@ test('Java: pack.mcmeta is written the way each version reads it', () => {
   assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 48, max: 48 }), { pack: { description: 'd', pack_format: 48 } });
   assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 121, max: 121 }), { pack: { description: 'd', min_format: 121, max_format: 121 } });
   // old and new: both spellings, the old version's files in an overlay that carries "formats" for the old game
-  assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 48, max: 121, overlays: [{ format: 48, to: 120, directory: 'mc_1_21_1' }] }), {
-    pack: { description: 'd', pack_format: 48, supported_formats: { min_inclusive: 48, max_inclusive: 121 }, min_format: 48, max_format: 121 },
-    overlays: { entries: [{ formats: { min_inclusive: 48, max_inclusive: 120 }, min_format: 48, max_format: 120, directory: 'mc_1_21_1' }] }
+  assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 48, max: 121, overlays: [{ format: 48, to: 48, directory: 'mc_1_21_1' }] }), {
+    pack: { pack_format: 48, description: 'd', supported_formats: { min_inclusive: 48, max_inclusive: 121 }, min_format: 48, max_format: 121 },
+    overlays: { entries: [{ formats: { min_inclusive: 48, max_inclusive: 48 }, min_format: 48, max_format: 48, directory: 'mc_1_21_1' }] }
   });
   // new versions only: no "formats" (Minecraft 26.3 refuses it on overlays from format 82 on)
   assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 121, max: 128, overlays: [{ format: 121, to: 127, directory: 'mc_26_3' }] }).overlays.entries, [{ min_format: 121, max_format: 127, directory: 'mc_26_3' }]);
@@ -118,6 +118,8 @@ test('Java: a pack for two versions keeps the newest files in the root and the o
   assert.equal(meta.pack.pack_format, PACK_FORMAT['1.21.1'].data);
   assert.equal(meta.pack.max_format, PACK_FORMAT['26.3'].data);
   assert.equal(meta.overlays.entries[0].directory, 'mc_1_21_1');
+  // only the format it was checked for: 1.21.2 to 26.2 read the root, the newer spelling
+  assert.deepEqual([meta.overlays.entries[0].min_format, meta.overlays.entries[0].max_format], [48, 48]);
 
   // nothing differs: no overlay folder, only the wider range
   const same = new AdmZip(await buildZip(pack, newFiles, '1.2', out, [{ mc: '26.3', files: newFiles }]));

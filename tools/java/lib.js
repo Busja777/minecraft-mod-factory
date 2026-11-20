@@ -189,11 +189,13 @@ export async function buildZip(pack, files, version, outDir, more = []) {
   const tiers = [{ mc: pack.mc, files }, ...more].map(t => ({ ...t, format: formatOf(t.mc, pack.kind), directory: overlayDir(t.mc) })).sort((a, b) => a.format - b.format);
   if (tiers[0].mc !== pack.mc) throw new Error(`${pack.slug}: "also" lists a version older than the base version ${pack.mc}`);
   const root = tiers.at(-1);
-  const overlays = tiers.slice(0, -1).map((t, i) => {
+  const overlays = tiers.slice(0, -1).map(t => {
     const extra = Object.keys(root.files).filter(p => !(p in t.files));
     if (extra.length) throw new Error(`${pack.slug}: ${extra.slice(0, 3).join(', ')} only exist for ${root.mc}; Minecraft ${t.mc} would read them too (an overlay can replace files, not hide them)`);
     const own = Object.keys(t.files).filter(p => !root.files[p] || !root.files[p].equals(t.files[p]));
-    return { ...t, to: tiers[i + 1].format - 1, files: Object.fromEntries(own.map(p => [p, t.files[p]])) };
+    // The overlay covers exactly the format it was checked against. Versions in between (and newer
+    // ones) read the root, the newest spelling, which is what later versions are most likely to accept.
+    return { ...t, to: t.format, files: Object.fromEntries(own.map(p => [p, t.files[p]])) };
   }).filter(o => Object.keys(o.files).length);   // a version that reads everything like the root needs no folder
   const meta = mcmeta({ kind: pack.kind, description: `${pack.description} (v${version})`, min: tiers[0].format, max: root.format, overlays });
   zip.addFile('pack.mcmeta', Buffer.from(JSON.stringify(meta, null, 2) + '\n'));
