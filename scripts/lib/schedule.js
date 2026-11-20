@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 // Pure scheduling helpers for the randomized daily run windows (no I/O).
 
-export const BUCKET_MINUTES = 30;   // cron fires every 30 min inside a window
+export const BUCKET_MINUTES = 10;   // the evening cron fires every 10 min inside the window
 export const SLOT_MARGIN_MINUTES = 20; // keep the slot this far from the window end
 
 // Local wall-clock parts for an instant in a IANA timezone. weekday: 0=Sunday … 6=Saturday.

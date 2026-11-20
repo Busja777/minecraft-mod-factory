@@ -50,7 +50,8 @@ test('decide covers all gate cases', () => {
   const windowEnd = parseHHMM('22:00');
   const slot = parseHHMM('20:17');
   assert.deepEqual(decide({ nowMinutes: parseHHMM('19:00'), slot, windowEnd, ranToday: false }), { run: false, sleepMinutes: 0, reason: 'before-slot' });
-  assert.deepEqual(decide({ nowMinutes: parseHHMM('20:00'), slot, windowEnd, ranToday: false }), { run: true, sleepMinutes: 17, reason: 'waiting-for-slot' });
+  assert.deepEqual(decide({ nowMinutes: parseHHMM('20:00'), slot, windowEnd, ranToday: false }), { run: false, sleepMinutes: 0, reason: 'before-slot' });
+  assert.deepEqual(decide({ nowMinutes: parseHHMM('20:10'), slot, windowEnd, ranToday: false }), { run: true, sleepMinutes: 7, reason: 'waiting-for-slot' });
   assert.deepEqual(decide({ nowMinutes: parseHHMM('20:20'), slot, windowEnd, ranToday: false }), { run: true, sleepMinutes: 0, reason: 'slot-reached' });
   assert.deepEqual(decide({ nowMinutes: parseHHMM('21:30'), slot, windowEnd, ranToday: false }), { run: true, sleepMinutes: 0, reason: 'catch-up' });
   assert.deepEqual(decide({ nowMinutes: parseHHMM('22:00'), slot, windowEnd, ranToday: false }), { run: false, sleepMinutes: 0, reason: 'window-over' });
@@ -84,3 +85,19 @@ test('planAccounts: every account draws its own slot and runs at most once a day
   assert.ok(planAccounts({ ...base, nowMinutes: 17 * 60 }).every(x => !x.run), 'before the window nothing starts');
   assert.ok(planAccounts({ ...base, nowMinutes: 21 * 60 }).every(x => x.reason === 'window-over'));
 });
+
+test('the evening cron fires every BUCKET_MINUTES, off the full and half hour, across the whole window', async () => {
+  const fs = await import('fs');
+  const { BUCKET_MINUTES } = await import('../scripts/lib/schedule.js');
+  const yml = fs.readFileSync('.github/workflows/evening.yml', 'utf-8');
+  const m = /cron: '(\d+)-59\/(\d+) (\d+)-(\d+) \* \* \*'\n\s+timezone: Europe\/Berlin/.exec(yml);
+  assert.ok(m, 'cron line "<offset>-59/<step> <from>-<to> * * *" with timezone Europe/Berlin');
+  const [, offset, step, from, to] = m.map(Number);
+  assert.equal(step, BUCKET_MINUTES, 'one fire per bucket, so a slot is never skipped and never started twice');
+  assert.ok(offset % 30 !== 0, 'not at :00 or :30, where GitHub drops the most fires');
+  const config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
+  const [start, end] = config.windows.evening.map(parseHHMM);
+  assert.ok(from * 60 + offset <= start - BUCKET_MINUTES, 'first fire before the window opens');
+  assert.ok(to * 60 + 59 >= end - BUCKET_MINUTES, 'fires until the window closes');
+});
+

@@ -19,7 +19,7 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 
 **Keyboard Maestro hand-over:** `npm run macro -- --mod <id>` / `--skinpack <slug> [--refresh | --update [--version x]]` writes every form value, image and file under fixed names to `Macros/aktuell/` in this repo (git-ignored, `--out` to change). The macros (guide: `Macros/ANLEITUNG-keyboard-maestro.md`) fill in the CurseForge forms and stop before *Create*.
 
-**How the random slot works:** the cron fires every 30 minutes inside each window. A light `gate` job derives today's slot from a hash of the date, checks via the GitHub API whether the heavy job already ran today, and only then starts the heavy job (sleeping up to 30 min to hit the exact minute). Late or dropped cron fires are caught up later in the same window. Scheduled workflows only run on the default branch, and GitHub disables them after 60 days without repository activity.
+**How the random slot works:** the evening cron fires every 10 minutes at uneven minutes (`4-59/10`; GitHub drops many fires at :00 and :30). A light `gate` job derives today's slot from a hash of the date, checks via the GitHub API whether the heavy job already ran today, and only then starts the heavy job (sleeping up to 10 min to hit the exact minute). Late or dropped cron fires are caught up later in the same window. Scheduled workflows only run on the default branch, and GitHub disables them after 60 days without repository activity.
 
 ## Other games: create once, updates by API
 
