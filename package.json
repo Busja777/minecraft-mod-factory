@@ -15,6 +15,7 @@
     "notes": "node scripts/notes.js",
     "fullbright": "node tools/fullbright-plus/build.js",
     "wow": "node tools/wow/build.js",
+    "java": "node tools/java/build.js",
     "serie": "node scripts/serie.js",
     "guide": "node tools/guide-pdf/build.js",
     "improve": "node scripts/improve.js",
