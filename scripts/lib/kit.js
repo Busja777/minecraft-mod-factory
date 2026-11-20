@@ -115,8 +115,8 @@ export function skinpackUpdateKit(pack, v, config, { uploaded, fileUrl } = {}) {
 
 ## Schritte
 ${upload}
-${uploaded ? '1.' : '2.'} **Beschreibung**: \`Macros/CurseForge.command\` starten und „Beschreibung nachziehen: ${pack.name}“ wählen (oder \`npm run cf -- seite\`). Der Helfer setzt die neue Beschreibung mit den Screenshots ein, du klickst Save. In die Galerie kommt bei Updates nichts.
-${uploaded ? '2.' : '3.'} Issue schließen.
+${uploaded ? '1.' : '2.'} **Beschreibung**: \`Macros/CurseForge.command\` starten und Enter drücken, oder Claude „Go“ schreiben (\`npm run cf -- heute\`). Der Helfer setzt die neue Beschreibung mit den Screenshots ein, du klickst Save. In die Galerie kommt bei Updates nichts.
+${uploaded ? '2.' : '3.'} Dieses Issue schließt der Helfer selbst, sobald CurseForge die neue Beschreibung zeigt.
 
 Von Hand geht es auch: den Abschnitt unten unter Description **vor "How to install"** einfügen.
 
