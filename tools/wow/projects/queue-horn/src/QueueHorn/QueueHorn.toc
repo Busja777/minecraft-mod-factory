@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Queue Horn
+## Notes: Plays a sound and flashes the game icon when your group or match is ready.
+## Version: @version@
+## SavedVariables: QueueHornDB
+## IconTexture: Interface\Icons\INV_Misc_Horn_01
+
+Locale.lua
+Core.lua
+Alert.lua
+Commands.lua

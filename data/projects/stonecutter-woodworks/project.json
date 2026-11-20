@@ -1,0 +1,19 @@
+{
+  "slug": "stonecutter-woodworks",
+  "game": "java",
+  "name": "Stonecutter Woodworks",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "StonecutterWoodworks-1.0.zip",
+      "changelog": "## Stonecutter Woodworks 1.0\n\nFirst release.\n\n- Cut planks into stairs, slabs, fences, fence gates, doors, trapdoors and pressure plates in the stonecutter.\n- Works for oak, spruce, birch, jungle, acacia, dark oak, mangrove and cherry planks: 56 recipes.\n- One plank gives two slabs or one of everything else, so the amounts stay close to the crafting table.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Bag Lookout",
+  "summary": "Keeps a small count of your free bag slots on screen and gives one clear alert before your bags run out of room.",
+  "category": "Bags & Inventory",
+  "logoPrompt": "A sturdy brown leather backpack with its flap slightly open, a small brass spyglass strapped to its side and a soft amber warning glow coming from inside",
+  "cover": {
+    "tagline": "See bag space before it runs out.",
+    "bullets": ["Free slots always on screen", "One warning before bags fill", "Reagent bag counted on its own"]
+  },
+  "description": [
+    "**Bag Lookout shows how many bag slots you have left and warns you once before your bags are full.**",
+    "",
+    "## Features",
+    "- A small counter such as \"Bags 12/98\" that turns yellow when space gets low and red when no slot is left.",
+    "- One message in the middle of the screen with a sound when you reach your warning point, and one more at zero.",
+    "- No spam while looting: it warns again only after you make room.",
+    "- The reagent bag is counted on its own; click the counter to see it.",
+    "",
+    "## How to use",
+    "Drag the counter where you like it. `/bl` (or `/baglookout`) shows the state and the commands. `/bl threshold 8` changes the warning point (0 to 50, default 5), `/bl lock` locks the counter, `/bl hide` and `/bl show` hide or show it, `/bl sound on` or `off` switches the sound.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- Profession bags are left out of the count, like the game's own free-slot count.",
+    "- Warnings stay on while the counter is hidden.",
+    "- Settings are shared by all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

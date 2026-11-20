@@ -1,0 +1,32 @@
+{
+  "name": "Vendor Refill",
+  "summary": "Tops up your food, drinks and reagents to the count you choose whenever you visit a vendor that sells them.",
+  "category": "Bags & Inventory",
+  "logoPrompt": "A small wooden supply crate with its lid propped open, neatly filled with corked glass bottles of clear water and round loaves of bread, a single gold coin leaning against its front",
+  "cover": {
+    "tagline": "Never run out of water again.",
+    "bullets": ["Your list, your counts", "Buys only what is missing", "One chat line with the cost"]
+  },
+  "description": [
+    "**Vendor Refill keeps your consumables stocked: you set how many of an item you want, and every vendor that sells it fills your bags back up to that count.**",
+    "",
+    "## Features",
+    "- A list per character: each item with the count you want to carry.",
+    "- Buys just what is missing at any vendor that sells it, a few purchases at a time.",
+    "- Respects bundles, the vendor's limited stock and your gold. Items that cost a currency other than gold are left alone.",
+    "- One chat line with what was bought and the gold spent, plus a note when gold ran short.",
+    "",
+    "## How to use",
+    "Shift-click an item into chat after `/vr add`, followed by the count, for example `/vr add [Water] 20`. An item ID works too. `/vr list` shows your list, `/vr remove` takes an item off, `/vr off` and `/vr on` pause or resume refilling.",
+    "",
+    "## Good to know",
+    "- Works on Retail. It only acts while a vendor is open.",
+    "- Hold Shift while you open a vendor to skip one visit.",
+    "- Only your bags count, not the bank.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

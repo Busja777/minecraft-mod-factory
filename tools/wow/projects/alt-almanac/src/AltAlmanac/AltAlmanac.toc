@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Alt Almanac
+## Notes: Shows level, gold, place and rested bonus of all your characters in one window.
+## Version: @version@
+## SavedVariables: AltAlmanacDB
+## IconTexture: Interface\Icons\INV_Misc_Book_09
+
+Locale.lua
+Core.lua
+Tracker.lua
+UI.lua

@@ -1,0 +1,38 @@
+{
+  "name": "Polite Decline",
+  "summary": "Turns down duel requests and group invitations from strangers without a fuss, while friends and guild mates still get through.",
+  "category": "Miscellaneous",
+  "logoPrompt": "A closed arched wooden door with an ornate iron ring knocker, and a red velvet rope on two small brass posts in front of it",
+  "cover": {
+    "tagline": "No more popups from strangers.",
+    "bullets": [
+      "Declines duels from strangers",
+      "Declines stranger group invites",
+      "Friends and guild get through"
+    ]
+  },
+  "description": [
+    "**Polite Decline quietly says no to duel requests and group invites from people you do not know, so random popups stop getting in your way.**",
+    "",
+    "## Features",
+    "- Cancels duel requests from strangers and hides the popup.",
+    "- Declines group invitations from strangers and hides the popup.",
+    "- Friends, Battle.net friends and guild mates always get through.",
+    "- Your own allow list for anyone else you want to hear from.",
+    "- One chat line per declined request, with a count for this session.",
+    "",
+    "## How to use",
+    "Install it, nothing else is needed. `/pd` (or `/politedecline`) shows the settings. `/pd duels on|off` and `/pd invites on|off` switch each half. `/pd allow Name` and `/pd unallow Name` keep the allow list, `/pd list` shows it. `/pd quiet on` stops the chat lines.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data, it only acts when a request arrives.",
+    "- When it cannot tell who someone is, it lets the request through.",
+    "- A name without a realm is allowed on every realm.",
+    "- Settings and the allow list are shared by all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Alt Almanac",
+  "summary": "See the level, gold, location and rested bonus of every character on your account in a single window.",
+  "category": "Miscellaneous",
+  "logoPrompt": "A thick closed leather-bound almanac with brass corner fittings, a small silver bookmark ribbon hanging out and a few gold coins stacked against its spine",
+  "cover": {
+    "tagline": "All your characters at a glance.",
+    "bullets": ["Level, gold and zone per character", "Rested bonus that keeps growing", "Total gold of the account"]
+  },
+  "description": [
+    "**Alt Almanac keeps one page for every character you play, so you know who is ready to level, who holds the gold and where everyone was left.**",
+    "",
+    "## Features",
+    "- One row per character: name in class colour, level, gold, zone and when you last played it.",
+    "- Rested bonus for each character. For the ones you are not playing it keeps growing, faster for those who logged out in an inn or a city.",
+    "- Total gold of all your characters.",
+    "- Sorted by level, then by name, in a window you can drag anywhere.",
+    "",
+    "## How to use",
+    "Log in once with each character so it is added. Type `/aa` (or `/altalmanac`) to open or close the list, Escape closes it too. `/aa forget Name-Realm` removes a character you deleted.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and no chat parsing.",
+    "- Resting characters are shown in blue. The bonus is capped at one and a half levels, at maximum level it shows a dash.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

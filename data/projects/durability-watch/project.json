@@ -1,0 +1,18 @@
+{
+  "slug": "durability-watch",
+  "game": "wow",
+  "name": "Durability Watch",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "DurabilityWatch-1.0.zip",
+      "changelog": "## Durability Watch 1.0\n\nFirst release.\n\n- Shows the condition of your equipped gear in percent, overall and for the most worn item.\n- Small display in green, yellow (50% or less) and red (20% or less). Drag it anywhere, its position is remembered. `/dw lock` locks it in place.\n- Mouse over the display to see every damaged item with its slot.\n- Warns you once, on screen and in chat, when an item drops to the warning level (25% by default). The next warning comes after a repair.\n- At a vendor that can repair, tells you what a full repair costs. It never repairs by itself.\n- `/dw` shows the state and the commands. `/dw warn 30` sets the warning level (5 to 90), `/dw hide` and `/dw show` hide or show the display.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

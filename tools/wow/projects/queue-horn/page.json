@@ -1,0 +1,33 @@
+{
+  "name": "Queue Horn",
+  "summary": "Hear and see it the moment your dungeon group, ready check, battleground or pet battle pops, even while you are tabbed out.",
+  "category": "Audio & Video",
+  "logoPrompt": "A curved brass hunting horn with a polished glowing rim, lying slightly tilted in the centre, with soft rings of sound rising from its bell",
+  "cover": {
+    "tagline": "Never miss a queue pop again.",
+    "bullets": ["Sound on the Master channel", "Flashes the game icon", "Dungeons, PvP and ready checks"]
+  },
+  "description": [
+    "**Queue Horn makes sure you notice when your group is ready, even when you are tabbed out or the game sound is turned down.**",
+    "",
+    "## Features",
+    "- Alerts when the Dungeon Finder or Raid Finder has a group for you.",
+    "- Alerts on a ready check someone else starts, and when a battleground, arena or pet battle match is ready.",
+    "- One sound on the Master channel, a flashing game icon in your taskbar or dock and a short message in the middle of the screen.",
+    "- Each alert and the icon flash can be switched off.",
+    "",
+    "## How to use",
+    "Install it and queue up. `/qh` (or `/queuehorn`) shows the settings, `/qh test` plays the alert once. `/qh lfg off` switches one alert off, the others are `ready`, `pvp` and `pet`.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and no window.",
+    "- The same alert never plays twice within 5 seconds.",
+    "- To hear it while tabbed out, keep Sound in Background on in the game's sound options.",
+    "- Settings are shared by all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

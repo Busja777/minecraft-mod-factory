@@ -1,11 +1,16 @@
 {
   "name": "Stonecutter Woodworks",
   "summary": "Use the stonecutter for wood: turn planks into stairs, slabs, fences, doors and more, one block at a time.",
+  "class": "Data Packs",
   "category": "Utility",
   "logoPrompt": "A stonecutter block with its round saw blade spinning, a neat stack of wooden planks beside it and fresh wood shavings flying from the blade",
   "cover": {
     "tagline": "Cut wood like stone, one plank at a time.",
-    "bullets": ["Stairs, slabs, fences, doors", "Eight kinds of wood", "No more wasted planks"]
+    "bullets": [
+      "Stairs, slabs, fences, doors",
+      "Eight kinds of wood",
+      "No more wasted planks"
+    ]
   },
   "description": [
     "**Stonecutter Woodworks lets the stonecutter cut wood: put planks in and pick exactly the block you need, one at a time.**",

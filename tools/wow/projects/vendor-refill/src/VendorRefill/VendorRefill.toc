@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Vendor Refill
+## Notes: Buys your consumables back up to the count you want at every vendor.
+## Version: @version@
+## SavedVariables: VendorRefillDB
+## IconTexture: Interface\Icons\INV_Drink_07
+
+Locale.lua
+Core.lua
+Refill.lua
+Commands.lua

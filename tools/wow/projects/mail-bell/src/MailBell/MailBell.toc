@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Mail Bell
+## Notes: Rings when new mail arrives and tells you which characters have mail waiting.
+## Version: @version@
+## SavedVariables: MailBellDB
+## IconTexture: Interface\Icons\INV_Letter_15
+
+Locale.lua
+Core.lua
+Bell.lua
+Commands.lua

@@ -1,0 +1,18 @@
+{
+  "slug": "vendor-refill",
+  "game": "wow",
+  "name": "Vendor Refill",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "VendorRefill-1.0.zip",
+      "changelog": "## Vendor Refill 1.0\n\nFirst release.\n\n- Keep a list of consumables with the count you want in your bags. Each character has its own list.\n- At every vendor that sells an item of your list, it buys just enough to reach that count, a few purchases at a time.\n- Items the vendor sells in bundles are bought in whole bundles. Items that cost a currency other than gold and sold out items are skipped.\n- One chat line tells you what was bought and what it cost. A second line tells you when your gold was not enough for everything.\n- Hold Shift while you open a vendor to skip one visit.\n- `/vr add <item> <count>`, `/vr remove <item>` and `/vr list` manage the list (item link or item ID). `/vr on` and `/vr off` switch refilling. `/vr` or `/vendorrefill` shows the state and the commands.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

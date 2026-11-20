@@ -1,0 +1,32 @@
+{
+  "name": "Mail Bell",
+  "summary": "Rings when new mail arrives and reminds you at login which of your other characters still have letters waiting.",
+  "category": "Mail",
+  "logoPrompt": "A small polished brass hand bell tilted mid-ring, standing in front of a sealed cream-coloured envelope with a red wax seal",
+  "cover": {
+    "tagline": "Never miss a letter again.",
+    "bullets": ["Rings when new mail arrives", "Heard even with effects muted", "Names your alts with mail"]
+  },
+  "description": [
+    "**Mail Bell rings when new mail arrives and, when you log in, tells you which of your other characters have mail waiting.**",
+    "",
+    "## Features",
+    "- Plays a bell and prints one chat line the moment new mail reaches you.",
+    "- The bell uses the Master channel, so you hear it even with sound effects muted.",
+    "- Mail that was already there at login stays quiet, and the bell never rings twice within 30 seconds.",
+    "- Remembers which of your characters have unread mail and names them in one chat line after login.",
+    "",
+    "## How to use",
+    "Install it and play. `/mb` (or `/mailbell`) shows your characters with mail and the settings. `/mb sound on|off` switches the bell, `/mb login on|off` the list at login.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data, it only reads the new-mail flag and your inbox.",
+    "- A character drops off the list once you empty its mailbox, or close it with no new mail left.",
+    "- A character is remembered once it has had mail while you played it. `/mb forget Name-Realm` removes one.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

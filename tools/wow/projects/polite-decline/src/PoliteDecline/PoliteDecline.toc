@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Polite Decline
+## Notes: Quietly turns down duels and group invites from strangers.
+## Version: @version@
+## SavedVariables: PoliteDeclineDB
+## IconTexture: Interface\Icons\Ability_Warrior_ShieldWall
+
+Locale.lua
+Core.lua
+Lookup.lua
+Decline.lua
+Commands.lua
