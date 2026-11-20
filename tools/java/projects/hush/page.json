@@ -1,0 +1,38 @@
+{
+  "name": "Hush",
+  "summary": "Turns down villagers, farm animals, nether portals, rain, minecarts and anvils without muting any of them.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A note block wrapped in a thick white wool blanket, with a few small musical notes fading out above it",
+  "cover": {
+    "tagline": "Quieter villagers, rain and portals.",
+    "bullets": [
+      "Calmer villagers and farm animals",
+      "Softer portals and rain",
+      "Hurt sounds stay at full volume"
+    ]
+  },
+  "description": [
+    "**Hush turns down the everyday sounds that wear on you after an hour of play, without taking any of them away.**",
+    "",
+    "## Features",
+    "- Villagers and wandering traders mutter, trade and grumble at about a third of their usual volume.",
+    "- Cows, sheep, chickens and pigs are quieter around your farm.",
+    "- Nether portals hum at a quarter of their volume, and so does the whoosh when you travel.",
+    "- Rain is a bit under half as loud.",
+    "- Riding a minecart and using or dropping an anvil sound calmer.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. It only changes sound volumes, so you can add or remove it at any time.",
+    "- Hurt and death sounds stay at full volume, so you still hear when something is in trouble. Every sound keeps its subtitle.",
+    "- Only players who install it hear the difference, on servers too.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or know a sound that should be quieter? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

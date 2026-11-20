@@ -1,0 +1,19 @@
+{
+  "slug": "hush",
+  "game": "java",
+  "name": "Hush",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "Hush-1.0.zip",
+      "changelog": "## Hush 1.0\n\nFirst release.\n\n- Villagers and wandering traders (idle, yes, no and trading sounds) play at 35 % of their volume, and so do cows, sheep, chickens and pigs.\n- Nether portal hum, the portal whoosh and the travel sound play at 25 %.\n- Rain plays at 45 %.\n- Minecart rolling (outside, inside and underwater) plays at 35 %, anvil use, landing and placing at 40 %.\n- No sound is muted, hurt and death sounds are not touched, and every sound keeps its subtitle.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "kind": "resource",
+  "name": "Hush",
+  "description": "Quieter villagers, animals, rain and more",
+  "mc": "1.21.1",
+  "gameVersions": ["1.21", "1.21.1"]
+}

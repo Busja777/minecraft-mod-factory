@@ -1,0 +1,19 @@
+{
+  "slug": "farmers-advancements",
+  "game": "java",
+  "name": "Farmers Advancements",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FarmersAdvancements-1.0.zip",
+      "changelog": "## Farmers Advancements 1.0\n\nFirst release.\n\n- A new advancement tab, Farmer's Almanac, with 30 advancements about farming.\n- Planting: wheat, carrots, potatoes, beetroot, pumpkins, melons, sweet berries, nether wart, torchflowers and pitcher pods.\n- Harvesting, animals, farm food and farm tools, from a full stack of wheat to breeding cows, sheep, pigs, chickens and rabbits.\n- Three challenges: collect every crop, breed every farm animal and eat a full harvest feast.\n- Some advancements give experience. None give items.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1"
+      ]
+    }
+  ]
+}
