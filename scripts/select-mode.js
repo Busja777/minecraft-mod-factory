@@ -49,8 +49,8 @@ if (mode === 'update' || mode === 'auto') await syncLastUploads();
 
 // Skin packs and file projects are only updatable while a prepared next version exists.
 const eligible = p => {
-  if (kindOf(p) === 'skinpack') return packs.has(p.modId) && hasDueVersion(loadPack(p.modId));
-  if (kindOf(p) === 'file') return releases.has(p.modId) && hasDueVersion(loadReleaseProject(p.modId));
+  if (kindOf(p) === 'skinpack') return packs.has(p.modId) && hasDueVersion(loadPack(p.modId), now);
+  if (kindOf(p) === 'file') return releases.has(p.modId) && hasDueVersion(loadReleaseProject(p.modId), now);
   return true;
 };
 

@@ -1,0 +1,439 @@
+{
+  "reihe": "bedrock",
+  "game": "bedrockaddons",
+  "title": "Minecraft Bedrock Add-ons",
+  "start": "2026-11-30",
+  "logoStyle": "Blocky voxel world with crisp pixel edges, bright saturated colours, soft glow, clean dark teal backdrop",
+  "arts": {
+    "B": "Verhaltenspaket",
+    "R": "Ressourcenpaket (ohne Optik)",
+    "A": "Add-on (beides)"
+  },
+  "reserve": [],
+  "projects": [
+    {
+      "nr": 1,
+      "slug": "plank-cutter",
+      "name": "Plank Cutter",
+      "art": "B",
+      "was": "Holz im Steinsäger, alle zwölf Holzarten",
+      "updates": [
+        "Stämme und entrindete Stämme",
+        "Holzknöpfe und Schilder",
+        "neue Holzarten der nächsten Version"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 2,
+      "slug": "hushed-world",
+      "name": "Hushed World",
+      "art": "R",
+      "was": "Leisere Dorfbewohner, Kühe, Portale und Regen",
+      "updates": [
+        "fahrender Händler und Lamas",
+        "Stufen wählbar (drei Packs in einem)",
+        "Schafe, Hühner, Fledermäuse"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 3,
+      "slug": "calm-creepers",
+      "name": "Calm Creepers",
+      "art": "B",
+      "was": "Explosionen von Creepern (auch geladenen) zerstören keine Blöcke mehr, Schaden bleibt",
+      "updates": [
+        "Ghast-Feuerbälle zerstören nichts (statt eines eigenen Projekts)",
+        "Wither-Schädel wählbar",
+        "Hinweise zu TNT und Endkristallen im Pack"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 4,
+      "slug": "anglers-haul",
+      "name": "Anglers Haul",
+      "art": "B",
+      "was": "Angel-Beute: mehr Schätze, weniger Müll",
+      "updates": [
+        "Biom-Fänge",
+        "Herz des Meeres selten",
+        "Erfahrungsfläschchen"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 5,
+      "slug": "fair-villager-trades",
+      "name": "Fair Villager Trades",
+      "art": "B",
+      "was": "Fairere Preise bei allen Dorfbewohner-Berufen",
+      "updates": [
+        "fahrender Händler",
+        "Bücher günstiger",
+        "Stufen leicht/fair"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 6,
+      "slug": "tidy-endermen",
+      "name": "Tidy Endermen",
+      "art": "B",
+      "was": "Endermen nehmen keine Blöcke mehr auf",
+      "updates": [
+        "Endermen in Dörfern ruhiger",
+        "Shulker-Feinschliff",
+        "nächste Version"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 7,
+      "slug": "uncraft-kit",
+      "name": "Uncraft Kit",
+      "art": "B",
+      "was": "Rück-Rezepte: Wolle zu Faden, Quarzblock zu Quarz …",
+      "updates": [
+        "Stein und Glas",
+        "Werkzeug einschmelzen",
+        "neue Blöcke der nächsten Version"
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
+    },
+    {
+      "nr": 8,
+      "slug": "wandering-trader-deals",
+      "name": "Wandering Trader Deals",
+      "art": "B",
+      "was": "Besseres Angebot des fahrenden Händlers",
+      "updates": [
+        "seltene Setzlinge",
+        "Korallen und Muscheln",
+        "Preise"
+      ]
+    },
+    {
+      "nr": 9,
+      "slug": "useful-mob-drops",
+      "name": "Useful Mob Drops",
+      "art": "B",
+      "was": "Sinnvolle Zusatz-Beute (Wüstenzombie: Sand …)",
+      "updates": [
+        "+10 Mobs",
+        "seltene Drops",
+        "Varianten"
+      ]
+    },
+    {
+      "nr": 10,
+      "slug": "piglin-barter-plus",
+      "name": "Piglin Barter Plus",
+      "art": "B",
+      "was": "Besserer Tauschhandel mit Piglins",
+      "updates": [
+        "seltene Tauschwaren",
+        "Mengen",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 11,
+      "slug": "leash-the-villagers",
+      "name": "Leash the Villagers",
+      "art": "B",
+      "was": "Dorfbewohner an die Leine nehmen",
+      "updates": [
+        "fahrender Händler",
+        "Leinen-Rezept günstiger",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 12,
+      "slug": "handy-extra-recipes",
+      "name": "Handy Extra Recipes",
+      "art": "B",
+      "was": "Rezepte für Namensschild, Glocke, Spinnweben …",
+      "updates": [
+        "+10 Rezepte",
+        "leicht/fair",
+        "Rezeptbuch"
+      ]
+    },
+    {
+      "nr": 13,
+      "slug": "phantom-free-nights",
+      "name": "Phantom Free Nights",
+      "art": "B",
+      "was": "Keine Phantome mehr",
+      "updates": [
+        "nur im Oberwelt-Dorf",
+        "Membran-Rezept",
+        "Stufen"
+      ]
+    },
+    {
+      "nr": 14,
+      "slug": "dungeon-loot-refresh",
+      "name": "Dungeon Loot Refresh",
+      "art": "B",
+      "was": "Bessere Truhenbeute in Verliesen",
+      "updates": [
+        "Minen und Tempel",
+        "seltene Funde",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 15,
+      "slug": "rich-ore-veins",
+      "name": "Rich Ore Veins",
+      "art": "B",
+      "was": "Mehr Erze in drei Stufen",
+      "updates": [
+        "einzelne Erze",
+        "Nether",
+        "nächste Version"
+      ]
+    },
+    {
+      "nr": 16,
+      "slug": "cat-gifts-plus",
+      "name": "Cat Gifts Plus",
+      "art": "B",
+      "was": "Bessere Morgengaben von Katzen",
+      "updates": [
+        "seltene Gaben",
+        "Balance",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 17,
+      "slug": "villagers-follow-emeralds",
+      "name": "Villagers Follow Emeralds",
+      "art": "B",
+      "was": "Dorfbewohner folgen Smaragden in der Hand",
+      "updates": [
+        "Smaragdblock",
+        "Reichweite",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 18,
+      "slug": "busy-hens",
+      "name": "Busy Hens",
+      "art": "B",
+      "was": "Hühner legen öfter Eier",
+      "updates": [
+        "Stufen",
+        "Farbvarianten",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 19,
+      "slug": "quick-wool",
+      "name": "Quick Wool",
+      "art": "B",
+      "was": "Schafwolle wächst schneller nach",
+      "updates": [
+        "Stufen",
+        "Lämmer",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 20,
+      "slug": "brush-finds-plus",
+      "name": "Brush Finds Plus",
+      "art": "B",
+      "was": "Mehr Archäologie-Funde",
+      "updates": [
+        "Scherben häufiger",
+        "seltene Funde",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 21,
+      "slug": "tough-wolves",
+      "name": "Tough Wolves",
+      "art": "B",
+      "was": "Zahme Wölfe halten mehr aus",
+      "updates": [
+        "Katzen und Papageien",
+        "Heilen",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 22,
+      "slug": "fewer-baby-zombies",
+      "name": "Fewer Baby Zombies",
+      "art": "B",
+      "was": "Weniger Baby-Zombies",
+      "updates": [
+        "Hühnerreiter",
+        "Stufen",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 23,
+      "slug": "generous-bonus-chest",
+      "name": "Generous Bonus Chest",
+      "art": "B",
+      "was": "Bessere Bonustruhe beim Weltstart",
+      "updates": [
+        "Stufen",
+        "Werkzeug",
+        "Nahrung"
+      ]
+    },
+    {
+      "nr": 24,
+      "slug": "full-aquarium",
+      "name": "Full Aquarium",
+      "art": "B",
+      "was": "Mehr Fische und Leuchttintenfische",
+      "updates": [
+        "Axolotl",
+        "Delfine",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 25,
+      "slug": "vault-rewards-plus",
+      "name": "Vault Rewards Plus",
+      "art": "B",
+      "was": "Bessere Tresor-Belohnungen in Prüfkammern",
+      "updates": [
+        "Unheilvolle Tresore",
+        "Balance",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 26,
+      "slug": "gentle-nights",
+      "name": "Gentle Nights",
+      "art": "B",
+      "was": "Weniger Zombies, Skelette, Spinnen und Creeper an der Oberfläche (Spawn-Gewichte halbiert), Höhlen bleiben wie sie sind",
+      "updates": [
+        "Stufen wählbar",
+        "Nether und Ende",
+        "Feinschliff nach Kommentaren"
+      ]
+    },
+    {
+      "nr": 27,
+      "slug": "smelt-it-back",
+      "name": "Smelt It Back",
+      "art": "B",
+      "was": "Werkzeug und Rüstung einschmelzen",
+      "updates": [
+        "Ketten-Rüstung",
+        "Mengen",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 28,
+      "slug": "rare-mobs-often",
+      "name": "Rare Mobs Often",
+      "art": "B",
+      "was": "Seltene Varianten häufiger (Pandas, Axolotl, Kaninchen)",
+      "updates": [
+        "mehr Varianten",
+        "Stufen",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 29,
+      "slug": "ravager-proof-crops",
+      "name": "Ravager Proof Crops",
+      "art": "B",
+      "was": "Verwüster zertrampeln keine Felder",
+      "updates": [
+        "Dorfbewohner-Felder",
+        "Feinschliff",
+        "nächste Version"
+      ]
+    },
+    {
+      "nr": 30,
+      "slug": "healthy-horses",
+      "name": "Healthy Horses",
+      "art": "B",
+      "was": "Bessere Pferdewerte beim Züchten",
+      "updates": [
+        "Esel und Maultiere",
+        "Kamele",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 31,
+      "slug": "iron-golem-guard",
+      "name": "Iron Golem Guard",
+      "art": "B",
+      "was": "Eisengolems greifen ihren Erbauer nie an",
+      "updates": [
+        "Dorf-Ruf",
+        "Heilen mit Eisen",
+        "Feinschliff"
+      ]
+    },
+    {
+      "nr": 32,
+      "slug": "ice-cave-loot",
+      "name": "Ice Cave Loot",
+      "art": "B",
+      "was": "Beute zum Eishöhlen-Update (Vorab-Projekt)",
+      "updates": [
+        "Iglu-Truhen",
+        "Frost-Zombie",
+        "Balance"
+      ]
+    },
+    {
+      "nr": 33,
+      "slug": "quiet-nether",
+      "name": "Quiet Nether",
+      "art": "R",
+      "was": "Leisere Nether-Geräusche",
+      "updates": [
+        "Stufen",
+        "Ghasts",
+        "Portale"
+      ]
+    }
+  ]
+}

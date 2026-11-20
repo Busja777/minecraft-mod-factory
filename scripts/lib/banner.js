@@ -17,13 +17,14 @@ export const STYLES = {
   wow: 'Hand-painted high fantasy, warm gold and amber light, deep dark brown shadows, rich saturated colours, painterly texture, cosy tavern-and-adventure mood.',
   java: 'Blocky voxel world with crisp pixel edges, bright saturated colours, soft glow and a calm dark green night sky, playful and clean.',
   stardew: 'Cosy pixel art in a warm farm palette, chunky pixels with soft outlines, sunny golden afternoon light, gentle and friendly.',
+  bedrock: 'Blocky voxel world with crisp pixel edges, bright saturated colours, soft glow and a calm dark teal sky, playful and clean.',
   sims4: 'Clean glossy 3D illustration, soft studio light, friendly rounded shapes, fresh pastel mint and sky colours, bright and cheerful.'
 };
 
-const GAME = { wow: 'World of Warcraft', java: 'Minecraft: Java Edition', stardew: 'Stardew Valley', sims4: 'The Sims 4' };
-const KIND = { wow: 'addon', stardew: 'mod', sims4: 'mod' };
+const GAME = { wow: 'World of Warcraft', java: 'Minecraft: Java Edition', bedrock: 'Minecraft: Bedrock Edition', stardew: 'Stardew Valley', sims4: 'The Sims 4' };
+const KIND = { wow: 'addon', bedrock: 'add-on', stardew: 'mod', sims4: 'mod' };
 const JAVA_KIND = { D: 'data pack', R: 'resource pack', DR: 'data pack', M: 'mod' };
-const FORBIDDEN = 'game logos or title lettering (World of Warcraft, Minecraft, Stardew Valley, The Sims), official characters or creatures from these games, brand names or marks (Blizzard, Mojang, Microsoft, ConcernedApe, EA, Maxis, CurseForge), screenshots of the game interface, and anything the project does not actually do';
+const FORBIDDEN = 'game logos or title lettering (World of Warcraft, Minecraft, Minecraft: Bedrock Edition, Stardew Valley, The Sims), official characters or creatures from these games, brand names or marks (Blizzard, Mojang, Microsoft, ConcernedApe, EA, Maxis, CurseForge), screenshots of the game interface, and anything the project does not actually do';
 
 export const chatgptDir = (reiheKey, project, root = CHATGPT_ROOT) => path.join(root, `${reiheKey}-${String(project.nr).padStart(2, '0')}-${project.slug}`);
 

@@ -1,0 +1,36 @@
+{
+  "name": "Tidy Endermen",
+  "summary": "Keeps endermen from carrying off grass, sand and flowers, so your landscape and builds stay the way you left them.",
+  "class": "Addons",
+  "category": "Mobs",
+  "logoPrompt": "A perfectly neat grass block with a tiny wooden fence around it, a glowing purple pearl hovering above it untouched, in blocky voxel style",
+  "cover": {
+    "tagline": "Endermen keep their hands to themselves.",
+    "bullets": [
+      "No more holes in the ground",
+      "No stray blocks in your base",
+      "Everything else stays vanilla"
+    ]
+  },
+  "description": [
+    "**Tidy Endermen stops endermen from picking up and placing blocks, so they no longer leave holes in your lawn or drop dirt into your builds.**",
+    "",
+    "## Features",
+    "- Endermen leave grass, dirt, sand, flowers, pumpkins, melons, TNT and every other block where it is.",
+    "- They no longer put blocks down in random places.",
+    "- Everything else is unchanged: they still teleport, get angry when you look at them and drop ender pearls.",
+    "",
+    "## How to use",
+    "Import the .mcpack, then turn it on under Behavior Packs when you create or edit a world.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft Bedrock 26.60 and newer, without experimental features. It can be added to or removed from an existing world.",
+    "- An enderman that already carries a block keeps holding it and never puts it down.",
+    "- Like every behavior pack, it turns off achievements in the world it is added to.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

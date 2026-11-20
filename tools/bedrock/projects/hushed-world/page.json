@@ -1,0 +1,37 @@
+{
+  "name": "Hushed World",
+  "summary": "Turns down chatty villagers, mooing cows, humming nether portals and rain, so long play sessions sound calmer.",
+  "class": "Addons",
+  "category": "Vanilla+",
+  "logoPrompt": "A plump brass hand bell wrapped in a soft knitted wool scarf so it cannot ring, resting on a grassy block, faint musical notes fading into small dots, in blocky voxel style",
+  "cover": {
+    "tagline": "The same world, a little quieter.",
+    "bullets": [
+      "Calmer villagers and cows",
+      "Softer nether portal hum",
+      "Gentler rain"
+    ]
+  },
+  "description": [
+    "**Hushed World lowers the volume of the sounds that get tiring in a long session, and leaves every other sound exactly as it was.**",
+    "",
+    "## Features",
+    "- Villagers chatter and haggle at less than half their usual volume.",
+    "- Cows and mooshrooms moo more softly.",
+    "- A lit nether portal hums at about a third of its volume.",
+    "- Rain falls at half its volume; thunder stays loud.",
+    "- Same sounds, pitch and subtitles as before, only quieter.",
+    "",
+    "## How to use",
+    "Import the .mcpack, then turn it on under Resource Packs, either globally in the settings or for a single world.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft Bedrock 26.60 and newer. Hurt and death sounds keep their full volume, so you still notice danger.",
+    "- It is a resource pack only: it does not turn off achievements and needs no experimental features.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

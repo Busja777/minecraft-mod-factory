@@ -1,0 +1,18 @@
+{
+  "slug": "hushed-world",
+  "game": "bedrockaddons",
+  "name": "Hushed World",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "HushedWorld-1.0.mcpack",
+      "changelog": "## Hushed World 1.0\n\nFirst release.\n\n- Villagers: idle chatter, haggling and the yes / no sounds at 40 % volume.\n- Cows and mooshrooms: mooing at 40 % volume, for both cow sound variants.\n- Nether portals: the hum of a lit portal at 35 % volume.\n- Rain at 50 % volume.\n- Every other sound, including hurt and death sounds and thunder, is unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}

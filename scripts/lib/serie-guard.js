@@ -18,11 +18,14 @@ const NEVER = [/(^|\/)\.github\//, /(^|\/)package(-lock)?\.json$/, /(^|\/)node_m
 
 export const isContent = file => CONTENT.some(re => re.test(file)) && !NEVER.some(re => re.test(file));
 
-// pr: { headRepo, baseRepo, headRef, files: [paths], ciConclusion }
+// pr: { headRepo, baseRepo, headRef, baseRef, defaultBranch, files: [paths], ciConclusion }
 // → { merge: boolean, reasons: [text] }
-export function guardPullRequest({ headRepo, baseRepo, headRef, files = [], ciConclusion }) {
+// Only into the default branch: a pull request into another branch (for example one that waits
+// for the operator) is never merged by the series.
+export function guardPullRequest({ headRepo, baseRepo, headRef, baseRef, defaultBranch, files = [], ciConclusion }) {
   const reasons = [];
   if (!headRepo || headRepo !== baseRepo) reasons.push('the branch is not in this repository');
+  if (!defaultBranch || baseRef !== defaultBranch) reasons.push(`it targets "${baseRef}", not the default branch`);
   if (!AUTO_BRANCH.test(headRef || '')) reasons.push(`the branch "${headRef}" is not serie/auto-…`);
   if (ciConclusion !== 'success') reasons.push(`the tests are ${ciConclusion || 'missing'}, not green`);
   if (!files.length) reasons.push('the pull request changes no files');

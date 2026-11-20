@@ -26,6 +26,12 @@ export const THEMES = {
     bg: 'linear-gradient(160deg, #fbe9c2 0%, #f3d596 55%, #e9bd72 100%)',
     ink: '#4a2a12', soft: '#7a5230', accent: '#3f8f3f', frame: '#b98545', weight: 700
   },
+  bedrock: {
+    kicker: 'For Minecraft: Bedrock Edition',
+    font: `'Avenir Next', 'Helvetica Neue', sans-serif`, body: `'Avenir Next', 'Helvetica Neue', sans-serif`,
+    bg: 'linear-gradient(135deg, #0d2433 0%, #0f1d2a 45%, #08121a 100%)',
+    ink: '#e8f6ff', soft: '#9cc3d8', accent: '#4fc3f7', frame: '#2a6f8f', weight: 800
+  },
   sims4: {
     kicker: 'For The Sims 4 · base game compatible',
     font: `'Avenir Next', 'Helvetica Neue', sans-serif`, body: `'Avenir Next', 'Helvetica Neue', sans-serif`,
