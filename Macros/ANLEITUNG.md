@@ -101,6 +101,21 @@ npm run cf -- inspect                              # Seiten für die Kalibrierun
 
 ---
 
+## Weitere Spiele: einmal anlegen, danach läuft es von selbst
+
+Für Stardew Valley, World of Warcraft und The Sims 4 gibt es keinen Helfer im Browser. Du legst ein Projekt **einmal von Hand** an, danach kommen die Updates abends von selbst (Datei + Changelog). Beschreibung und Bilder bleiben so, wie du sie angelegt hast.
+
+1. **Projekt anlegen:** auf https://authors.curseforge.com im Konto des Spiels, mit Name, Beschreibung, Logo und Bildern. Die Projekt-ID steht rechts auf der Projektseite.
+2. **Token des Kontos (einmal pro Konto):** im Konto unter *My API Tokens* ein Token erzeugen, in `secrets.env` als `CF_API_TOKEN_STARDEWVALLEY` (bzw. `_WOW`, `_SIMS4`) eintragen, dann `npm run secrets:push`.
+3. **Claude die Projekt-ID geben.** Claude trägt das Projekt ein und legt den Vorrat an Versionen an.
+4. **Erste Datei:** Liegt auf CurseForge noch keine Datei, startet die erste nur auf dein Wort. Danach läuft alles allein.
+
+Stand ansehen: `npm run projekt -- liste` zeigt pro Projekt, ob das Token da ist, wie viele Versionen vorbereitet sind und wann das nächste Update frühestens kommt.
+
+Regeln wie bei den Skinpacks: pro Konto höchstens 1 Update am Tag zu einer Zufallszeit zwischen 18 und 21 Uhr, jedes Projekt frühestens 23 Tage nach seiner letzten Datei. Ist nichts vorbereitet, passiert nichts.
+
+---
+
 ## Sicherheit: was das Tool tut und was nicht
 
 - Es läuft **sichtbar** in Google Chrome, in normalem Tempo, ein Projekt pro Lauf.

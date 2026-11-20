@@ -92,26 +92,52 @@ export function compareVersions(a, b) {
   return 0;
 }
 
-// Bedrock files list many game versions (e.g. 1.21.x and 26.0 … 26.60). Picks every release version
-// from `include` (the versions of the previous file), every one starting with `prefix`, and every
-// one newer than all of those, so a new Minecraft release (27.0, …) is always ticked as well.
-// Beta/preview/snapshot versions are skipped. → { ids, names, newest, added }
-export function bedrockVersions(catalog, { prefix = '26.', include = [] } = {}) {
+const NUMERIC = /^\d+(\.\d+)*$/;
+
+// Game versions for the next file of a project, for any game: every release version the previous
+// file listed (`include`), every one starting with `prefix`, and every one newer than all of
+// those, so a new game release is always ticked as well. Beta/preview/snapshot versions are skipped.
+//   types       names of the version types that count for "newer" (WoW: ['WoW Retail'], so a Retail
+//               addon never gets Classic versions); default: all types
+//   numericOnly carry only numeric version names forward (Bedrock); otherwise names like the
+//               Sims 4 expansion packs of the previous file are kept too
+// Nothing to carry forward (first file of a project) → the newest release version alone.
+// → { ids, names, newest, added }
+export function carryForwardVersions(catalog, { include = [], prefix = null, types = null, numericOnly = false, label = 'game' } = {}) {
   const skipTypes = new Set(catalog.types.filter(t => /beta|preview|snapshot/i.test(`${t.name} ${t.slug || ''}`)).map(t => t.id));
-  const releases = catalog.versions.filter(v => !skipTypes.has(v.gameVersionTypeID) && !/beta|preview/i.test(v.name) && /^\d+(\.\d+)*$/.test(String(v.name)));
+  const releases = catalog.versions.filter(v => !skipTypes.has(v.gameVersionTypeID) && !/beta|preview/i.test(v.name));
+  const numeric = v => NUMERIC.test(String(v.name));
+  const typeIds = types?.length ? new Set(catalog.types.filter(t => types.some(n => eq(n)(t.name))).map(t => t.id)) : null;
+  if (typeIds && !typeIds.size) throw new Error(`CurseForge has no ${label} version type named ${types.join(' / ')}`);
+  const counts = v => numeric(v) && (!typeIds || typeIds.has(v.gameVersionTypeID));
+
   const wanted = new Set(include.map(String));
-  const base = releases.filter(v => wanted.has(String(v.name)) || String(v.name).startsWith(prefix));
-  if (!base.length) throw new Error(`No CurseForge Bedrock game versions start with "${prefix}"`);
-  const top = base.map(v => String(v.name)).sort(compareVersions).at(-1);
-  const picked = releases.filter(v => base.includes(v) || compareVersions(v.name, top) > 0);
-  const byName = new Map(picked.map(v => [String(v.name), v]));
-  const names = [...byName.keys()].sort(compareVersions);
+  const base = releases.filter(v => (wanted.has(String(v.name)) && (!numericOnly || numeric(v))) || (prefix && numeric(v) && String(v.name).startsWith(prefix)));
+  if (prefix && !base.length) throw new Error(`No CurseForge ${label} game versions start with "${prefix}"`);
+
+  const candidates = releases.filter(counts).sort((x, y) => compareVersions(x.name, y.name));
+  const top = base.filter(counts).map(v => String(v.name)).sort(compareVersions).at(-1);
+  const newer = top ? candidates.filter(v => compareVersions(v.name, top) > 0) : candidates.slice(-1);
+  const picked = [...base, ...newer];
+  if (!picked.length) throw new Error(`No CurseForge ${label} game versions found`);
+
+  // One id per name; where two types share a name, the one from `types` wins.
+  const byName = new Map();
+  for (const v of picked) if (!byName.has(String(v.name)) || counts(v)) byName.set(String(v.name), v);
+  const all = [...byName.keys()];
+  const names = [...all.filter(n => NUMERIC.test(n)).sort(compareVersions), ...all.filter(n => !NUMERIC.test(n)).sort()];
   return {
     ids: [...new Set(names.map(n => byName.get(n).id))],
     names,
-    newest: names.at(-1),
+    newest: names.filter(n => NUMERIC.test(n)).at(-1) || null,
     added: names.filter(n => !wanted.has(n))
   };
+}
+
+// Bedrock files list many game versions (e.g. 1.21.x and 26.0 … 26.60): the versions of the previous
+// file, everything starting with `prefix` and every newer Minecraft release (27.0, …).
+export function bedrockVersions(catalog, { prefix = '26.', include = [] } = {}) {
+  return carryForwardVersions(catalog, { prefix, include, numericOnly: true, label: 'Bedrock' });
 }
 
 export function matchBedrockVersionIds(catalog, options = {}) {
@@ -135,7 +161,8 @@ function formatError(status, text) {
 
 const CONTENT_TYPES = { '.jar': 'application/java-archive', '.mcpack': 'application/zip', '.mcaddon': 'application/zip', '.zip': 'application/zip' };
 
-export async function uploadFile({ token, projectId, jarPath, filePath = jarPath, metadata, gameEndpoint = 'minecraft', fetchImpl = fetch }) {
+// urlSection: path of the game's project pages on curseforge.com (config.games.<key>.urlSection).
+export async function uploadFile({ token, projectId, jarPath, filePath = jarPath, metadata, gameEndpoint = 'minecraft', urlSection, fetchImpl = fetch }) {
   if (!token) throw new Error('CF_API_TOKEN is missing');
   if (!Number.isInteger(Number(projectId))) throw new Error(`Invalid CurseForge projectId "${projectId}"`);
   const form = new FormData();
@@ -151,6 +178,6 @@ export async function uploadFile({ token, projectId, jarPath, filePath = jarPath
   const text = await res.text();
   if (!res.ok) throw new Error(formatError(res.status, text));
   const result = JSON.parse(text);
-  const section = gameEndpoint === 'minecraft' ? 'minecraft/mc-mods' : 'minecraft-bedrock/skins';
+  const section = urlSection || (gameEndpoint === 'minecraft' ? 'minecraft/mc-mods' : 'minecraft-bedrock/skins');
   return { fileId: result.id, url: `https://www.curseforge.com/${section}/${projectId}/files/${result.id}` };
 }

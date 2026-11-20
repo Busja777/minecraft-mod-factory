@@ -56,6 +56,16 @@ export function decide({ nowMinutes, slot, windowEnd, ranToday, bucket = BUCKET_
   return { run: false, sleepMinutes: 0, reason: 'before-slot' };
 }
 
+// One leg per CurseForge account: each account draws its own slot for the day and follows the same
+// rules as decide(). ran: accounts whose update already ran (or is running) today.
+// → [{ account, slot, run, sleepMinutes, reason }]
+export function planAccounts({ accounts, dateKey, windowName, salt = '', start, end, nowMinutes, ran = new Set() }) {
+  return accounts.map(account => {
+    const slot = slotFor({ dateKey, windowName, salt: `${salt}|${account}`, start, end });
+    return { account, slot, ...decide({ nowMinutes, slot, windowEnd: end, ranToday: ran.has(account) }) };
+  });
+}
+
 // UTC ISO string of local midnight (start of the local day that contains `now`).
 export function localMidnightUtcIso(now, timeZone) {
   const p = localParts(now, timeZone);

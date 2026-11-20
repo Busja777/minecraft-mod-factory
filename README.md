@@ -9,7 +9,7 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 | Workflow | Window | What happens |
 |---|---|---|
 | `morning.yml` | 06:00–12:00, once per day at a random minute | 1) Uploads every pending mod whose CurseForge project ID you entered. 2) On `newModDays` (default Mon/Wed/Fri/Sat): Claude designs a new mod (incl. a short legend) → ChatGPT logo `<Name>.png` (400×400) and cover `<Name> Cover.png` (720×340) → source stored in `data/mods/<modId>/` → Gradle build (one auto-fix retry) → **project kit** committed and a GitHub issue (`cf-project-needed`) asks you to create the CurseForge project. |
-| `evening.yml` | 18:00–21:00, once per day at a random minute | Picks the next published project in the cycle (longest without an update first, at least **23 days** after its last upload as CurseForge reports it), lets Claude implement one real improvement, bumps the minor version and uploads the new file with a changelog. Nothing due → nothing happens. |
+| `evening.yml` | 18:00–21:00, once per day and CurseForge account at a random minute | Picks the next published project in the cycle (longest without an update first, at least **23 days** after its last upload as CurseForge reports it), lets Claude implement one real improvement, bumps the minor version and uploads the new file with a changelog. Nothing due → nothing happens. |
 
 **Your part:** create the project on https://authors.curseforge.com from the kit (name, summary, category, icon, description), put the numeric project ID into `data/cf-projects.json` (`"projectId": 123456`), commit, push. The next morning run uploads it. For an immediate upload run *Actions → Morning → Run workflow* with `force = true`.
 
@@ -20,6 +20,24 @@ Two workflows in **Europe/Berlin** time with a randomized daily slot. Only `even
 **Keyboard Maestro hand-over:** `npm run macro -- --mod <id>` / `--skinpack <slug> [--refresh | --update [--version x]]` writes every form value, image and file under fixed names to `Macros/aktuell/` in this repo (git-ignored, `--out` to change). The macros (guide: `Macros/ANLEITUNG-keyboard-maestro.md`) fill in the CurseForge forms and stop before *Create*.
 
 **How the random slot works:** the cron fires every 30 minutes inside each window. A light `gate` job derives today's slot from a hash of the date, checks via the GitHub API whether the heavy job already ran today, and only then starts the heavy job (sleeping up to 30 min to hit the exact minute). Late or dropped cron fires are caught up later in the same window. Scheduled workflows only run on the default branch, and GitHub disables them after 60 days without repository activity.
+
+## Other games: create once, updates by API
+
+A project of another game is created **once by hand** on CurseForge; from then on the evening run uploads its prepared versions through the upload API (file + changelog only, the page stays as created).
+
+- **Games** live in `config.json` → `games` (`gameEndpoint`, Core `gameId`, `urlSection`, optional `versionTypes`). Registered: Minecraft Java, Minecraft Bedrock, Stardew Valley, World of Warcraft, The Sims 4. A game only belongs there if `https://<slug>.curseforge.com/api/game/versions` returns its own version list with a token (an unknown slug answers with the placeholder list `1.0`; Hytale and inZOI have no upload API).
+- **Accounts:** every game is its own CurseForge account with its own upload token `CF_API_TOKEN_<ACCOUNT>` (e.g. `CF_API_TOKEN_STARDEWVALLEY`); Java and Bedrock share the account `minecraft` and `CF_API_TOKEN`. `npm run secrets:push` uploads every `CF_API_TOKEN_*` from `secrets.env`.
+- **Evening run:** one leg per account that owns a published project (job `update-<account>`), each with its own random slot between 18:00 and 21:00 and at most one update per day. A file gets every game version of the previous file plus all newer releases of the game.
+- **First file** of a project without any file never uploads by itself: `gh workflow run evening.yml -f force=true -f modId=<slug>`. A forced run needs `modId` or `account` and starts exactly one account.
+
+```bash
+npm run projekt -- neu --game stardewvalley --id 123456 --name "Cozy Farm"      # register a project created by hand
+npm run projekt -- version --project cozy-farm --version 1.1 --file Output/cozy-farm/CozyFarm-1.1.zip --changelog Output/cozy-farm/v1.1.md
+npm run projekt -- liste                                                        # tokens, prepared versions, next date
+node scripts/release.js --project cozy-farm --dry-run                           # show the upload, change nothing
+```
+
+Storage: `data/projects/<slug>/project.json` and `data/projects/<slug>/files/`; the queue entry in `data/cf-projects.json` has `kind: "file"` and `game`.
 
 ## Skin packs (CurseForge Bedrock)
 
@@ -57,7 +75,8 @@ node scripts/import-skinpack.js "/path/to/MCPE/Glowing Samurai" --project 149888
 - `ANTHROPIC_API_KEY`
 - `OPENAI_API_KEY` – ChatGPT logo and cover (`gpt-image-2.5-flare`)
 - `CF_CORE_API_KEY` – Studios key (`$2a$…`), read-only Core API: detects files already on CurseForge and their game versions
-- `CF_API_TOKEN` – CurseForge **upload token** (UUID format, from *Account → My API Tokens*). The Studios key (`$2a$…`) does not work.
+- `CF_API_TOKEN` – CurseForge **upload token** of the Minecraft account (UUID format, from *Account → My API Tokens*). The Studios key (`$2a$…`) does not work.
+- `CF_API_TOKEN_<ACCOUNT>` – upload token of each further account (one per game, see *Other games*)
 - `MODRINTH_API_TOKEN` – only used when `PLATFORMS` includes `modrinth`
 
 ## Local development
@@ -66,7 +85,7 @@ node scripts/import-skinpack.js "/path/to/MCPE/Glowing Samurai" --project 149888
 npm ci
 npm test                                   # unit tests (no network)
 MODE=update node scripts/select-mode.js    # or new | scheduled-new | auto
-NOW=2026-11-03T18:40:00Z node scripts/schedule-gate.js --window evening --dry-run
+NOW=2026-11-03T18:40:00Z node scripts/schedule-gate.js --window evening --per-account   # which accounts would start now
 node scripts/publish.js --mod <id> --dry-run
 ```
 

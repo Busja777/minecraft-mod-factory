@@ -1,9 +1,11 @@
 name: Evening — update a due project
 
-# Runs once per day at a random time between 18:00 and 21:00 Europe/Berlin (config.windows.evening;
-# the slot is drawn per day, the cron fires every 30 minutes from 17:30 and the gate waits for it).
-# Updates at most one project per day: the projects take turns (longest without an update first),
-# each at least 23 days after its last upload (config.updateIntervalDays).
+# One leg per CurseForge account (config.games.<key>.account; Java and Bedrock share "minecraft").
+# Every account draws its own random time between 18:00 and 21:00 Europe/Berlin per day
+# (config.windows.evening); the cron fires every 30 minutes from 17:30 and the gate starts the legs
+# whose slot falls into this half hour. Each account updates at most one project per day: its
+# projects take turns (longest without an update first), each at least 23 days after its last
+# upload (config.updateIntervalDays). Accounts without a published project have no leg.
 on:
   schedule:
     - cron: '*/30 17-20 * * *'
@@ -11,11 +13,15 @@ on:
   workflow_dispatch:
     inputs:
       force:
-        description: 'Run now, ignoring the time window and the once-per-day rule'
+        description: 'Run now, ignoring the time window and the once-per-day rule (needs modId or account)'
         type: boolean
         default: false
       modId:
-        description: 'Update this modId (default: earliest due project)'
+        description: 'Update this modId (default: earliest due project of the account)'
+        type: string
+        default: ''
+      account:
+        description: 'Only this CurseForge account (e.g. minecraft, stardewvalley)'
         type: string
         default: ''
       releaseType:
@@ -31,38 +37,51 @@ env:
 jobs:
   gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
     permissions:
       actions: read
       contents: read
     outputs:
-      run: ${{ steps.gate.outputs.run }}
-      slot: ${{ steps.gate.outputs.slot }}
+      matrix: ${{ steps.gate.outputs.matrix }}
+      any: ${{ steps.gate.outputs.any }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Decide whether this fire runs
+      - name: Decide which accounts run in this fire
         id: gate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE: ${{ inputs.force && 'true' || 'false' }}
-        run: node scripts/schedule-gate.js --window evening --job update
+          INPUT_MOD_ID: ${{ inputs.modId }}
+          INPUT_ACCOUNT: ${{ inputs.account }}
+        run: node scripts/schedule-gate.js --window evening --per-account
 
   update:
+    # The gate recognises today's run of an account by this name (update-<account>).
+    name: update-${{ matrix.account }}
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.any == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.gate.outputs.matrix) }}
+    # The Minecraft account keeps sharing its group with the morning and refresh workflows.
     concurrency:
-      group: mod-factory
+      group: ${{ matrix.account == 'minecraft' && 'mod-factory' || format('mod-factory-{0}', matrix.account) }}
       cancel-in-progress: false
     permissions:
       contents: write
       issues: write
 
     steps:
+      - name: Wait for this account's slot
+        if: matrix.sleep > 0
+        run: sleep $(( ${{ matrix.sleep }} * 60 ))
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -87,6 +106,7 @@ jobs:
         env:
           CF_CORE_API_KEY: ${{ secrets.CF_CORE_API_KEY }}
           MODE: update
+          ACCOUNT: ${{ matrix.account }}
           INPUT_MOD_ID: ${{ inputs.modId }}
         run: node scripts/select-mode.js
 
@@ -132,6 +152,18 @@ jobs:
           CF_CORE_API_KEY: ${{ secrets.CF_CORE_API_KEY }}
         run: node scripts/skin-release.js --pack "${{ steps.select.outputs.modId }}"
 
+      # ── Any other game: next prepared file of a project created once by hand ─
+      # The token of the leg's account is handed over under the name the game expects (config.games).
+      - name: Release prepared version
+        if: steps.select.outputs.mode == 'update' && steps.select.outputs.kind == 'file'
+        env:
+          ACCOUNT_TOKEN: ${{ secrets[matrix.tokenEnv] }}
+          CF_CORE_API_KEY: ${{ secrets.CF_CORE_API_KEY }}
+        run: |
+          export "${{ matrix.tokenEnv }}=${ACCOUNT_TOKEN}"
+          node scripts/release.js --project "${{ steps.select.outputs.modId }}"
+
+      # Two accounts can finish close together, so the push is retried on top of the other's commit.
       - name: Commit data
         if: steps.select.outputs.mode == 'update'
         run: |
@@ -140,8 +172,12 @@ jobs:
           git add data/
           if git diff --staged --quiet; then echo "Nothing to commit"; exit 0; fi
           git commit -m "chore(update): ${{ steps.select.outputs.modId }} [skip ci]"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push
+          for attempt in 1 2 3; do
+            if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi
+            sleep $(( RANDOM % 20 + 5 ))
+          done
+          echo "::error::Could not push the data commit after 3 attempts"
+          exit 1
 
       - name: Open issue with description section
         if: steps.skinrelease.outputs.released == 'true'
@@ -155,7 +191,7 @@ jobs:
       - name: Save problem log on failure
         if: failure()
         run: |
-          MOD_ID="${{ steps.select.outputs.modId || 'evening-run' }}"
+          MOD_ID="${{ steps.select.outputs.modId || format('evening-{0}', matrix.account) }}"
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           LOG_DIR="Problem_logfile/${MOD_ID}/${TIMESTAMP}"
           mkdir -p "$LOG_DIR"
@@ -167,6 +203,7 @@ jobs:
             echo "**Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           } > "$LOG_DIR/error.md"
           [ -f "data/skins/${MOD_ID}/pack.json" ] && cp "data/skins/${MOD_ID}/pack.json" "$LOG_DIR/" || true
+          [ -f "data/projects/${MOD_ID}/project.json" ] && cp "data/projects/${MOD_ID}/project.json" "$LOG_DIR/" || true
           if [ -f "data/mods/${MOD_ID}/mod.json" ]; then cp "data/mods/${MOD_ID}/mod.json" "data/mods/${MOD_ID}/ModMain.java" "$LOG_DIR/" || true; fi
           [ -f build-output.txt ] && grep -E "error:|cannot find symbol|symbol:|location:|FAILED" build-output.txt > "$LOG_DIR/compile-errors.txt" || true
           git config user.name "Mod Factory Bot"
@@ -184,7 +221,7 @@ jobs:
           script: |
             await github.rest.issues.create({
               owner: context.repo.owner, repo: context.repo.repo,
-              title: `Evening update failed: ${new Date().toISOString().split('T')[0]}`,
+              title: `Evening update failed (${{ matrix.account }}): ${new Date().toISOString().split('T')[0]}`,
               body: `See [Actions run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).\n\nError log: \`Problem_logfile/\``,
               labels: ['pipeline-failure']
             });

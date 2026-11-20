@@ -135,3 +135,63 @@ import { redact } from '../scripts/platforms/curseforge.js';
 test('redact removes token fragments echoed by CurseForge', () => {
   assert.equal(redact('API token is malformed. Token provided: abc.DEF123.'), 'API token is malformed. Token provided: [redacted]');
 });
+
+import { carryForwardVersions } from '../scripts/platforms/curseforge.js';
+
+test('carryForwardVersions: a WoW Retail addon gets newer Retail versions, never Classic ones', () => {
+  const wow = {
+    types: [{ id: 1, name: 'WoW Retail' }, { id: 2, name: 'WoW Classic' }],
+    versions: [
+      { id: 10, gameVersionTypeID: 1, name: '12.1.0' }, { id: 11, gameVersionTypeID: 1, name: '12.1.5' },
+      { id: 12, gameVersionTypeID: 1, name: '12.1.7' }, { id: 20, gameVersionTypeID: 2, name: '1.15.7' },
+      { id: 21, gameVersionTypeID: 2, name: '13.0.0' }
+    ]
+  };
+  const v = carryForwardVersions(wow, { include: ['12.1.5'], types: ['WoW Retail'] });
+  assert.deepEqual(v.names, ['12.1.5', '12.1.7']);
+  assert.deepEqual(v.ids, [11, 12]);
+  assert.deepEqual(v.added, ['12.1.7']);
+  // a Classic version the previous file listed is kept, but no newer Classic version is added
+  assert.deepEqual(carryForwardVersions(wow, { include: ['12.1.7', '1.15.7'], types: ['WoW Retail'] }).names, ['1.15.7', '12.1.7']);
+  assert.throws(() => carryForwardVersions(wow, { include: [], types: ['WoW Remix'], label: 'World of Warcraft' }), /no World of Warcraft version type named WoW Remix/);
+});
+
+test('carryForwardVersions: Sims 4 keeps the expansion packs of the previous file and adds new patches', () => {
+  const sims = {
+    types: [],
+    versions: [
+      { id: 1, gameVersionTypeID: 9, name: '1.127.41' }, { id: 2, gameVersionTypeID: 9, name: '1.128.90' },
+      { id: 3, gameVersionTypeID: 9, name: '1.129.39' }, { id: 4, gameVersionTypeID: 9, name: 'Cats and Dogs' },
+      { id: 5, gameVersionTypeID: 9, name: 'Get to Work' }
+    ]
+  };
+  const v = carryForwardVersions(sims, { include: ['1.128.90', 'Cats and Dogs'] });
+  assert.deepEqual(v.names, ['1.128.90', '1.129.39', 'Cats and Dogs']);
+  assert.equal(v.newest, '1.129.39');
+  assert.deepEqual(v.added, ['1.129.39'], 'no expansion pack is added on its own');
+});
+
+test('carryForwardVersions: the first file of a project gets the newest release alone', () => {
+  const stardew = {
+    types: [{ id: 1, name: 'Game' }, { id: 2, name: 'Tags' }],
+    versions: [
+      { id: 1, gameVersionTypeID: 1, name: '1.6.14' }, { id: 2, gameVersionTypeID: 1, name: '1.6.15' },
+      { id: 3, gameVersionTypeID: 1, name: '1.6.9' }, { id: 4, gameVersionTypeID: 2, name: '2.0' }
+    ]
+  };
+  assert.deepEqual(carryForwardVersions(stardew, { types: ['Game'] }).names, ['1.6.15']);
+  // games whose list is only the placeholder "1.0"
+  assert.deepEqual(carryForwardVersions({ types: [], versions: [{ id: 7, gameVersionTypeID: 0, name: '1.0' }] }).ids, [7]);
+  assert.throws(() => carryForwardVersions({ types: [], versions: [] }), /No CurseForge game game versions found/);
+});
+
+test('uploadFile builds the file URL from the game\'s section', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cf-'));
+  const zip = path.join(dir, 'CozyFarm-1.1.zip');
+  fs.writeFileSync(zip, 'ZIPBYTES');
+  const f = fakeFetch(() => okJson({ id: 55 }));
+  const r = await uploadFile({ token: 'tok', projectId: 4242, filePath: zip, metadata: { changelog: 'c', releaseType: 'release', gameVersions: [1] }, gameEndpoint: 'stardewvalley', urlSection: 'stardewvalley/mods', fetchImpl: f });
+  assert.equal(f.calls[0].url, 'https://stardewvalley.curseforge.com/api/projects/4242/upload-file');
+  assert.equal(r.url, 'https://www.curseforge.com/stardewvalley/mods/4242/files/55');
+  assert.match(f.calls[0].init.body.toString(), /filename="CozyFarm-1.1.zip"/);
+});
