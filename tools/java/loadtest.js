@@ -51,7 +51,7 @@ export function loadTest(version, zips) {
   const packs = path.join(work, 'packs');
   fs.mkdirSync(packs);
   for (const zip of zips) fs.copyFileSync(zip, path.join(packs, path.basename(zip)));
-  const r = spawnSync(java, ['-DbundlerMainClass=net.minecraft.gametest.Main', '-jar', path.join(versionDir(version), 'server.jar'), '--packs', 'packs', '--universe', 'world'],
+  const r = spawnSync(java, ['-DbundlerMainClass=net.minecraft.gametest.Main', `-DbundlerRepoDir=${versionDir(version)}`, '-jar', path.join(versionDir(version), 'server.jar'), '--packs', 'packs', '--universe', 'world'],
     { cwd: work, encoding: 'utf-8', maxBuffer: 256 * 1024 * 1024, timeout: 10 * 60 * 1000 });
   const log = `${r.stdout || ''}${r.stderr || ''}`.split('\n').filter(l => !l.startsWith('Unpacking ')).join('\n');
   const included = [...log.matchAll(/Included zip pack (\S+)/g)].map(m => m[1]);
