@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Junk Butler
+## Notes: Sells your grey items and repairs your gear at every vendor.
+## Version: @version@
+## SavedVariables: JunkButlerDB
+## IconTexture: Interface\Icons\INV_Misc_Bag_08
+
+Locale.lua
+Core.lua
+Butler.lua
+Commands.lua

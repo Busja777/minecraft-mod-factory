@@ -1,0 +1,10 @@
+## Interface: 120105, 120107
+## Title: Flight Minutes
+## Notes: Learns how long your flight paths take and counts down to the landing.
+## Version: @version@
+## SavedVariables: FlightMinutesDB
+
+Locale.lua
+Core.lua
+Tracker.lua
+UI.lua

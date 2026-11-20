@@ -1,0 +1,18 @@
+{
+  "slug": "level-clock",
+  "game": "wow",
+  "name": "Level Clock",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "LevelClock-1.0.zip",
+      "changelog": "## Level Clock 1.0\n\nFirst release.\n\n- Shows your XP per hour for the current session, counted correctly across level-ups.\n- Estimates the time until your next level and shows the XP you still need.\n- Shows your rested bonus as a percentage of the level.\n- Small window with session XP and session time. Drag it anywhere, its position is remembered.\n- At maximum level the window says so instead of showing numbers.\n- Open it with `/lc` or `/levelclock`. `/lc reset` starts a new session.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
