@@ -97,7 +97,7 @@ if (cmd === 'test') {
     if (isMod(pack)) testMod(pack);
     else {
       const { files, more } = await check(slug);
-      if (more.length) loadInGame(pack, await buildZip(pack, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'java-test-')), more));
+      if (pack.kind === 'data' && versionsOf(pack).some(supportsLoadTest)) loadInGame(pack, await buildZip(pack, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'java-test-')), more));
     }
   }
 } else if (cmd === 'bau') {
