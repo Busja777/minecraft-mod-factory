@@ -14,3 +14,5 @@ const result = guardPullRequest({
 });
 console.log(result.merge ? `Merge: ${files.length} content files` : `No automatic merge: ${result.reasons.join('; ')}`);
 setOutputs({ merge: String(result.merge), reasons: result.reasons.join('; ') });
+
+// Test line for the merge guard: a pull request that touches this file must wait for the operator.
