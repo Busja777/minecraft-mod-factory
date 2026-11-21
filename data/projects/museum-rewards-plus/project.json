@@ -24,6 +24,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "MuseumRewardsPlus-1.2.zip",
+      "changelog": "## Museum Rewards Plus 1.2\n\nNow in German too.\n\n- All ten thank-you letters from Gunther and their titles are translated into German. Players with the game set to German get the German letters; everyone else keeps the English ones.\n- Same letters, same rewards, same milestones, nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

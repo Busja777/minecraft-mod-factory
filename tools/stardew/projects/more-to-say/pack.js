@@ -1,5 +1,5 @@
-// More to Say: new dialogue lines for Linus and Willy (since 1.0) and Pam and Gus (since 1.2), one per
-// season for each of three moods (a
+// More to Say: new dialogue lines for Linus and Willy (since 1.0), Pam and Gus (since 1.2) and Marnie
+// and Robin (since 1.3), one per season for each of three moods (a
 // greeting once you have met, a rain or snow day from 2 hearts, a closer word from 6 hearts). Every
 // line is said once, by the villager it belongs to, and no vanilla dialogue key is touched.
 //
@@ -28,7 +28,8 @@
 //   spaces (trigger action arguments are space-delimited).
 // - Text: dialogue format with #$b# (next box), $h / $s / $u portraits (Linus: happy, concerned,
 //   surprised; Willy: happy, concerned, smoking — both villager pages, "Portraits"; Pam's and Gus's
-//   third portrait is a second neutral face, so their lines use only $h and $s), @ = player name,
+//   third portrait is a second neutral face, so their lines use only $h and $s; Marnie's third is
+//   "Neutral" and Robin's "Annoyed" on their pages, so their lines use only $h), @ = player name,
 //   ${male^female}$ gender switch. https://stardewvalleywiki.com/Modding:Dialogue#Format
 // - The text comes from i18n (Content Patcher translations.md); {{ModId}} keeps IDs unique (tokens.md).
 //
@@ -50,6 +51,33 @@
 // as his loved gift with its recipe (Tuna, Tortilla, Red Cabbage, Mayonnaise). Nothing from his 4-heart
 // (Pam's tab) or 5-heart (sauce, jukebox) events, no mention of Pam, no prices. Crops named are the
 // wiki's season crops (summer: tomato, blueberry, hot pepper; fall: pumpkin, yam, cranberries).
+// Marnie (since 1.3): only her regular (0-heart), rain, festival and gift-taste dialogue is used.
+// Nothing from her heart events (3-heart goats and Cave Carrot, the recipe letters, the 6-heart
+// event), no Lewis at all, no Shane at all (his story stays his), nothing about Jas's family.
+// Facts: wiki page "Marnie" — ranch in Cindersap Forest, sells animals and animal supplies, shop 9:00
+// to 16:00 except Monday and Tuesday ("most days"), first meeting "You should swing by some time",
+// "Feel free to visit us any time", rain greeting "You look like you're soaked... you poor thing!",
+// "Animals are so innocent... If I don't look after them, who will?", feed from grass with a scythe
+// "or you can buy it from me", the Saloon most nights ("Animals are great company, but I need to
+// spend some time with people, too"), cows (Green Rain line), Festival of Ice "I feel bad for all
+// the poor, cold animals out there", loves Pumpkin Pie, likes all milk, lives with her niece Jas.
+// Wiki page "Jas": "my favorite is the fresh ice cream from our cows' milk" and "Aunt Marnie won't
+// let me go out after 6 o'clock" (both regular, 0 hearts). Wiki page "Silo": Robin builds it, it
+// stores hay from cut grass, grass stops growing in winter and the animals rely on hay all winter.
+// Robin (since 1.3): only her regular (0-heart), rain, seasonal and festival dialogue. Nothing from
+// her 6-heart (carpentry secrets, blueprints) or 7-heart (grandma's recipe) events, nothing from
+// Sebastian's, Maru's or Demetrius's events, no Pam's house, no Sebastian's room. Facts: wiki page
+// "Robin" — town carpenter, family Demetrius, Maru, Sebastian (infobox), "I built our house from the
+// ground up", "I love the fresh air of the mountains", "It can get pretty lonely up here in the
+// mountains" (visit "even if you aren't shopping"), "daydreaming about some new carpentry projects
+// ... How's the woodwork in your cottage holding up?", Demetrius's experiments and the
+// "fire-resistant lacquer", rain line "soggy wood isn't a joy to work with" and the rain schedule (at
+// the counter all day), summer "provide enough lumber and stone ... And it costs money, too", Egg
+// Festival "Spring is a busy time of year", Spirit's Eve "a great time to stockpile wood and stone",
+// winter "a perfect time of year to gather wood ... upgrade your house", "Everything looks still
+// after a fresh snow", "My parents were bewildered when I told them I wanted to be a carpenter. They
+// were pretty old-fashioned." Wiki page "Carpenter's Shop": 24 Mountain Road, builds and upgrades
+// farm buildings and the farmhouse, does not work on festival days.
 // Timed words avoid festival dates that can fall inside a topic's 7 days.
 
 import { LINES_DE } from './de.js';
@@ -153,6 +181,52 @@ export const LINES = {
       met: "Brr! Winter's here. Good thing a kitchen is the warmest room in any house.#$b#Come in out of the cold sometime, @. The coffee's always hot.",
       weather: 'Snow piling up outside, and inside everyone squeezes a little closer to the bar.#$b#I keep a big pot of stew going and a mop by the door. Snowy boots, you know.$h',
       friend: "The Feast of the Winter Star is the busiest time of year in my kitchen. I plan the menu weeks ahead.#$b#Some years I wonder why I bother. Then I see the whole town eating together, and I remember.$h"
+    }
+  },
+  // since 1.3
+  Marnie: {
+    spring: {
+      met: "Spring at last! The grass is coming in green, and my animals can hardly wait to get at it.#$b#If you'd like some animals of your own, swing by the ranch. I'm at the counter most days from nine to four.",
+      weather: "Look at you, soaked to the bone... you poor thing!#$b#Come dry off at the ranch whenever you like, @. The animals won't mind a little company.$h",
+      friend: "You know, @, you're just the kind of neighbor I hoped would move onto that old farm.#$b#Friendly, hardworking, and you always stop to say hello. That means a lot out here in the forest.$h"
+    },
+    summer: {
+      met: "Jas says the best thing about living on a farm is fresh ice cream from our cows' milk.#$b#I can't argue with that. A cold treat on a hot day never hurt anybody.$h",
+      weather: "A storm like this makes me worry about every animal in the valley. If I don't look after them, who will?#$b#If you have animals, make sure they're safe inside tonight, @.",
+      friend: "Most evenings I head to the Saloon. Animals are great company, but I need to spend time with people too.#$b#Lately you're one of the people I'm happiest to see, @.$h"
+    },
+    fall: {
+      met: "Fall's here! Time to cut grass and fill the silo. The animals eat hay all winter long.#$b#No silo yet? Robin can build you one. Or buy your hay from me, of course.",
+      weather: "Cold rain, a warm kitchen and a slice of pumpkin pie... that's all I need.#$b#Well, that and healthy animals. Stay dry, @!$h",
+      friend: "It's always nice when you stop by, @. Even the animals seem calmer.#$b#They can always tell who's kind to them. So can I.$h"
+    },
+    winter: {
+      met: "Brr! This time of year I feel bad for all the poor, cold animals out there.#$b#Whatever lives on your farm, @, a warm place and a kind word go a long way.",
+      weather: "Snow day! Jas would play outside until dark if I let her. But the rule is home by six, snow or no snow.#$b#Stay warm, @. A cup of hot milk does wonders on a day like this.$h",
+      friend: "Winter nights are long and quiet out here in the forest. I can hear every animal shuffle in the barn.#$b#It's nice when you drop by, @. Makes the long nights feel shorter.$h"
+    }
+  },
+  // since 1.3
+  Robin: {
+    spring: {
+      met: "Spring is a busy time of year! Fresh mountain air and plenty of work for a carpenter.#$b#Need a coop, a barn or a bigger house? You know where to find me: 24 Mountain Road!$h",
+      weather: "Rain again! I'll spend the day at the counter sorting lumber. Soggy wood is no joy to work with.#$b#Come up and dry off if you're passing by, @. The mountain air smells wonderful after a shower.$h",
+      friend: "Have I told you I built our house from the ground up? Every beam, every board.#$b#Making something that lasts... there's no better feeling. I bet you know it from your farm, @.$h"
+    },
+    summer: {
+      met: "Summer sun dries the lumber nicely. Perfect weather for a building project!#$b#Want something on your farm upgraded? Bring enough wood and stone, plus the fee, and I'll handle the rest.$h",
+      weather: "Hear that thunder? Doesn't worry me. Between storms and my husband's experiments, I built this house to take a beating.#$b#Fire-resistant lacquer on every rafter. Best decision I ever made!$h",
+      friend: "It can get pretty lonely up here in the mountains. That's why I'm always glad when you drop by, @.#$b#Not to buy anything, just to chat. That's what friends do, right?$h"
+    },
+    fall: {
+      met: "Fall's here! Great time to stockpile wood and stone before winter.#$b#Planning a building? Order early. I don't work on festival days!$h",
+      weather: "Rainy days are for daydreaming about new carpentry projects. A new chair, maybe... or a whole set of furniture for the shop.#$b#How's the woodwork in your house holding up, @? Any creaky boards?",
+      friend: "Fall always makes me thankful. Demetrius, Maru, Sebastian... a full house, and a job I love.#$b#And good friends like you, @. Don't you forget it.$h"
+    },
+    winter: {
+      met: "Winter is the perfect time of year to gather wood. All that chopping keeps you warm, too!#$b#Collect enough and you might upgrade your house before spring.$h",
+      weather: "Everything looks so still after a fresh snow. I love this view from up on the mountain.#$b#Watch your step on the mountain path, @. Snow hides every root and rock.",
+      friend: "My parents were bewildered when I told them I wanted to be a carpenter. They were pretty old-fashioned.#$b#I'm glad I didn't listen. I can't imagine doing anything else, @.$h"
     }
   }
 };

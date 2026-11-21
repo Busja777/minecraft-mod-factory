@@ -1,6 +1,6 @@
 // German lines (i18n/de.json), same structure and markers as LINES in pack.js:
 // #$b# = next dialogue box, $h/$u/$s = portrait, ${a^b}$ = male/female form, @ = player name.
-// Linus and Willy say "du" to the player, as in the German game.
+// Linus and Willy (and since 1.3 Marnie and Robin) say "du" to the player, as in the German game.
 export const LINES_DE = {
   Linus: {
     spring: {
@@ -90,6 +90,52 @@ export const LINES_DE = {
       met: 'Brr! Der Winter ist da. Gut, dass die Küche der wärmste Raum in jedem Haus ist.#$b#Komm mal aus der Kälte rein, @. Der Kaffee ist immer heiß.',
       weather: 'Draußen türmt sich der Schnee, und drinnen rücken alle ein bisschen näher an die Theke.#$b#Ich lasse einen großen Topf Eintopf köcheln und stelle einen Mopp an die Tür. Schneestiefel, du weißt ja.$h',
       friend: 'Das Fest des Wintersterns ist die geschäftigste Zeit des Jahres in meiner Küche. Ich plane das Menü wochenlang im Voraus.#$b#Manchmal frage ich mich, wozu der Aufwand. Dann sehe ich die ganze Stadt zusammen essen und weiß es wieder.$h'
+    }
+  },
+  // since 1.3
+  Marnie: {
+    spring: {
+      met: 'Endlich Frühling! Das Gras wird grün, und meine Tiere können es kaum erwarten.#$b#Wenn du selbst Tiere haben möchtest, schau mal auf der Ranch vorbei. Ich stehe fast jeden Tag von neun bis vier an der Theke.',
+      weather: 'Sieh dich an, nass bis auf die Knochen... du armes Ding!#$b#Komm jederzeit auf die Ranch und trockne dich, @. Die Tiere freuen sich über ein bisschen Gesellschaft.$h',
+      friend: 'Weißt du, @, du bist genau so, wie ich mir die neuen Leute auf der alten Farm gewünscht habe.#$b#Freundlich, fleißig, und du bleibst immer kurz stehen, um Hallo zu sagen. Das bedeutet viel, hier draußen im Wald.$h'
+    },
+    summer: {
+      met: 'Jas sagt, das Beste am Leben auf dem Hof ist frisches Eis aus der Milch unserer Kühe.#$b#Da kann ich nicht widersprechen. Etwas Kaltes an einem heißen Tag hat noch niemandem geschadet.$h',
+      weather: 'Bei so einem Gewitter mache ich mir Sorgen um jedes Tier im Tal. Wenn ich mich nicht um sie kümmere, wer dann?#$b#Falls du Tiere hast, sorg dafür, dass sie heute Nacht sicher drinnen sind, @.',
+      friend: 'Die meisten Abende gehe ich in den Saloon. Tiere sind tolle Gesellschaft, aber ich brauche auch Menschen um mich.#$b#In letzter Zeit bist du einer der Menschen, die ich am liebsten sehe, @.$h'
+    },
+    fall: {
+      met: 'Der Herbst ist da! Zeit, Gras zu mähen und das Silo zu füllen. Den ganzen Winter über fressen die Tiere Heu.#$b#Noch kein Silo? Robin baut dir eins. Oder du kaufst dein Heu bei mir, natürlich.',
+      weather: 'Kalter Regen, eine warme Küche und ein Stück Kürbiskuchen... mehr brauche ich nicht.#$b#Na ja, und gesunde Tiere. Bleib trocken, @!$h',
+      friend: 'Es ist immer schön, wenn du vorbeischaust, @. Sogar die Tiere wirken dann ruhiger.#$b#Die merken immer, wer gut zu ihnen ist. Ich auch.$h'
+    },
+    winter: {
+      met: 'Brr! Um diese Jahreszeit tun mir all die armen, frierenden Tiere da draußen leid.#$b#Was auch immer auf deiner Farm lebt, @: Ein warmer Platz und ein freundliches Wort helfen viel.',
+      weather: 'Schneetag! Jas würde bis zum Dunkelwerden draußen spielen, wenn ich sie ließe. Aber die Regel heißt: um sechs zu Hause, Schnee hin oder her.#$b#Bleib schön warm, @. Eine Tasse heiße Milch wirkt an so einem Tag Wunder.$h',
+      friend: 'Winternächte sind lang und still hier draußen im Wald. Ich höre jedes Tier im Stall rascheln.#$b#Schön, wenn du vorbeischaust, @. Dann kommen mir die langen Nächte kürzer vor.$h'
+    }
+  },
+  // since 1.3
+  Robin: {
+    spring: {
+      met: 'Der Frühling ist eine arbeitsreiche Zeit! Frische Bergluft und jede Menge zu tun in der Werkstatt.#$b#Du brauchst einen Hühnerstall, eine Scheune oder ein größeres Haus? Du weißt ja, wo du mich findest: Bergstraße 24!$h',
+      weather: 'Schon wieder Regen! Dann sortiere ich heute eben an der Theke Bretter. Mit nassem Holz arbeitet man nicht gern.#$b#Komm hoch und trockne dich, wenn du vorbeikommst, @. Nach einem Schauer riecht die Bergluft wunderbar.$h',
+      friend: 'Hab ich dir erzählt, dass ich unser Haus von Grund auf selbst gebaut habe? Jeden Balken, jedes Brett.#$b#Etwas zu schaffen, das bleibt... ein besseres Gefühl gibt es nicht. Ich wette, das kennst du von deiner Farm, @.$h'
+    },
+    summer: {
+      met: 'Die Sommersonne trocknet das Holz schön durch. Perfektes Wetter für ein Bauprojekt!#$b#Soll auf deiner Farm etwas ausgebaut werden? Bring genug Holz und Stein mit, dazu das Geld, und um den Rest kümmere ich mich.$h',
+      weather: 'Hörst du den Donner? Macht mir keine Sorgen. Bei Gewittern und den Experimenten meines Mannes habe ich das Haus so gebaut, dass es einiges aushält.#$b#Feuerfester Lack auf jedem Dachbalken. Meine beste Entscheidung!$h',
+      friend: 'Hier oben in den Bergen kann es ziemlich einsam werden. Deshalb freue ich mich immer, wenn du vorbeischaust, @.#$b#Nicht zum Einkaufen, einfach zum Plaudern. So machen das Freunde, oder?$h'
+    },
+    fall: {
+      met: 'Der Herbst ist da! Die beste Zeit, vor dem Winter Holz und Stein zu horten.#$b#Du planst ein Gebäude? Bestell lieber früh. An Festtagen arbeite ich nicht!$h',
+      weather: 'Regentage sind zum Träumen von neuen Holzprojekten da. Vielleicht ein neuer Stuhl... oder gleich eine ganze Reihe Möbel für den Laden.#$b#Wie hält sich das Holz in deinem Haus, @? Knarrt irgendwo ein Brett?',
+      friend: 'Im Herbst bin ich immer besonders dankbar. Demetrius, Maru, Sebastian... ein volles Haus und eine Arbeit, die ich liebe.#$b#Und gute Freunde wie dich, @. Vergiss das nicht.$h'
+    },
+    winter: {
+      met: 'Der Winter ist die perfekte Zeit zum Holzsammeln. Vom Hacken wird einem auch gleich warm!#$b#Wenn du genug sammelst, kannst du vielleicht noch vor dem Frühling dein Haus ausbauen.$h',
+      weather: 'Nach frischem Schnee wirkt alles so still. Ich liebe diesen Blick hier oben vom Berg.#$b#Pass auf dem Bergweg auf, @. Der Schnee versteckt jede Wurzel und jeden Stein.',
+      friend: 'Meine Eltern waren ganz verdutzt, als ich ihnen sagte, dass ich mit Holz arbeiten will. Sie waren ziemlich altmodisch.#$b#Ich bin froh, dass ich nicht auf sie gehört habe. Ich kann mir nichts anderes vorstellen, @.$h'
     }
   }
 };
