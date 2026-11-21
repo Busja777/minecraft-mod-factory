@@ -1,6 +1,6 @@
 {
   "name": "Machine Tempo",
-  "description": "Kegs and preserves jars finish faster, by a factor you choose in the config.",
+  "description": "Kegs, preserves jars, cheese presses and looms finish faster, by a factor you choose in the config.",
   "uniqueId": "SevEvolution.MachineTempo",
   "minimumApiVersion": "4.4.0",
   "contentPatcher": "2.9.0",

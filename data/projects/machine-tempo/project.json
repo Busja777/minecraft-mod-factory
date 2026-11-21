@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "MachineTempo-1.1.zip",
+      "changelog": "## Machine Tempo 1.1\n\nCheese presses and looms join in.\n\n- Cheese presses make cheese and goat cheese faster, looms weave cloth faster.\n- They use the same speed setting as kegs and preserves jars: at 1.5 (default) cheese takes about 2 hours 15 minutes instead of 3 hours 20 minutes, cloth about 2 hours 40 minutes instead of 4. At 2.0 both take half the time.\n- Your speed setting carries over. Inputs, outputs, quality and prices stay as they are, and the loom's chance of double cloth from quality wool is untouched.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

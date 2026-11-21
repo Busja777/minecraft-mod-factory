@@ -72,9 +72,9 @@
       "art": "CP",
       "was": "Fässer und Einmachgläser schneller, Faktor einstellbar",
       "updates": [
-        "Käsepresse und Webstuhl",
         "Kristallarium",
-        "Zapfhähne"
+        "Zapfhähne",
+        "Fischräucherer und Trockengestell"
       ],
       "banner": {
         "from": "chatgpt",
@@ -104,9 +104,9 @@
       "art": "CP",
       "was": "Saat ganzjährig, Aufpreis einstellbar",
       "updates": [
-        "Obstbäume",
-        "Blumen",
-        "Deutsch"
+        "Samen aus Sandys Oasis-Laden ganzjährig (gleiche Aufpreis-Regel)",
+        "Einstellungstexte auf Deutsch",
+        "Aufpreis-Stufe 0 % für entspannte Spielstände"
       ],
       "banner": {
         "from": "chatgpt",
