@@ -274,9 +274,9 @@
       "art": "D",
       "was": "Mehr Erze in drei Stufen",
       "updates": [
-        "Amethyst-Geoden häufiger, gleiche Regel",
         "Kupfer- und Eisenadern in Höhlen größer statt häufiger (nur wenn belegbar)",
-        "26.4-Erze, falls neue kommen"
+        "26.4-Erze, falls neue kommen",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
