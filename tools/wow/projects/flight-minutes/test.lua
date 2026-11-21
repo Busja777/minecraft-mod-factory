@@ -1024,3 +1024,127 @@ test("a stats command before login does nothing", function(wow)
   eq(#wow.chat, 0)
   eq(FlightMinutesDB, nil)
 end)
+
+-- 1.4: German --------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%02d", "%s".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and the faction name it gives (UnitFactionGroup's second value).
+local function germanBoot(wow)
+  wow.locale = "deDE"
+  local w = world()
+  tooltipGame(wow)
+  UnitFactionGroup = function() return w.faction, w.faction == "Alliance" and "Allianz" or "Horde" end
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("ADDON_LOADED", "FlightMinutes")
+  wow.fire("PLAYER_LOGIN")
+  wow.fire("PLAYER_ENTERING_WORLD", true, false)
+  return ns, w
+end
+
+test("German client: the flight frame, the flight map tooltip and the totals in German", function(wow)
+  local ns, w = germanBoot(wow)
+  fly(wow, w, SW, IF, 161)
+  eq(wow.chat[1], P3 .. "Neue Route gelernt: " .. SW_IF .. " dauert 2:41.", "place names stay as the game gives them")
+  takeOff(wow, w, SW, IF)
+  tick(wow, ns, 100)
+  local f = FlightMinutesFrame
+  eq(f.title:GetText(), "Ironforge, Dun Morogh")
+  eq(f.text:GetText(), "Landung in 1:01")
+  tick(wow, ns, 65)
+  eq(f.text:GetText(), "Landung jeden Moment ...")
+  f.scripts.OnEnter(f)
+  eq(wow.tooltip.lines[1], "Flight Minutes")
+  eq(wow.tooltip.lines[2], "Diese Sitzung: 1 Flug, 2 Min. 41 Sek. in der Luft.")
+  eq(wow.tooltip.lines[3], "Insgesamt mit diesem Charakter: 1 Flug, 2 Min. 41 Sek. in der Luft.")
+  eq(wow.tooltip.lines[4], "Zum Verschieben ziehen.")
+  land(wow, w)
+  takeOff(wow, w, SW, WF)
+  tick(wow, ns, 30)
+  eq(f.text:GetText(), "Route wird gemessen ... 0:30")
+  TaxiRequestEarlyLanding()
+  eq(f.text:GetText(), "Vorzeitige Landung, nicht gemessen")
+  land(wow, w)
+  w.current = SW
+  wow.fire("TAXIMAP_OPENED")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flugzeit: 2:43", "the average of 161 and 165 seconds")
+  TaxiNodeOnButtonEnter(button(WF))
+  eq(lines(wow), "Sentinel Hill, Westfall | Flugzeit: noch nicht gemessen")
+  wow.fire("TAXIMAP_CLOSED")
+  eq(ns.FormatTotal(45.4), "45 Sek.")
+  eq(ns.FormatTotal(725), "12 Min. 05 Sek.")
+  eq(ns.FormatTotal(11220 + 59), "3 Std. 07 Min.")
+end)
+
+test("German client: /fm, /fm sound and /fm stats in German, the command words stay English", function(wow)
+  local ns, w = germanBoot(wow)
+  wow.slash("/fm")
+  eq(wow.chat[1], P3 .. "Noch keine Routen bekannt. Jeder Flug, den du nimmst, wird gemessen.")
+  eq(wow.chat[2], P3 .. "Diese Sitzung: noch keine Flüge. Insgesamt mit diesem Charakter: noch keine Flüge.")
+  fly(wow, w, SW, IF, 161)
+  fly(wow, w, SW, IF, 165)
+  wow.chat = {}
+  wow.slash("/fm")
+  eq(wow.chat[1], P3 .. "Bekannte Routen für Allianz: 1. /fm list zeigt sie, /fm forget löscht alle.")
+  eq(wow.chat[2], P3 .. "Diese Sitzung: 2 Flüge, 5 Min. 26 Sek. in der Luft. Insgesamt mit diesem Charakter: 2 Flüge, 5 Min. 26 Sek. in der Luft.")
+  wow.slash("/fm sound")
+  eq(wow.chat[3], P3 .. "Der Ankunftston ist aus.")
+  eq(wow.chat[4], P3 .. "/fm sound before, landing, both oder off legt fest, wann er spielt; /fm sound mit bell, chime, horn, warning oder whisper wählt den Ton.")
+  wow.slash("/fm sound horn")
+  eq(wow.chat[5], P3 .. "Der Ankunftston ist aus.")
+  eq(wow.chat[6], P3 .. "/fm sound both schaltet ihn an.")
+  wow.slash("/fm sound both")
+  eq(wow.chat[7], P3 .. "Ankunftston: 10 Sekunden vor der Landung und bei der Landung, horn.")
+  wow.slash("/fm sound before")
+  eq(wow.chat[8], P3 .. "Ankunftston: 10 Sekunden vor der Landung, horn.")
+  wow.slash("/fm sound landing")
+  eq(wow.chat[9], P3 .. "Ankunftston: bei der Landung, horn.")
+  wow.slash("/fm stats")
+  eq(wow.chat[10], P3 .. "Diese Sitzung: 2 Flüge, 5 Min. 26 Sek. in der Luft.")
+  wow.slash("/fm stats reset")
+  eq(wow.chat[12], P3 .. "Die Gesamtsumme der Flüge dieses Charakters ist gelöscht. Deine Routen und die Summe dieser Sitzung bleiben.")
+  wow.slash("/fm stats")
+  eq(wow.chat[14], P3 .. "Insgesamt mit diesem Charakter: noch keine Flüge.")
+  wow.slash("/fm forget")
+  eq(wow.chat[15], P3 .. "Alle Routen gelöscht, für beide Fraktionen.")
+  wow.slash("/fm hilfe")
+  eq(#wow.chat, 18)
+  eq(wow.chat[16], P3 .. "/fm zeigt, wie viele Routen bekannt sind, /fm list zeigt sie mit ihren Zeiten, /fm forget löscht alle Routen.")
+  eq(wow.chat[18], P3 .. "/fm stats zeigt deine Flugsummen, /fm stats reset löscht die Gesamtsumme dieses Charakters.")
+end)
+
+test("German client: /fm list cuts off in German", function(wow)
+  wow.locale = "deDE"
+  FlightMinutesDB = { factions = { Alliance = {} } }
+  for i = 1, 42 do FlightMinutesDB.factions.Alliance["A" .. i .. " > B"] = { times = { 60 }, seconds = 60 } end
+  boot(wow)
+  wow.slash("/fm list")
+  eq(#wow.chat, 41)
+  eq(wow.chat[41], P3 .. "und 2 weitere")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 32, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enGB"
+  local ns, w = boot(wow)
+  eq(next(ns.L), nil)
+  fly(wow, w, SW, IF, 161)
+  eq(wow.chat[1], P3 .. "New route learned: " .. SW_IF .. " takes 2:41.")
+  eq(ns.SessionText(ns.session), "This session: 1 flight, 2m 41s in the air.")
+end)

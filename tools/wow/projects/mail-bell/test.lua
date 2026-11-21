@@ -989,3 +989,129 @@ test("1.2 saved data is kept, letters come with the next mailbox visit, broken o
   w.run()
   eq(wow.chat[2], PREFIX .. "From your last mailbox visit: mail with items or gold on this character runs out in 2 days. Open a mailbox to take it out.")
 end)
+
+-- 1.4: German ---------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("German client: the bell, the login lines and the expiry warning in German", function(wow)
+  local w = world(wow)
+  wow.locale = "deDE"
+  MailBellDB = { chars = {
+    ["Brakk-Silvermoon"] = { mail = true, since = 10, expires = wow.now + 2.5 * DAY },
+    ["Kel-Argent Dawn"] = { mail = true, since = 20 },
+    ["Yubi-Silvermoon"] = { letters = { { sender = "Auktionshaus", subject = "Auktion erfolgreich", expires = wow.now + 1.5 * DAY } } },
+  } }
+  boot(wow, w)
+  w.run()
+  eq(#wow.chat, 3)
+  eq(wow.chat[1], PREFIX .. "Post liegt bereit bei: Brakk, Kel (Argent Dawn)")
+  eq(wow.chat[2], PREFIX .. "Post mit Gegenständen oder Gold läuft bald ab bei: Brakk in 2 Tagen")
+  eq(wow.chat[3], PREFIX .. "Laut deinem letzten Briefkastenbesuch läuft auf diesem Charakter ein Brief mit Gegenständen oder Gold in 1 Tag ab: Auktionshaus „Auktion erfolgreich“. Öffne einen Briefkasten, um den Inhalt herauszuholen.")
+  w.mail(true)
+  eq(#w.sounds, 1)
+  eq(wow.chat[4], PREFIX .. "Du hast neue Post.")
+  w.openMailbox(3, {
+    { money = 25000, days = 1.5, sender = "Auktionshaus", subject = "Auktion erfolgreich: Leinenstoff" },
+    { items = 1, days = 2.2, sender = "Brakk", subject = "Kräuter" },
+    { items = 1, days = 20 },
+  })
+  eq(wow.chat[5], PREFIX .. "2 Briefe mit Gegenständen oder Gold laufen innerhalb von 3 Tagen ab, der erste in 1 Tag: Auktionshaus „Auktion erfolgreich: Leinenstoff“, Brakk „Kräuter“. Hol den Inhalt heraus, bevor die Briefe zurückgehen oder gelöscht werden.", "senders and subjects stay as the game gives them")
+end)
+
+test("German client: every command answers in German, the command words stay English", function(wow)
+  local w = world(wow)
+  wow.locale = "deDE"
+  MailBellDB = { chars = { ["Brakk-Argent Dawn"] = { mail = true, since = 1 }, ["Yubi-Silvermoon"] = { mail = false } } }
+  boot(wow, w)
+  wow.slash("/mb")
+  eq(#wow.chat, 6)
+  eq(wow.chat[1], PREFIX .. "Post liegt bereit bei: Brakk (Argent Dawn)")
+  eq(wow.chat[2], PREFIX .. "Der Ton ist an: bell. Die Liste beim Einloggen ist an. Ablaufwarnung: Post mit Gegenständen oder Gold, die innerhalb von 3 Tagen abläuft.")
+  eq(wow.chat[3], PREFIX .. "/mb sound on/off schaltet die Glocke an oder aus, /mb login on/off nennt beim Einloggen deine Charaktere mit Post, /mb forget Name-Realm entfernt einen Charakter.")
+  eq(wow.chat[4], PREFIX .. "/mb expire mit 1 bis 30 Tagen oder off stellt die Warnung für Post mit Gegenständen oder Gold ein, die bald abläuft.")
+  eq(wow.chat[5], PREFIX .. "/mb sound mit bell, chime, horn, warning oder whisper wählt die Glocke und spielt sie einmal ab.")
+  eq(wow.chat[6], PREFIX .. "/mb letters zeigt die Briefe mit Gegenständen oder Gold auf allen deinen Charakteren, jeweils vom letzten Briefkastenbesuch.")
+  wow.slash("/mb sound off")
+  eq(wow.chat[7], PREFIX .. "Der Ton ist aus.")
+  wow.slash("/mb sound chime")
+  eq(wow.chat[8], PREFIX .. "Der Ton ist an: chime.")
+  wow.slash("/mb login off")
+  eq(wow.chat[9], PREFIX .. "Die Liste beim Einloggen ist aus.")
+  wow.slash("/mb expire 1")
+  eq(wow.chat[10], PREFIX .. "Ablaufwarnung: Post mit Gegenständen oder Gold, die innerhalb von 1 Tag abläuft.")
+  wow.slash("/mb expire 7")
+  eq(wow.chat[11], PREFIX .. "Ablaufwarnung: Post mit Gegenständen oder Gold, die innerhalb von 7 Tagen abläuft.")
+  wow.slash("/mb expire off")
+  eq(wow.chat[12], PREFIX .. "Die Ablaufwarnung ist aus.")
+  wow.slash("/mb forget Nobody-Nowhere")
+  eq(wow.chat[13], PREFIX .. "Kein Charakter namens Nobody-Nowhere. Schreibweise: Name-Realm.")
+  wow.slash("/mb forget yubi-silvermoon")
+  eq(wow.chat[14], PREFIX .. "Den Charakter, den du gerade spielst, kannst du nicht entfernen.")
+  wow.slash("/mb forget brakk-argent dawn")
+  eq(wow.chat[15], PREFIX .. "Brakk-Argent Dawn entfernt.")
+  wow.slash("/mb letters")
+  eq(wow.chat[16], PREFIX .. "Keine Briefe mit Gegenständen oder Gold notiert. Mail Bell notiert sie, wenn du einen Briefkasten öffnest.")
+  wow.slash("/mb")
+  eq(wow.chat[17], PREFIX .. "Bei deinen anderen Charakteren liegt keine Post bereit.")
+end)
+
+test("German client: days, letter names, /mb letters and every expiry line in German", function(wow)
+  local w = world(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow, w)
+  eq(ns.DaysText(0.5), "weniger als einem Tag")
+  eq(ns.DaysText(1.9), "1 Tag")
+  eq(ns.DaysText(4), "4 Tagen", "always after in or innerhalb von: the dative")
+  eq(ns.LetterLabel("Brakk", "Kräuter"), "Brakk „Kräuter“")
+  eq(ns.LetterLabel(nil, "Kräuter"), "„Kräuter“")
+  eq(ns.LetterLabel(nil, nil), "ein Brief")
+  eq(ns.NameList({ "A", "B", "C", "D", "E" }), "A, B, C und 2 weitere")
+  eq(ns.ExpiryWarning(1, 0.5, 3, {}), "Ein Brief mit Gegenständen oder Gold läuft in weniger als einem Tag ab. Hol den Inhalt heraus, bevor der Brief zurückgeht oder gelöscht wird.")
+  eq(ns.ExpiryWarning(1, 2, 3, { "Brakk „Kräuter“" }), "Ein Brief mit Gegenständen oder Gold läuft in 2 Tagen ab: Brakk „Kräuter“. Hol den Inhalt heraus, bevor der Brief zurückgeht oder gelöscht wird.")
+  eq(ns.ExpiryWarning(2, 1.2, 3, {}), "2 Briefe mit Gegenständen oder Gold laufen innerhalb von 3 Tagen ab, der erste in 1 Tag. Hol den Inhalt heraus, bevor die Briefe zurückgehen oder gelöscht werden.")
+  local now = 2000000
+  local c = { letters = {
+    { sender = "Brakk", subject = "Kräuter", expires = now + 1.5 * DAY },
+    { sender = "Auktionshaus", expires = now + 2.5 * DAY },
+  } }
+  eq(ns.OwnExpiryText(c, now, 3), "Laut deinem letzten Briefkastenbesuch laufen auf diesem Charakter 2 Briefe mit Gegenständen oder Gold innerhalb von 3 Tagen ab, der erste in 1 Tag: Brakk „Kräuter“, Auktionshaus. Öffne einen Briefkasten, um den Inhalt herauszuholen.")
+  eq(ns.OwnExpiryText({ expires = now + DAY / 2 }, now, 3), "Laut deinem letzten Briefkastenbesuch läuft auf diesem Charakter Post mit Gegenständen oder Gold in weniger als einem Tag ab. Öffne einen Briefkasten, um den Inhalt herauszuholen.")
+  MailBellDB.chars["Kel-Argent Dawn"] = { letters = { { sender = "Auktionshaus", subject = "Verkauft", expires = wow.now + DAY / 2 } } }
+  MailBellDB.chars["Old-Silvermoon"] = { expires = wow.now + 4 * DAY }
+  w.openMailbox(2, { { money = 50, days = 2.5, sender = "Brakk", subject = "Kräuter" }, { items = 1, days = 20 } })
+  wow.chat = {}
+  wow.slash("/mb letters")
+  eq(#wow.chat, 4)
+  eq(wow.chat[1], PREFIX .. "Briefe mit Gegenständen oder Gold, jeweils vom letzten Briefkastenbesuch des Charakters:")
+  eq(wow.chat[2], "  Kel (Argent Dawn): Auktionshaus „Verkauft“ in weniger als einem Tag")
+  eq(wow.chat[3], "  Yubi: Brakk „Kräuter“ in 2 Tagen, Someone „Hello“ in 20 Tagen")
+  eq(wow.chat[4], "  Old: der erste in 4 Tagen")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow, world(wow))
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 38, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enGB"
+  local w = world(wow)
+  local ns = boot(wow, w)
+  eq(next(ns.L), nil)
+  w.mail(true)
+  eq(wow.chat[1], PREFIX .. "You have new mail.")
+  eq(ns.DaysText(4), "4 days")
+  eq(ns.LetterLabel("Brakk", "Herbs"), 'Brakk "Herbs"')
+end)

@@ -63,11 +63,27 @@ function ns.CounterText(free, total, threshold)
   return paint(state, string.format(ns.L["Bags %d/%d"], free, total))
 end
 
+-- 1.4: the name of a kind of bag as the game itself writes it, in the client's language: the item
+-- subclass of containers (the names the auction house lists, such as "Herb Bag"). A client without
+-- it gets the English name.
+ns.CONTAINER_CLASS = 1    -- Enum.ItemClass.Container
+ns.REAGENT_SUBCLASS = 11  -- "Reagent Bag"
+
+function ns.ContainerName(subclass, english)
+  local get = C_Item and C_Item.GetItemSubClassInfo or GetItemSubClassInfo
+  if type(get) ~= "function" or type(subclass) ~= "number" then return english end
+  local class = Enum and Enum.ItemClass and Enum.ItemClass.Container
+  if type(class) ~= "number" then class = ns.CONTAINER_CLASS end
+  local ok, name = pcall(get, class, subclass)
+  if not ok or ns.IsSecret(name) or type(name) ~= "string" or name == "" then return english end
+  return name
+end
+
 -- The detail line for the reagent bag, coloured with the same rule.
 function ns.ReagentText(free, total, threshold)
   local state = ns.State(free, total, threshold)
   if state == "unknown" then return paint(state, ns.L["No reagent bag"]) end
-  return paint(state, string.format(ns.L["Reagents %d/%d"], free, total))
+  return paint(state, string.format(ns.L["%s %d/%d"], ns.ContainerName(ns.REAGENT_SUBCLASS, "Reagent Bag"), free, total))
 end
 
 -- The two views of the counter: "total" (one line, the normal bags) and "split" (one line per bag type).
@@ -76,17 +92,20 @@ function ns.ValidView(value)
   return nil
 end
 
--- What a profession bag holds, by its bag family (the item family bits the game reports for it).
--- A family that is not listed, or a bag for more than one kind, is shown as "Profession".
-local OTHER = 0 -- the "Profession" line: every other kind, listed after the named ones
-local FAMILY_LABEL = {
-  [OTHER] = "Profession",
-  [8] = "Leather", [16] = "Inscription", [32] = "Herbs", [64] = "Enchanting", [128] = "Engineering",
-  [512] = "Gems", [1024] = "Mining", [32768] = "Fishing", [65536] = "Cooking",
+-- What a profession bag holds, by its bag family (the item family bits the game reports for it):
+-- { container subclass, English name } (1.4: the name comes from the game, see ContainerName).
+-- A family that is not listed, or a bag for more than one kind, is shown as "Profession Bag".
+local OTHER = 0 -- the "Profession Bag" line: every other kind, listed after the named ones
+local FAMILY_NAME = {
+  [8] = { 7, "Leatherworking Bag" }, [16] = { 8, "Inscription Bag" }, [32] = { 2, "Herb Bag" },
+  [64] = { 3, "Enchanting Bag" }, [128] = { 4, "Engineering Bag" }, [512] = { 5, "Gem Bag" },
+  [1024] = { 6, "Mining Bag" }, [32768] = { 9, "Tackle Box" }, [65536] = { 10, "Cooking Bag" },
 }
 
 function ns.FamilyLabel(family)
-  return FAMILY_LABEL[family] or FAMILY_LABEL[OTHER]
+  local entry = FAMILY_NAME[family]
+  if not entry then return ns.L["Profession Bag"] end
+  return ns.ContainerName(entry[1], entry[2])
 end
 
 -- The bags that hold only one kind of item, added up per kind and sorted by family (unknown last).
@@ -97,7 +116,7 @@ function ns.Professions(bags)
     local family = bag.family
     local special = type(family) == "number" and family ~= 0 and not ns.IsSecret(family)
     if special and count(bag.free) and count(bag.total) and bag.total > 0 then
-      local key = FAMILY_LABEL[family] and family or OTHER
+      local key = FAMILY_NAME[family] and family or OTHER
       local g = groups[key]
       if not g then
         g = { family = key, label = ns.FamilyLabel(key), free = 0, total = 0 }
@@ -115,10 +134,10 @@ function ns.Professions(bags)
   return list
 end
 
--- "Herbs 12/36", coloured with the same rule as the counter.
+-- "Herb Bag 12/36", coloured with the same rule as the counter. label is the name from FamilyLabel.
 function ns.ProfessionText(label, free, total, threshold)
   local state = ns.State(free, total, threshold)
-  return paint(state, string.format(ns.L["%s %d/%d"], ns.L[label], free or 0, total or 0))
+  return paint(state, string.format(ns.L["%s %d/%d"], label, free or 0, total or 0))
 end
 
 -- The lines under the counter in the split view: the reagent bag (or that there is none), then
@@ -286,6 +305,16 @@ function ns.PlainMoney(copper)
   return string.format("%dc", c)
 end
 
+-- 1.4: an amount in the client's own coin display (GetMoneyString, the coin icons every client
+-- shows in its own way); the plain letters above when the client lacks it.
+function ns.Money(copper)
+  if GetMoneyString then
+    local ok, text = pcall(GetMoneyString, copper, true)
+    if ok and type(text) == "string" and text ~= "" then return text end
+  end
+  return ns.PlainMoney(copper)
+end
+
 local function itemName(item)
   return item.link or string.format(ns.L["item %d"], item.id or 0)
 end
@@ -294,10 +323,10 @@ end
 function ns.CheapLine(n, item)
   local name = itemName(item)
   if item.count > 1 then name = name .. " x" .. item.count end
-  return string.format("%d. %s: %s", n, name, ns.PlainMoney(ns.SlotValue(item)))
+  return string.format("%d. %s: %s", n, name, ns.Money(ns.SlotValue(item)))
 end
 
 -- "Cheapest: [Linen Cloth] (12c)" under the "bags full" warning.
 function ns.CheapWarning(item)
-  return string.format(ns.L["Cheapest: %s (%s)"], itemName(item), ns.PlainMoney(ns.SlotValue(item)))
+  return string.format(ns.L["Cheapest: %s (%s)"], itemName(item), ns.Money(ns.SlotValue(item)))
 end
