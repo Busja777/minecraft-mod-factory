@@ -25,9 +25,9 @@
       "art": "R",
       "was": "Gold-Einnahmen und -Ausgaben nach Quelle",
       "updates": [
-        "Charaktere-Übersicht",
-        "Verlauf und Minikarten-Menü",
-        "Deutsch, Französisch, Spanisch"
+        "Sparziel mit Fortschrittsbalken",
+        "Tagesbericht zum Kopieren (Textfeld statt Chat)",
+        "Hinweis bei ungewöhnlich hohen Ausgaben am Tag"
       ]
     },
     {
@@ -122,8 +122,8 @@
       "was": "Alle Charaktere: Level, Gold, Ort, Erholung",
       "updates": [
         "Berufe",
-        "Gesamtgold-Verlauf",
-        "Feinschliff nach Kommentaren"
+        "Notiz je Charakter",
+        "Feinschliff nach Kommentaren (Gesamtgold-Verlauf gestrichen: steckt schon in Gold Diary)"
       ]
     },
     {
@@ -133,9 +133,9 @@
       "art": "RF",
       "was": "Meldet neue Post, merkt sich Post auf Twinks",
       "updates": [
-        "Auktionspost-Summe",
-        "Erinnerung an Post auf Twinks beim Login",
-        "Feinschliff nach Kommentaren"
+        "Ton wählbar",
+        "Warnung bei bald ablaufender Post (beim Öffnen des Briefkastens)",
+        "Feinschliff nach Kommentaren (Auktionspost-Summe gestrichen: steckt schon in Gold Diary)"
       ]
     },
     {

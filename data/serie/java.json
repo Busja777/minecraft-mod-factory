@@ -37,9 +37,9 @@
       "art": "R",
       "was": "Leisere Dorfbewohner, Kühe, Portale, Regen",
       "updates": [
-        "Stufen wählbar (drei Packs in einem)",
         "Kolben, Wölfe, Pferde",
-        "Feinschliff nach Kommentaren"
+        "Lagerfeuer, Kessel und Braustand leiser",
+        "Feinschliff nach Kommentaren (Stufen als Schalter gehen nicht: ein Data/Resource Pack hat keinen Schalter, eine zweite Datei verstößt gegen die Null-Aufwand-Regel)"
       ],
       "shot": false,
       "banner": {
@@ -70,9 +70,9 @@
       "art": "D",
       "was": "Dörfer erscheinen häufiger in neuen Gebieten",
       "updates": [
-        "Stufen wählbar (drei Packs in einem)",
         "Ozeanmonumente und Ruinen",
-        "Fortschritte für gefundene Bauwerke"
+        "Fortschritte für gefundene Bauwerke",
+        "Trail-Ruinen (Archäologie) häufiger, gleiche Regel"
       ],
       "banner": {
         "from": "chatgpt",
@@ -274,9 +274,9 @@
       "art": "D",
       "was": "Mehr Erze in drei Stufen",
       "updates": [
-        "Kupfer- und Eisenadern in Höhlen größer statt häufiger (wenn belegbar)",
-        "26.4-Erze, falls neue kommen",
-        "Stufen als drei Packs in einem"
+        "Amethyst-Geoden häufiger, gleiche Regel",
+        "Kupfer- und Eisenadern in Höhlen größer statt häufiger (nur wenn belegbar)",
+        "26.4-Erze, falls neue kommen"
       ],
       "banner": {
         "from": "chatgpt",
