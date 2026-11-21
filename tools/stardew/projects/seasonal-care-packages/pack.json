@@ -1,0 +1,8 @@
+{
+  "name": "Seasonal Care Packages",
+  "description": "Once a season a friendly villager mails you a small parcel of seasonal goods.",
+  "uniqueId": "SevEvolution.SeasonalCarePackages",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Town Board Orders",
+  "description": "Six new special orders about farm life on the town board, from Gus, Pierre, Shane, Jodi, Evelyn and Leah.",
+  "uniqueId": "SevEvolution.TownBoardOrders",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}

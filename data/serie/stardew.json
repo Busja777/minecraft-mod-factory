@@ -51,7 +51,11 @@
         "mehr Absender",
         "Jahr 2",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 4,
@@ -63,7 +67,11 @@
         "Jahr 2",
         "ohne Gaben",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 5,
@@ -295,7 +303,11 @@
         "Angeln und Bergbau",
         "Belohnungen",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 22,

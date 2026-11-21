@@ -40,6 +40,8 @@ export const TARGETS = {
   'Data/Buildings': 'https://stardewvalleywiki.com/Modding:Buildings',
   'Data/Monsters': 'https://stardewvalleywiki.com/Modding:Monster_data',
   'Data/SpecialOrders': 'https://stardewvalleywiki.com/Modding:Special_orders',
+  // The texts of special orders: Data/SpecialOrders names them as [key] lookups into this asset.
+  'Strings/SpecialOrderStrings': 'https://stardewvalleywiki.com/Modding:Special_orders',
   'Data/Bundles': 'https://stardewvalleywiki.com/Modding:Bundles',
   'Data/TailoringRecipes': 'https://stardewvalleywiki.com/Modding:Tailoring',
   'Data/MuseumRewards': 'https://stardewvalleywiki.com/Modding:Museum',
@@ -219,7 +221,9 @@ export function checkPack(pack, files, ref = loadRef(), schemas = null) {
         if (/Cooking|passOut/.test(key)) add(`${at}: mail key "${key}" contains Cooking/passOut and would never count as received`);
         const letter = text(String(value));
         if ((letter.match(/\[#\]/g) || []).length !== 1 || !/\[#\]\s*\S/.test(letter)) add(`${at}: letter "${key}" needs exactly one "[#]<letter name>"`);
-        if (/%(?!item |action |%|secretsanta)/.test(letter)) add(`${at}: letter "${key}" has a stray % (mail commands are %item … %% and %action … %%)`);
+        // The commands themselves (%item … %% and %action … %%) are taken out first: the closing %% would
+        // otherwise count as a stray %.
+        if (/%(?!item |action |%|secretsanta)/.test(letter.replace(/%(item|action) [^%]*%%/g, ''))) add(`${at}: letter "${key}" has a stray % (mail commands are %item … %% and %action … %%)`);
       }
     }
     if (patch.Target === 'Data/Objects') for (const key of Object.keys(entries)) ownObjects.add(key);

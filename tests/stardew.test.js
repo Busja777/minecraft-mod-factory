@@ -102,7 +102,7 @@ test('Stardew: the checks catch packs the game or Content Patcher would reject',
       Changes: [
         { Action: 'EditData', Target: 'Data/Mail2', Entries: {} },
         { Action: 'EditData', Target: 'Characters/Dialogue/Abigale', Entries: {} },
-        { Action: 'EditData', Target: 'Data/mail', Entries: { '{{ModId}}_A': '{{i18n:letter.a}}%item id (O)99999 1 %%[#]A', Plain: 'no title', '{{ModId}}_Cooking': 'x[#]y' } },
+        { Action: 'EditData', Target: 'Data/mail', Entries: { '{{ModId}}_A': '{{i18n:letter.a}}%item id (O)99999 1 %%[#]A', Plain: 'no title', '{{ModId}}_Cooking': 'x[#]y', '{{ModId}}_Sale': 'Now 50% off![#]Sale' } },
         { Action: 'EditData', Target: 'Data/TriggerActions', Entries: {
           '{{ModId}}_T': { Id: '{{ModId}}_X', Trigger: 'DayStarting', Condition: 'SEASON_DAY spring 30, PLAYER_HAS_MET Current Abbie, SEASONS spring', Actions: ['AddMail Current {{ModId}}_Missing Now', 'AddMail Someone {{ModId}}_A Later', 'Explode now', 'AddItem 24', 'AddFriendshipPoints Lewiss 10'] }
         } },
@@ -127,6 +127,9 @@ test('Stardew: the checks catch packs the game or Content Patcher would reject',
   has(/mail key "Plain" must start with \{\{ModId\}\}_/);
   has(/letter "Plain" needs exactly one "\[#\]/);
   has(/contains Cooking\/passOut/);
+  has(/letter "\{\{ModId\}\}_Sale" has a stray %/);
+  // the closing %% of a mail command is not a stray %
+  assert.ok(!problems.some(p => /letter "\{\{ModId\}\}_A" has a stray %/.test(p)), problems.join('\n'));
   has(/Id must equal the entry key/);
   has(/unknown trigger DayStarting/);
   has(/SEASON_DAY day "30" is not 1 to 28/);

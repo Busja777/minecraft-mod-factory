@@ -1,0 +1,19 @@
+{
+  "slug": "seasonal-care-packages",
+  "game": "stardewvalley",
+  "name": "Seasonal Care Packages",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "SeasonalCarePackages-1.0.zip",
+      "changelog": "## Seasonal Care Packages 1.0\n\nFirst release.\n\n- Four letters with a small parcel, one per season, on day 10: Evelyn in spring, Gus in summer, Caroline in fall and Marnie in winter.\n- Each parcel holds one of three small seasonal surprises, such as seeds, forage or a cold treat. No money.\n- A letter only comes once you have met its sender.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

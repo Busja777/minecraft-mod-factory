@@ -1,0 +1,37 @@
+{
+  "name": "Town Board Orders",
+  "summary": "Your neighbours pin new farm requests to the town board: cheese, preserves, eggs, milk, flowers and wild finds, paid in gold and friendship.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small wooden notice board with three blank paper notes pinned to it, a wicker basket of eggs, a wedge of cheese and a jar of jam standing in front of it",
+  "cover": {
+    "tagline": "Your neighbours need a farmer.",
+    "bullets": [
+      "Six new town board orders",
+      "Cheese, eggs, milk and more",
+      "Paid in gold and friendship"
+    ]
+  },
+  "description": [
+    "**Town Board Orders pins six new special orders to the town's Special Orders board, all about the work you already do on your farm.**",
+    "",
+    "## Features",
+    "- Gus wants cheese for the saloon, Pierre wants jelly or pickles for an empty shelf.",
+    "- Shane hopes you ship plenty of eggs, Jodi needs milk for her boys.",
+    "- Evelyn asks for flowers for the town square, Leah for foraged goods to paint.",
+    "- Each order pays gold and a heart of friendship with the villager who asked, never rare items.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. The board opens in the fall of your first year and shows new orders every Monday.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- An order only shows up once your farm makes what it asks for, and Evelyn skips the winter.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}
