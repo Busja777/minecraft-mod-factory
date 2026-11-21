@@ -3,5 +3,6 @@
   "name": "Stonecutter Woodworks",
   "description": "Wood blocks in the stonecutter",
   "mc": "1.21.1",
-  "gameVersions": ["1.21", "1.21.1"]
+  "also": ["26.3"],
+  "gameVersions": ["1.21", "1.21.1", "26.3"]
 }
