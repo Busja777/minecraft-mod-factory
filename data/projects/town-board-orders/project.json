@@ -1,0 +1,19 @@
+{
+  "slug": "town-board-orders",
+  "game": "stardewvalley",
+  "name": "Town Board Orders",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "TownBoardOrders-1.0.zip",
+      "changelog": "## Town Board Orders 1.0\n\nFirst release.\n\n- Six new special orders on the town board, all about farm life: cheese for Gus, jelly or pickles for Pierre, eggs for Shane, milk for Jodi, flowers for Evelyn and foraged goods for Leah.\n- Each order pays money and one heart of friendship with the villager who asked. No item rewards.\n- An order only appears once your farm makes what it asks for: cheese, preserves, eggs or milk. Evelyn's flowers wait until the winter is over.\n- All six can come back after they are done, like the town's other repeatable orders.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
