@@ -26,6 +26,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "TriggerHomes-1.2.zip",
+      "changelog": "## Trigger Homes 1.2\n\nBack to where you died.\n\n- New: `/trigger back` takes you to the place of your last death, so you can pick up your things. Like the other commands, it needs no operator rights.\n- It works once per death: after you used it, it waits until you die again. Deaths from before you installed 1.2 do not count.\n- Works for deaths in the Overworld, the Nether and the End, also from another dimension.\n- It refuses to take you into lava or into the void and tells you why. Nothing is used up then.\n- `/trigger back` shares the 30-second cooldown with `/trigger home` and `/trigger spawn`.\n- Your homes from 1.0 and 1.1 are kept.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

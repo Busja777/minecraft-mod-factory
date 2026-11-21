@@ -25,20 +25,32 @@
 // - spawn: tick functions run as the server, whose position is the world spawn (1.21.1: the
 //   Overworld spawn point; 26.x: the respawn point in its dimension), so `tp @s ~0.5 ~ ~0.5` from
 //   there lands on the world spawn.
-// - home and spawn share one cooldown (also across homes); sethome has none.
+// - back (since V1.2): takes the player to the place of their last death, once per death. The
+//   game keeps that place on the player as LastDeathLocation {dimension: "<id>", pos: [I; x, y, z]}
+//   (both jars, 1.21.1 and 26.3, write and read the field; GlobalPos codec "dimension"/"pos").
+//   A deathCount objective (th.deaths) counts deaths since the pack was added and is set back to 0
+//   after a successful back, so the trigger is no free teleport to an old spot. Only the three
+//   vanilla dimensions; a death below the dimension's bottom (fell into the void) and a death spot
+//   in lava are refused, nothing is used up then.
+// - home, spawn and back share one cooldown (also across homes); sethome has none.
 // Text components are written so that both the JSON reader of 1.21.1 and the SNBT reader of 26.x
 // accept them: quoted keys, strings only, lists that hold only compounds.
 const NS = 'trigger_homes';
 const fn = name => `${NS}:${name}`;
 
 export const COOLDOWN_SECONDS = 30;
-export const TRIGGERS = ['sethome', 'home', 'spawn'];
-// [score, dimension id, name in messages]
+export const TRIGGERS = ['sethome', 'home', 'spawn', 'back'];
+// [score, dimension id, name in messages, lowest block (vanilla dimension types)]
 export const DIMENSIONS = [
-  [1, 'minecraft:overworld', 'the Overworld'],
-  [2, 'minecraft:the_nether', 'the Nether'],
-  [3, 'minecraft:the_end', 'the End']
+  [1, 'minecraft:overworld', 'the Overworld', -64],
+  [2, 'minecraft:the_nether', 'the Nether', 0],
+  [3, 'minecraft:the_end', 'the End', 0]
 ];
+// Since V1.2: deaths since the last /trigger back (deathCount) and the death spot's height.
+export const DEATHS = 'th.deaths';
+export const BACK_Y = 'th.by';
+// Functions that are macros (read $(x) … from the storage).
+export const MACROS = ['teleport', 'back_tp'];
 export const OBJ = { x: 'th.x', y: 'th.y', z: 'th.z', dim: 'th.dim', cd: 'th.cd', tmp: 'th.tmp' };
 // Since V1.1: the home number asked for (the trigger value).
 export const PICK = 'th.n';
@@ -66,7 +78,9 @@ export function functions() {
     ...Object.values(OBJ).map(o => `scoreboard objectives add ${o} dummy`),
     `scoreboard players set #20 ${OBJ.tmp} 20`,
     `scoreboard objectives add ${PICK} dummy`,
-    ...HOMES.filter(k => k !== 1).flatMap(k => Object.values(homeObj(k)).map(o => `scoreboard objectives add ${o} dummy`))
+    ...HOMES.filter(k => k !== 1).flatMap(k => Object.values(homeObj(k)).map(o => `scoreboard objectives add ${o} dummy`)),
+    `scoreboard objectives add ${DEATHS} deathCount`,
+    `scoreboard objectives add ${BACK_Y} dummy`
   ];
   // Copies the trigger value to th.n, resets the trigger and refuses numbers that are no home.
   const pick = (trigger, what) => [
@@ -82,6 +96,7 @@ export function functions() {
     `execute as @a[scores={home=1..}] at @s run function ${fn('home')}`,
     // Not "at @s": the server's own position is the world spawn.
     `execute as @a[scores={spawn=1..}] run function ${fn('spawn')}`,
+    `execute as @a[scores={back=1..}] run function ${fn('back')}`,
     ...TRIGGERS.map(name => `scoreboard players set @a[scores={${name}=..-1}] ${name} 0`),
     ...TRIGGERS.map(name => `scoreboard players enable @a ${name}`)
   ];
@@ -125,6 +140,38 @@ export function functions() {
     startCooldown,
     tell('green', 'Teleported to the world spawn.')
   ];
+  const DEATH = 'LastDeathLocation';
+  f.back = [
+    'scoreboard players set @s back 0',
+    `execute unless score @s ${DEATHS} matches 1.. run ${tell('red', 'You have not died since your last /trigger back (or since this pack was added).')}`,
+    `execute unless score @s ${DEATHS} matches 1.. run return fail`,
+    `execute unless data entity @s ${DEATH} run ${tell('red', 'The game has no death point for you.')}`,
+    `execute unless data entity @s ${DEATH} run return fail`,
+    `scoreboard players set @s ${OBJ.tmp} 0`,
+    ...DIMENSIONS.map(([n, id]) => `execute if data entity @s ${DEATH}{dimension:"${id}"} run scoreboard players set @s ${OBJ.tmp} ${n}`),
+    `execute if score @s ${OBJ.tmp} matches 0 run ${tell('red', '/trigger back only works for deaths in the Overworld, the Nether and the End.')}`,
+    `execute if score @s ${OBJ.tmp} matches 0 run return fail`,
+    `execute store result score @s ${BACK_Y} run data get entity @s ${DEATH}.pos[1]`,
+    ...DIMENSIONS.map(([n, , , bottom]) => `execute if score @s ${OBJ.tmp} matches ${n} if score @s ${BACK_Y} matches ..${bottom - 1} run ${tell('red', 'You died below the world. /trigger back will not take you into the void.')}`),
+    ...DIMENSIONS.map(([n, , , bottom]) => `execute if score @s ${OBJ.tmp} matches ${n} if score @s ${BACK_Y} matches ..${bottom - 1} run return fail`),
+    ...cooldownCheck,
+    ...XYZ.map((axis, i) => `execute store result storage ${STORAGE} ${axis} int 1 run data get entity @s ${DEATH}.pos[${i}]`),
+    // back_tp returns 1 after the teleport and 0 when the spot is in lava.
+    `scoreboard players set @s ${BACK_Y} 0`,
+    ...DIMENSIONS.map(([n, id]) => `execute if score @s ${OBJ.tmp} matches ${n} in ${id} store result score @s ${BACK_Y} run function ${fn('back_tp')} with storage ${STORAGE}`),
+    `execute unless score @s ${BACK_Y} matches 1 run ${tell('red', 'Your death point is in lava. /trigger back will not take you there.')}`,
+    `execute unless score @s ${BACK_Y} matches 1 run return fail`,
+    `scoreboard players set @s ${DEATHS} 0`,
+    startCooldown,
+    tell('green', 'Back where you died. Pick up your things before they vanish.')
+  ];
+  // Macro, run "in" the death dimension: refuse lava at the feet or head, else teleport.
+  f.back_tp = [
+    '$execute positioned $(x) $(y) $(z) if block ~ ~ ~ minecraft:lava run return 0',
+    '$execute positioned $(x) $(y) $(z) if block ~ ~1 ~ minecraft:lava run return 0',
+    '$tp @s $(x) $(y) $(z)',
+    'return 1'
+  ];
   f.cooldown = [
     // seconds left, rounded up
     `scoreboard players operation @s ${OBJ.tmp} = @s ${OBJ.cd}`,
@@ -140,11 +187,12 @@ export function functions() {
 // Every "function <ns>:<name>" must point to a function of the pack.
 export function checkFunctions(f) {
   for (const [name, lines] of Object.entries(f)) {
+    if (MACROS.includes(name) && !lines.some(l => l.startsWith('$'))) throw new Error(`${name}: a macro function needs a $ line`);
     for (const line of lines) {
       for (const m of line.matchAll(new RegExp(`function ${NS}:([a-z_/]+)`, 'g'))) {
         if (!f[m[1]]) throw new Error(`${name}: calls missing function ${m[1]}`);
       }
-      if (line.startsWith('$') !== (name === 'teleport')) throw new Error(`${name}: only "teleport" is a macro function`);
+      if (line.startsWith('$') && !MACROS.includes(name)) throw new Error(`${name}: only ${MACROS.join(' and ')} are macro functions`);
       if (/[^\x20-\x7E]/.test(line)) throw new Error(`${name}: non-ASCII text in "${line}"`);
     }
   }

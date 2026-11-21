@@ -26,6 +26,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "ActionbarCoords-1.2.zip",
+      "changelog": "## Actionbar Coords 1.2\n\nColour styles.\n\n- New: six colour styles for the line above the hotbar: Classic, Plain, Gold, Green, Blue and Quiet (all grey, for players who want it less visible).\n- `/trigger coords set 2` switches to the next style and tells you its name. Each player picks their own; no operator rights needed.\n- `/trigger coords` still shows or hides the line, as before.\n- Everyone starts with Classic, the colours of 1.0 and 1.1, so nothing changes unless you pick another style.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
