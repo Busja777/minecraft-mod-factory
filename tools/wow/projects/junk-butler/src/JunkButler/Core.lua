@@ -5,6 +5,7 @@ local _, ns = ...
 ns.POOR = 0     -- item quality of grey items
 ns.STEP = 6     -- items sold in one step
 ns.DELAY = 0.2  -- seconds between two steps
+ns.GUILD_WAIT = 1 -- seconds the game gets to answer a guild bank repair before it is checked
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
@@ -106,6 +107,18 @@ function ns.ShouldRepair(cost, money, canRepair)
   return true
 end
 
+-- 1.2: whether the guild bank can pay a repair of this cost.
+-- withdraw = what the player may still take from the guild bank today (GetGuildBankWithdrawMoney,
+-- -1 means no limit), bankMoney = the gold in the guild bank (GetGuildBankMoney).
+-- Unknown numbers count as "cannot pay": then the player's own gold pays as before.
+function ns.GuildCanPay(cost, withdraw, bankMoney)
+  if type(cost) ~= "number" or cost <= 0 then return false end
+  if type(withdraw) ~= "number" or type(bankMoney) ~= "number" then return false end
+  local limit = bankMoney
+  if withdraw >= 0 then limit = math.min(withdraw, bankMoney) end
+  return limit >= cost
+end
+
 local function thousands(n)
   local s = tostring(n)
   local out = s:reverse():gsub("(%d%d%d)", "%1,"):reverse()
@@ -126,8 +139,8 @@ function ns.FormatMoney(copper)
   return ns.PlainMoney(copper)
 end
 
--- result = { items, earned, repaired = cost paid, short = cost the gold did not reach for,
---           kept = pieces held back by the keep list }
+-- result = { items, earned, repaired = cost paid, guild = true when the guild bank paid it,
+--           short = cost the gold did not reach for, kept = pieces held back by the keep list }
 -- Returns nil when nothing happened. Kept items alone are no reason to speak.
 function ns.Summary(result)
   local L = ns.L
@@ -136,7 +149,9 @@ function ns.Summary(result)
     local text = result.items == 1 and L["Sold %d junk item for %s."] or L["Sold %d junk items for %s."]
     parts[#parts + 1] = string.format(text, result.items, ns.FormatMoney(result.earned))
   end
-  if result.repaired then
+  if result.repaired and result.guild then
+    parts[#parts + 1] = string.format(L["Repaired your gear for %s from the guild bank."], ns.FormatMoney(result.repaired))
+  elseif result.repaired then
     parts[#parts + 1] = string.format(L["Repaired your gear for %s."], ns.FormatMoney(result.repaired))
   elseif result.short then
     parts[#parts + 1] = string.format(L["Not enough gold to repair your gear (%s)."], ns.FormatMoney(result.short))

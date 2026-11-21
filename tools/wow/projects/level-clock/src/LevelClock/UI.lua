@@ -18,6 +18,7 @@ local COLUMNS = {
 
 local ui
 local view = "clock" -- or "history"
+local hiding = false -- true while the addon itself closes the window (not the player)
 
 local function text(parent, template, justify)
   local fs = parent:CreateFontString(nil, "OVERLAY", template)
@@ -34,12 +35,16 @@ local function create()
   local ok, f = pcall(CreateFrame, "Frame", "LevelClockFrame", UIParent, "BasicFrameTemplateWithInset")
   if not ok then f = CreateFrame("Frame", "LevelClockFrame", UIParent) end
   f:SetSize(CLOCK_SIZE[1], CLOCK_SIZE[2])
+  f:SetScale(ns.db.settings.scale)
   f:SetFrameStrata("MEDIUM")
   f:SetClampedToScreen(true)
   f:SetMovable(true)
   f:EnableMouse(true)
   f:RegisterForDrag("LeftButton")
-  f:SetScript("OnDragStart", f.StartMoving)
+  f:SetScript("OnDragStart", function(self)
+    if ns.db.settings.locked then return end -- 1.2: /lc lock
+    self:StartMoving()
+  end)
   f:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
     savePosition(self)
@@ -106,6 +111,11 @@ local function create()
     end
   end)
   f:SetScript("OnShow", function() ns.Refresh() end)
+  -- The player closed it (close button, Escape): it stays closed at the next login. When only the
+  -- whole interface is hidden (Alt+Z, a cinematic), the window itself still counts as shown.
+  f:SetScript("OnHide", function(self)
+    if not hiding and not self:IsShown() then ns.db.settings.shown = false end
+  end)
   return f
 end
 
@@ -175,20 +185,86 @@ function ns.Toggle()
   if not ns.db then return end
   ui = ui or create()
   if ui:IsShown() then ui:Hide() else ui:Show() end
+  ns.db.settings.shown = ui:IsShown() and true or false
+end
+
+-- 1.2 ----------------------------------------------------------------------------------------------
+
+-- The addon closes the window on its own; the player's choice to keep it open stays saved.
+local function autoHide()
+  if not (ui and ui:IsShown()) then return end
+  hiding = true
+  ui:Hide()
+  hiding = false
+end
+
+-- At login the window opens again when the player left it open, unless it hides at maximum level.
+function ns.WindowAtLogin()
+  if ns.ShowAtLogin(ns.db.settings, ns.AtMaxLevel()) then
+    ui = ui or create()
+    ui:Show()
+  end
+end
+
+function ns.ReachedMaxLevel()
+  if ns.db and ns.db.settings.hideAtMax then autoHide() end
+end
+
+-- A new size; the window's anchor stays in the same place on the screen.
+local function applyScale(new)
+  local settings = ns.db.settings
+  local old = settings.scale
+  settings.scale = new
+  if not ui then return end
+  local point, _, relativePoint, x, y = ui:GetPoint()
+  ui:SetScale(new)
+  if point and type(x) == "number" and type(y) == "number" then
+    x, y = ns.ScaledOffsets(x, y, old, new)
+    ui:ClearAllPoints()
+    ui:SetPoint(point, UIParent, relativePoint, x, y)
+    savePosition(ui)
+  end
 end
 
 local function print(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cffffd100" .. L["Level Clock"] .. ":|r " .. msg)
 end
 
+local function optionsText()
+  local s = ns.db.settings
+  return string.format(L["Window: %s, size %s, %s at maximum level."],
+    s.locked and L["locked"] or L["movable"], ns.ScaleText(s.scale), s.hideAtMax and L["hidden"] or L["shown"])
+end
+
+local function scale(args)
+  if args == "" then
+    print(string.format(L["The window size is %s. /lc scale followed by a number from 0.8 to 1.5 changes it."], ns.ScaleText(ns.db.settings.scale)))
+    return
+  end
+  local new = ns.ParseScale(args)
+  if not new then
+    print(L["Choose a size from 0.8 to 1.5, for example /lc scale 1.2."])
+    return
+  end
+  applyScale(new)
+  print(string.format(L["The window size is %s."], ns.ScaleText(new)))
+end
+
+local function help()
+  print(L["/lc opens or closes the clock, /lc history lists your last sessions, /lc reset starts a new session."])
+  print(L["/lc lock and /lc unlock fix the window in place, /lc scale 0.8 to 1.5 sets its size, /lc hidemax hides it at maximum level, /lc options shows these settings."])
+end
+
 SLASH_LEVELCLOCK1 = "/levelclock"
 SLASH_LEVELCLOCK2 = "/lc"
 SlashCmdList.LEVELCLOCK = function(msg)
   local cmd = strtrim(msg or ""):lower()
+  local word, args = cmd:match("^(%S*)%s*(.-)$")
   if cmd == "" then
     ns.Toggle()
+  elseif not ns.db then
+    return
   elseif cmd == "reset" then
-    if not ns.db then return end
     ns.Reset()
     print(L["New session started."])
   elseif cmd == "history" then
@@ -200,7 +276,26 @@ SlashCmdList.LEVELCLOCK = function(msg)
     end
     print(L["Your last sessions with XP, newest first:"])
     for _, e in ipairs(history) do DEFAULT_CHAT_FRAME:AddMessage("  " .. ns.HistoryText(e)) end
+  elseif cmd == "lock" then
+    ns.db.settings.locked = true
+    print(L["The window is locked in place. /lc unlock lets you move it again."])
+  elseif cmd == "unlock" then
+    ns.db.settings.locked = false
+    print(L["The window can be moved again: drag it with the left mouse button."])
+  elseif word == "scale" then
+    scale(args)
+  elseif cmd == "hidemax" then
+    local settings = ns.db.settings
+    settings.hideAtMax = not settings.hideAtMax
+    if settings.hideAtMax then
+      print(L["The window now stays closed at maximum level. /lc still opens it."])
+      if ns.AtMaxLevel() then autoHide() end
+    else
+      print(L["The window now also opens at maximum level."])
+    end
+  elseif cmd == "options" then
+    print(optionsText())
   else
-    print(L["/lc opens or closes the clock, /lc history lists your last sessions, /lc reset starts a new session."])
+    help()
   end
 end

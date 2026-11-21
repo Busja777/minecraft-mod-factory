@@ -37,6 +37,10 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/lc") -- creates the window
   LevelClockFrame.switch:Click()
   wow.slash("/lc history")
+  wow.slash("/lc lock")
+  wow.slash("/lc scale 1.2")
+  wow.slash("/lc hidemax")
+  wow.slash("/lc options")
   wow.fire("PLAYER_LOGOUT")
   local allowed = { LevelClockDB = true, LevelClockFrame = true, SLASH_LEVELCLOCK1 = true, SLASH_LEVELCLOCK2 = true }
   for _, name in ipairs(STAND_IN) do installed[name] = true end
@@ -117,7 +121,7 @@ test("login takes the first reading without counting it", function(wow)
   eq(ns.session.start, wow.clock)
   eq(ns.session.last.xp, 4200)
   eq(ns.session.last.rested, 2500)
-  eq(LevelClockDB.version, 2)
+  eq(LevelClockDB.version, 3)
   eq(LevelClockDB.chars["Yubi-Silvermoon"], ns.char)
   local v = ns.View(ns.session, wow.clock + 10)
   eq(v.needed, 5800)
@@ -300,8 +304,9 @@ test("/lc and /levelclock toggle the window, anything else prints help", functio
   eq(LevelClockFrame:IsShown(), true)
   eq(#wow.chat, 0)
   wow.slash("/lc help")
-  eq(#wow.chat, 1)
+  eq(#wow.chat, 2)
   eq(wow.chat[1]:match("/lc reset starts a new session") ~= nil, true)
+  eq(wow.chat[2]:match("/lc lock and /lc unlock fix the window in place") ~= nil, true)
   eq(LevelClockFrame:IsShown(), true)
 end)
 
@@ -415,7 +420,7 @@ test("history: the 1.0 last session becomes the first entry, nothing is lost", f
     ["Brakk-Silvermoon"] = { last = { xp = 5, seconds = 90, levels = 0, level = 3, at = 2 } },
   } }
   local ns = boot(wow)
-  eq(LevelClockDB.version, 2)
+  eq(LevelClockDB.version, 3)
   local h = ns.char.history
   eq(#h, 1)
   eq(h[1].xp, 12000)
@@ -450,7 +455,7 @@ test("history: migration runs once and drops only broken rows", function(wow)
   eq(type(LevelClockDB.settings), "table")
   LevelClockDB = "broken"
   ns = relog(wow)
-  eq(LevelClockDB.version, 2)
+  eq(LevelClockDB.version, 3)
 end)
 
 test("history: newest first, at most ten sessions", function(wow)
@@ -608,4 +613,239 @@ test("/lc history before login does nothing", function(wow)
   wow.load(ADDON_DIR, ADDON_NAME)
   wow.slash("/lc history")
   eq(#wow.chat, 0)
+end)
+
+-- 1.2: window options ------------------------------------------------------------------------------
+
+-- The stand-in keeps no size or drag state; these windows do, and note what happens to them.
+local function trackWindows()
+  local create = CreateFrame
+  CreateFrame = function(...)
+    local f = create(...)
+    f.SetScale = function(self, v) self.scale = v end
+    f.GetScale = function(self) return self.scale or 1 end
+    f.dragged = 0
+    f.StartMoving = function(self) self.dragged = self.dragged + 1 end
+    return f
+  end
+end
+
+-- The player closes the window with its close button or Escape: the game hides it and runs OnHide.
+local function close(f)
+  f:Hide()
+  f.scripts.OnHide(f)
+end
+
+local function drag(f, point, x, y)
+  local before = f.dragged
+  f.scripts.OnDragStart(f)
+  if f.dragged > before then f:SetPoint(point, UIParent, point, x, y) end
+  f.scripts.OnDragStop(f)
+end
+
+test("window: sizes the player can type", function(wow)
+  local ns = boot(wow)
+  eq(ns.ParseScale("1.2"), 1.2)
+  eq(ns.ParseScale("1,2"), 1.2, "a comma works too")
+  eq(ns.ParseScale("120"), 1.2, "as a percentage")
+  eq(ns.ParseScale(" 90 % "), 0.9)
+  eq(ns.ParseScale("0.8"), 0.8)
+  eq(ns.ParseScale("1.5"), 1.5)
+  eq(ns.ParseScale("1.25"), 1.25)
+  eq(ns.ParseScale("1"), 1)
+  eq(ns.ParseScale("0.79"), nil, "too small")
+  eq(ns.ParseScale("1.51"), nil, "too large")
+  eq(ns.ParseScale("151"), nil)
+  eq(ns.ParseScale("5"), nil)
+  eq(ns.ParseScale("big"), nil)
+  eq(ns.ParseScale("-1"), nil)
+  eq(ns.ParseScale(""), nil)
+  eq(ns.ParseScale(nil), nil)
+  eq(ns.ScaleText(1.2), "120%")
+  eq(ns.ScaleText(0.85), "85%")
+  local x, y = ns.ScaledOffsets(100, -50, 1, 1.25)
+  eq(x, 80)
+  eq(y, -40)
+end)
+
+test("window: options get their defaults, broken ones are repaired", function(wow)
+  local ns = boot(wow)
+  local s = ns.WindowSettings({})
+  eq(s.locked, false)
+  eq(s.scale, 1)
+  eq(s.hideAtMax, false)
+  eq(s.shown, false)
+  s = ns.WindowSettings({ locked = true, scale = 1.3, hideAtMax = true, shown = true })
+  eq(s.locked, true)
+  eq(s.scale, 1.3)
+  eq(s.hideAtMax, true)
+  eq(s.shown, true)
+  eq(ns.WindowSettings({ scale = 3 }).scale, 1)
+  eq(ns.WindowSettings({ scale = 0.5 }).scale, 1)
+  eq(ns.WindowSettings({ scale = "1.2" }).scale, 1)
+  eq(ns.WindowSettings({ scale = 0 / 0 }).scale, 1, "not a number")
+  eq(ns.WindowSettings({ locked = "yes" }).locked, false)
+  eq(ns.ShowAtLogin({ shown = true, hideAtMax = false }, true), true)
+  eq(ns.ShowAtLogin({ shown = true, hideAtMax = true }, false), true)
+  eq(ns.ShowAtLogin({ shown = true, hideAtMax = true }, true), false)
+  eq(ns.ShowAtLogin({ shown = false, hideAtMax = false }, false), false)
+end)
+
+test("window: 1.1 settings stay, the new options start as before", function(wow)
+  LevelClockDB = { version = 2, settings = { point = { "TOP", "TOP", 0, -50 } }, chars = {
+    ["Yubi-Silvermoon"] = { history = { { xp = 500, seconds = 600, levels = 0, from = 100, at = 700 } } },
+  } }
+  local ns = boot(wow)
+  local s = LevelClockDB.settings
+  eq(LevelClockDB.version, 3)
+  eq(s.point[1], "TOP")
+  eq(s.point[4], -50)
+  eq(s.locked, false)
+  eq(s.scale, 1)
+  eq(s.hideAtMax, false)
+  eq(s.shown, false)
+  eq(LevelClockFrame, nil, "the window does not open by itself")
+  eq(#ns.char.history, 1)
+end)
+
+test("/lc lock keeps the window in place, /lc unlock lets it move again", function(wow)
+  trackWindows()
+  boot(wow)
+  wow.slash("/lc")
+  local f = LevelClockFrame
+  drag(f, "TOPLEFT", 10, -10)
+  eq(f.dragged, 1)
+  eq(LevelClockDB.settings.point[3], 10)
+  wow.slash("/lc LOCK")
+  eq(wow.chat[1], "|cffffd100Level Clock:|r The window is locked in place. /lc unlock lets you move it again.")
+  eq(LevelClockDB.settings.locked, true)
+  drag(f, "TOPLEFT", 99, -99)
+  eq(f.dragged, 1, "not moved")
+  eq(LevelClockDB.settings.point[3], 10, "the saved place stays")
+  wow.slash("/lc unlock")
+  eq(wow.chat[2], "|cffffd100Level Clock:|r The window can be moved again: drag it with the left mouse button.")
+  drag(f, "TOPLEFT", 30, -30)
+  eq(f.dragged, 2)
+  eq(LevelClockDB.settings.point[3], 30)
+  wow.slash("/lc lock")
+  relog(wow)
+  eq(LevelClockDB.settings.locked, true, "the lock is saved")
+end)
+
+test("/lc scale sizes the window and keeps it in its place", function(wow)
+  trackWindows()
+  LevelClockDB = { settings = { point = { "TOPLEFT", "TOPLEFT", 100, -50 } } }
+  boot(wow)
+  wow.slash("/lc scale")
+  eq(wow.chat[1], "|cffffd100Level Clock:|r The window size is 100%. /lc scale followed by a number from 0.8 to 1.5 changes it.")
+  wow.slash("/lc scale 1.25")
+  eq(wow.chat[2], "|cffffd100Level Clock:|r The window size is 125%.")
+  eq(LevelClockDB.settings.scale, 1.25)
+  wow.slash("/lc") -- the window is built with the size chosen before
+  local f = LevelClockFrame
+  eq(f.scale, 1.25)
+  eq(f.point[4], 100, "the saved place is in the window's own units")
+  wow.slash("/lc scale 80%")
+  eq(f.scale, 0.8)
+  eq(f.point[1], "TOPLEFT")
+  eq(f.point[4], 100 * 1.25 / 0.8, "the corner stays where it was on the screen")
+  eq(f.point[5], -50 * 1.25 / 0.8)
+  eq(LevelClockDB.settings.point[3], 100 * 1.25 / 0.8)
+  wow.slash("/lc scale 2")
+  eq(wow.chat[4], "|cffffd100Level Clock:|r Choose a size from 0.8 to 1.5, for example /lc scale 1.2.")
+  eq(LevelClockDB.settings.scale, 0.8, "a wrong size changes nothing")
+  wow.slash("/lc scale huge")
+  eq(wow.chat[5], wow.chat[4])
+  relog(wow)
+  wow.slash("/lc")
+  eq(LevelClockFrame.scale, 0.8, "the size is saved")
+end)
+
+test("the window opens again at login when it was left open", function(wow)
+  trackWindows()
+  boot(wow)
+  wow.slash("/lc")
+  eq(LevelClockDB.settings.shown, true)
+  relog(wow)
+  eq(LevelClockFrame:IsShown(), true, "open again")
+  LevelClockFrame.scripts.OnHide(LevelClockFrame) -- Alt+Z hides the whole interface, not the window
+  eq(LevelClockDB.settings.shown, true)
+  close(LevelClockFrame) -- the close button or Escape
+  eq(LevelClockDB.settings.shown, false)
+  local old = LevelClockFrame
+  relog(wow)
+  eq(LevelClockFrame, old, "closed stays closed: no new window is built")
+  wow.slash("/lc")
+  wow.slash("/lc")
+  eq(LevelClockDB.settings.shown, false, "closed with /lc")
+  old = LevelClockFrame
+  relog(wow)
+  eq(LevelClockFrame, old)
+end)
+
+test("/lc hidemax: the window stays closed at maximum level, other characters still see it", function(wow)
+  trackWindows()
+  boot(wow, { xp = 9000, max = 10000, level = 89 })
+  wow.slash("/lc")
+  wow.slash("/lc hidemax")
+  eq(wow.chat[1], "|cffffd100Level Clock:|r The window now stays closed at maximum level. /lc still opens it.")
+  eq(LevelClockDB.settings.hideAtMax, true)
+  eq(LevelClockFrame:IsShown(), true, "not at maximum level yet")
+  bar(wow, { xp = 0, max = 0, level = 90, atMax = true })
+  eq(LevelClockFrame:IsShown(), false, "closed on reaching the maximum level")
+  eq(LevelClockDB.settings.shown, true, "the player's choice to keep it open stays")
+  local old = LevelClockFrame
+  relog(wow)
+  eq(LevelClockFrame, old, "a max-level character does not see it at login")
+  wow.slash("/lc")
+  local f = LevelClockFrame
+  eq(f ~= old, true)
+  eq(f:IsShown(), true, "/lc still opens it")
+  eq(f.note:IsShown(), true)
+  f.switch:Click()
+  eq(f.history.rows[1][3]:GetText(), "1,000", "the history view still works")
+  wow.slash("/lc")
+  wow.slash("/lc")
+  wow.player = "Brakk" -- an alt that is still levelling
+  player.atMax, player.level, player.max = false, 20, 5000
+  relog(wow)
+  eq(LevelClockFrame:IsShown(), true, "the alt sees it at login")
+end)
+
+test("/lc hidemax at maximum level closes the open window, typed again it is undone", function(wow)
+  trackWindows()
+  boot(wow, { xp = 0, max = 0, level = 90, atMax = true })
+  wow.slash("/lc")
+  wow.slash("/lc hidemax")
+  eq(LevelClockFrame:IsShown(), false)
+  eq(LevelClockDB.settings.shown, true)
+  wow.slash("/lc hidemax")
+  eq(wow.chat[2], "|cffffd100Level Clock:|r The window now also opens at maximum level.")
+  eq(LevelClockDB.settings.hideAtMax, false)
+  relog(wow)
+  eq(LevelClockFrame:IsShown(), true)
+  bar(wow, { xp = 0 })
+  eq(LevelClockFrame:IsShown(), true, "already at maximum level: nothing is closed")
+end)
+
+test("/lc options shows the window options", function(wow)
+  boot(wow)
+  wow.slash("/lc options")
+  eq(wow.chat[1], "|cffffd100Level Clock:|r Window: movable, size 100%, shown at maximum level.")
+  wow.slash("/lc lock")
+  wow.slash("/lc scale 1,1")
+  wow.slash("/lc hidemax")
+  wow.slash("/lc Options ")
+  eq(wow.chat[5], "|cffffd100Level Clock:|r Window: locked, size 110%, hidden at maximum level.")
+end)
+
+test("window commands before login do nothing", function(wow)
+  client()
+  wow.load(ADDON_DIR, ADDON_NAME)
+  for _, cmd in ipairs({ "/lc lock", "/lc unlock", "/lc scale 1.2", "/lc scale", "/lc hidemax", "/lc options", "/lc what" }) do
+    wow.slash(cmd)
+  end
+  eq(#wow.chat, 0)
+  eq(LevelClockDB, nil)
+  eq(LevelClockFrame, nil)
 end)

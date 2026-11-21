@@ -41,9 +41,20 @@ local function world(wow, bags)
   IsShiftKeyDown = function() return w.shift end
   CanMerchantRepair = function() return w.canRepair end
   GetRepairAllCost = function() return w.repairCost, w.repairCost > 0 end
+  -- 1.2: the guild. Off by default: no guild rank that may repair, an empty guild bank.
+  w.inGuild, w.guildRepair, w.withdraw, w.guildMoney, w.guildRefuses = true, false, 0, 0, false
+  IsInGuild = function() return w.inGuild end
+  CanGuildBankRepair = function() return w.guildRepair end
+  GetGuildBankWithdrawMoney = function() return w.withdraw end
+  GetGuildBankMoney = function() return w.guildMoney end
   RepairAllItems = function(fromGuildBank)
     w.repairs[#w.repairs + 1] = { cost = w.repairCost, guild = fromGuildBank }
-    wow.money = wow.money - w.repairCost
+    if fromGuildBank then
+      if w.guildRefuses then return end -- the server says no: nothing is repaired
+      w.guildMoney = w.guildMoney - w.repairCost
+    else
+      wow.money = wow.money - w.repairCost
+    end
     w.repairCost = 0
   end
 
@@ -101,6 +112,11 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/jb keep 101")
   wow.slash("/jb keep")
   wow.slash("/jb unkeep 101")
+  wow.slash("/jb guild on")
+  w.guildRepair, w.withdraw, w.guildMoney, w.repairCost = true, -1, 100000, 50
+  w.visit()
+  w.run()
+  w.leave()
   local allowed = { JunkButlerDB = true, SLASH_JUNKBUTLER1 = true, SLASH_JUNKBUTLER2 = true }
   for k in pairs(_G) do
     if not mine[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -368,7 +384,7 @@ test("slash commands show the state and switch each half", function(wow)
   w.repairCost = 500
   boot(wow, 1000)
   wow.slash("/jb")
-  eq(wow.chat[1], PREFIX .. "Selling junk is on. Repairing is on.")
+  eq(wow.chat[1], PREFIX .. "Selling junk is on. Repairing is on. Guild bank repairs are off.")
   wow.slash("/jb sell")
   eq(wow.chat[2], PREFIX .. "Selling junk is off.")
   eq(JunkButlerDB.settings.sell, false)
@@ -391,17 +407,18 @@ test("slash commands show the state and switch each half", function(wow)
   eq(#w.repairs, 1)
   eq(wow.chat[6], PREFIX .. "Sold 2 junk items for 20c.")
   wow.slash("/jb")
-  eq(wow.chat[7], PREFIX .. "Selling junk is on. Repairing is off.")
+  eq(wow.chat[7], PREFIX .. "Selling junk is on. Repairing is off. Guild bank repairs are off.")
   wow.slash("/jb help")
   eq(wow.chat[8]:match("/jb sell and /jb repair switch each half") ~= nil, true)
   eq(wow.chat[9]:match("/jb unkeep takes it off again") ~= nil, true)
-  eq(#wow.chat, 9)
+  eq(wow.chat[10], PREFIX .. "/jb guild on/off lets the guild bank pay your repairs first when your guild rank allows it.")
+  eq(#wow.chat, 10)
 end)
 
 test("settings survive: saved values are kept, new ones start switched on", function(wow)
   local w = world(wow, { [0] = greys(2, 10) })
   boot(wow, 0)
-  eq(JunkButlerDB.version, 2)
+  eq(JunkButlerDB.version, 3)
   eq(JunkButlerDB.settings.sell, true)
   eq(JunkButlerDB.settings.repair, true)
 
@@ -629,7 +646,7 @@ test("1.0 data moves over: settings stay, the keep list starts empty", function(
   local w = world(wow, { [0] = greys(2, 10) })
   JunkButlerDB = { version = 1, settings = { sell = true, repair = false } }
   boot(wow, 0)
-  eq(JunkButlerDB.version, 2)
+  eq(JunkButlerDB.version, 3)
   eq(JunkButlerDB.settings.repair, false)
   eq(type(JunkButlerDB.keep), "table")
   eq(next(JunkButlerDB.keep), nil)
@@ -648,6 +665,264 @@ test("a keep command before login does nothing", function(wow)
   wow.slash("/jb keep 2211")
   wow.slash("/jb unkeep 2211")
   wow.slash("/jb keep")
+  eq(#wow.chat, 0)
+  eq(JunkButlerDB, nil)
+end)
+
+-- 1.2: guild bank repairs --------------------------------------------------------------------------
+
+-- A guild whose bank may pay: the player's rank may repair from it, withdraw = what is left of the
+-- day's limit (-1: no limit), bank = the gold in the guild bank.
+local function guildBank(w, withdraw, bank)
+  w.guildRepair, w.withdraw, w.guildMoney = true, withdraw, bank
+end
+
+local function guildBoot(wow, w, money)
+  boot(wow, money)
+  wow.slash("/jb guild on")
+  wow.chat = {}
+end
+
+test("core: whether the guild bank can pay", function(wow)
+  local ns = boot(wow)
+  eq(ns.GuildCanPay(500, 1000, 5000), true)
+  eq(ns.GuildCanPay(500, 500, 5000), true, "exactly the daily limit")
+  eq(ns.GuildCanPay(500, 499, 5000), false, "the daily limit is too small")
+  eq(ns.GuildCanPay(500, 1000, 499), false, "the bank has too little gold")
+  eq(ns.GuildCanPay(500, -1, 500), true, "no limit: the bank's gold counts")
+  eq(ns.GuildCanPay(500, -1, 499), false)
+  eq(ns.GuildCanPay(0, -1, 5000), false, "nothing to repair")
+  eq(ns.GuildCanPay(nil, -1, 5000), false, "cost unknown")
+  eq(ns.GuildCanPay(500, nil, 5000), false, "limit unknown")
+  eq(ns.GuildCanPay(500, 1000, nil), false, "bank gold unknown")
+  eq(ns.Summary({ items = 0, earned = 0, repaired = 20000, guild = true }), "Repaired your gear for 2g 00s 00c from the guild bank.")
+  eq(ns.Summary({ items = 2, earned = 20, repaired = 100, guild = true, kept = 1 }), "Sold 2 junk items for 20c. Repaired your gear for 1s 00c from the guild bank. Kept 1 item on your keep list.")
+end)
+
+test("guild repairs are off by default: the player's own gold pays", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000)
+  w.repairCost = 20000
+  boot(wow, 50000)
+  eq(JunkButlerDB.settings.guild, false)
+  w.visit()
+  w.run()
+  eq(#w.repairs, 1)
+  eq(w.repairs[1].guild, nil)
+  eq(wow.money, 30000)
+  eq(w.guildMoney, 1000000)
+  eq(wow.chat[1], PREFIX .. "Repaired your gear for 2g 00s 00c.")
+end)
+
+test("guild on: the guild bank pays, the chat line says so once the game had time to answer", function(wow)
+  local w = world(wow, { [0] = greys(2, 10) })
+  guildBank(w, 30000, 1000000)
+  w.repairCost = 20000
+  local ns = guildBoot(wow, w, 50000)
+  w.visit()
+  eq(#w.repairs, 1)
+  eq(w.repairs[1].guild, true, "RepairAllItems(true)")
+  eq(w.guildMoney, 980000)
+  w.tick() -- the sale's last step
+  eq(#wow.chat, 0, "not yet: the repair is checked first")
+  eq(w.timers[1].seconds, 1, "GUILD_WAIT")
+  w.run()
+  eq(#w.repairs, 1)
+  eq(wow.money, 50000 + 20, "the player's own gold is untouched")
+  eq(wow.chat[1], PREFIX .. "Sold 2 junk items for 20c. Repaired your gear for 2g 00s 00c from the guild bank.")
+end)
+
+test("guild on: a rank that may not repair, a too small limit or a poor bank fall back to own gold", function(wow)
+  local w = world(wow)
+  guildBoot(wow, w, 100000)
+  local cases = {
+    { false, -1, 1000000, "the rank may not repair from the guild bank" },
+    { true, 19999, 1000000, "the day's limit is too small" },
+    { true, -1, 19999, "the guild bank is too poor" },
+    { true, 0, 1000000, "the limit is used up" },
+  }
+  for i, case in ipairs(cases) do
+    w.guildRepair, w.withdraw, w.guildMoney = case[1], case[2], case[3]
+    w.repairCost = 20000
+    w.visit()
+    w.run()
+    w.leave()
+    eq(w.repairs[i].guild, nil, case[4])
+    eq(wow.chat[i], PREFIX .. "Repaired your gear for 2g 00s 00c.", case[4])
+  end
+  eq(wow.money, 100000 - 4 * 20000)
+end)
+
+test("guild on: no guild at all, the player's own gold pays", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000)
+  w.inGuild = false
+  w.repairCost = 500
+  guildBoot(wow, w, 1000)
+  w.visit()
+  w.run()
+  eq(w.repairs[1].guild, nil)
+  eq(wow.money, 500)
+end)
+
+test("guild on: the guild bank turns the repair down, own gold pays instead", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000) -- the game's numbers were out of date
+  w.guildRefuses = true
+  w.repairCost = 20000
+  guildBoot(wow, w, 50000)
+  w.visit()
+  eq(#w.repairs, 1)
+  eq(w.repairs[1].guild, true)
+  w.run()
+  eq(#w.repairs, 2)
+  eq(w.repairs[2].guild, nil, "the second try is from the player's gold")
+  eq(wow.money, 30000)
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "Repaired your gear for 2g 00s 00c.")
+end)
+
+test("guild on: turned down and too poor, the sale still pays for it", function(wow)
+  local w = world(wow, { [0] = greys(2, 6000) })
+  guildBank(w, -1, 1000000)
+  w.guildRefuses = true
+  w.repairCost = 20000
+  guildBoot(wow, w, 10000)
+  w.visit()
+  w.run()
+  eq(#w.repairs, 2)
+  eq(w.repairs[2].guild, nil)
+  eq(wow.money, 2000)
+  eq(wow.chat[1], PREFIX .. "Sold 2 junk items for 1g 20s 00c. Repaired your gear for 2g 00s 00c.")
+
+  w.repairCost, wow.money = 20000, 0 -- and when even the sale is not enough
+  w.bags[0] = greys(1, 10)
+  w.leave()
+  w.visit()
+  w.run()
+  eq(#w.repairs, 3)
+  eq(wow.chat[2], PREFIX .. "Sold 1 junk item for 10c. Not enough gold to repair your gear (2g 00s 00c).")
+end)
+
+test("guild on: the guild bank pays when the player's own gold is short", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000)
+  w.repairCost = 20000
+  guildBoot(wow, w, 0)
+  w.visit()
+  w.run()
+  eq(#w.repairs, 1)
+  eq(w.repairs[1].guild, true)
+  eq(wow.chat[1], PREFIX .. "Repaired your gear for 2g 00s 00c from the guild bank.")
+end)
+
+test("guild on: repairing switched off or Shift held means no guild repair either", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000)
+  w.repairCost = 500
+  guildBoot(wow, w, 1000)
+  w.shift = true
+  w.visit()
+  w.run()
+  w.leave()
+  w.shift = false
+  wow.slash("/jb repair")
+  w.visit()
+  w.run()
+  w.leave()
+  eq(#w.repairs, 0)
+end)
+
+test("guild on: secret or missing guild answers fall back to own gold", function(wow)
+  local w = world(wow)
+  local secret = { secret = true }
+  guildBank(w, -1, 1000000)
+  guildBoot(wow, w, 100000)
+  local function visit(why)
+    w.repairCost = 500
+    w.visit()
+    w.run()
+    w.leave()
+    eq(w.repairs[#w.repairs].guild, nil, why)
+  end
+  w.guildRepair = secret
+  visit("rank answer secret")
+  w.guildRepair, w.withdraw = true, secret
+  visit("limit secret")
+  w.withdraw, w.guildMoney = -1, secret
+  visit("bank gold secret")
+  w.guildMoney, w.inGuild = 1000000, secret
+  visit("guild membership secret")
+  w.inGuild = true
+  GetGuildBankMoney = nil
+  visit("a client without the guild bank gold")
+  IsInGuild = nil
+  CanGuildBankRepair = nil
+  visit("a client without guild repairs")
+  eq(#w.repairs, 6)
+  eq(wow.money, 100000 - 6 * 500)
+end)
+
+test("the vendor closes before the guild repair is checked: the visit ends at once", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000)
+  w.repairCost = 500
+  guildBoot(wow, w, 1000)
+  w.visit()
+  w.leave()
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "Repaired your gear for 5s 00c from the guild bank.")
+  w.run()
+  eq(#wow.chat, 1, "the waiting check does nothing after the visit")
+  eq(#w.repairs, 1)
+end)
+
+test("/jb guild on, off and alone; other words print the help", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/jb guild on")
+  eq(wow.chat[1], PREFIX .. "Guild bank repairs are on.")
+  eq(JunkButlerDB.settings.guild, true)
+  wow.slash("/jb")
+  eq(wow.chat[2], PREFIX .. "Selling junk is on. Repairing is on. Guild bank repairs are on.")
+  wow.slash("/jb GUILD Off")
+  eq(wow.chat[3], PREFIX .. "Guild bank repairs are off.")
+  eq(JunkButlerDB.settings.guild, false)
+  wow.slash("/junkbutler guild")
+  eq(wow.chat[4], PREFIX .. "Guild bank repairs are on.", "alone it switches")
+  wow.slash("/jb guild maybe")
+  eq(wow.chat[5]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/jb guild on lets the guild bank pay") ~= nil, true)
+  eq(JunkButlerDB.settings.guild, true, "a wrong word changes nothing")
+  for _, line in ipairs(wow.chat) do
+    eq(line:sub(#PREFIX + 1):find("|", 1, true), nil, "no | in the text: it would start an escape code")
+  end
+end)
+
+test("1.1 data moves over: settings and keep list stay, guild repairs start off", function(wow)
+  local w = world(wow)
+  guildBank(w, -1, 1000000)
+  JunkButlerDB = { version = 2, settings = { sell = false, repair = true }, keep = { [2211] = true } }
+  boot(wow, 1000)
+  eq(JunkButlerDB.version, 3)
+  eq(JunkButlerDB.settings.sell, false)
+  eq(JunkButlerDB.settings.guild, false)
+  eq(JunkButlerDB.keep[2211], true)
+  JunkButlerDB.settings.guild = "broken"
+  relog(wow)
+  eq(JunkButlerDB.settings.guild, false)
+  JunkButlerDB.settings.guild = true
+  relog(wow)
+  eq(JunkButlerDB.settings.guild, true, "a saved choice is kept")
+  w.repairCost = 500
+  w.visit()
+  w.run()
+  eq(w.repairs[1].guild, true)
+end)
+
+test("a guild command before login does nothing", function(wow)
+  world(wow)
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.slash("/jb guild on")
   eq(#wow.chat, 0)
   eq(JunkButlerDB, nil)
 end)

@@ -29,6 +29,10 @@ local function sample()
   local reading = read()
   if not reading then return end
   ns.Advance(ns.session, reading)
+  -- 1.2: the moment the character reaches the maximum level
+  local atMax = ns.AtMaxLevel()
+  if atMax and ns.wasAtMax == false and ns.ReachedMaxLevel then ns.ReachedMaxLevel() end
+  ns.wasAtMax = atMax
   if ns.Refresh then ns.Refresh() end
 end
 
@@ -52,9 +56,10 @@ end
 local function onLogin()
   if type(LevelClockDB) ~= "table" then LevelClockDB = {} end
   local db = LevelClockDB
-  db.version = 2
+  db.version = 3 -- 3 (1.2): window options in db.settings, filled in with their defaults
   if type(db.chars) ~= "table" then db.chars = {} end
   if type(db.settings) ~= "table" then db.settings = {} end
+  ns.WindowSettings(db.settings)
   ns.db = db
 
   local key = ns.CharKey()
@@ -64,6 +69,8 @@ local function onLogin()
   ns.char = char
 
   ns.session = ns.NewSession(GetTime(), read(), time(), true)
+  ns.wasAtMax = ns.AtMaxLevel()
+  if ns.WindowAtLogin then ns.WindowAtLogin() end
 end
 
 local frame = CreateFrame("Frame")

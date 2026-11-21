@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "JunkButler-1.2.zip",
+      "changelog": "## Junk Butler 1.2\n\n- New: **guild bank repairs**. Type `/jb guild on` and Junk Butler repairs from your guild bank first, when your guild rank may repair from it and the bank (and your daily limit) covers the cost.\n- When the guild bank cannot pay, your own gold pays, just like before. If the guild bank turns a repair down, Junk Butler notices and pays from your gold instead.\n- The chat line tells you when the guild bank paid.\n- `/jb guild off` switches it off again. It starts switched off, so nothing changes until you turn it on.\n- `/jb` now also shows the guild bank setting. Your settings and keep list from 1.1 stay as they are.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

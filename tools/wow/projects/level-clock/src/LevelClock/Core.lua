@@ -6,6 +6,7 @@ local _, ns = ...
 ns.MIN_SECONDS = 60 -- a rate from less playing time than this jumps around too much to show
 ns.HISTORY = 10     -- finished sessions kept per character
 ns.MERGE_GAP = 300  -- seconds between logout and login that still count as one session (a reload, a quick relog)
+ns.SCALE_MIN, ns.SCALE_MAX = 0.8, 1.5 -- window size (1.2)
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
@@ -184,4 +185,53 @@ function ns.HistoryText(e)
     text = text .. string.format(L[", %d levels up"], levels)
   end
   return text
+end
+
+-- 1.2: window options -----------------------------------------------------------------------------
+-- settings.locked: the window cannot be dragged; settings.scale: its size (SCALE_MIN to SCALE_MAX);
+-- settings.hideAtMax: it stays closed at maximum level; settings.shown: the player left it open,
+-- so it opens again at the next login.
+
+local function round2(n)
+  return math.floor(n * 100 + 0.5) / 100
+end
+
+-- A size the player typed: "1.2", "1,2", "120" or "120%". → the size, or nil when it is no number
+-- or outside SCALE_MIN to SCALE_MAX.
+function ns.ParseScale(text)
+  if type(text) ~= "string" then return nil end
+  local number, percent = text:match("^%s*(%d+[.,]?%d*)%s*(%%?)%s*$")
+  number = number and tonumber((number:gsub(",", ".")))
+  if not number then return nil end
+  if percent == "%" or number >= 10 then number = number / 100 end
+  number = round2(number)
+  if number < ns.SCALE_MIN or number > ns.SCALE_MAX then return nil end
+  return number
+end
+
+function ns.ScaleText(scale)
+  return string.format(ns.L["%d%%"], math.floor(scale * 100 + 0.5))
+end
+
+-- Fills in the window options that are missing or broken and keeps what the player chose.
+function ns.WindowSettings(settings)
+  if type(settings.locked) ~= "boolean" then settings.locked = false end
+  if type(settings.hideAtMax) ~= "boolean" then settings.hideAtMax = false end
+  if type(settings.shown) ~= "boolean" then settings.shown = false end
+  local scale = settings.scale
+  if type(scale) ~= "number" or scale ~= scale or round2(scale) < ns.SCALE_MIN or round2(scale) > ns.SCALE_MAX then
+    settings.scale = 1
+  end
+  return settings
+end
+
+-- Whether the window opens by itself at login.
+function ns.ShowAtLogin(settings, atMax)
+  return settings.shown == true and not (settings.hideAtMax == true and atMax == true)
+end
+
+-- The offsets of the window's anchor after a change of size, so the anchor stays where it is on
+-- the screen (offsets are counted in the window's own, scaled units).
+function ns.ScaledOffsets(x, y, old, new)
+  return x * old / new, y * old / new
 end

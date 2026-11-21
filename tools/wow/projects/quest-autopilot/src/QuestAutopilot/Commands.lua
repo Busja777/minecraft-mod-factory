@@ -7,6 +7,7 @@ local function help()
   ns.Say(L["/qa shows the state, /qa on and /qa off switch everything, /qa accept and /qa turnin switch one half. Hold Shift while talking to pause."])
   ns.Say(L["/qa manual keeps the quest you just saw manual, /qa manual <ID, name or quest link> adds one, /qa auto <ID or name> hands it back, /qa list shows them."])
   ns.Say(L["/qa dailies leaves all daily and weekly quests to you, type it again to undo."])
+  ns.Say(L["/qa gossip picks the only dialogue option of a character without quests for you, type it again to undo."])
 end
 
 local function title(id)
