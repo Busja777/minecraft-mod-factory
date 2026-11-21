@@ -198,16 +198,16 @@
     {
       "nr": 13,
       "slug": "six-more-enchantments",
-      "name": "Six More Enchantments",
+      "name": "Enchanting Extras",
       "art": "D",
-      "was": "Sechs neue Verzauberungen (Reichweite, Schrittweite, Vitalität …)",
+      "was": "Neue Verzauberungen am Zaubertisch (1.0: sechs, 1.1: neun). Umbenannt von „Six More Enchantments“, weil die Zahl im Namen mit jedem Update veraltet.",
       "updates": [
-        "+3",
-        "in Beute und Handel",
-        "Balance"
+        "in Beute und Handel (Schalter)",
+        "Balance nach Kommentaren",
+        "weitere Attribut-Verzauberungen, wenn neue Attribute kommen"
       ],
       "banner": {
-        "from": "chatgpt",
+        "from": "claude",
         "at": "2026-11-21"
       }
     },
@@ -383,9 +383,9 @@
       "art": "D",
       "was": "Koordinaten und Uhrzeit über der Leiste",
       "updates": [
-        "Richtung und Biom",
-        "Farben",
-        "Todes-Koordinaten"
+        "Farben wählbar",
+        "Todes-Koordinaten",
+        "Anzeige je Spieler kürzen (nur Koordinaten)"
       ],
       "banner": {
         "from": "chatgpt",

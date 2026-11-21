@@ -15,6 +15,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "ActionbarCoords-1.1.zip",
+      "changelog": "## Actionbar Coords 1.1\n\nNow shows the direction you are facing.\n\n- The line shows where you look between the coordinates and the clock: N, NE, E, SE, S, SW, W or NW (the same directions as the F3 screen), for example `X 120  Y 64  Z -33 · NE · 14:05`.\n- Still four updates a second, and `/trigger coords` still hides and shows the line for you.\n- Everything from 1.0 stays as it was. Works for every player without operator rights, on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
