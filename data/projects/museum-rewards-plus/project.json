@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "MuseumRewardsPlus-1.1.zip",
+      "changelog": "## Museum Rewards Plus 1.1\n\nLetters from Gunther.\n\n- New: the morning after you collect one of the ten new museum rewards, a short thank-you letter from Gunther waits in your mailbox. Ten different letters, one per reward, each sent only once.\n- The letters only say thanks: the reward itself is still the one Gunther hands you at his desk.\n- If you already collected some rewards with 1.0, the letters for them arrive the next morning.\n- All rewards and milestones stay exactly as in 1.0; the original museum rewards are unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

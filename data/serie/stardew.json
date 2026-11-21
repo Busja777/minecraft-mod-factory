@@ -320,8 +320,8 @@
       "art": "CP",
       "was": "Zusätzliche Museums-Belohnungen",
       "updates": [
-        "+10",
-        "Briefe von Gunther",
+        "+10 Belohnungen (Möbel, sobald die Prüfung (F)-IDs kennt)",
+        "Briefe schon beim Erreichen der Zahl (sobald MUSEUM_DONATIONS in der Prüfung steht)",
         "Deutsch"
       ],
       "banner": {
@@ -404,9 +404,9 @@
       "art": "CP",
       "was": "Mehr Ware an den Fest-Ständen",
       "updates": [
-        "weitere Feste",
-        "Regler",
-        "Deutsch"
+        "Stufen für die Preise",
+        "Deutsch (Einstellungstexte)",
+        "Fest des Wintersterns: Geschenk-Ideen"
       ],
       "banner": {
         "from": "claude",
