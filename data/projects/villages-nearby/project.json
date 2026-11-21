@@ -25,6 +25,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "VillagesNearby-1.2.zip",
+      "changelog": "## Villages Nearby 1.2\n\nOutposts and temples are closer too.\n\n- Pillager outposts, desert pyramids, jungle temples, swamp huts and igloos spawn about 2.3 times as often: one attempt every 21 chunks instead of every 32 (at least 6 chunks apart instead of 8).\n- Villages stay as close together as in 1.1.\n- Outposts still keep their distance from villages and stay as rare per attempt as in vanilla; every structure still only appears in its usual biomes.\n- Only land generated after the update gets the extra structures; existing chunks do not change.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

@@ -37,9 +37,9 @@
       "art": "R",
       "was": "Leisere Dorfbewohner, Kühe, Portale, Regen",
       "updates": [
+        "26.3-Tiervarianten (warme und kalte Schweine, Kühe, Hühner) leiser, in der 26.3-Fassung der sounds.json",
         "Stufen wählbar",
-        "mehr Geräusche",
-        "Varianten"
+        "Kolben, Wölfe, Pferde"
       ],
       "shot": false,
       "banner": {
@@ -70,9 +70,9 @@
       "art": "D",
       "was": "Dörfer erscheinen häufiger in neuen Gebieten",
       "updates": [
-        "Außenposten und Tempel",
-        "drei Stufen als eigene Dateien",
-        "26.1"
+        "Stufen wählbar (drei Packs in einem)",
+        "Ozeanmonumente und Ruinen",
+        "Fortschritte für gefundene Bauwerke"
       ],
       "banner": {
         "from": "chatgpt",
