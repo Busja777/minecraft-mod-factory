@@ -1,0 +1,19 @@
+{
+  "slug": "fruitful-orchards",
+  "game": "stardewvalley",
+  "name": "Fruitful Orchards",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FruitfulOrchards-1.0.zip",
+      "changelog": "## Fruitful Orchards 1.0\n\nFirst release.\n\n- Fruit trees can grow two fruits on a day instead of one: cherry, apricot, orange, peach, pomegranate, apple, banana and mango.\n- Choose the chance of the second fruit in the config: 25 %, 50 % (default) or 100 %.\n- Growth time stays at 28 days. Seasons, fruit quality and the trees' look stay as they are.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

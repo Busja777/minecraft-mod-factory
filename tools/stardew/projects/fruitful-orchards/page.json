@@ -1,0 +1,37 @@
+{
+  "name": "Fruitful Orchards",
+  "summary": "Your fruit trees sometimes give two fruits a day instead of one, and you choose how often in the config.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small wicker basket filled with ripe red apples, golden apricots and orange peaches, two green leaves resting on top",
+  "cover": {
+    "tagline": "More fruit from every tree you plant.",
+    "bullets": [
+      "A second fruit on lucky days",
+      "Chance set in the config",
+      "Growth time stays 28 days"
+    ]
+  },
+  "description": [
+    "**Fruitful Orchards gives your grown fruit trees a chance to bear two fruits on a day instead of one.**",
+    "",
+    "## Features",
+    "- Works for cherry, apricot, orange, peach, pomegranate, apple, banana and mango trees.",
+    "- Three chances in the config: 25 %, 50 % (default) and 100 %. At 50 %, a tree gives about one and a half fruits a day in season.",
+    "- Fruit quality still rises with the age of the tree, both fruits share it.",
+    "- Seasons, prices and the look of the trees stay as they are.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the chance in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Growth time is unchanged: saplings still need 28 days to grow up. Only the daily harvest of grown trees changes.",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

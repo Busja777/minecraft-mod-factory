@@ -1,0 +1,8 @@
+{
+  "name": "Fruitful Orchards",
+  "description": "Fruit trees sometimes grow two fruits a day instead of one, with the chance set in the config.",
+  "uniqueId": "SevEvolution.FruitfulOrchards",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}

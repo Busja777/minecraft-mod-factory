@@ -1,0 +1,19 @@
+{
+  "slug": "calmer-fish",
+  "game": "stardewvalley",
+  "name": "Calmer Fish",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "CalmerFish-1.0.zip",
+      "changelog": "## Calmer Fish 1.0\n\nFirst release.\n\n- Every non-legendary fish you catch with a rod is calmer in the fishing minigame: 51 fish, from anchovy to blobfish.\n- Choose the level in the config: Light (difficulty -15 %), Medium (-30 %, default) or Strong (-45 %). No fish gets easier than a carp.\n- Behaviour, seasons, times, weather, locations and sizes stay as they are. Legendary fish are unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

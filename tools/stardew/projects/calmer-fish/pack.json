@@ -1,0 +1,8 @@
+{
+  "name": "Calmer Fish",
+  "description": "Fish are easier to catch: lower minigame difficulty for every non-legendary fish, three levels in the config.",
+  "uniqueId": "SevEvolution.CalmerFish",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}
