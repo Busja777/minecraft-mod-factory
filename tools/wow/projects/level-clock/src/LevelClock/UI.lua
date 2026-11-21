@@ -251,7 +251,7 @@ local function scale(args)
 end
 
 local function help()
-  print(L["/lc opens or closes the clock, /lc history lists your last sessions, /lc reset starts a new session."])
+  print(L["/lc opens or closes the clock, /lc history lists your last sessions, /lc levels lists your last levels, /lc reset starts a new session."])
   print(L["/lc lock and /lc unlock fix the window in place, /lc scale 0.8 to 1.5 sets its size, /lc hidemax hides it at maximum level, /lc options shows these settings."])
 end
 
@@ -276,6 +276,17 @@ SlashCmdList.LEVELCLOCK = function(msg)
     end
     print(L["Your last sessions with XP, newest first:"])
     for _, e in ipairs(history) do DEFAULT_CHAT_FRAME:AddMessage("  " .. ns.HistoryText(e)) end
+  elseif cmd == "levels" then
+    if not ns.char then return end
+    local levels = ns.char.levels
+    if #levels == 0 then
+      print(L["No level-ups noted yet. Level Clock notes every level from now on."])
+      return
+    end
+    print(L["Your last levels on this character, newest first:"])
+    for i = #levels, math.max(1, #levels - ns.LEVELS_SHOWN + 1), -1 do
+      DEFAULT_CHAT_FRAME:AddMessage("  " .. ns.LevelText(levels, i))
+    end
   elseif cmd == "lock" then
     ns.db.settings.locked = true
     print(L["The window is locked in place. /lc unlock lets you move it again."])

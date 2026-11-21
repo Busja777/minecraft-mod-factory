@@ -68,8 +68,47 @@ local function leave(wow, event)
   wow.clock = wow.clock + 10
 end
 
+-- 1.3: reward choices of the reward window. list[i] = { name, id, count, price }; a price of nil
+-- means the game has not loaded that item yet. Builds the reward buttons the game would show.
+local function rewardsGame(g, list)
+  g.rewards, g.choices, g.requests = list, #list, {}
+  local function find(item)
+    local id = type(item) == "number" and item or tonumber(tostring(item):match("item:(%d+)"))
+    for _, r in ipairs(g.rewards) do if r.id == id then return r end end
+  end
+  GetQuestItemLink = function(kind, i)
+    local r = kind == "choice" and g.rewards[i]
+    if r then return r.link or ("|cff1eff00|Hitem:" .. r.id .. "::|h[" .. r.name .. "]|h|r") end
+  end
+  GetQuestItemInfo = function(kind, i)
+    local r = kind == "choice" and g.rewards[i]
+    if r then return r.name, 134400, r.count or 1, 2, true, r.id end
+  end
+  C_Item = {
+    GetItemInfo = function(item)
+      local r = find(item)
+      if r and r.price ~= nil then return r.name, "link", 2, 100, 80, "Armor", "Cloth", 1, "INVTYPE_CHEST", 134400, r.price end
+    end,
+    RequestLoadItemDataByID = function(id) g.requests[#g.requests + 1] = id end,
+  }
+  local buttons = {}
+  for i = 1, #list do
+    local b = CreateFrame("Button")
+    b.type = "choice"
+    b.GetID = function() return i end
+    buttons[i] = b
+  end
+  local fixed = CreateFrame("Button") -- a reward that comes anyway, listed after the choices
+  fixed.type = "reward"
+  fixed.GetID = function() return 1 end
+  buttons[#buttons + 1] = fixed
+  QuestInfoRewardsFrame = { RewardButtons = buttons }
+  return buttons
+end
+
 test("addon defines only its own globals", function(wow, installed, before)
-  game()
+  local g = game()
+  rewardsGame(g, { { name = "Cloak", id = 1, price = 10 }, { name = "Ring", id = 2, price = 99 } })
   local stubs = {}
   for k in pairs(_G) do stubs[k] = true end
   local ns = wow.load(ADDON_DIR, ADDON_NAME)
@@ -80,6 +119,11 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.fire("GOSSIP_SHOW")
   wow.fire("GOSSIP_CONFIRM", 1, "Sure?", 0)
   wow.fire("GOSSIP_CLOSED")
+  wow.fire("QUEST_COMPLETE")
+  wow.fire("GET_ITEM_INFO_RECEIVED", 2, true)
+  wow.fire("QUEST_FINISHED")
+  wow.slash("/qa hint off")
+  eq(wow.chat[#wow.chat], "|cffffd100Quest Autopilot:|r Reward hint is off.")
   local allowed = { QuestAutopilotDB = true, SLASH_QUESTAUTOPILOT1 = true, SLASH_QUESTAUTOPILOT2 = true }
   for k in pairs(_G) do
     if not stubs[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -281,9 +325,9 @@ end)
 test("/qa prints the state, on and off switch everything", function(wow)
   local ns, g = boot(wow)
   wow.slash("/qa")
-  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Autopilot is on. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Only dialogue option: off. Kept manual: 0.")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Autopilot is on. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Only dialogue option: off. Reward hint: on. Kept manual: 0.")
   wow.slash("/questautopilot OFF ")
-  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Autopilot is off. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Only dialogue option: off. Kept manual: 0.")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Autopilot is off. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Only dialogue option: off. Reward hint: on. Kept manual: 0.")
   eq(QuestAutopilotDB.settings.enabled, false)
   g.gossipActive = { { questID = 1, isComplete = true } }
   g.gossipAvailable = { { questID = 2 } }
@@ -298,13 +342,14 @@ test("/qa prints the state, on and off switch everything", function(wow)
   wow.fire("QUEST_DETAIL")
   eq(g.done(), "AcceptQuest")
   wow.slash("/qa what")
-  eq(#wow.chat, 7, "four help lines")
+  eq(#wow.chat, 8, "five help lines")
   eq(wow.chat[4]:match("/qa accept and /qa turnin switch one half") ~= nil, true)
   eq(wow.chat[5]:match("/qa manual keeps the quest you just saw manual") ~= nil, true)
   eq(wow.chat[6]:match("/qa dailies leaves all daily and weekly quests to you") ~= nil, true)
   eq(wow.chat[7]:match("/qa gossip picks the only dialogue option") ~= nil, true)
+  eq(wow.chat[8]:match("/qa hint on or /qa hint off") ~= nil, true)
   wow.slash("/qa on now")
-  eq(#wow.chat, 11, "a known word with something after it is not a switch")
+  eq(#wow.chat, 13, "a known word with something after it is not a switch")
 end)
 
 test("/qa accept and /qa turnin switch one half each", function(wow)
@@ -342,7 +387,7 @@ test("settings survive a restart, missing ones get their default", function(wow)
   eq(saved.settings.turnin, false)
   eq(saved.settings.accept, true)
   eq(saved.settings.enabled, true)
-  eq(saved.version, 3)
+  eq(saved.version, 4)
   wow.fire("QUEST_PROGRESS")
   eq(g.done(), "")
   wow.slash("/qa turnin")
@@ -637,7 +682,7 @@ test("/qa auto and /qa list", function(wow)
   wow.slash("/qa auto 6")
   eq(wow.chat[10], "|cffffd100Quest Autopilot:|r Quest 6 is not on your list. /qa list shows it.")
   wow.slash("/qa auto")
-  eq(#wow.chat, 14, "nothing named: the help")
+  eq(#wow.chat, 15, "nothing named: the help")
   eq(QuestAutopilotDB.manual.ids[5], "")
   eq(QuestAutopilotDB.manual.names["zebra hunt"], nil)
   g.quest = { id = 5 }
@@ -689,7 +734,7 @@ test("1.0 saved data is taken over: settings stay, the list starts empty", funct
   local saved = QuestAutopilotDB
   local ns, g = boot(wow)
   eq(QuestAutopilotDB, saved)
-  eq(saved.version, 3)
+  eq(saved.version, 4)
   eq(saved.settings.accept, false)
   eq(saved.settings.manualDailies, false)
   eq(type(saved.manual), "table")
@@ -832,7 +877,7 @@ end)
 test("/qa gossip: the only line of conversation is picked, page by page", function(wow)
   local ns, g = boot(wow)
   wow.slash("/qa gossip")
-  eq(wow.chat[1]:match("Only dialogue option: on%. Kept manual: 0%.$") ~= nil, true)
+  eq(wow.chat[1]:match("Only dialogue option: on%. Reward hint: on%. Kept manual: 0%.$") ~= nil, true)
   eq(QuestAutopilotDB.settings.gossip, true)
   g.options = { option(51) }
   wow.fire("GOSSIP_SHOW")
@@ -1004,7 +1049,7 @@ test("1.1 saved data is taken over: everything stays, the gossip switch starts o
   QuestAutopilotDB = { version = 2, settings = { enabled = true, accept = false, turnin = true, manualDailies = true }, manual = { ids = { [5] = "Five" }, names = {} } }
   local saved = QuestAutopilotDB
   local ns, g = boot(wow)
-  eq(saved.version, 3)
+  eq(saved.version, 4)
   eq(saved.settings.accept, false)
   eq(saved.settings.manualDailies, true)
   eq(saved.settings.gossip, false)
@@ -1029,4 +1074,258 @@ test("a confirmation before login does nothing", function(wow)
   wow.fire("GOSSIP_SHOW")
   eq(g.done(), "")
   eq(#wow.chat, 0)
+end)
+
+-- 1.3: the reward hint --------------------------------------------------------------------------------
+
+local HINT = "|cffffd100Quest Autopilot:|r Highest vendor value: "
+local CHOOSE = "|cffffd100Quest Autopilot:|r This quest has several rewards. Pick one yourself."
+local function link(id, name) return "|cff1eff00|Hitem:" .. id .. "::|h[" .. name .. "]|h|r" end
+
+test("decision: the reward with the highest vendor value, only when every price is known", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  local function best(...)
+    local list = {}
+    for i, v in ipairs({ ... }) do list[i] = { value = v ~= false and v or nil } end
+    return ns.BestReward(list)
+  end
+  local index, value = best(100, 500, 200)
+  eq(index, 2)
+  eq(value, 500)
+  eq(best(500, 100, 100), 1, "a tie further down does not matter")
+  eq(best(100, false, 200), nil, "a price is not known yet")
+  eq(best(0, 0, 0), nil, "nothing is worth anything")
+  eq(best(0, 300), 2)
+  eq(best(300, 300, 5), nil, "two rewards share the top price: no hint")
+  eq(best(300), nil, "one reward is no choice")
+  eq(best(-1, 5), nil)
+  eq(ns.BestReward(nil), nil)
+  eq(ns.BestReward({ 5, 6 }), nil, "broken entries")
+  eq(ns.StackValue(25, 4), 100)
+  eq(ns.StackValue(25, nil), 25)
+  eq(ns.StackValue(25, 0), 25)
+  eq(ns.StackValue(nil, 3), nil)
+  eq(ns.StackValue(0 / 0, 1), nil)
+  eq(ns.MoneyText(12000), "1g 20s")
+  eq(ns.MoneyText(12003), "1g 20s 3c")
+  eq(ns.MoneyText(4503), "45s 3c")
+  eq(ns.MoneyText(7), "7c")
+  eq(ns.MoneyText(0), "0c")
+  eq(ns.MoneyText(1000000), "100g")
+  eq(ns.WantHint({ enabled = true, hint = true, choices = 2 }), true)
+  eq(ns.WantHint({ enabled = true, hint = true, choices = 1 }), false)
+  eq(ns.WantHint({ enabled = true, hint = true, choices = nil }), false)
+  eq(ns.WantHint({ enabled = true, hint = false, choices = 3 }), false)
+  eq(ns.WantHint({ enabled = false, hint = true, choices = 3 }), false)
+  eq(ns.WantHint({ enabled = true, hint = true, paused = true, choices = 3 }), false)
+  eq(ns.DEFAULTS.hint, true)
+end)
+
+test("a choice of rewards: a coin on the most valuable one and one chat line, nothing is picked", function(wow)
+  local ns, g = boot(wow)
+  local buttons = rewardsGame(g, {
+    { name = "Cloak", id = 11, price = 4500 },
+    { name = "Staff", id = 12, price = 12000 },
+    { name = "Ring", id = 13, price = 900 },
+  })
+  wow.fire("QUEST_COMPLETE")
+  eq(g.done(), "", "the autopilot never picks")
+  eq(#wow.chat, 2)
+  eq(wow.chat[1], CHOOSE)
+  eq(wow.chat[2], HINT .. link(12, "Staff") .. " (1g 20s). The choice is still yours.")
+  eq(ns.mark:IsShown(), true)
+  eq(ns.mark.button, buttons[2])
+  eq(ns.mark.icon.kind, "Texture")
+  wow.fire("QUEST_FINISHED")
+  eq(ns.mark:IsShown(), false, "the coin goes with the window")
+  eq(rawget(ns.mark, "button"), nil)
+end)
+
+test("a stack counts with all its items", function(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, { { name = "Gem", id = 21, price = 5000 }, { name = "Potion", id = 22, price = 500, count = 20 } })
+  wow.fire("QUEST_COMPLETE")
+  eq(wow.chat[2], HINT .. link(22, "Potion") .. " (1g). The choice is still yours.")
+end)
+
+test("a price the game loads later completes the hint, once", function(wow)
+  local ns, g = boot(wow)
+  local buttons = rewardsGame(g, { { name = "Cloak", id = 31, price = 100 }, { name = "Staff", id = 32 } })
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 1, "a price is missing: no hint yet")
+  eq(g.requests[1], 32, "the game is asked to load the item")
+  eq(ns.mark, nil)
+  g.rewards[2].price = 250
+  wow.fire("GET_ITEM_INFO_RECEIVED", 32, true)
+  eq(#wow.chat, 2)
+  eq(wow.chat[2], HINT .. link(32, "Staff") .. " (2s 50c). The choice is still yours.")
+  eq(ns.mark.button, buttons[2])
+  wow.fire("GET_ITEM_INFO_RECEIVED", 99, true)
+  eq(#wow.chat, 2, "said once")
+  wow.fire("QUEST_FINISHED")
+  g.rewards[1].price = 999999
+  wow.fire("GET_ITEM_INFO_RECEIVED", 31, true)
+  eq(#wow.chat, 2, "nothing after the window has closed")
+end)
+
+test("no hint when nothing is worth anything or two rewards share the top price", function(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, { { name = "Token", id = 41, price = 0 }, { name = "Badge", id = 42, price = 0 } })
+  wow.fire("QUEST_COMPLETE")
+  wow.fire("QUEST_FINISHED")
+  rewardsGame(g, { { name = "Left", id = 43, price = 700 }, { name = "Right", id = 44, price = 700 } })
+  wow.fire("QUEST_COMPLETE")
+  wow.fire("GET_ITEM_INFO_RECEIVED", 43, true)
+  eq(#wow.chat, 2, "only the line about several rewards, twice")
+  eq(wow.chat[2], CHOOSE)
+  eq(ns.mark, nil)
+end)
+
+test("/qa hint on, off and alone; it is saved and /qa off, Shift and a single reward stop it", function(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, { { name = "Cloak", id = 51, price = 100 }, { name = "Staff", id = 52, price = 200 } })
+  wow.slash("/qa hint off")
+  eq(QuestAutopilotDB.settings.hint, false)
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 2)
+  eq(wow.chat[2], CHOOSE)
+  wow.slash("/qa HINT On")
+  eq(wow.chat[3], "|cffffd100Quest Autopilot:|r Reward hint is on: when a quest lets you choose, the reward a vendor pays most for gets a coin.")
+  eq(QuestAutopilotDB.settings.hint, true)
+  wow.slash("/qa hint")
+  eq(QuestAutopilotDB.settings.hint, false, "alone it switches")
+  wow.slash("/qa hint")
+  eq(QuestAutopilotDB.settings.hint, true)
+  wow.slash("/qa hint maybe")
+  eq(wow.chat[6]:match("^|cffffd100Quest Autopilot:|r /qa shows the state") ~= nil, true, "an unknown word shows the help")
+  eq(QuestAutopilotDB.settings.hint, true)
+  wow.chat = {}
+  wow.slash("/qa off")
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 1, "switched off: only the state line")
+  wow.slash("/qa on")
+  leave(wow)
+  g.shift = true
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 2, "Shift: nothing")
+  leave(wow)
+  g.shift = false
+  g.rewards = { g.rewards[1] }
+  g.choices = 1
+  wow.fire("QUEST_COMPLETE")
+  eq(g.done(), "GetQuestReward 1", "one reward: taken as before, no hint")
+  eq(#wow.chat, 2)
+end)
+
+test("a quest kept manual still gets the hint, but the autopilot stays out", function(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, { { name = "Cloak", id = 61, price = 300 }, { name = "Staff", id = 62, price = 200 } })
+  wow.slash("/qa manual 600")
+  g.quest = { id = 600, title = "Mine" }
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 2)
+  eq(wow.chat[2], HINT .. link(61, "Cloak") .. " (3s). The choice is still yours.")
+  eq(g.done(), "")
+end)
+
+test("a different reward window: only the chat line", function(wow)
+  local ns, g = boot(wow)
+  local list = { { name = "Cloak", id = 71, price = 300 }, { name = "Staff", id = 72, price = 200 } }
+  rewardsGame(g, list)
+  QuestInfoRewardsFrame = nil
+  wow.fire("QUEST_COMPLETE")
+  eq(wow.chat[2], HINT .. link(71, "Cloak") .. " (3s). The choice is still yours.")
+  eq(ns.mark, nil)
+  leave(wow)
+  local buttons = rewardsGame(g, list)
+  for _, b in ipairs(buttons) do b.type = nil end
+  wow.fire("QUEST_COMPLETE")
+  eq(ns.mark, nil, "buttons the game does not mark as choices are left alone")
+  leave(wow)
+  buttons = rewardsGame(g, list)
+  buttons[1]:Hide()
+  wow.fire("QUEST_COMPLETE")
+  eq(ns.mark, nil, "a hidden button is not marked")
+  leave(wow)
+  buttons = rewardsGame(g, list)
+  QuestInfoRewardsFrame.RewardButtons = "broken"
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 8)
+  eq(ns.mark, nil)
+end)
+
+test("the next reward window takes the coin away", function(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, { { name = "Cloak", id = 81, price = 300 }, { name = "Staff", id = 82, price = 200 } })
+  wow.fire("QUEST_COMPLETE")
+  eq(ns.mark:IsShown(), true)
+  rewardsGame(g, { { name = "Ring", id = 83 }, { name = "Belt", id = 84 } })
+  wow.fire("QUEST_COMPLETE") -- no QUEST_FINISHED in between
+  eq(ns.mark:IsShown(), false)
+end)
+
+test("secret or missing reward details give no hint and no error", function(wow)
+  local ns, g = boot(wow)
+  local secret = { secret = true }
+  rewardsGame(g, { { name = "Cloak", id = 91, price = secret }, { name = "Staff", id = 92, price = 200 } })
+  wow.fire("QUEST_COMPLETE")
+  leave(wow)
+  rewardsGame(g, { { name = "Cloak", id = 91, price = 100, count = secret }, { name = "Staff", id = 92, price = 200 } })
+  wow.fire("QUEST_COMPLETE")
+  leave(wow)
+  rewardsGame(g, { { name = "Cloak", id = 91, price = 100 }, { name = "Staff", id = 92, price = 200 } })
+  C_Item.GetItemInfo = function() error("not now") end
+  wow.fire("QUEST_COMPLETE")
+  leave(wow)
+  g.choices = secret
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 3, "only the lines about several rewards")
+  eq(ns.mark, nil)
+end)
+
+test("a client with only the older item functions still gets the hint", function(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, { { name = "Cloak", id = 101, price = 300 }, { name = "Staff", id = 102, price = 200 } })
+  GetItemInfo = C_Item.GetItemInfo
+  C_Item = nil
+  GetQuestItemLink = nil
+  wow.fire("QUEST_COMPLETE")
+  eq(wow.chat[2], HINT .. "Cloak (3s). The choice is still yours.", "the name instead of the link")
+  leave(wow)
+  GetItemInfo, GetQuestItemInfo = nil, nil
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 3)
+end)
+
+test("the hint waits a moment for the game to lay out its reward buttons", function(wow)
+  local ns, g = boot(wow)
+  local timers = {}
+  C_Timer = { After = function(_, fn) timers[#timers + 1] = fn end }
+  local buttons = rewardsGame(g, { { name = "Cloak", id = 111, price = 300 }, { name = "Staff", id = 112, price = 200 } })
+  wow.fire("QUEST_COMPLETE")
+  eq(#wow.chat, 1)
+  timers[1]()
+  eq(#wow.chat, 2)
+  eq(ns.mark.button, buttons[1])
+  leave(wow)
+  wow.fire("QUEST_COMPLETE")
+  wow.fire("QUEST_FINISHED") -- closed before the moment passed
+  timers[2]()
+  eq(#wow.chat, 3)
+end)
+
+test("1.2 saved data is taken over: everything stays, the reward hint starts on", function(wow)
+  QuestAutopilotDB = { version = 3, settings = { enabled = true, accept = true, turnin = false, manualDailies = true, gossip = true },
+    manual = { ids = { [7] = "Seven" }, names = {} }, blocked = { [80] = true } }
+  local saved = QuestAutopilotDB
+  local ns, g = boot(wow)
+  eq(saved.version, 4)
+  eq(saved.settings.hint, true)
+  eq(saved.settings.turnin, false)
+  eq(saved.settings.gossip, true)
+  eq(saved.manual.ids[7], "Seven")
+  eq(saved.blocked[80], true)
+  QuestAutopilotDB = { version = 4, settings = { hint = false } }
+  boot(wow)
+  eq(QuestAutopilotDB.settings.hint, false, "a switched-off hint stays off")
 end)

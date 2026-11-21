@@ -86,17 +86,152 @@ local function onProgress(paused)
   if what == "continue" then CompleteQuest() end
 end
 
+-- 1.3: the reward hint ----------------------------------------------------------------------------
+-- When a quest offers a choice of rewards, the one a vendor pays most for gets a small coin in the
+-- reward window and one chat line. The autopilot still never picks.
+
+ns.reward = nil -- { tries, shown } while a reward window with a choice is open
+local MAX_TRIES = 10 -- how often prices that arrive later are looked at again in one window
+local COIN = "Interface\\MoneyFrame\\UI-GoldIcon"
+
+-- The vendor price of one item (a link or an item ID), or nil while the game has not loaded it.
+-- C_Item.GetItemInfo and the older GetItemInfo return the price as their 11th value.
+local function sellPrice(item)
+  if item == nil then return nil end
+  local getInfo = (C_Item and C_Item.GetItemInfo) or GetItemInfo
+  if not getInfo then return nil end
+  local results = { pcall(getInfo, item) }
+  if not results[1] or results[2] == nil then return nil end
+  local price = results[12]
+  if ns.IsSecret(price) then return nil end
+  return price
+end
+
+-- Asks the game to load an item it does not know yet; GET_ITEM_INFO_RECEIVED follows.
+local function requestItem(itemID)
+  if type(itemID) ~= "number" or not (C_Item and C_Item.RequestLoadItemDataByID) then return end
+  pcall(C_Item.RequestLoadItemDataByID, itemID)
+end
+
+-- The choices of the reward window: { { value } } for Core.lua and the link (or name) of each.
+local function readChoices(count)
+  local choices, names = {}, {}
+  for i = 1, count do
+    local link = GetQuestItemLink and read(GetQuestItemLink, "choice", i) or nil
+    if type(link) ~= "string" or link == "" then link = nil end
+    local name, amount, itemID
+    if GetQuestItemInfo then
+      local ok, itemName, _, itemCount, _, _, id = pcall(GetQuestItemInfo, "choice", i)
+      if ok then
+        name = text(itemName)
+        amount = itemCount
+        if ns.IsSecret(itemCount) then amount = false end -- a secret count: no value
+        itemID = questID(id)
+      end
+    end
+    local value
+    if amount ~= false then
+      local price = sellPrice(link or itemID)
+      if price == nil then requestItem(itemID) end
+      value = ns.StackValue(price, amount)
+    end
+    choices[i] = { value = value }
+    names[i] = link or name
+  end
+  return choices, names
+end
+
+-- The button of a reward choice in the quest window (QuestInfoRewardsFrame.RewardButtons). Only a
+-- shown button the game marks as that choice counts; a different layout finds nothing.
+local function rewardButton(index)
+  local frame = QuestInfoRewardsFrame
+  if type(frame) ~= "table" or type(frame.RewardButtons) ~= "table" then return nil end
+  for _, button in ipairs(frame.RewardButtons) do
+    if type(button) == "table" and button.type == "choice" and button.GetID and button:GetID() == index
+      and button.IsShown and button:IsShown() then
+      return button
+    end
+  end
+  return nil
+end
+
+local mark -- the coin, one frame of its own that moves to the button it marks
+
+local function showMark(button)
+  if not mark then
+    mark = CreateFrame("Frame")
+    mark:SetSize(18, 18)
+    mark.icon = mark:CreateTexture(nil, "OVERLAY")
+    mark.icon:SetAllPoints()
+    mark.icon:SetTexture(COIN)
+    ns.mark = mark
+  end
+  mark:SetParent(button)
+  mark:ClearAllPoints()
+  mark:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 4)
+  local level = button.GetFrameLevel and button:GetFrameLevel()
+  if type(level) == "number" then mark:SetFrameLevel(level + 5) end
+  mark.button = button
+  mark:Show()
+end
+
+local function clearHint()
+  ns.reward = nil
+  if mark then
+    mark:Hide()
+    mark.button = nil
+  end
+end
+
+local function tryHint()
+  local reward = ns.reward
+  if not reward or reward.shown then return end
+  reward.tries = reward.tries + 1
+  local count = read(GetNumQuestChoices)
+  if type(count) ~= "number" or count < 2 then return clearHint() end
+  local choices, names = readChoices(count)
+  local index, value = ns.BestReward(choices)
+  if not index then
+    if reward.tries >= MAX_TRIES then ns.reward = nil end
+    return
+  end
+  reward.shown = true
+  local button = rewardButton(index)
+  if button then pcall(showMark, button) end
+  ns.Say(ns.HintText(names[index], value))
+end
+
+local function startHint(paused, choices)
+  clearHint()
+  if not ns.WantHint({ enabled = ns.settings.enabled, hint = ns.settings.hint, paused = paused, choices = choices }) then return end
+  local reward = { tries = 0 }
+  ns.reward = reward
+  -- A moment later the game has laid out its reward buttons.
+  if C_Timer and C_Timer.After then
+    C_Timer.After(0, function() if ns.reward == reward then tryHint() end end)
+  else
+    tryHint()
+  end
+end
+
+-- A price the game has just loaded may complete the hint.
+local function onItemInfo()
+  if ns.reward then tryHint() end
+end
+
 local function onComplete(paused)
   local quest = windowQuest()
+  local choices = read(GetNumQuestChoices)
   local what, index = ns.OnComplete({
     enabled = ns.IsOn(ns.settings, "turnin"), paused = paused, manual = manual(quest),
-    choices = read(GetNumQuestChoices), moneyNeeded = moneyNeeded(),
+    choices = choices, moneyNeeded = moneyNeeded(),
   })
   if what == "take" then
     GetQuestReward(index)
   elseif what == "choose" then
     ns.Say(L["This quest has several rewards. Pick one yourself."])
   end
+  startHint(paused, choices)
 end
 
 -- Quest lists of the newer conversation window.
@@ -241,7 +376,8 @@ local function onLogin()
   local db = QuestAutopilotDB
   -- 2 (1.1): the list of quests kept manual; 1.0 data needs nothing else.
   -- 3 (1.2): the dialogue options that asked for a confirmation; the gossip switch starts off.
-  db.version = 3
+  -- 4 (1.3): the reward hint switch, filled in by ns.Settings; it starts on.
+  db.version = 4
   if type(db.settings) ~= "table" then db.settings = {} end
   if type(db.manual) ~= "table" then db.manual = {} end
   db.blocked = ns.BlockedList(db.blocked)
@@ -259,6 +395,9 @@ frame:SetScript("OnEvent", function(_, event)
     onLogin()
   elseif CLOSED[event] then
     ns.WindowClosed(ns.talk, GetTime())
+    if event == "QUEST_FINISHED" then clearHint() end
+  elseif event == "GET_ITEM_INFO_RECEIVED" then
+    if ns.settings then onItemInfo() end
   elseif CONFIRM[event] then
     if ns.settings then onConfirm() end
   elseif WINDOWS[event] and ns.settings then
@@ -276,3 +415,4 @@ listen("PLAYER_LOGIN")
 for event in pairs(WINDOWS) do listen(event) end
 for event in pairs(CLOSED) do listen(event) end
 for event in pairs(CONFIRM) do listen(event) end
+listen("GET_ITEM_INFO_RECEIVED")
