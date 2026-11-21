@@ -104,7 +104,7 @@
       "art": "CP",
       "was": "Saat ganzjährig, Aufpreis einstellbar",
       "updates": [
-        "Einstellungstexte auf Deutsch (sobald die Prüfung Übersetzungen der Einstellungen kennt, PR #33)",
+        "Einstellungstexte auf Deutsch (nach PR #75)",
         "Aufpreis-Stufe 0 % für entspannte Spielstände",
         "Feinschliff nach Kommentaren"
       ],
@@ -188,9 +188,9 @@
       "art": "CP",
       "was": "Mehr Angebot bei Willy",
       "updates": [
-        "Sandy (Oasis)",
+        "Sandy (Oasis), ohne Samen (die stecken in Pierre's Year-Round Seeds)",
         "Stufen für die Tageslimits",
-        "Deutsch (Einstellungstexte)"
+        "Deutsch (Einstellungstexte, nach PR #75)"
       ],
       "banner": {
         "from": "chatgpt",
@@ -216,7 +216,7 @@
       "art": "CP",
       "was": "Obstbäume tragen öfter zwei Früchte, Stufe wählbar (ersetzt „Faster Fruit Trees“: die Wachstumszeit ist im Spiel fest eingebaut und per Content Patcher nicht ehrlich änderbar)",
       "updates": [
-        "Deutsch (sobald die Prüfung Übersetzungen der Einstellungen kennt, PR #33); Insel-Bäume und Stufen sind schon in 1.0",
+        "Deutsch (nach PR #75); Insel-Bäume und Stufen sind schon in 1.0",
         "Balance der Stufen nach Kommentaren",
         "Feinschliff nach Kommentaren"
       ],
@@ -405,8 +405,8 @@
       "was": "Mehr Ware an den Fest-Ständen",
       "updates": [
         "Stufen für die Preise",
-        "Deutsch (Einstellungstexte)",
-        "Fest des Wintersterns: Geschenk-Ideen"
+        "Deutsch (Einstellungstexte, nach PR #75)",
+        "Feinschliff nach Kommentaren (Geschenk-Ideen gestrichen: gehören zu Villager Birthday Reminders)"
       ],
       "banner": {
         "from": "claude",
