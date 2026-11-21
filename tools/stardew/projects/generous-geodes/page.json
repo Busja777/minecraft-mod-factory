@@ -1,0 +1,37 @@
+{
+  "name": "Generous Geodes",
+  "summary": "Crack open more minerals and fewer plain stones, with a generosity level you pick yourself.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A split-open round geode with a glowing cluster of purple and teal crystals inside, resting on a small velvet cushion",
+  "cover": {
+    "tagline": "More crystals, less gravel.",
+    "bullets": [
+      "Minerals and artifacts more often",
+      "Three levels in the config",
+      "Only the geode's own contents"
+    ]
+  },
+  "description": [
+    "**Generous Geodes makes geodes, frozen geodes and magma geodes give their minerals and artifacts more often.**",
+    "",
+    "## Features",
+    "- In the normal game, half of all geodes hold a mineral or artifact and the other half stone, clay or ore. This pack shifts that balance towards the minerals.",
+    "- Three levels in the config: Gentle (60 % minerals), Generous (70 %, default) and Lavish (80 %).",
+    "- Each geode still only gives its own contents: no new items, and every mineral keeps the same odds as its neighbours.",
+    "- Stone, clay, coal and ores still drop, just less often, with their usual amounts.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the level in the generated `config.json` or in Generic Mod Config Menu, then let Clint or a geode crusher do the rest.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Omni geodes and artifact troves are not changed yet.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

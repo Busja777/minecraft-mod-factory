@@ -1,0 +1,37 @@
+{
+  "name": "Fish Pond Bounty",
+  "summary": "Ponds of everyday river and ocean fish fill your chum bucket with roe more often, and fuller ponds give more of it.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small wooden bucket overflowing with glossy orange fish roe, with a single silver fish leaping out of a round pond behind it",
+  "cover": {
+    "tagline": "Full ponds, full buckets.",
+    "bullets": [
+      "Roe every time a pond produces",
+      "More roe in fuller ponds",
+      "Quests and spawn times unchanged"
+    ]
+  },
+  "description": [
+    "**Fish Pond Bounty makes the ponds of common river and ocean fish give more roe.**",
+    "",
+    "## Features",
+    "- Covers 23 everyday fish: bream, bullhead, carp, chub, goby, herring, both basses, perch, salmon, shad, walleye, albacore, anchovy, eel, halibut, pufferfish, red mullet, red snapper, sardine, sea cucumber, tilapia and tuna.",
+    "- Once a pond's daily roll succeeds, it always gives roe instead of sometimes nothing.",
+    "- Ponds with 4 or more fish sometimes give 1-2 roe, ponds with 7 or more fish sometimes 2-3. A full pond gives at least 70 % more roe than before.",
+    "- Only roe, like in the normal game: no new items.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Collect the chum bucket as usual.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Pond quests, spawn times and the daily chance to produce stay as they are. Legendary fish are not changed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

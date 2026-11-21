@@ -1,0 +1,8 @@
+{
+  "name": "Fish Pond Bounty",
+  "description": "Fish ponds of common river and ocean fish give their roe more reliably and in bigger amounts.",
+  "uniqueId": "SevEvolution.FishPondBounty",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}

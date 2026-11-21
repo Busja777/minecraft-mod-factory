@@ -1,0 +1,38 @@
+{
+  "name": "Calmer Fish",
+  "summary": "Make the fishing minigame gentler: every regular fish fights a little less, and you pick how much in the config.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A round wooden fishing bobber, red and white, floating on calm blue water with soft gentle ripples around it",
+  "cover": {
+    "tagline": "Fishing with less fight on the line.",
+    "bullets": [
+      "Lower difficulty for 51 fish",
+      "Three levels in the config",
+      "Legendary fish stay legendary"
+    ]
+  },
+  "description": [
+    "**Calmer Fish lowers the difficulty of every regular fish in the fishing minigame, so the bar is easier to keep on the fish.**",
+    "",
+    "## Features",
+    "- 51 fish caught with a rod become calmer, from anchovy and sardine to lava eel, octopus and the night market fish.",
+    "- Three levels in the config: Light (-15 %), Medium (-30 %, default) and Strong (-45 %). At Medium, an octopus drops from 95 to 67.",
+    "- No fish gets easier than a carp, the calmest fish of the valley.",
+    "- Each fish keeps its movement style, seasons, times, weather, locations and sizes.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the level in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Legendary fish keep their full challenge.",
+    "- Fishing experience per catch depends on difficulty, so calmer fish give a bit less of it.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

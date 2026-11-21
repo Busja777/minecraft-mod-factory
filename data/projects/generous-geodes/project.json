@@ -1,0 +1,19 @@
+{
+  "slug": "generous-geodes",
+  "game": "stardewvalley",
+  "name": "Generous Geodes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "GenerousGeodes-1.0.zip",
+      "changelog": "## Generous Geodes 1.0\n\nFirst release.\n\n- Geodes, frozen geodes and magma geodes hold a mineral or their artifact more often, and plain stone, clay and ore less often.\n- Choose the level in the config: Gentle (60 % minerals), Generous (70 %, default) or Lavish (80 %). The normal game gives 50 %.\n- Every geode only gives what it gives in the normal game, so all minerals and artifacts stay findable for the museum.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

@@ -135,7 +135,11 @@
         "Omni-Geode",
         "Artefakt-Truhen",
         "Regler"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 10,
@@ -159,7 +163,11 @@
         "mehr Fischarten",
         "Regler",
         "legendäre Fische"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 12,
@@ -199,15 +207,19 @@
     },
     {
       "nr": 15,
-      "slug": "faster-fruit-trees",
-      "name": "Faster Fruit Trees",
+      "slug": "fruitful-orchards",
+      "name": "Fruitful Orchards",
       "art": "CP",
-      "was": "Obstbäume wachsen schneller",
+      "was": "Obstbäume tragen öfter zwei Früchte, Stufe wählbar (ersetzt „Faster Fruit Trees“: die Wachstumszeit ist im Spiel fest eingebaut und per Content Patcher nicht ehrlich änderbar)",
       "updates": [
-        "Regler",
-        "weitere Bäume",
+        "Insel-Bäume (Banane, Mango)",
+        "Stufen",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 16,
@@ -231,7 +243,11 @@
         "je Jahreszeit",
         "legendäre Fische",
         "Regler"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 18,

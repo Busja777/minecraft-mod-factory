@@ -1,0 +1,19 @@
+{
+  "slug": "fish-pond-bounty",
+  "game": "stardewvalley",
+  "name": "Fish Pond Bounty",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FishPondBounty-1.0.zip",
+      "changelog": "## Fish Pond Bounty 1.0\n\nFirst release.\n\n- Ponds of 23 common fish give roe whenever they produce: bream, bullhead, carp, chub, goby, herring, largemouth and smallmouth bass, perch, salmon, shad, walleye, albacore, anchovy, eel, halibut, pufferfish, red mullet, red snapper, sardine, sea cucumber, tilapia and tuna.\n- Ponds with 4 or more fish sometimes give 1-2 roe, ponds with 7 or more fish sometimes 2-3 roe.\n- Quests, spawn times and the daily chance to produce stay as in the normal game. Legendary fish are not changed.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
