@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "VillagerBirthdayReminders-1.1.zip",
+      "changelog": "## Villager Birthday Reminders 1.1\n\nA reminder the day before.\n\n- New: a short letter the morning before each birthday (\"Tomorrow is …'s birthday!\"), with the same gift idea, so there is a day to get the gift ready.\n- On by default. Don't want it? Switch off \"DayBefore\" in the config (config.json or the in-game config menu); the letter on the birthday itself always comes.\n- A birthday on the 1st gets its reminder on the 28th of the season before (Krobus: fall 28).\n- As before, letters only come for villagers you have already met.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }
