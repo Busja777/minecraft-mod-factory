@@ -1,0 +1,36 @@
+{
+  "name": "AFK Tag",
+  "summary": "See at a glance who is away from the keyboard: idle players get a grey AFK mark in front of their name in the player list.",
+  "class": "Mods",
+  "category": "Server Utility",
+  "logoPrompt": "A glowing hourglass with grey sand running through it, standing on a stone block, in blocky voxel style",
+  "cover": {
+    "tagline": "Know who is away from the keyboard.",
+    "bullets": [
+      "Grey [AFK] in the player list",
+      "Chat line when they go and return",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**AFK Tag marks players who have stopped playing for a while, so everyone on the server knows at a glance who is really there.**",
+    "",
+    "## Features",
+    "- After 5 idle minutes a grey `[AFK]` appears in front of the player's name in the player list.",
+    "- The chat says when someone goes AFK and when they are back.",
+    "- Walking, looking around, chatting, commands and any click clear the tag at once.",
+    "- Drifting in water, riding without steering or being teleported does not count as being active.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API and start the server. Hold the Tab key to see the player list. To change the idle time, edit `minutes` in `config/afktag.json` and restart.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Only the server needs it; players can join without installing anything. It also works in singleplayer and on LAN.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

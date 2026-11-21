@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "afktag",
+  "version": "${version}",
+  "name": "AFK Tag",
+  "description": "Players who stay idle for a few minutes get a grey [AFK] in front of their name in the player list, with a chat line when they go and come back. Works on the server alone; players need nothing installed.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.afktag.AfkTag"]
+  },
+  "mixins": ["afktag.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

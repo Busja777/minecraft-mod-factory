@@ -1,0 +1,37 @@
+{
+  "name": "Actionbar Coords",
+  "summary": "Keep your block position and the time of day in view at all times, shown in a small line just above your hotbar.",
+  "class": "Data Packs",
+  "category": "Utility",
+  "logoPrompt": "A golden compass with a glowing clock face in its centre, resting on a grass block, in blocky voxel style",
+  "cover": {
+    "tagline": "Where you are and what time it is.",
+    "bullets": [
+      "Updates four times a second",
+      "Each player can hide it",
+      "No operator rights needed"
+    ]
+  },
+  "description": [
+    "**Actionbar Coords puts your coordinates and the time of day right above the hotbar, so you never need the debug screen to know where you are.**",
+    "",
+    "## Features",
+    "- Shows the block you stand in as X, Y and Z, the same numbers the debug screen gives.",
+    "- Shows the time of day as a 24-hour clock, for example 14:05, so you know when night is coming.",
+    "- Updates four times a second while you move.",
+    "- On for every player from the start; `/trigger coords` hides it for you alone and brings it back.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). The line appears at once. Type `/trigger coords` to switch it off or on.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Players need nothing installed.",
+    "- The clock always follows the Overworld, also in the Nether and the End.",
+    "- Other messages above the hotbar, such as the name of a playing music disc, are replaced by the line within a moment.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

@@ -213,7 +213,11 @@
         "zählt beim Schlafen nicht",
         "Kick",
         "NeoForge"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 15,
@@ -374,7 +378,11 @@
         "Richtung und Biom",
         "Farben",
         "Todes-Koordinaten"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 27,
