@@ -37,9 +37,9 @@
       "art": "RF",
       "was": "EP pro Stunde, Zeit bis Level-Up, Erholungsbonus",
       "updates": [
-        "Sitzungsverlauf",
         "Fenster-Optionen",
-        "Level-Historie je Charakter"
+        "Level-Historie je Charakter",
+        "Wochenübersicht"
       ]
     },
     {
@@ -61,9 +61,9 @@
       "art": "RF",
       "was": "Verkauft Graues, repariert, zeigt die Summe",
       "updates": [
-        "Ausnahmeliste",
         "Gildenbank-Reparatur",
-        "Verkaufsprotokoll"
+        "Verkaufsprotokoll",
+        "Ausnahmen per Rechtsklick"
       ]
     },
     {

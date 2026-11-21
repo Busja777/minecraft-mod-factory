@@ -35,6 +35,9 @@ local WAITING = "|cff9d9d9d...|r"
 test("addon defines only its own globals", function(wow, installed, before)
   boot(wow)
   wow.slash("/lc") -- creates the window
+  LevelClockFrame.switch:Click()
+  wow.slash("/lc history")
+  wow.fire("PLAYER_LOGOUT")
   local allowed = { LevelClockDB = true, LevelClockFrame = true, SLASH_LEVELCLOCK1 = true, SLASH_LEVELCLOCK2 = true }
   for _, name in ipairs(STAND_IN) do installed[name] = true end
   for k in pairs(_G) do
@@ -114,7 +117,7 @@ test("login takes the first reading without counting it", function(wow)
   eq(ns.session.start, wow.clock)
   eq(ns.session.last.xp, 4200)
   eq(ns.session.last.rested, 2500)
-  eq(LevelClockDB.version, 1)
+  eq(LevelClockDB.version, 2)
   eq(LevelClockDB.chars["Yubi-Silvermoon"], ns.char)
   local v = ns.View(ns.session, wow.clock + 10)
   eq(v.needed, 5800)
@@ -380,5 +383,229 @@ test("nothing happens before login", function(wow)
   eq(ns.session.gained, 0)
   eq(LevelClockFrame, nil)
   eq(LevelClockDB, nil)
+  eq(#wow.chat, 0)
+end)
+
+-- 1.1: session history ---------------------------------------------------------------------------
+
+-- Logs out, lets time pass and logs in again with the saved data, the way the game does
+-- (a /reload works the same way). Returns the namespace of the freshly loaded addon.
+local function relog(wow, seconds)
+  wow.fire("PLAYER_LOGOUT")
+  wow.now = wow.now + (seconds or 0)
+  wow.clock = wow.clock + (seconds or 0)
+  for _, f in ipairs(wow.frames) do f.events = {} end -- the old copy of the addon no longer listens
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  return ns
+end
+
+-- Plays for a while and earns XP.
+local function play(wow, seconds, xp)
+  wow.clock = wow.clock + seconds
+  wow.now = wow.now + seconds
+  bar(wow, { xp = player.xp + xp })
+end
+
+local function when(t) return date("%b %d %H:%M", t) end
+
+test("history: the 1.0 last session becomes the first entry, nothing is lost", function(wow)
+  LevelClockDB = { version = 1, settings = { point = { "TOP", "TOP", 0, -50 } }, chars = {
+    ["Yubi-Silvermoon"] = { last = { xp = 12000, seconds = 3600, levels = 1, level = 31, at = 1700003600 } },
+    ["Brakk-Silvermoon"] = { last = { xp = 5, seconds = 90, levels = 0, level = 3, at = 2 } },
+  } }
+  local ns = boot(wow)
+  eq(LevelClockDB.version, 2)
+  local h = ns.char.history
+  eq(#h, 1)
+  eq(h[1].xp, 12000)
+  eq(h[1].seconds, 3600)
+  eq(h[1].levels, 1)
+  eq(h[1].level, 31)
+  eq(h[1].at, 1700003600)
+  eq(h[1].from, 1700000000, "the start is worked out from the end and the length")
+  eq(ns.char.last.xp, 12000, "the 1.0 field stays")
+  eq(LevelClockDB.settings.point[1], "TOP", "settings stay")
+  eq(LevelClockDB.chars["Brakk-Silvermoon"].history, nil, "other characters move over when they log in")
+  eq(LevelClockDB.chars["Brakk-Silvermoon"].last.xp, 5)
+end)
+
+test("history: migration runs once and drops only broken rows", function(wow)
+  LevelClockDB = { version = 2, chars = { ["Yubi-Silvermoon"] = {
+    last = { xp = 300, seconds = 600, levels = 0, at = 5000, from = 4400 },
+    history = { { xp = 300, seconds = 600, levels = 0, at = 5000, from = 4400 }, "broken", { xp = 0, seconds = 50 }, { xp = 100, seconds = 120, at = 3000, from = 2880 } },
+  } } }
+  local ns = boot(wow)
+  local h = ns.char.history
+  eq(#h, 2, "the last session is not added a second time")
+  eq(h[1].xp, 300)
+  eq(h[2].xp, 100)
+
+  LevelClockDB = { chars = { ["Yubi-Silvermoon"] = { last = { xp = 0, seconds = 10 } } } }
+  ns = relog(wow)
+  eq(#ns.char.history, 0, "a 1.0 summary without XP is not shown")
+  LevelClockDB = { chars = { ["Yubi-Silvermoon"] = "broken" }, settings = "broken" }
+  ns = relog(wow)
+  eq(#ns.char.history, 0)
+  eq(type(LevelClockDB.settings), "table")
+  LevelClockDB = "broken"
+  ns = relog(wow)
+  eq(LevelClockDB.version, 2)
+end)
+
+test("history: newest first, at most ten sessions", function(wow)
+  local ns = boot(wow)
+  local h = {}
+  for i = 1, 12 do ns.AddToHistory(h, { xp = i, seconds = 60, levels = 0, from = i * 10000, at = i * 10000 + 60 }) end
+  eq(#h, 10)
+  eq(ns.HISTORY, 10)
+  eq(h[1].xp, 12)
+  eq(h[10].xp, 3)
+  local entry = { xp = 99, seconds = 60, from = 1, at = 61 }
+  ns.AddToHistory(h, entry)
+  h[1].xp = 1
+  eq(entry.xp, 99, "the history keeps its own copy")
+end)
+
+test("history: a session that starts right after the last one continues it", function(wow)
+  local ns = boot(wow)
+  local h = { { xp = 1000, seconds = 1800, levels = 0, level = 20, from = 10000, at = 11800 } }
+  ns.AddToHistory(h, { xp = 500, seconds = 600, levels = 1, level = 21, from = 11830, at = 12430 }, true)
+  eq(#h, 1)
+  eq(h[1].xp, 1500)
+  eq(h[1].seconds, 2400, "only the time actually played")
+  eq(h[1].levels, 1)
+  eq(h[1].level, 21)
+  eq(h[1].from, 10000)
+  eq(h[1].at, 12430)
+  ns.AddToHistory(h, { xp = 7, seconds = 60, levels = 0, from = 12430 + 301, at = 12430 + 361 }, true)
+  eq(#h, 2, "more than five minutes later is a new session")
+  ns.AddToHistory(h, { xp = 8, seconds = 60, levels = 0, from = 12430 + 361, at = 12430 + 421 }, false)
+  eq(#h, 3, "a session started by hand is never merged")
+  ns.AddToHistory(h, { xp = 9, seconds = 60, levels = 0, from = 1, at = 61 }, true)
+  eq(#h, 4, "a start before the last end is not merged")
+end)
+
+test("history: logout, reload and reset in the game", function(wow)
+  local ns = boot(wow, { xp = 0, max = 100000, level = 20 })
+  local started = wow.now
+  play(wow, 1800, 3000)
+  ns = relog(wow, 20) -- a /reload
+  eq(#ns.char.history, 1)
+  play(wow, 600, 1000)
+  ns = relog(wow, 3600) -- logged out, came back an hour later
+  local h = ns.char.history
+  eq(#h, 1, "the reload did not split the session")
+  eq(h[1].xp, 4000)
+  eq(h[1].seconds, 2400)
+  eq(h[1].from, started)
+  ns = relog(wow, 30) -- no XP in this one
+  eq(#ns.char.history, 1, "a session without XP is not kept")
+  play(wow, 900, 1500)
+  wow.slash("/lc reset")
+  play(wow, 300, 200)
+  wow.fire("PLAYER_LOGOUT")
+  h = ns.char.history
+  eq(#h, 3)
+  eq(h[1].xp, 200, "after a reset the new session stands on its own")
+  eq(h[2].xp, 1500)
+  eq(h[2].from, started + 2400 + 20 + 3600 + 30, "a fresh login after more than five minutes")
+  eq(h[3].xp, 4000)
+end)
+
+test("history: rows and chat lines", function(wow)
+  local ns = boot(wow)
+  local r = ns.HistoryRow({ xp = 12345, seconds = 4320, levels = 2, from = 1763658000 })
+  eq(r.when, when(1763658000))
+  eq(r.duration, "1h 12m")
+  eq(r.xp, "12,345")
+  eq(r.perHour, "10,287")
+  eq(r.levels, "+2")
+  r = ns.HistoryRow({ xp = 40, seconds = 30, levels = 0 })
+  eq(r.when, "-", "start unknown")
+  eq(r.perHour, "-", "too short for a rate")
+  eq(r.levels, "")
+  eq(ns.HistoryText({ xp = 12345, seconds = 4320, levels = 1, from = 1763658000 }), when(1763658000) .. ": 12,345 XP in 1h 12m, 10,287 XP per hour, 1 level up")
+  eq(ns.HistoryText({ xp = 9000, seconds = 3600, levels = 3, from = 1763658000 }), when(1763658000) .. ": 9,000 XP in 1h 00m, 9,000 XP per hour, 3 levels up")
+  eq(ns.HistoryText({ xp = 40, seconds = 30, levels = 0 }), "-: 40 XP in under a minute")
+end)
+
+test("history: the window switches between clock and history", function(wow)
+  local ns = boot(wow, { xp = 0, max = 100000, level = 20 })
+  wow.slash("/lc")
+  local f = LevelClockFrame
+  eq(f.switch:GetText(), "History")
+  f.SetSize = function(self, w, h) self.size = { w, h } end -- the stand-in does not keep the size
+  f.switch:Click()
+  eq(f.size[1], 350, "the history view is wider")
+  eq(f.title:GetText(), "Session history")
+  eq(f.switch:GetText(), "Back")
+  eq(f.empty:IsShown(), true)
+  eq(f.empty:GetText(), "No finished sessions with XP yet.")
+  eq(f.lines[1].left:IsShown(), false, "the clock lines are hidden")
+  eq(f.history.head[1]:IsShown(), false)
+
+  play(wow, 1800, 3000)
+  local first = wow.now - 1800
+  wow.slash("/lc reset")
+  play(wow, 600, 600)
+  wow.slash("/lc reset")
+  eq(f.empty:IsShown(), false)
+  eq(f.history.head[1]:GetText(), "Started")
+  eq(f.history.head[4]:GetText(), "XP/hour")
+  local row = f.history.rows[1]
+  eq(row[1]:GetText(), when(wow.now - 600), "newest first")
+  eq(row[2]:GetText(), "10m")
+  eq(row[3]:GetText(), "600")
+  eq(row[4]:GetText(), "3,600")
+  eq(row[5]:GetText(), "")
+  eq(f.history.rows[2][1]:GetText(), when(first))
+  eq(f.history.rows[2][3]:GetText(), "3,000")
+  eq(f.history.rows[3][1]:GetText(), "")
+
+  f.switch:Click()
+  eq(f.size[1], 230)
+  eq(f.title:GetText(), "Level Clock")
+  eq(f.lines[1].left:IsShown(), true)
+  eq(f.lines[1].left:GetText(), "XP per hour")
+  eq(f.history.rows[1][1]:IsShown(), false)
+  eq(f.empty:IsShown(), false)
+end)
+
+test("history: the history view still works at max level", function(wow)
+  LevelClockDB = { chars = { ["Yubi-Silvermoon"] = { history = { { xp = 500, seconds = 600, levels = 1, from = 100, at = 700 } } } } }
+  local ns = boot(wow, { xp = 0, max = 0, level = 90, atMax = true })
+  wow.slash("/lc")
+  local f = LevelClockFrame
+  eq(f.note:IsShown(), true)
+  f.switch:Click()
+  eq(f.note:IsShown(), false)
+  eq(f.history.rows[1][3]:GetText(), "500")
+  eq(f.history.rows[1][5]:GetText(), "+1")
+  f.switch:Click()
+  eq(f.note:IsShown(), true)
+end)
+
+test("/lc history lists the last sessions in the chat", function(wow)
+  local ns = boot(wow, { xp = 0, max = 100000, level = 20 })
+  wow.slash("/lc history")
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], "|cffffd100Level Clock:|r No finished sessions with XP yet.")
+  play(wow, 3600, 9000)
+  local from = wow.now - 3600
+  wow.slash("/lc reset")
+  wow.chat = {}
+  wow.slash("/lc HISTORY ")
+  eq(#wow.chat, 2)
+  eq(wow.chat[1], "|cffffd100Level Clock:|r Your last sessions with XP, newest first:")
+  eq(wow.chat[2], "  " .. when(from) .. ": 9,000 XP in 1h 00m, 9,000 XP per hour")
+  wow.slash("/lc what")
+  eq(wow.chat[3]:match("/lc history lists your last sessions") ~= nil, true)
+end)
+
+test("/lc history before login does nothing", function(wow)
+  client()
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.slash("/lc history")
   eq(#wow.chat, 0)
 end)
