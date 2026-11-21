@@ -37,6 +37,8 @@
 // (catfish: river, spring/fall rain; pufferfish: ocean, summer sun, midday; red snapper: ocean, summer
 // rain; salmon: river, fall; walleye and eel: fall rain; squid: ocean, winter nights).
 
+import { LINES_DE } from './de.js';
+
 export const SEASONS = ['spring', 'summer', 'fall', 'winter'];
 
 // kind → hearts needed, topic length in days, day-of-month window, extra condition per season
@@ -111,6 +113,7 @@ export default async function ({ npcs }) {
   const changes = [];
   const triggers = {};
   const i18n = {};
+  const de = {};
   for (const [npc, seasons] of Object.entries(LINES)) {
     if (!npcs.npcs[npc]) throw new Error(`${npc} is not in npcs.json`);
     const entries = {};
@@ -126,6 +129,13 @@ export default async function ({ npcs }) {
         checkLine(npc, key, text);
         if (id.includes('_memory_')) throw new Error(`${id}: "_memory_" is reserved for topic memory`);
         i18n[key] = text;
+        // German (since 1.1): same markers, same box limits as the English line.
+        const deText = LINES_DE[npc]?.[season]?.[kind];
+        if (!deText) throw new Error(`${npc} ${key}: German line missing in de.js`);
+        checkLine(npc, `${key} (de)`, deText);
+        const markers = t => (t.match(/#\$b#|\$[hsu]$|\$\{|@/g) || []).sort().join(' ');
+        if (markers(deText) !== markers(text)) throw new Error(`${npc} ${key}: the German line has other markers than the English one`);
+        de[key] = deText;
         entries[id] = `{{i18n:${key}}}`;
         if (k.window[1] + k.days - 1 > 28) throw new Error(`${id}: the topic would outlast the season`);
         const condition = [
@@ -146,6 +156,7 @@ export default async function ({ npcs }) {
   changes.push({ LogName: 'Start the topics', Action: 'EditData', Target: 'Data/TriggerActions', Entries: ordered });
   return {
     'content.json': { Format: '2.9.0', Changes: changes },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

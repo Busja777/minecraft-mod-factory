@@ -27,6 +27,8 @@
 // - Content Patcher only applies the EditData patches; {{ModId}} keeps the IDs unique (tokens.md)
 //   and all text comes from i18n (translations.md).
 
+import { DE, SIGN } from './de.js';
+
 export const SEASONS = ['spring', 'summer', 'fall', 'winter'];
 
 // One letter per season and week: [key, title, text]. Text: @ = player name, ^ = line break.
@@ -90,6 +92,7 @@ export default async function () {
   const mail = {};
   const triggers = {};
   const i18n = {};
+  const de = {};
   const titles = new Set();
   const add = ([key, title, text], condition) => {
     if (/[%[\]¦{}#$]/.test(text)) throw new Error(`${key}: mail command characters in the text`);
@@ -100,6 +103,12 @@ export default async function () {
     if (mail[id]) throw new Error(`${key}: used twice`);
     i18n[`letter.${key}`] = /-Morris\^/.test(text) ? text : `${text}^^-JojaMart Marketing Team`;
     i18n[`title.${key}`] = title;
+    // German (since 1.1): every letter has its translation, signed the same way as the English one.
+    const [deTitle, deText] = DE[key] || [];
+    if (!deTitle || !deText) throw new Error(`${key}: German text missing in de.js`);
+    if (/[%[\]¦{}#$]/.test(deText) || !deText.startsWith('Hallo ')) throw new Error(`${key}: German letter must greet the player and contain no mail commands`);
+    de[`letter.${key}`] = /-Morris\^/.test(deText) ? deText : `${deText}${SIGN}`;
+    de[`title.${key}`] = deTitle;
     mail[id] = `{{i18n:letter.${key}}}[letterbg 4][#]{{i18n:title.${key}}}`;
     triggers[id] = {
       Id: id,
@@ -128,6 +137,7 @@ export default async function () {
         { LogName: 'Send one letter every Wednesday', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers }
       ]
     },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

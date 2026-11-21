@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "MoretoSay-1.1.zip",
+      "changelog": "## More to Say 1.1\n\nNow in German too.\n\n- All 24 new lines of Linus and Willy are translated into German, with the same portraits and pauses. Players with the game set to German hear them in German; everyone else keeps the English lines.\n- Same topics, same timing, nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }
