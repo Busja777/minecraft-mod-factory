@@ -37,9 +37,9 @@
       "art": "RF",
       "was": "EP pro Stunde, Zeit bis Level-Up, Erholungsbonus",
       "updates": [
-        "Fenster-Optionen",
         "Level-Historie je Charakter",
-        "Wochenübersicht"
+        "Wochenübersicht",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -49,9 +49,9 @@
       "art": "RF",
       "was": "Nimmt Quests an und gibt sie ab, Umschalttaste pausiert",
       "updates": [
-        "einzige Gesprächsoption wählen",
         "Belohnungs-Hinweis",
-        "Ausnahmen per Rechtsklick im Questlog"
+        "Ausnahmen per Rechtsklick im Questlog",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -61,9 +61,9 @@
       "art": "RF",
       "was": "Verkauft Graues, repariert, zeigt die Summe",
       "updates": [
-        "Gildenbank-Reparatur",
         "Verkaufsprotokoll",
-        "Ausnahmen per Rechtsklick"
+        "Ausnahmen per Rechtsklick",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {

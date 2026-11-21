@@ -61,15 +61,38 @@ function ns.ScanBags()
   return items
 end
 
--- Repairs from the player's own gold. Notes the cost paid, or the cost the gold did not reach for.
+-- Whether the gear is still damaged, as far as the game tells.
+local function stillDamaged()
+  if not GetRepairAllCost then return false end
+  local cost = plain((GetRepairAllCost()))
+  return type(cost) == "number" and cost > 0
+end
+
+-- 1.2: true when the guild bank may and can pay this repair now. Every answer the game does not
+-- give, or gives as a secret, counts as "no": then the player's own gold pays, as in 1.0 and 1.1.
+local function guildPays(v, cost)
+  if not ns.settings.guild or v.noGuild then return false end
+  if not (CanGuildBankRepair and GetGuildBankWithdrawMoney and GetGuildBankMoney) then return false end
+  if IsInGuild and not plain(IsInGuild()) then return false end
+  if not plain(CanGuildBankRepair()) then return false end
+  return ns.GuildCanPay(cost, plain(GetGuildBankWithdrawMoney()), plain(GetGuildBankMoney()))
+end
+
+-- Repairs, from the guild bank when that is switched on and it can pay, otherwise from the player's
+-- own gold. Notes the cost paid, or the cost the gold did not reach for.
 local function repair(v)
   if v.repaired or not ns.settings.repair then return end
   if not (CanMerchantRepair and GetRepairAllCost and RepairAllItems) then return end
   if not plain(CanMerchantRepair()) then return end
   local cost, possible = GetRepairAllCost()
-  cost = plain(cost)
-  local ok, why = ns.ShouldRepair(cost, plain(GetMoney()), plain(possible))
+  cost, possible = plain(cost), plain(possible)
   v.short = nil
+  if possible and guildPays(v, cost) then
+    RepairAllItems(true)
+    v.repaired, v.guild = cost, true
+    return
+  end
+  local ok, why = ns.ShouldRepair(cost, plain(GetMoney()), possible)
   if ok then
     RepairAllItems()
     v.repaired = cost
@@ -80,15 +103,29 @@ end
 
 local function finish(v, closed)
   visit = nil
-  -- The gold was short before the sale; now it may reach.
-  if not closed and v.short and v.items > 0 then repair(v) end
+  if not closed and v.guild and stillDamaged() then
+    -- The guild bank did not pay after all (less gold or a smaller daily limit than the game
+    -- told before): the player's own gold pays, as without the guild setting.
+    v.repaired, v.guild, v.noGuild = nil, nil, true
+    repair(v)
+  elseif not closed and v.short and v.items > 0 then
+    -- The gold was short before the sale; now it may reach.
+    repair(v)
+  end
   local line = ns.Summary(v)
   if line then ns.Print(line) end
 end
 
 local function sellStep(v)
   if v ~= visit then return end -- the vendor was closed in the meantime
-  if v.index > #v.plan then return finish(v) end
+  if v.index > #v.plan then
+    -- A guild bank repair is checked once the game had time to answer it.
+    if v.guild and not v.waited then
+      v.waited = true
+      return C_Timer.After(ns.GUILD_WAIT, function() sellStep(v) end)
+    end
+    return finish(v)
+  end
   local step, nextIndex = ns.Step(v.plan, v.index, ns.STEP)
   for _, planned in ipairs(step) do
     -- The slot is read again: something may have moved since the bags were scanned.
@@ -123,11 +160,12 @@ end
 local function onLogin()
   if type(JunkButlerDB) ~= "table" then JunkButlerDB = {} end
   local db = JunkButlerDB
-  db.version = 2
+  db.version = 3 -- 3 (1.2): the guild bank setting, off until the player switches it on
   if type(db.settings) ~= "table" then db.settings = {} end
   db.keep = ns.CleanKeepList(db.keep) -- new in 1.1; 1.0 data has none and starts with an empty list
   if db.settings.sell == nil then db.settings.sell = true end
   if db.settings.repair == nil then db.settings.repair = true end
+  if type(db.settings.guild) ~= "boolean" then db.settings.guild = false end
   ns.db = db
   ns.settings = db.settings
 end

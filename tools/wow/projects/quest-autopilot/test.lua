@@ -8,6 +8,8 @@ local function game()
     gossipActive = {}, gossipAvailable = {}, greetingActive = {}, greetingAvailable = 0,
     -- 1.1: the quest of the open quest window, quest log entries by ID, greeting window details
     quest = {}, log = {}, titles = {}, greetingIDs = {}, greetingTitles = {}, greetingFrequency = {},
+    -- 1.2: the dialogue options of the conversation window
+    options = {},
   }
   local function call(name)
     return function(arg) g.calls[#g.calls + 1] = arg ~= nil and (name .. " " .. tostring(arg)) or name end
@@ -26,6 +28,8 @@ local function game()
     GetAvailableQuests = function() return g.gossipAvailable end,
     SelectActiveQuest = call("Gossip.SelectActiveQuest"),
     SelectAvailableQuest = call("Gossip.SelectAvailableQuest"),
+    GetOptions = function() return g.options end,
+    SelectOption = call("Gossip.SelectOption"),
   }
   GetNumActiveQuests = function() return #g.greetingActive end
   GetActiveTitle = function(i) return g.greetingActive[i].title, g.greetingActive[i].complete end
@@ -72,6 +76,10 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.fire("PLAYER_LOGIN")
   wow.fire("QUEST_DETAIL")
   wow.slash("/qa")
+  wow.slash("/qa gossip")
+  wow.fire("GOSSIP_SHOW")
+  wow.fire("GOSSIP_CONFIRM", 1, "Sure?", 0)
+  wow.fire("GOSSIP_CLOSED")
   local allowed = { QuestAutopilotDB = true, SLASH_QUESTAUTOPILOT1 = true, SLASH_QUESTAUTOPILOT2 = true }
   for k in pairs(_G) do
     if not stubs[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -273,9 +281,9 @@ end)
 test("/qa prints the state, on and off switch everything", function(wow)
   local ns, g = boot(wow)
   wow.slash("/qa")
-  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Autopilot is on. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Kept manual: 0.")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Autopilot is on. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Only dialogue option: off. Kept manual: 0.")
   wow.slash("/questautopilot OFF ")
-  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Autopilot is off. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Kept manual: 0.")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Autopilot is off. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Only dialogue option: off. Kept manual: 0.")
   eq(QuestAutopilotDB.settings.enabled, false)
   g.gossipActive = { { questID = 1, isComplete = true } }
   g.gossipAvailable = { { questID = 2 } }
@@ -290,12 +298,13 @@ test("/qa prints the state, on and off switch everything", function(wow)
   wow.fire("QUEST_DETAIL")
   eq(g.done(), "AcceptQuest")
   wow.slash("/qa what")
-  eq(#wow.chat, 6, "three help lines")
+  eq(#wow.chat, 7, "four help lines")
   eq(wow.chat[4]:match("/qa accept and /qa turnin switch one half") ~= nil, true)
   eq(wow.chat[5]:match("/qa manual keeps the quest you just saw manual") ~= nil, true)
   eq(wow.chat[6]:match("/qa dailies leaves all daily and weekly quests to you") ~= nil, true)
+  eq(wow.chat[7]:match("/qa gossip picks the only dialogue option") ~= nil, true)
   wow.slash("/qa on now")
-  eq(#wow.chat, 9, "a known word with something after it is not a switch")
+  eq(#wow.chat, 11, "a known word with something after it is not a switch")
 end)
 
 test("/qa accept and /qa turnin switch one half each", function(wow)
@@ -333,7 +342,7 @@ test("settings survive a restart, missing ones get their default", function(wow)
   eq(saved.settings.turnin, false)
   eq(saved.settings.accept, true)
   eq(saved.settings.enabled, true)
-  eq(saved.version, 2)
+  eq(saved.version, 3)
   wow.fire("QUEST_PROGRESS")
   eq(g.done(), "")
   wow.slash("/qa turnin")
@@ -628,7 +637,7 @@ test("/qa auto and /qa list", function(wow)
   wow.slash("/qa auto 6")
   eq(wow.chat[10], "|cffffd100Quest Autopilot:|r Quest 6 is not on your list. /qa list shows it.")
   wow.slash("/qa auto")
-  eq(#wow.chat, 13, "nothing named: the help")
+  eq(#wow.chat, 14, "nothing named: the help")
   eq(QuestAutopilotDB.manual.ids[5], "")
   eq(QuestAutopilotDB.manual.names["zebra hunt"], nil)
   g.quest = { id = 5 }
@@ -680,7 +689,7 @@ test("1.0 saved data is taken over: settings stay, the list starts empty", funct
   local saved = QuestAutopilotDB
   local ns, g = boot(wow)
   eq(QuestAutopilotDB, saved)
-  eq(saved.version, 2)
+  eq(saved.version, 3)
   eq(saved.settings.accept, false)
   eq(saved.settings.manualDailies, false)
   eq(type(saved.manual), "table")
@@ -738,4 +747,286 @@ test("a client without the quest log or quest window details still works", funct
   g.greetingAvailable = 1
   wow.fire("QUEST_GREETING")
   eq(g.done(), "AcceptQuest, CompleteQuest, SelectActiveQuest 1")
+end)
+
+-- 1.2: the only dialogue option ---------------------------------------------------------------------
+
+local NONE = {} -- stands for nil in the option helpers below (pairs skips nil)
+
+local TALK, VENDOR, TAXI, TRAINER, BANKER, INNKEEPER = 132053, 132060, 132057, 132058, 132050, 132052
+
+-- A dialogue option as C_GossipInfo.GetOptions lists it.
+local function option(id, extra)
+  local o = { gossipOptionID = id, name = "Tell me more.", icon = TALK, status = 0, rewards = {}, flags = 0, orderIndex = 0 }
+  for k, v in pairs(extra or {}) do if v == NONE then o[k] = nil else o[k] = v end end
+  return o
+end
+
+local function gossipOn(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa gossip")
+  wow.chat = {}
+  return ns, g
+end
+
+local function plain(extra)
+  local o = { id = 7, icon = 132053, status = 0, rewards = 0, spell = false, auto = false }
+  for k, v in pairs(extra or {}) do if v == NONE then o[k] = nil else o[k] = v end end
+  return o
+end
+
+test("decision: only a plain line of conversation is safe to pick", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  eq(ns.PlainOption(plain()), true)
+  eq(ns.PlainOption(plain({ status = NONE })), true, "no status given")
+  eq(ns.PlainOption(plain({ override = 132053 })), true)
+  eq(ns.PlainOption(plain({ icon = VENDOR })), false, "shop")
+  eq(ns.PlainOption(plain({ icon = TAXI })), false, "flight map")
+  eq(ns.PlainOption(plain({ icon = TRAINER })), false, "trainer")
+  eq(ns.PlainOption(plain({ icon = BANKER })), false, "bank")
+  eq(ns.PlainOption(plain({ icon = INNKEEPER })), false, "innkeeper")
+  eq(ns.PlainOption(plain({ icon = NONE })), false, "no icon known")
+  eq(ns.PlainOption(plain({ override = VENDOR })), false, "the icon shown is a shop")
+  eq(ns.PlainOption(plain({ status = 1 })), false, "unavailable")
+  eq(ns.PlainOption(plain({ status = 2 })), false, "locked")
+  eq(ns.PlainOption(plain({ rewards = 1 })), false, "lists a reward")
+  eq(ns.PlainOption(plain({ rewards = NONE })), false, "rewards unknown")
+  eq(ns.PlainOption(plain({ spell = true })), false, "casts a spell")
+  eq(ns.PlainOption(plain({ auto = true })), false, "the game's window picks it itself")
+  eq(ns.PlainOption(plain({ blocked = true })), false, "asked for a confirmation before")
+  eq(ns.PlainOption(plain({ id = NONE })), false)
+  eq(ns.PlainOption({}), false)
+  eq(ns.PlainOption(nil), false)
+end)
+
+test("decision: exactly one option and no quests, switched on and not paused", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  local function q(extra)
+    local t = { enabled = true, gossip = true, paused = false, quests = 0, options = { plain() } }
+    for k, v in pairs(extra or {}) do if v == NONE then t[k] = nil else t[k] = v end end
+    return t
+  end
+  eq(ns.PickOption(q()), 7)
+  eq(ns.PickOption(q({ gossip = false })), nil, "the switch is off")
+  eq(ns.PickOption(q({ enabled = false })), nil, "the autopilot is off")
+  eq(ns.PickOption(q({ paused = true })), nil, "Shift")
+  eq(ns.PickOption(q({ quests = 1 })), nil, "there is a quest")
+  eq(ns.PickOption(q({ quests = NONE })), nil, "quests unknown")
+  eq(ns.PickOption(q({ options = {} })), nil)
+  eq(ns.PickOption(q({ options = { plain(), plain({ id = 8 }) } })), nil, "a real choice is the player's")
+  eq(ns.PickOption(q({ options = { plain({ icon = VENDOR }) } })), nil)
+  eq(ns.PickOption(q({ chosen = { [7] = true }, picks = 1 })), nil, "the same line twice is a loop")
+  eq(ns.PickOption(q({ chosen = { [6] = true }, picks = 1 })), 7)
+  eq(ns.PickOption(q({ chosen = {}, picks = ns.MAX_OPTIONS })), nil, "at most MAX_OPTIONS in one conversation")
+  eq(ns.DEFAULTS.gossip, false)
+end)
+
+test("off by default: a single line of conversation is left to the player", function(wow)
+  local ns, g = boot(wow)
+  g.options = { option(51) }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+  eq(QuestAutopilotDB.settings.gossip, false)
+end)
+
+test("/qa gossip: the only line of conversation is picked, page by page", function(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa gossip")
+  eq(wow.chat[1]:match("Only dialogue option: on%. Kept manual: 0%.$") ~= nil, true)
+  eq(QuestAutopilotDB.settings.gossip, true)
+  g.options = { option(51) }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 51")
+  g.options = { option(52, { flags = 1 }) } -- the next page, a line marked (Quest)
+  wow.clock = wow.clock + 0.5
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 51, Gossip.SelectOption 52")
+  g.options = { option(52) } -- the character says the same again: no loop
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 51, Gossip.SelectOption 52")
+  leave(wow, "GOSSIP_CLOSED")
+  wow.fire("GOSSIP_SHOW") -- a new conversation later: picked again
+  eq(g.done(), "Gossip.SelectOption 51, Gossip.SelectOption 52, Gossip.SelectOption 52")
+  eq(#wow.chat, 1, "picking is silent")
+  wow.slash("/qa gossip")
+  eq(QuestAutopilotDB.settings.gossip, false)
+  leave(wow, "GOSSIP_CLOSED")
+  g.calls = {}
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+end)
+
+test("never while the character lists quests, also quests the autopilot leaves alone", function(wow)
+  local ns, g = gossipOn(wow)
+  g.options = { option(51) }
+  g.gossipAvailable = { { questID = 2 } }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectAvailableQuest 2", "the quest comes first")
+  g.calls = {}
+  g.gossipAvailable = { { questID = 3, repeatable = true } }
+  wow.fire("GOSSIP_SHOW")
+  g.gossipAvailable = {}
+  g.gossipActive = { { questID = 4, isComplete = false } }
+  wow.fire("GOSSIP_SHOW")
+  g.gossipActive = { { questID = { secret = true }, isComplete = true } }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "", "a quest the player handles, an unfinished quest, an unreadable quest")
+  wow.slash("/qa manual 5")
+  g.gossipActive = { { questID = 5, isComplete = true } }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+end)
+
+test("never shops, trainers, banks, flight maps, rewards, spells or a real choice", function(wow)
+  local ns, g = gossipOn(wow)
+  local cases = {
+    { option(60, { icon = VENDOR, name = "Let me browse your goods." }) },
+    { option(61, { icon = TAXI, name = "Show me where I can fly." }) },
+    { option(62, { icon = TRAINER, name = "Train me." }) },
+    { option(63, { icon = BANKER, name = "I would like to check my deposit box." }) },
+    { option(64, { icon = INNKEEPER, name = "Make this inn your home." }) },
+    { option(65, { overrideIconID = VENDOR }) },
+    { option(66, { rewards = { { id = 1, quantity = 1, rewardType = 0 } } }) },
+    { option(67, { spellID = 1234 }) },
+    { option(68, { status = 2 }) },
+    { option(69, { selectOptionWhenOnlyOption = true }) },
+    { option(70, { gossipOptionID = NONE }) },
+    { option(71), option(72) },
+    {},
+  }
+  for _, options in ipairs(cases) do
+    g.options = options
+    wow.fire("GOSSIP_SHOW")
+    leave(wow, "GOSSIP_CLOSED")
+  end
+  eq(g.done(), "")
+end)
+
+test("Shift and /qa off stop it, like every other step", function(wow)
+  local ns, g = gossipOn(wow)
+  g.options = { option(51) }
+  g.shift = true
+  wow.fire("GOSSIP_SHOW")
+  g.shift = false
+  g.options = { option(52) }
+  wow.clock = wow.clock + 0.5
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "", "the whole conversation is paused")
+  leave(wow, "GOSSIP_CLOSED")
+  wow.slash("/qa off")
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+  wow.slash("/qa on")
+  leave(wow, "GOSSIP_CLOSED")
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 52")
+end)
+
+test("at most five lines in one conversation", function(wow)
+  local ns, g = gossipOn(wow)
+  for id = 1, 8 do
+    g.options = { option(id) }
+    wow.fire("GOSSIP_SHOW")
+    wow.clock = wow.clock + 0.2
+  end
+  eq(g.done(), "Gossip.SelectOption 1, Gossip.SelectOption 2, Gossip.SelectOption 3, Gossip.SelectOption 4, Gossip.SelectOption 5")
+end)
+
+test("an option that asks for a confirmation is left to the player from then on", function(wow)
+  local ns, g = gossipOn(wow)
+  g.options = { option(80, { name = "Take me to the camp." }) }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 80")
+  wow.clock = wow.clock + 0.1
+  wow.fire("GOSSIP_CONFIRM", 80, "Pay 5 gold?", 50000) -- the game asks the player; the autopilot never answers
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r This dialogue option asks you to confirm, so the choice is yours. The autopilot will not pick it again.")
+  eq(QuestAutopilotDB.blocked[80], true)
+  leave(wow, "GOSSIP_CLOSED")
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 80", "not picked again")
+  -- the next login still knows it
+  for _, f in ipairs(wow.frames) do f.events = {} end
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 80")
+  g.options = { option(81) }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectOption 80, Gossip.SelectOption 81", "other options still run")
+end)
+
+test("a confirmation the player caused alone changes nothing", function(wow)
+  local ns, g = gossipOn(wow)
+  wow.fire("GOSSIP_CONFIRM", 90, "Sure?", 0)
+  g.options = { option(91) }
+  wow.fire("GOSSIP_SHOW")
+  wow.clock = wow.clock + 30 -- long after the pick, the player clicked something else
+  wow.fire("GOSSIP_ENTER_CODE", 92)
+  eq(#wow.chat, 0)
+  eq(next(QuestAutopilotDB.blocked), nil)
+  eq(g.done(), "Gossip.SelectOption 91")
+end)
+
+test("secret option data or lists are never picked", function(wow)
+  local ns, g = gossipOn(wow)
+  local secret = { secret = true }
+  local fields = { "gossipOptionID", "icon", "overrideIconID", "status", "rewards", "spellID", "selectOptionWhenOnlyOption" }
+  for _, field in ipairs(fields) do
+    g.options = { option(51, { [field] = secret }) }
+    wow.fire("GOSSIP_SHOW")
+    leave(wow, "GOSSIP_CLOSED")
+  end
+  g.options = { secret }
+  wow.fire("GOSSIP_SHOW")
+  leave(wow, "GOSSIP_CLOSED")
+  g.options = secret
+  wow.fire("GOSSIP_SHOW")
+  leave(wow, "GOSSIP_CLOSED")
+  g.options = { option(51) }
+  g.gossipAvailable = secret
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+end)
+
+test("a client without the option functions does not break it", function(wow)
+  local ns, g = gossipOn(wow)
+  g.options = { option(51) }
+  C_GossipInfo.SelectOption = nil
+  wow.fire("GOSSIP_SHOW")
+  leave(wow, "GOSSIP_CLOSED")
+  C_GossipInfo.GetOptions = nil
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+end)
+
+test("1.1 saved data is taken over: everything stays, the gossip switch starts off", function(wow)
+  QuestAutopilotDB = { version = 2, settings = { enabled = true, accept = false, turnin = true, manualDailies = true }, manual = { ids = { [5] = "Five" }, names = {} } }
+  local saved = QuestAutopilotDB
+  local ns, g = boot(wow)
+  eq(saved.version, 3)
+  eq(saved.settings.accept, false)
+  eq(saved.settings.manualDailies, true)
+  eq(saved.settings.gossip, false)
+  eq(saved.manual.ids[5], "Five")
+  eq(type(saved.blocked), "table")
+  eq(next(saved.blocked), nil)
+  QuestAutopilotDB = { version = 3, blocked = { [80] = true, [81] = "x", x = true } }
+  boot(wow)
+  eq(QuestAutopilotDB.blocked[80], true)
+  eq(QuestAutopilotDB.blocked[81], nil)
+  eq(QuestAutopilotDB.blocked.x, nil)
+  QuestAutopilotDB = { blocked = "broken" }
+  boot(wow)
+  eq(type(QuestAutopilotDB.blocked), "table")
+end)
+
+test("a confirmation before login does nothing", function(wow)
+  local g = game()
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("GOSSIP_CONFIRM", 1, "Sure?", 0)
+  g.options = { option(51) }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "")
+  eq(#wow.chat, 0)
 end)

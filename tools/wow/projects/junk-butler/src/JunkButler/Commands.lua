@@ -2,6 +2,7 @@ local _, ns = ...
 local L = ns.L
 
 -- /jb shows the settings, /jb sell and /jb repair switch each half on or off.
+-- /jb guild on and /jb guild off let the guild bank pay repairs first (1.2), /jb guild switches it.
 -- /jb keep <item> puts grey items on the keep list, /jb unkeep <item> takes them off, /jb keep lists them.
 
 local function sellText()
@@ -10,6 +11,25 @@ end
 
 local function repairText()
   return ns.settings.repair and L["Repairing is on."] or L["Repairing is off."]
+end
+
+local function guildText()
+  return ns.settings.guild and L["Guild bank repairs are on."] or L["Guild bank repairs are off."]
+end
+
+-- /jb guild [on|off]
+local function guild(args)
+  args = args:lower()
+  if args == "on" then
+    ns.settings.guild = true
+  elseif args == "off" then
+    ns.settings.guild = false
+  elseif args == "" then
+    ns.settings.guild = not ns.settings.guild
+  else
+    return ns.Print(L["/jb guild on lets the guild bank pay your repairs first when your guild rank allows it and the bank has the gold. /jb guild off pays from your own gold again."])
+  end
+  ns.Print(guildText())
 end
 
 -- How an item is named in chat: its link when known, otherwise its ID.
@@ -69,13 +89,15 @@ SlashCmdList.JUNKBUTLER = function(msg)
   local word, args = msg:match("^(%S+)%s*(.-)$")
   word = word and word:lower()
   if cmd == "" then
-    ns.Print(sellText() .. " " .. repairText())
+    ns.Print(sellText() .. " " .. repairText() .. " " .. guildText())
   elseif cmd == "sell" then
     ns.settings.sell = not ns.settings.sell
     ns.Print(sellText())
   elseif cmd == "repair" then
     ns.settings.repair = not ns.settings.repair
     ns.Print(repairText())
+  elseif word == "guild" then
+    guild(args)
   elseif word == "keep" then
     keep(args)
   elseif word == "unkeep" then
@@ -83,5 +105,6 @@ SlashCmdList.JUNKBUTLER = function(msg)
   else
     ns.Print(L["/jb shows the settings, /jb sell and /jb repair switch each half on or off. Hold Shift while you open a vendor to skip one visit."])
     ns.Print(L["/jb keep followed by an item link or ID never sells that item, /jb unkeep takes it off again, /jb keep alone lists your keep list."])
+    ns.Print(L["/jb guild on/off lets the guild bank pay your repairs first when your guild rank allows it."])
   end
 end

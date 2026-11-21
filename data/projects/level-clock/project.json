@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "LevelClock-1.2.zip",
+      "changelog": "## Level Clock 1.2\n\n- New **window options**: `/lc lock` keeps the window in place so you cannot drag it by accident, `/lc unlock` lets you move it again.\n- `/lc scale` followed by a number from 0.8 to 1.5 (or 80 to 150) makes the window smaller or larger. It stays where you put it.\n- The window now remembers whether you left it open and opens again at your next login.\n- `/lc hidemax` keeps the window closed on characters at maximum level, and closes it when you reach the maximum level. Your other characters still see it, and `/lc` still opens it whenever you want.\n- `/lc options` shows these settings. All of them are saved for your whole account.\n- Your sessions and window position from 1.1 stay as they are, and the History view works as before.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

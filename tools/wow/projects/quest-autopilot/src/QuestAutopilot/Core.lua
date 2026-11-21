@@ -4,9 +4,14 @@ local _, ns = ...
 -- Every decision gets plain data and answers with what to do; Autopilot.lua reads the game and acts.
 
 -- manualDailies (1.1): daily and weekly quests are left to the player. Off, so 1.0 behaviour stays.
-ns.DEFAULTS = { enabled = true, accept = true, turnin = true, manualDailies = false }
+-- gossip (1.2): picks a character's only dialogue option when there are no quests. Off, so nothing changes.
+ns.DEFAULTS = { enabled = true, accept = true, turnin = true, manualDailies = false, gossip = false }
 
 ns.GRACE = 1.5 -- seconds between two windows that still belong to the same conversation
+ns.MAX_OPTIONS = 5 -- dialogue options picked in one conversation at most
+-- The speech bubble icon (Interface\GossipFrame\GossipGossipIcon) of a plain line of conversation.
+-- Shops, trainers, banks, flight masters, innkeepers and the like each have their own icon.
+ns.TALK_ICON = 132053
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
@@ -25,11 +30,15 @@ function ns.IsOn(settings, half)
   return settings.enabled == true and settings[half] == true
 end
 
--- talk = { paused, closedAt }
+-- talk = { paused, closedAt, chosen = { [optionID] = true }, picks }
 -- Shift held while a window opens pauses the whole conversation. The next window is the same
 -- conversation when it opens within GRACE seconds after the one before closed.
+-- A new conversation also forgets the dialogue options picked in the one before.
 function ns.WindowOpened(talk, shift, now)
-  if talk.paused and talk.closedAt and now - talk.closedAt > ns.GRACE then talk.paused = false end
+  if talk.closedAt and now - talk.closedAt > ns.GRACE then
+    talk.paused = false
+    talk.chosen, talk.picks = nil, nil
+  end
   talk.closedAt = nil
   if shift then talk.paused = true end
   return talk.paused == true
@@ -88,6 +97,46 @@ function ns.Pick(q)
     end
   end
   return nil
+end
+
+-- 1.2: a dialogue option as plain data.
+-- option = { id, icon, override, status, rewards, spell, auto, blocked }
+--   id: gossipOptionID; icon and override: its icon and the icon that replaces it;
+--   status: Enum.GossipOptionStatus (0 = available); rewards: number of rewards it lists;
+--   spell: true when it casts a spell; auto: the game's own window picks it already;
+--   blocked: it asked for a confirmation before (gold, a skip, a teleport ...).
+-- Only a plain line of conversation is safe: anything else may open a shop, a trainer, a bank or a
+-- flight map, cost gold or start something the player has to agree to.
+function ns.PlainOption(o)
+  if type(o) ~= "table" or type(o.id) ~= "number" then return false end
+  if o.icon ~= ns.TALK_ICON or (o.override ~= nil and o.override ~= ns.TALK_ICON) then return false end
+  if o.status ~= nil and o.status ~= 0 then return false end
+  if o.rewards ~= 0 or o.spell or o.auto or o.blocked then return false end
+  return true
+end
+
+-- A character talks and offers dialogue options.
+-- q = { enabled, gossip, paused, quests = quests listed (nil: unknown), options = { option, ... },
+--       chosen = { [id] = true } picked in this conversation, picks = how many }
+-- → the option ID to pick, or nil. Only when there is exactly one option and nothing else.
+function ns.PickOption(q)
+  if q.enabled ~= true or q.gossip ~= true or q.paused then return nil end
+  if q.quests ~= 0 or type(q.options) ~= "table" or #q.options ~= 1 then return nil end
+  local option = q.options[1]
+  if not ns.PlainOption(option) then return nil end
+  if q.chosen and q.chosen[option.id] then return nil end -- the same line again: a loop
+  if (q.picks or 0) >= ns.MAX_OPTIONS then return nil end
+  return option.id
+end
+
+-- Options that asked for a confirmation: { [optionID] = true }, numbers only.
+function ns.BlockedList(list)
+  local clean = {}
+  if type(list) ~= "table" then return clean end
+  for id, value in pairs(list) do
+    if type(id) == "number" and value == true then clean[id] = true end
+  end
+  return clean
 end
 
 -- Quests the player keeps manual (1.1).
@@ -214,6 +263,8 @@ function ns.Apply(settings, word)
     settings[word] = not settings[word]
   elseif word == "dailies" then
     settings.manualDailies = not settings.manualDailies
+  elseif word == "gossip" then
+    settings.gossip = not settings.gossip
   else
     return false
   end
@@ -224,7 +275,7 @@ end
 function ns.StateText(settings, count)
   local L = ns.L
   local function word(on) return on and L["on"] or L["off"] end
-  return string.format(L["Autopilot is %s. Accepting quests: %s. Handing in quests: %s. Daily and weekly quests: %s. Kept manual: %d."],
+  return string.format(L["Autopilot is %s. Accepting quests: %s. Handing in quests: %s. Daily and weekly quests: %s. Only dialogue option: %s. Kept manual: %d."],
     word(settings.enabled), word(settings.accept), word(settings.turnin),
-    settings.manualDailies and L["manual"] or L["automatic"], count or 0)
+    settings.manualDailies and L["manual"] or L["automatic"], word(settings.gossip), count or 0)
 end

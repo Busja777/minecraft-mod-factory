@@ -117,18 +117,79 @@ local function gossipQuests(list)
   return quests
 end
 
+-- How many entries a list from the game has; nil when it is not a readable list.
+local function count(list)
+  if type(list) ~= "table" or ns.IsSecret(list) then return nil end
+  return #list
+end
+
+-- 1.2: one dialogue option of the newer conversation window as the plain data Core.lua decides on
+-- (C_GossipInfo.GetOptions, GossipOptionUIInfo). An option with a secret or unreadable field
+-- becomes an empty record, which is never picked.
+local function readOption(info)
+  local o = {}
+  if type(info) ~= "table" or ns.IsSecret(info) then return o end
+  local id, icon, override = info.gossipOptionID, info.icon, info.overrideIconID
+  local status, rewards, spell, auto = info.status, info.rewards, info.spellID, info.selectOptionWhenOnlyOption
+  if ns.IsSecret(id) or ns.IsSecret(icon) or ns.IsSecret(override) or ns.IsSecret(status)
+    or ns.IsSecret(rewards) or ns.IsSecret(spell) or ns.IsSecret(auto) then return o end
+  o.id = type(id) == "number" and id or nil
+  o.icon, o.override, o.status = icon, override, status
+  if rewards == nil then o.rewards = 0 elseif type(rewards) == "table" then o.rewards = #rewards else o.rewards = 1 end
+  o.spell = spell ~= nil and spell ~= 0
+  o.auto = auto == true
+  o.blocked = o.id ~= nil and ns.blocked[o.id] == true
+  return o
+end
+
+-- 1.2: a character with no quests and exactly one plain line of conversation: pick it.
+local function pickOption(gossip, paused, active, available)
+  if not (gossip.GetOptions and gossip.SelectOption) then return end
+  local list = gossip.GetOptions()
+  if type(list) ~= "table" or ns.IsSecret(list) then return end
+  local options = {}
+  for i, info in ipairs(list) do options[i] = readOption(info) end
+  local a, b = count(active), count(available)
+  local talk = ns.talk
+  local id = ns.PickOption({
+    enabled = ns.settings.enabled, gossip = ns.settings.gossip, paused = paused,
+    quests = a and b and a + b or nil, options = options, chosen = talk.chosen, picks = talk.picks,
+  })
+  if not id then return end
+  talk.chosen = talk.chosen or {}
+  talk.chosen[id] = true
+  talk.picks = (talk.picks or 0) + 1
+  talk.lastPick, talk.pickedAt = id, GetTime()
+  gossip.SelectOption(id)
+end
+
 local function onGossip(paused)
   local gossip = C_GossipInfo
   if not (gossip and gossip.GetActiveQuests and gossip.GetAvailableQuests) then return end
+  local active, available = gossip.GetActiveQuests(), gossip.GetAvailableQuests()
   local kind, id = ns.Pick({
     accept = ns.IsOn(ns.settings, "accept"), turnin = ns.IsOn(ns.settings, "turnin"), paused = paused,
-    active = gossipQuests(gossip.GetActiveQuests()), available = gossipQuests(gossip.GetAvailableQuests()),
+    active = gossipQuests(active), available = gossipQuests(available),
   })
   if kind == "active" and gossip.SelectActiveQuest then
     gossip.SelectActiveQuest(id)
   elseif kind == "available" and gossip.SelectAvailableQuest then
     gossip.SelectAvailableQuest(id)
+  elseif not kind then
+    pickOption(gossip, paused, active, available)
   end
+end
+
+-- 1.2: the option just picked asks for a confirmation (gold, a code, a skip ...). The game shows its
+-- question to the player, who decides; the autopilot never answers it and never picks that
+-- option again.
+local function onConfirm()
+  local talk = ns.talk
+  if talk.lastPick and talk.pickedAt and GetTime() - talk.pickedAt <= ns.GRACE then
+    ns.blocked[talk.lastPick] = true
+    ns.Say(L["This dialogue option asks you to confirm, so the choice is yours. The autopilot will not pick it again."])
+  end
+  talk.lastPick = nil
 end
 
 -- Quest lists of the older greeting window: quests are numbered, not named by ID.
@@ -173,16 +234,21 @@ local WINDOWS = {
   GOSSIP_SHOW = onGossip, QUEST_GREETING = onGreeting,
 }
 local CLOSED = { GOSSIP_CLOSED = true, QUEST_FINISHED = true }
+local CONFIRM = { GOSSIP_CONFIRM = true, GOSSIP_ENTER_CODE = true }
 
 local function onLogin()
   if type(QuestAutopilotDB) ~= "table" then QuestAutopilotDB = {} end
   local db = QuestAutopilotDB
-  db.version = 2 -- 2 (1.1): the list of quests kept manual; 1.0 data needs nothing else
+  -- 2 (1.1): the list of quests kept manual; 1.0 data needs nothing else.
+  -- 3 (1.2): the dialogue options that asked for a confirmation; the gossip switch starts off.
+  db.version = 3
   if type(db.settings) ~= "table" then db.settings = {} end
   if type(db.manual) ~= "table" then db.manual = {} end
+  db.blocked = ns.BlockedList(db.blocked)
   ns.db = db
   ns.settings = ns.Settings(db.settings)
   ns.manual = ns.ManualList(db.manual)
+  ns.blocked = db.blocked
 end
 
 local frame = CreateFrame("Frame")
@@ -193,6 +259,8 @@ frame:SetScript("OnEvent", function(_, event)
     onLogin()
   elseif CLOSED[event] then
     ns.WindowClosed(ns.talk, GetTime())
+  elseif CONFIRM[event] then
+    if ns.settings then onConfirm() end
   elseif WINDOWS[event] and ns.settings then
     local shift = IsShiftKeyDown ~= nil and IsShiftKeyDown() == true
     WINDOWS[event](ns.WindowOpened(ns.talk, shift, GetTime()))
@@ -207,3 +275,4 @@ end
 listen("PLAYER_LOGIN")
 for event in pairs(WINDOWS) do listen(event) end
 for event in pairs(CLOSED) do listen(event) end
+for event in pairs(CONFIRM) do listen(event) end
