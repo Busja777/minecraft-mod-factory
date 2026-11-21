@@ -218,9 +218,9 @@
       "art": "M",
       "was": "Markiert abwesende Spieler in der Liste",
       "updates": [
-        "zählt beim Schlafen nicht",
-        "Kick",
-        "NeoForge"
+        "Kick nach langer Abwesenheit (aus per Standard)",
+        "NeoForge",
+        "AFK-Zeit in der Spielerliste"
       ],
       "banner": {
         "from": "chatgpt",
@@ -274,9 +274,9 @@
       "art": "D",
       "was": "Mehr Erze in drei Stufen",
       "updates": [
-        "einzelne Erze",
-        "Nether",
-        "26.1"
+        "Kupfer- und Eisenadern in Höhlen größer statt häufiger (wenn belegbar)",
+        "26.4-Erze, falls neue kommen",
+        "Stufen als drei Packs in einem"
       ],
       "banner": {
         "from": "chatgpt",

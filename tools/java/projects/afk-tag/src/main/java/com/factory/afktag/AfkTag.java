@@ -2,6 +2,7 @@ package com.factory.afktag;
 
 import com.factory.afktag.AfkRules.Change;
 import com.factory.afktag.AfkRules.Sample;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,8 +24,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Entry point: players who stay idle get "[AFK]" in front of their name in the player list and a
- * chat line when they go and come back. Everything runs on the server; the player list entry is
- * sent with vanilla packets, so players without the mod see the tag too.
+ * chat line when they go and come back, and (since 1.1) do not count when the server decides
+ * whether enough players sleep to skip the night. Everything runs on the server; the player list
+ * entry is sent with vanilla packets, so players without the mod see the tag too.
  */
 public final class AfkTag implements ModInitializer {
     public static final String MOD_ID = "afktag";
@@ -33,14 +35,17 @@ public final class AfkTag implements ModInitializer {
     /** One idle timer per online player (server thread only; concurrent for the odd read elsewhere). */
     private static final Map<UUID, AfkRules.Timer> TIMERS = new ConcurrentHashMap<>();
     private static volatile long timeoutTicks = AfkConfig.defaults().timeoutTicks();
+    private static volatile boolean ignoreAfkForSleep = AfkConfig.DEFAULT_IGNORE_AFK_FOR_SLEEP;
 
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             AfkConfig config = AfkConfig.load(FabricLoader.getInstance().getConfigDir(), LOG::warn);
             timeoutTicks = config.timeoutTicks();
+            ignoreAfkForSleep = config.ignoreAfkForSleep();
             TIMERS.clear();
-            LOG.info("Players count as AFK after {} idle minute(s)", config.minutes());
+            LOG.info("Players count as AFK after {} idle minute(s); AFK players {} for skipping the night",
+                config.minutes(), config.ignoreAfkForSleep() ? "do not count" : "count");
         });
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> TIMERS.clear());
         // A player who leaves starts fresh (not AFK) on the next join.
@@ -57,6 +62,16 @@ public final class AfkTag implements ModInitializer {
     /** For the game tests: idle ticks before the tag (the config file sets it on server start). */
     public static void setTimeoutTicks(long ticks) {
         timeoutTicks = Math.max(1, ticks);
+    }
+
+    /** For the game tests: whether AFK players are left out of the night-skip count (the config file sets it on server start). */
+    public static void setIgnoreAfkForSleep(boolean ignore) {
+        ignoreAfkForSleep = ignore;
+    }
+
+    /** The players the night-skip vote counts (called by the SleepManager mixin). */
+    public static List<ServerPlayerEntity> sleepCounted(List<ServerPlayerEntity> players) {
+        return AfkSleep.counted(players, player -> isAfk(player.getUuid()), ignoreAfkForSleep);
     }
 
     /** The player list name with the tag in front (called by the mixin when the player is AFK). */
@@ -88,5 +103,8 @@ public final class AfkTag implements ModInitializer {
         MutableText line = Text.empty().append(player.getDisplayName())
             .append(change == Change.NOW_AFK ? " is now AFK" : " is back");
         server.getPlayerManager().broadcast(line.formatted(Formatting.GRAY), false);
+        // The world caches its sleep count and only recounts when someone lies down, gets up, joins or
+        // leaves; recount now so going AFK (or coming back) changes the vote at once.
+        if (ignoreAfkForSleep) player.getServerWorld().updateSleepingPlayers();
     }
 }

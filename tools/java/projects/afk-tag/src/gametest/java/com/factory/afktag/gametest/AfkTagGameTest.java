@@ -2,8 +2,12 @@ package com.factory.afktag.gametest;
 
 import com.factory.afktag.AfkTag;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import java.util.List;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.SleepManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
@@ -75,5 +79,50 @@ public class AfkTagGameTest implements FabricGameTest {
             ctx.assertTrue(!AfkTag.isAfk(player.getUuid()), "walking keeps the player active");
         });
         ctx.waitAndRun(TIMEOUT * 3, ctx::complete);
+    }
+
+    /**
+     * Puts a player to bed as if they had been lying there for 100 ticks (what the night skip needs).
+     * Mock players are not ticked, so the sleep timer is set through the player's saved data first
+     * (loading a sleeping player wakes them, so this happens while awake), then the bed position is set
+     * the way LivingEntity#sleep does it; isSleeping() is exactly "has a bed position".
+     */
+    private static void sleepLongEnough(TestContext ctx, ServerPlayerEntity player) {
+        NbtCompound nbt = player.writeNbt(new NbtCompound());
+        nbt.putShort("SleepTimer", (short) 100);
+        player.readNbt(nbt);
+        player.setSleepingPosition(ctx.getAbsolutePos(new BlockPos(1, 2, 1)));
+    }
+
+    /** What ServerWorld#tick asks before it skips the night, for exactly these players. */
+    private static boolean nightSkips(List<ServerPlayerEntity> players, int percentage) {
+        SleepManager votes = new SleepManager(); // a fresh one: the test world is shared by every test
+        votes.update(players);
+        return votes.canSkipNight(percentage) && votes.canResetTime(percentage, players);
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = 200)
+    public void anAfkPlayerDoesNotBlockTheNightSkip(TestContext ctx) {
+        ServerPlayerEntity idle = player(ctx);
+        ctx.waitAndRun(TIMEOUT + 10, () -> {
+            ctx.assertTrue(AfkTag.isAfk(idle.getUuid()), "the idle player is AFK after the timeout");
+            ServerPlayerEntity sleeper = player(ctx); // fresh, so not AFK
+            ctx.assertTrue(!AfkTag.isAfk(sleeper.getUuid()), "the new player is active");
+            try {
+                sleepLongEnough(ctx, sleeper);
+                ctx.assertTrue(sleeper.canResetTimeBySleeping(), "the sleeper has been in bed for 100 ticks (sleeping "
+                    + sleeper.isSleeping() + ", timer " + sleeper.getSleepTimer() + ")");
+                List<ServerPlayerEntity> players = List.of(idle, sleeper);
+                ctx.assertTrue(nightSkips(players, 100), "one asleep, one AFK: the night is skipped at 100 %");
+                AfkTag.setIgnoreAfkForSleep(false);
+                ctx.assertTrue(!nightSkips(players, 100), "with ignoreAfkForSleep off the AFK player still blocks it");
+                AfkTag.setIgnoreAfkForSleep(true);
+                ctx.assertTrue(!nightSkips(List.of(idle), 0), "only AFK players: nobody sleeps, no skip");
+            } finally {
+                AfkTag.setIgnoreAfkForSleep(true);
+                sleeper.clearSleepingPosition(); // leave nobody in bed in the shared test world
+            }
+            ctx.complete();
+        });
     }
 }

@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.factory.afktag.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": ["ServerPlayerEntityMixin"],
+  "mixins": ["ServerPlayerEntityMixin", "SleepManagerMixin"],
   "injectors": {
     "defaultRequire": 1
   }

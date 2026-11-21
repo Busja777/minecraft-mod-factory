@@ -15,6 +15,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "OreAbundance-1.1.zip",
+      "changelog": "## Ore Abundance 1.1\n\nThe Nether update.\n\n- Nether quartz and nether gold ore are now about 1.5 times as common, by the same rule as the Overworld ores.\n- Vein attempts per chunk: Nether quartz 16 → 24 (basalt deltas 32 → 48), nether gold ore 10 → 15 (basalt deltas 20 → 30).\n- Ancient debris stays vanilla on purpose: it is too valuable to multiply.\n- Vein sizes and heights stay vanilla; all Overworld changes of 1.0 stay as they were.\n- Only Nether land generated after the update gets the extra ores; existing chunks do not change.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

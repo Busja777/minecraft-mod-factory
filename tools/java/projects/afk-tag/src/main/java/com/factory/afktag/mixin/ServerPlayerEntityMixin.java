@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * The only mixin of the mod. {@code ServerPlayerEntity#getPlayerListName()} is where the game asks
+ * The player list tag. {@code ServerPlayerEntity#getPlayerListName()} is where the game asks
  * for the name a player gets in the player list (vanilla always answers null, i.e. "the plain
  * name"); every player list packet (join, display name update) reads it. Fabric API has no event
  * for it, so the tag goes in here, at RETURN so a name set by another mod is kept behind the tag.
