@@ -1,5 +1,6 @@
-// Farmers Advancements: a new advancement tab "Farmer's Almanac" with 30 goals about crops, animals,
+// Farmers Advancements: a new advancement tab "Farmer's Almanac" with 45 goals about crops, animals,
 // farm food and farm tools, so a peaceful farm world has something to work towards.
+// 1.0: 30 advancements. 1.2: 15 more about breeding and caring for animals (ANIMAL_CARE below).
 // Every criterion copies the shape of a vanilla advancement of the Minecraft version it is written for:
 //   placed_block + "is this block"            (husbandry/plant_seed)
 //   inventory_changed + items                 (husbandry/obtain_netherite_hoe; "count" is the item predicate's stack size)
@@ -7,6 +8,8 @@
 //   tame_animal + entity entity_properties    (husbandry/complete_catalogue)
 //   consume_item + item                       (husbandry/balanced_diet)
 //   item_used_on_block + location_check       (husbandry/safely_harvest_honey)
+//   player_interacted_with_entity + item + entity entity_properties (adventure/brush_armadillo,
+//                                             husbandry/feed_snifflet for the baby flag)
 // Only experience as rewards, never items. No recipes, functions or loot table changes.
 const NS = 'farmers_advancements';
 const id = name => `${NS}:${name}`;
@@ -19,6 +22,7 @@ const id = name => `${NS}:${name}`;
 //   entity type             predicate { type: … }                       predicate { "minecraft:entity_type": … }
 //   display icon            { id, count: 1 }                            { id }
 //   background of the root  minecraft:textures/block/x.png              minecraft:block/x
+//   baby flag of an entity  predicate { flags: { is_baby } }            predicate { "minecraft:flags": { is_baby } }
 // The same in both: item predicates (items, count { min }), location_check and its block predicate,
 // text components, frames, requirements, rewards and all six trigger ids.
 // The versions between the two have not been looked at, so the pack refuses to guess for them.
@@ -37,6 +41,13 @@ const isEntity = (format, entity) => condition(format, 'entity_properties', {
   entity: 'this',
   predicate: isNew(format) ? { 'minecraft:entity_type': `minecraft:${entity}` } : { type: `minecraft:${entity}` }
 });
+// An entity of one type that is (true) or is not (false) a baby; the shape of husbandry/feed_snifflet.
+const isEntityAged = (format, entity, baby) => condition(format, 'entity_properties', {
+  entity: 'this',
+  predicate: isNew(format)
+    ? { 'minecraft:entity_type': `minecraft:${entity}`, 'minecraft:flags': { is_baby: baby } }
+    : { type: `minecraft:${entity}`, flags: { is_baby: baby } }
+});
 const icon = (format, item) => (isNew(format) ? { id: `minecraft:${item}` } : { id: `minecraft:${item}`, count: 1 });
 const texture = (format, name) => (isNew(format) ? `minecraft:${name}` : `minecraft:textures/${name}.png`);
 
@@ -49,6 +60,11 @@ const has = (item, count) => ({
 const bred = (format, entity) => ({ trigger: 'minecraft:bred_animals', conditions: { child: isEntity(format, entity) } });
 const tamed = (format, entity) => ({ trigger: 'minecraft:tame_animal', conditions: { entity: isEntity(format, entity) } });
 const ate = item => ({ trigger: 'minecraft:consume_item', conditions: { item: { items: `minecraft:${item}` } } });
+// The player used an item on an entity (the item as it was before the use); baby: true/false/undefined (any age).
+const usedOnEntity = (format, item, entity, baby) => ({
+  trigger: 'minecraft:player_interacted_with_entity',
+  conditions: { entity: baby === undefined ? isEntity(format, entity) : isEntityAged(format, entity, baby), item: { items: `minecraft:${item}` } }
+});
 const usedOn = (format, block) => ({
   trigger: 'minecraft:item_used_on_block',
   conditions: { location: condition(format, 'location_check', { predicate: { block: { blocks: `minecraft:${block}` } } }) }
@@ -82,6 +98,31 @@ export const BREEDING = [
 ];
 const BREED_ICON = { cow: 'wheat', sheep: 'white_wool', pig: 'carrot', chicken: 'wheat_seeds', rabbit: 'dandelion' };
 
+// 1.2: more animals to breed, tame and care for, all in the animals branch. Every entity exists in
+// Minecraft 1.21.1 and 26.3. Left out on purpose: turtles, frogs and sniffers (they lay eggs, so their
+// breeding has no child to match), brushing an armadillo (vanilla's own "Isn't It Scute?") and leading
+// frogs or riding with goats (vanilla husbandry advancements).
+// [name, parent, icon, title, description, kind, entity, item (for use)]
+//   kind: breed = bred_animals, tame = tame_animal, use = item used on a grown-up animal, feed_baby = item used on a baby
+export const ANIMAL_CARE = [
+  ['feed_calf', 'animals/breed_cow', 'wheat', 'Growing Up Fast', 'Feed wheat to a calf', 'feed_baby', 'cow', 'wheat'],
+  ['breed_mooshroom', 'animals/breed_cow', 'red_mushroom', 'Mushroom Ranch', 'Breed two mooshrooms', 'breed', 'mooshroom'],
+  ['mushroom_stew', 'animals/breed_mooshroom', 'mushroom_stew', 'Soup on Hooves', 'Fill a bowl with stew from a mooshroom', 'use', 'mooshroom', 'bowl'],
+  ['shear_sheep', 'animals/breed_sheep', 'shears', 'Fresh Trim', 'Shear a sheep', 'use', 'sheep', 'shears'],
+  ['breed_goat', 'animals/breed_sheep', 'goat_horn', 'Mountain Kids', 'Breed two goats', 'breed', 'goat'],
+  ['milk_goat', 'animals/breed_goat', 'milk_bucket', 'Mountain Dairy', 'Fill a bucket with milk from a goat', 'use', 'goat', 'bucket'],
+  ['breed_bee', 'animals/breed_rabbit', 'honeycomb', 'Birds and the Bees', 'Breed two bees', 'breed', 'bee'],
+  ['breed_armadillo', 'animals/breed_bee', 'armadillo_scute', 'Tiny Tanks', 'Breed two armadillos', 'breed', 'armadillo'],
+  ['breed_horse', 'animals/tame_horse', 'golden_apple', 'Foal Play', 'Breed two horses', 'breed', 'horse'],
+  ['tame_donkey', 'animals/tame_horse', 'chest', 'Stubborn Friend', 'Tame a donkey', 'tame', 'donkey'],
+  ['breed_donkey', 'animals/tame_donkey', 'golden_carrot', 'Long Ears, Short Legs', 'Breed two donkeys', 'breed', 'donkey'],
+  ['tame_llama', 'animals/tame_horse', 'lead', 'No Spitting, Please', 'Tame a llama', 'tame', 'llama'],
+  ['breed_llama', 'animals/tame_llama', 'white_carpet', 'Llama Drama', 'Breed two llamas', 'breed', 'llama'],
+  ['breed_camel', 'animals/breed_llama', 'cactus', 'Desert Caravan', 'Breed two camels', 'breed', 'camel']
+];
+// The 15th: breed every animal of the list above.
+export const RANCH = ANIMAL_CARE.filter(a => a[5] === 'breed').map(a => a[6]);
+
 // Farm food eaten in the cooking branch: [item, name, parent, title, description]
 export const COOKING = [
   ['bread', 'bread', 'root', 'Daily Bread', 'Eat a loaf of bread'],
@@ -100,8 +141,12 @@ export const REWARDS = {
   'animals/eggs': 10,
   'animals/breed_all': 50,
   'tools/diamond_hoe': 20,
-  'cooking/feast': 50
+  'cooking/feast': 50,
+  'animals/breed_armadillo': 20,
+  'animals/breed_camel': 20,
+  'animals/breed_ranch': 50
 };
+const GOALS = new Set(['animals/breed_armadillo', 'animals/breed_camel']);
 
 // ── the tree ──────────────────────────────────────────────────────────────────────────────────
 // Each entry: { name, parent, icon, title, description, frame, criteria, all }
@@ -128,6 +173,15 @@ export function tree(format) {
   add('animals/breed_all', 'animals/breed_rabbit', 'golden_carrot', 'Full Barnyard', 'Breed cows, sheep, pigs, chickens and rabbits',
     Object.fromEntries(BREEDING.map(([entity]) => [entity, bred(format, entity)])), { frame: 'challenge', all: true });
   add('animals/tame_horse', 'root', 'saddle', 'Plow Horse', 'Tame a horse', { horse: tamed(format, 'horse') });
+  for (const [name, parent, ico, title, desc, kind, entity, item] of ANIMAL_CARE) {
+    const criterion = kind === 'breed' ? bred(format, entity)
+      : kind === 'tame' ? tamed(format, entity)
+        : usedOnEntity(format, item, entity, kind === 'feed_baby');
+    add(`animals/${name}`, parent, ico, title, desc, { [entity]: criterion }, { frame: GOALS.has(`animals/${name}`) ? 'goal' : 'task' });
+  }
+  add('animals/breed_ranch', 'animals/breed_camel', 'hay_block', 'Wide Open Range',
+    'Breed mooshrooms, goats, bees, armadillos, horses, donkeys, llamas and camels',
+    Object.fromEntries(RANCH.map(entity => [entity, bred(format, entity)])), { frame: 'challenge', all: true });
 
   for (const [item, name, parent, title, desc] of COOKING) add(`cooking/${name}`, parent, item, title, desc, { [item]: ate(item) });
   add('cooking/feast', 'cooking/beetroot_soup', 'cake', 'Harvest Feast',
@@ -164,10 +218,10 @@ export function checkTree(list) {
 const text = t => ({ text: t });
 const requirements = (criteria, all) => (all ? Object.keys(criteria).map(k => [k]) : [Object.keys(criteria)]);
 
-// Called once per Minecraft version; the same 31 files under the same paths for every version.
+// Called once per Minecraft version; the same 46 files under the same paths for every version.
 export default async function ({ format }) {
   const list = tree(format);
-  if (list.length !== 30) throw new Error(`expected 30 advancements below the root, got ${list.length}`);
+  if (list.length !== 45) throw new Error(`expected 45 advancements below the root, got ${list.length}`);
   checkTree(list);
 
   const files = {};

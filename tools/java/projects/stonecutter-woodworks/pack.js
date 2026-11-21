@@ -1,7 +1,10 @@
-// Stonecutter Woodworks: planks of the overworld woods are cut into stairs, slabs, fences, fence
-// gates, doors, trapdoors and pressure plates in the stonecutter, one plank at a time.
+// Stonecutter Woodworks: planks are cut into stairs, slabs, fences, fence gates, doors, trapdoors
+// and pressure plates in the stonecutter, one plank at a time.
 // Amounts follow vanilla: a plank gives two slabs (like the crafting table), everything else one.
-export const WOODS = ['oak', 'spruce', 'birch', 'jungle', 'acacia', 'dark_oak', 'mangrove', 'cherry'];
+// 1.0: the eight overworld woods. 1.2: bamboo, crimson and warped, whose seven cuts all exist in
+// Minecraft 1.21.1 and 26.3 (pale oak exists only in 26.3, so it stays out: every file must exist
+// for every version the zip serves).
+export const WOODS = ['oak', 'spruce', 'birch', 'jungle', 'acacia', 'dark_oak', 'mangrove', 'cherry', 'bamboo', 'crimson', 'warped'];
 export const CUTS = { stairs: 1, slab: 2, fence: 1, fence_gate: 1, door: 1, trapdoor: 1, pressure_plate: 1 };
 const NS = 'stonecutter_woodworks';
 
@@ -27,7 +30,7 @@ function recipe(format, wood, cut, count) {
   };
 }
 
-// Called once per Minecraft version; the same 56 recipes under the same paths for every version.
+// Called once per Minecraft version; the same 77 recipes under the same paths for every version.
 export default async function ({ format }) {
   const files = {};
   for (const wood of WOODS) {
