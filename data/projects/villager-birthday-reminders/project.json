@@ -24,6 +24,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "VillagerBirthdayReminders-1.2.zip",
+      "changelog": "## Villager Birthday Reminders 1.2\n\nIsland villagers.\n\n- New: Leo from Ginger Island gets his letters too: on his birthday (summer 26) and, if \"DayBefore\" is on, the morning before (summer 25). Gift idea: a Mango, one of his loved gifts.\n- His letters only come once you have met him on the island, so nothing is spoiled before you get there.\n- Leo is the only island villager with a birthday. That makes 34 villagers in all.\n- The 33 villagers of 1.1 and the reminder the day before are unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

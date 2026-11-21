@@ -25,6 +25,15 @@
 //   eve of spring 1 is winter 28 of the year before; SEASON_DAY has no year, so that letter comes
 //   every winter 28. Of the current villagers only Krobus (winter 1 → fall 28) is affected; eve()
 //   below handles every date and is checked for the edges.
+// - 1.2, Leo (Ginger Island): birthday summer 26 (infobox of https://stardewvalleywiki.com/Leo,
+//   revision 192150). He "initially lives on Ginger Island", is "too shy to speak to the player"
+//   until the parrots are befriended with 10 Golden Walnuts, and only "moves to the mainland" at
+//   six hearts, which needs the player to have met him first (same page, intro and "Schedule").
+//   So the player can only meet him on the island, and the same PLAYER_HAS_MET rule keeps both of
+//   his letters out of the mailbox until the island is reachable and he has been talked to. He is
+//   the only island villager in tools/stardew/data/npcs.json (34 giftable villagers). Island
+//   villagers have their own table (ISLAND_GIFTS) and their own four patches with the same
+//   letters, conditions and DayBefore switch; the valley patches are unchanged.
 // - The eve letters can be switched off: config option "DayBefore" ("true, false", default true;
 //   author-guide/config.md: "true, false" is a boolean and shows as a checkbox). Only the trigger
 //   patch carries "When": { "DayBefore": "true" } (author-guide.md#conditions). The eve letter texts
@@ -74,6 +83,14 @@ export const GIFTS = {
   Wizard: ['(O)422', 'a Purple Mushroom', 'the Wizard']
 };
 
+// 1.2: villagers who live on Ginger Island (npcs.json "island"), same format, own patches.
+// Leo loves 444 289 834 906 ParrotEgg (raw "Leo" line of Data/NPCGiftTastes, wiki revision 189757;
+// Leo page "Love": Duck Feather, Mango, Ostrich Egg, Parrot Egg, Poi). Mango grows on the island
+// where he is met; Parrot Egg has a text ID that is not in items.json.
+export const ISLAND_GIFTS = {
+  Leo: ['(O)834', 'a Mango']
+};
+
 const cap = s => s[0].toUpperCase() + s.slice(1);
 
 export const letter = (call, phrase) =>
@@ -96,48 +113,63 @@ export default async function ({ items, npcs }) {
     const got = eve({ season: date[0], day: date[1] });
     if (got.season !== want[0] || got.day !== want[1]) throw new Error(`eve of ${date.join(' ')} is ${got.season} ${got.day}, expected ${want.join(' ')}`);
   }
-  const mail = {};
-  const triggers = {};
-  const eveMail = {};
-  const eveTriggers = {};
   const i18n = {};
-  for (const [name, [gift, phrase, call = name]] of Object.entries(GIFTS)) {
-    const npc = npcs.npcs[name];
-    if (!npc) throw new Error(`${name} is not in npcs.json`);
-    if (npc.island) throw new Error(`${name} lives on Ginger Island (planned for a later version)`);
-    if (!npc.loves.includes(gift)) throw new Error(`${name} does not love ${gift} (Data/NPCGiftTastes)`);
-    const itemName = items.items[gift];
-    if (!itemName || !npc.favorites.includes(itemName)) throw new Error(`${gift} (${itemName}) is not among ${name}'s favorites on the wiki`);
-    if (!phrase.includes(itemName.replace(/s$/, ''))) throw new Error(`${name}: "${phrase}" does not name ${itemName}`);
+  const used = new Set();
+  // One group of patches per table: the valley (GIFTS) and, since 1.2, Ginger Island (ISLAND_GIFTS).
+  const build = (table, island) => {
+    const mail = {};
+    const triggers = {};
+    const eveMail = {};
+    const eveTriggers = {};
+    for (const [name, [gift, phrase, call = name]] of Object.entries(table)) {
+      const npc = npcs.npcs[name];
+      if (!npc) throw new Error(`${name} is not in npcs.json`);
+      if (Boolean(npc.island) !== island) throw new Error(`${name}: island is ${Boolean(npc.island)} in npcs.json`);
+      if (!npc.loves.includes(gift)) throw new Error(`${name} does not love ${gift} (Data/NPCGiftTastes)`);
+      const itemName = items.items[gift];
+      if (!itemName || !npc.favorites.includes(itemName)) throw new Error(`${gift} (${itemName}) is not among ${name}'s favorites on the wiki`);
+      if (!phrase.includes(itemName.replace(/s$/, ''))) throw new Error(`${name}: "${phrase}" does not name ${itemName}`);
+      if (used.has(gift)) throw new Error(`${name}: ${gift} is already another villager's gift idea`);
+      used.add(gift);
 
-    const id = `{{ModId}}_Birthday_${name}`;
-    const { season, day } = npc.birthday;
-    i18n[`letter.${name}`] = letter(call, phrase);
-    i18n[`title.${name}`] = `${cap(call)}'s Birthday`;
-    mail[id] = `{{i18n:letter.${name}}}[#]{{i18n:title.${name}}}`;
-    triggers[id] = {
-      Id: id,
-      Trigger: 'DayStarted',
-      Condition: `SEASON_DAY ${season} ${day}, PLAYER_HAS_MET Current ${name}`,
-      Actions: [`RemoveMail Current ${id} Received`, `AddMail Current ${id} Now`],
-      MarkActionApplied: false
-    };
+      const id = `{{ModId}}_Birthday_${name}`;
+      const { season, day } = npc.birthday;
+      i18n[`letter.${name}`] = letter(call, phrase);
+      i18n[`title.${name}`] = `${cap(call)}'s Birthday`;
+      mail[id] = `{{i18n:letter.${name}}}[#]{{i18n:title.${name}}}`;
+      triggers[id] = {
+        Id: id,
+        Trigger: 'DayStarted',
+        Condition: `SEASON_DAY ${season} ${day}, PLAYER_HAS_MET Current ${name}`,
+        Actions: [`RemoveMail Current ${id} Received`, `AddMail Current ${id} Now`],
+        MarkActionApplied: false
+      };
 
-    const eveId = `{{ModId}}_BirthdayEve_${name}`;
-    const before = eve(npc.birthday);
-    i18n[`eve.${name}`] = eveLetter(call, phrase);
-    i18n[`eveTitle.${name}`] = `${cap(call)}'s Birthday Tomorrow`;
-    eveMail[eveId] = `{{i18n:eve.${name}}}[#]{{i18n:eveTitle.${name}}}`;
-    eveTriggers[eveId] = {
-      Id: eveId,
-      Trigger: 'DayStarted',
-      Condition: `SEASON_DAY ${before.season} ${before.day}, PLAYER_HAS_MET Current ${name}`,
-      Actions: [`RemoveMail Current ${eveId} Received`, `AddMail Current ${eveId} Now`],
-      MarkActionApplied: false
-    };
-  }
-  const missing = Object.entries(npcs.npcs).filter(([n, v]) => !v.island && !GIFTS[n]).map(([n]) => n);
+      const eveId = `{{ModId}}_BirthdayEve_${name}`;
+      const before = eve(npc.birthday);
+      i18n[`eve.${name}`] = eveLetter(call, phrase);
+      i18n[`eveTitle.${name}`] = `${cap(call)}'s Birthday Tomorrow`;
+      eveMail[eveId] = `{{i18n:eve.${name}}}[#]{{i18n:eveTitle.${name}}}`;
+      eveTriggers[eveId] = {
+        Id: eveId,
+        Trigger: 'DayStarted',
+        Condition: `SEASON_DAY ${before.season} ${before.day}, PLAYER_HAS_MET Current ${name}`,
+        Actions: [`RemoveMail Current ${eveId} Received`, `AddMail Current ${eveId} Now`],
+        MarkActionApplied: false
+      };
+    }
+    return { mail, triggers, eveMail, eveTriggers };
+  };
+  const valley = build(GIFTS, false);
+  const island = build(ISLAND_GIFTS, true);
+  const missing = Object.keys(npcs.npcs).filter(n => !GIFTS[n] && !ISLAND_GIFTS[n]);
   if (missing.length) throw new Error(`no letter for ${missing.join(', ')}`);
+  const patches = ({ mail, triggers, eveMail, eveTriggers }, who) => [
+    { LogName: `Birthday letters${who}`, Action: 'EditData', Target: 'Data/mail', Entries: mail },
+    { LogName: `Reminder letters for the day before${who}`, Action: 'EditData', Target: 'Data/mail', Entries: eveMail },
+    { LogName: `Send the letter on the birthday${who}`, Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers },
+    { LogName: `Send the reminder the day before${who}`, Action: 'EditData', Target: 'Data/TriggerActions', Entries: eveTriggers, When: { DayBefore: 'true' } }
+  ];
   return {
     'content.json': {
       Format: '2.9.0',
@@ -148,12 +180,7 @@ export default async function ({ items, npcs }) {
           Description: 'Also send a short reminder letter the morning before each birthday, with the same gift idea. The letter on the birthday itself always comes.'
         }
       },
-      Changes: [
-        { LogName: 'Birthday letters', Action: 'EditData', Target: 'Data/mail', Entries: mail },
-        { LogName: 'Reminder letters for the day before', Action: 'EditData', Target: 'Data/mail', Entries: eveMail },
-        { LogName: 'Send the letter on the birthday', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers },
-        { LogName: 'Send the reminder the day before', Action: 'EditData', Target: 'Data/TriggerActions', Entries: eveTriggers, When: { DayBefore: 'true' } }
-      ]
+      Changes: [...patches(valley, ''), ...patches(island, ' (Ginger Island)')]
     },
     'i18n/default.json': i18n
   };
