@@ -48,6 +48,12 @@ vanilla files. Every file of the newest version must also exist for the older on
 can replace files, not hide them). `npm run java -- test <slug>` checks each version against its
 data and lets Minecraft itself load the finished data pack where the version can do that without
 a window (1.21.5 and newer); the game's error messages name the file.
+The game lets a zip declare only one range of formats, so a zip for 1.21.1 and 26.3 is accepted
+by every release in between as well. `"alsoLoads"` in `pack.json` says which file set each of
+those releases reads (`{ "1.21.1": [ … ], "26.3": [ … ], "broken": [ … ] }`, see `planTiers` in
+`lib.js`); the build refuses a zip that leaves a release in its range unaccounted for, checks
+every listed release with the files it reads and lets the game load them. Put a release under a
+file set only after that check passes; "broken" is for releases where no file set works yet.
 
 ## Files to deliver (all under tools/java/projects/<slug>/)
 - `pack.json`: `{ kind, name, description (short, shown in the game's pack list), mc: "1.21.1", gameVersions: ["1.21", "1.21.1"] }`
