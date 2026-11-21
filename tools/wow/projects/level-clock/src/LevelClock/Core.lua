@@ -14,6 +14,14 @@ function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
 
+-- 1.4: a word the game itself has (a GlobalStrings constant such as XP), in the client's language;
+-- the English word when the client lacks it.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
 -- startedAt is the clock time (time()) the session began; login is true for a session begun at login.
 function ns.NewSession(now, reading, startedAt, login)
   return { start = now, gained = 0, levels = 0, last = reading, startedAt = startedAt, login = login }
@@ -74,10 +82,14 @@ function ns.FormatDuration(seconds)
   return string.format(ns.L["%dd %dh"], math.floor(hours / 24), hours % 24)
 end
 
+-- 1.4: thousands are parted the way the client does it (LARGE_NUMBER_SEPERATOR): 12,345 or 12.345.
 function ns.FormatNumber(n)
   local s = tostring(math.floor(n))
   local out = s:reverse():gsub("(%d%d%d)", "%1,"):reverse()
-  return (out:gsub("^,", ""))
+  out = out:gsub("^,", "")
+  local sep = ns.GameText("LARGE_NUMBER_SEPERATOR", ",")
+  if sep ~= "," then out = out:gsub(",", function() return sep end) end
+  return out
 end
 
 -- Everything the window shows, as numbers. A missing field means "not known yet".

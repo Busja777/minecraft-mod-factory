@@ -1074,3 +1074,170 @@ test("levels: 1.2 saved data stays, the level list starts empty and broken rows 
   ns = relog(wow)
   eq(#ns.char.levels, 0)
 end)
+
+-- 1.4: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and the words it has (GlobalStrings). The stand-in client has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  XP, TUTORIAL_TITLE26, BACK, LARGE_NUMBER_SEPERATOR = "EP", "Erholt", "Zurück", "."
+end
+
+local function deWhen(t) return date("%d.%m. %H:%M", t) end
+
+-- One line of the clock as "label = value".
+local function shows(i) return table.concat({ line(i) }, " = ") end
+
+test("game words: XP, Rested, Back and the thousands from the game, English when the client has none", function(wow)
+  local ns = boot(wow, { xp = 0, max = 10000, rested = 1000 })
+  wow.slash("/lc")
+  eq(line(4), "Rested")
+  LevelClockFrame.switch:Click()
+  eq(LevelClockFrame.switch:GetText(), "Back")
+  eq(ns.FormatNumber(1234567), "1,234,567")
+  eq(ns.GameText("XP", "XP"), "XP")
+  germanClient(wow)
+  eq(ns.FormatNumber(1234567), "1.234.567")
+  eq(ns.FormatNumber(999), "999")
+  eq(ns.GameText("XP", "XP"), "EP")
+  LARGE_NUMBER_SEPERATOR = ""
+  eq(ns.FormatNumber(12345), "12,345", "an empty one stays English")
+  BACK = { secret = true }
+  eq(ns.GameText("BACK", "Back"), "Back", "so does anything that is not a text")
+end)
+
+test("German client: clock and history window in German with the game's words", function(wow)
+  germanClient(wow)
+  local ns = boot(wow, { xp = 1000, max = 10000, level = 20, rested = 4500 })
+  wow.slash("/lc")
+  local f = LevelClockFrame
+  eq(f.title:GetText(), "Level Clock")
+  eq(shows(1), "EP pro Stunde = " .. WAITING)
+  eq(shows(2), "Zeit bis zum Aufstieg = " .. WAITING)
+  eq(shows(3), "EP bis zum Aufstieg = 9.000")
+  eq(shows(4), "Erholt = 45%")
+  eq(shows(5), "EP der Sitzung = 0")
+  eq(shows(6), "Sitzungsdauer = unter 1 Min.")
+  eq(f.switch:GetText(), "Verlauf")
+  wow.clock = wow.clock + 1800
+  bar(wow, { xp = 4000 })
+  eq(select(2, line(1)), "6.000")
+  eq(select(2, line(2)), "1h 00m")
+  eq(select(2, line(6)), "30m")
+
+  f.switch:Click()
+  eq(f.title:GetText(), "Sitzungsverlauf")
+  eq(f.switch:GetText(), "Zurück")
+  eq(f.empty:GetText(), "Noch keine abgeschlossene Sitzung mit EP.")
+  local first = wow.now
+  wow.slash("/lc reset")
+  eq(f.history.head[1]:GetText(), "Beginn")
+  eq(f.history.head[2]:GetText(), "Dauer")
+  eq(f.history.head[3]:GetText(), "EP")
+  eq(f.history.head[4]:GetText(), "EP/Std.")
+  eq(f.history.head[5]:GetText(), "Stufen")
+  local row = f.history.rows[1]
+  eq(row[1]:GetText(), deWhen(first), "the date the German way")
+  eq(row[2]:GetText(), "30m")
+  eq(row[3]:GetText(), "3.000")
+  eq(row[4]:GetText(), "6.000")
+
+  bar(wow, { xp = 0, max = 0, level = 90, atMax = true })
+  f.switch:Click()
+  eq(f.note:GetText(), "Du hast die Höchststufe erreicht.")
+end)
+
+test("German client: history and levels in the chat in German", function(wow)
+  germanClient(wow)
+  local ns = boot(wow, { level = 40, xp = 0, max = 100000 })
+  local P = PREFIX
+  wow.slash("/lc history")
+  eq(wow.chat[1], P .. "Noch keine abgeschlossene Sitzung mit EP.")
+  wow.slash("/lc levels")
+  eq(wow.chat[2], P .. "Noch keine Stufenaufstiege notiert. Level Clock notiert ab jetzt jede Stufe.")
+  eq(ns.HistoryText({ xp = 12345, seconds = 4320, levels = 1, from = 1763658000 }),
+    deWhen(1763658000) .. ": 12.345 EP in 1h 12m, 10.287 EP pro Stunde, 1 Stufenaufstieg")
+  eq(ns.HistoryText({ xp = 9000, seconds = 3600, levels = 3, from = 1763658000 }),
+    deWhen(1763658000) .. ": 9.000 EP in 1h 00m, 9.000 EP pro Stunde, 3 Stufenaufstiege")
+  eq(ns.HistoryText({ xp = 40, seconds = 30, levels = 0 }), "-: 40 EP in unter 1 Min.")
+  eq(ns.LevelText({ { level = 11, at = 1763658000 }, { level = 12, at = 1763658000 + 1800 } }, 2),
+    "Stufe 12 am " .. deWhen(1763658000 + 1800) .. ", Dauer: 30m Echtzeit")
+
+  wow.chat = {}
+  play(wow, 600, 6000)
+  wow.slash("/lc reset")
+  wow.slash("/lc history")
+  eq(wow.chat[1], P .. "Neue Sitzung gestartet.")
+  eq(wow.chat[2], P .. "Deine letzten Sitzungen mit EP, neueste zuerst:")
+  eq(wow.chat[3], "  " .. deWhen(wow.now - 600) .. ": 6.000 EP in 10m, 36.000 EP pro Stunde")
+
+  wow.fire("TIME_PLAYED_MSG", 360000, 1200) -- the player typed /played
+  wait(wow, 600)
+  levelUp(wow, 41)
+  wait(wow, 2400)
+  levelUp(wow, 42)
+  wow.chat = {}
+  wow.slash("/lc levels")
+  eq(wow.chat[1], P .. "Deine letzten Stufen mit diesem Charakter, neueste zuerst:")
+  eq(wow.chat[2], "  Stufe 42 am " .. deWhen(wow.now) .. ", Dauer: 40m Spielzeit (/played 4d 4h)")
+  eq(wow.chat[3], "  Stufe 41 am " .. deWhen(wow.now - 2400) .. ", Dauer: 30m Spielzeit (/played 4d 4h)")
+end)
+
+test("German client: every window command answers in German, the command words stay English", function(wow)
+  germanClient(wow)
+  boot(wow)
+  local P = PREFIX
+  wow.slash("/lc options")
+  eq(wow.chat[1], P .. "Fenster: verschiebbar, Größe 100%, auf Höchststufe eingeblendet.")
+  wow.slash("/lc lock")
+  eq(wow.chat[2], P .. "Das Fenster ist gesperrt. Mit /lc unlock kannst du es wieder verschieben.")
+  wow.slash("/lc unlock")
+  eq(wow.chat[3], P .. "Das Fenster lässt sich wieder verschieben: Zieh es mit der linken Maustaste.")
+  wow.slash("/lc scale")
+  eq(wow.chat[4], P .. "Die Fenstergröße ist 100%. /lc scale mit einer Zahl von 0,8 bis 1,5 ändert sie.")
+  wow.slash("/lc scale 3")
+  eq(wow.chat[5], P .. "Wähle eine Größe von 0,8 bis 1,5, zum Beispiel /lc scale 1,2.")
+  wow.slash("/lc scale 1,2")
+  eq(wow.chat[6], P .. "Die Fenstergröße ist 120%.", "the comma of the German example works")
+  wow.slash("/lc hidemax")
+  eq(wow.chat[7], P .. "Das Fenster bleibt jetzt auf Höchststufe geschlossen. /lc öffnet es trotzdem.")
+  wow.slash("/lc lock")
+  wow.slash("/lc options")
+  eq(wow.chat[9], P .. "Fenster: gesperrt, Größe 120%, auf Höchststufe ausgeblendet.")
+  wow.slash("/lc hidemax")
+  eq(wow.chat[10], P .. "Das Fenster öffnet sich jetzt auch auf Höchststufe.")
+  wow.slash("/lc hilfe")
+  eq(wow.chat[11], P .. "/lc öffnet oder schließt die Uhr, /lc history zeigt deine letzten Sitzungen, /lc levels zeigt deine letzten Stufen, /lc reset startet eine neue Sitzung.")
+  eq(wow.chat[12], P .. "/lc lock und /lc unlock sperren oder entsperren das Fenster, /lc scale 0,8 bis 1,5 legt seine Größe fest, /lc hidemax blendet es auf Höchststufe aus, /lc options zeigt diese Einstellungen.")
+  eq(#wow.chat, 12)
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    if not key:find("%H", 1, true) then eq(placeholders(text), placeholders(key), key) end
+  end
+  eq(n, 47, "every text on screen has its German one")
+  eq(ns.L["%b %d %H:%M"], "%d.%m. %H:%M", "dates the German way")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enGB"
+  local ns = boot(wow, { xp = 1000, max = 10000 })
+  eq(next(ns.L), nil)
+  wow.slash("/lc")
+  eq(shows(3), "XP to level = 9,000")
+  LevelClockFrame.switch:Click()
+  eq(LevelClockFrame.title:GetText(), "Session history")
+  eq(ns.HistoryText({ xp = 40, seconds = 30, levels = 0 }), "-: 40 XP in under a minute")
+end)

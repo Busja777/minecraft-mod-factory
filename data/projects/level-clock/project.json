@@ -40,6 +40,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "LevelClock-1.4.zip",
+      "changelog": "## Level Clock 1.4\n\n- Level Clock now speaks **German**: the clock, the history, the level list and every chat line. On clients in other languages it stays in English.\n- The Rested line, the XP column of the history and the Back button come from the game itself now, so they read exactly like in your client's language, for example \"EP\" in German. In English they stay the same words.\n- Dates in the history and in `/lc levels` follow your client's language, and so do large numbers: `12,345` in English, `12.345` in German.\n- The commands stay the same in every language, for example `/lc levels` or `/lc hidemax`. `/lc scale` takes a size with a point or a comma, `1.2` as well as `1,2`.\n- Your sessions, levels and window settings from 1.3 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

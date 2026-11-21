@@ -8,10 +8,11 @@ local REFRESH = 1 -- seconds between two refreshes while the window is open
 local CLOCK_SIZE = { 230, 172 }
 local HISTORY_SIZE = { 350, 250 }
 -- History columns: field, header, justify, x offset (from the left for LEFT, from the right for RIGHT).
+-- 1.4: the XP header is the game's own word (XP), in the client's language.
 local COLUMNS = {
   { "when", L["Started"], "LEFT", 16 },
   { "duration", L["Time"], "RIGHT", -205 },
-  { "xp", L["XP"], "RIGHT", -135 },
+  { "xp", ns.GameText("XP", "XP"), "RIGHT", -135 },
   { "perHour", L["XP/hour"], "RIGHT", -62 },
   { "levels", L["Levels"], "RIGHT", -16 },
 }
@@ -126,7 +127,7 @@ function ns.WindowLines(now)
     { L["XP per hour"], v.perHour and ns.FormatNumber(v.perHour) or WAITING },
     { L["Time to level"], v.timeToLevel and ns.FormatDuration(v.timeToLevel) or WAITING },
     { L["XP to level"], v.needed and ns.FormatNumber(v.needed) or WAITING },
-    { L["Rested"], v.rested and string.format(L["%d%%"], v.rested) or WAITING },
+    { ns.GameText("TUTORIAL_TITLE26", "Rested"), v.rested and string.format(L["%d%%"], v.rested) or WAITING },
     { L["Session XP"], ns.FormatNumber(v.gained) },
     { L["Session time"], ns.FormatDuration(v.seconds) },
   }
@@ -153,7 +154,7 @@ end
 local function showHistory()
   ui:SetSize(HISTORY_SIZE[1], HISTORY_SIZE[2])
   ui.title:SetText(L["Session history"])
-  ui.switch:SetText(L["Back"])
+  ui.switch:SetText(ns.GameText("BACK", "Back"))
   ui.note:Hide()
   local history = ns.char and ns.char.history or {}
   for i, row in ipairs(ui.history.rows) do

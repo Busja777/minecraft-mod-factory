@@ -13,6 +13,14 @@ function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
 
+-- 1.3: a word the game itself has (a GlobalStrings constant such as LEVEL), in the client's language;
+-- the English word when the client lacks it.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
 -- Rested XP as a percentage of the whole level.
 function ns.RestedPercent(rested, max)
   if not rested or not max or max <= 0 then return nil end
