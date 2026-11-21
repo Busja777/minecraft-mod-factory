@@ -1,72 +1,55 @@
 {
-  "checked": "2026-11-20",
+  "checked": "2026-11-21",
   "release": "26.3",
   "snapshot": "26.4-snapshot-10",
   "packs": {
     "anglers-loot": {
       "kind": "data",
       "serves": [
-        "1.21.1"
+        "1.21.1",
+        "26.3"
       ],
       "26.3": {
-        "ok": false,
-        "loaded": false,
-        "files": 0,
-        "problems": [
-          "the generator fails: anglers-loot: vanilla fishing.json: treasure is not limited to open water any more – the pack must be checked against this version by hand"
-        ]
+        "ok": true,
+        "loaded": true,
+        "files": 2,
+        "problems": [],
+        "more": 0
       },
       "26.4-snapshot-10": {
-        "ok": false,
-        "loaded": false,
-        "files": 0,
-        "problems": [
-          "the generator fails: anglers-loot: vanilla fishing.json: treasure is not limited to open water any more – the pack must be checked against this version by hand"
-        ]
+        "ok": true,
+        "loaded": true,
+        "files": 2,
+        "problems": [],
+        "more": 0
       }
     },
     "farmers-advancements": {
       "kind": "data",
       "serves": [
-        "1.21.1"
+        "1.21.1",
+        "26.3"
       ],
       "26.3": {
-        "ok": false,
+        "ok": true,
         "loaded": true,
         "files": 31,
-        "problems": [
-          "minecraft:advancement · farmers_advancements:animals/breed_all · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:rabbit\"}}]; Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:chicken\"}}]; Not a JSON object: [{\"condition\":\"minecraft:entity_prop",
-          "minecraft:advancement · farmers_advancements:animals/breed_chicken · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:chicken\"}}] missed input: {\"chicken\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:chic",
-          "minecraft:advancement · farmers_advancements:animals/breed_cow · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:cow\"}}] missed input: {\"cow\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:cow\"}}]}}}",
-          "minecraft:advancement · farmers_advancements:animals/breed_pig · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:pig\"}}] missed input: {\"pig\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:pig\"}}]}}}",
-          "minecraft:advancement · farmers_advancements:animals/breed_rabbit · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:rabbit\"}}] missed input: {\"rabbit\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:rabbit",
-          "minecraft:advancement · farmers_advancements:animals/breed_sheep · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:sheep\"}}] missed input: {\"sheep\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:sheep\"}}",
-          "minecraft:advancement · farmers_advancements:animals/tame_horse · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:horse\"}}] missed input: {\"horse\":{\"trigger\":\"minecraft:tame_animal\",\"conditions\":{\"entity\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:horse\"}}",
-          "minecraft:advancement · farmers_advancements:planting/beetroots · Not a JSON object: [{\"condition\":\"minecraft:block_state_property\",\"block\":\"minecraft:beetroots\"}] missed input: {\"beetroots\":{\"trigger\":\"minecraft:placed_block\",\"conditions\":{\"location\":[{\"condition\":\"minecraft:block_state_property\",\"block\":\"minecraft:beetroots\"}]}}}"
-        ],
-        "more": 11
+        "problems": [],
+        "more": 0
       },
       "26.4-snapshot-10": {
-        "ok": false,
+        "ok": true,
         "loaded": true,
         "files": 31,
-        "problems": [
-          "minecraft:advancement · farmers_advancements:animals/breed_all · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:rabbit\"}}]; Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:chicken\"}}]; Not a JSON object: [{\"condition\":\"minecraft:entity_prop",
-          "minecraft:advancement · farmers_advancements:animals/breed_chicken · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:chicken\"}}] missed input: {\"chicken\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:chic",
-          "minecraft:advancement · farmers_advancements:animals/breed_cow · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:cow\"}}] missed input: {\"cow\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:cow\"}}]}}}",
-          "minecraft:advancement · farmers_advancements:animals/breed_pig · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:pig\"}}] missed input: {\"pig\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:pig\"}}]}}}",
-          "minecraft:advancement · farmers_advancements:animals/breed_rabbit · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:rabbit\"}}] missed input: {\"rabbit\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:rabbit",
-          "minecraft:advancement · farmers_advancements:animals/breed_sheep · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:sheep\"}}] missed input: {\"sheep\":{\"trigger\":\"minecraft:bred_animals\",\"conditions\":{\"child\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:sheep\"}}",
-          "minecraft:advancement · farmers_advancements:animals/tame_horse · Not a JSON object: [{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:horse\"}}] missed input: {\"horse\":{\"trigger\":\"minecraft:tame_animal\",\"conditions\":{\"entity\":[{\"condition\":\"minecraft:entity_properties\",\"entity\":\"this\",\"predicate\":{\"type\":\"minecraft:horse\"}}",
-          "minecraft:advancement · farmers_advancements:planting/beetroots · Not a JSON object: [{\"condition\":\"minecraft:block_state_property\",\"block\":\"minecraft:beetroots\"}] missed input: {\"beetroots\":{\"trigger\":\"minecraft:placed_block\",\"conditions\":{\"location\":[{\"condition\":\"minecraft:block_state_property\",\"block\":\"minecraft:beetroots\"}]}}}"
-        ],
-        "more": 11
+        "problems": [],
+        "more": 0
       }
     },
     "hush": {
       "kind": "resource",
       "serves": [
-        "1.21.1"
+        "1.21.1",
+        "26.3"
       ],
       "26.3": {
         "ok": true,
@@ -79,6 +62,90 @@
         "ok": true,
         "loaded": false,
         "files": 1,
+        "problems": [],
+        "more": 0
+      }
+    },
+    "ice-cave-advancements": {
+      "kind": "data",
+      "serves": [
+        "26.4-snapshot-10"
+      ],
+      "26.3": {
+        "ok": false,
+        "loaded": false,
+        "files": 0,
+        "problems": [
+          "the generator fails: this version has no frostbite"
+        ]
+      },
+      "26.4-snapshot-10": {
+        "ok": true,
+        "loaded": true,
+        "files": 18,
+        "problems": [],
+        "more": 0
+      }
+    },
+    "mob-drops-plus": {
+      "kind": "data",
+      "serves": [
+        "1.21.1",
+        "26.3"
+      ],
+      "26.3": {
+        "ok": true,
+        "loaded": true,
+        "files": 10,
+        "problems": [],
+        "more": 0
+      },
+      "26.4-snapshot-10": {
+        "ok": true,
+        "loaded": true,
+        "files": 10,
+        "problems": [],
+        "more": 0
+      }
+    },
+    "ore-abundance": {
+      "kind": "data",
+      "serves": [
+        "1.21.1",
+        "26.3"
+      ],
+      "26.3": {
+        "ok": true,
+        "loaded": true,
+        "files": 18,
+        "problems": [],
+        "more": 0
+      },
+      "26.4-snapshot-10": {
+        "ok": true,
+        "loaded": true,
+        "files": 18,
+        "problems": [],
+        "more": 0
+      }
+    },
+    "six-more-enchantments": {
+      "kind": "data",
+      "serves": [
+        "1.21.1",
+        "26.3"
+      ],
+      "26.3": {
+        "ok": true,
+        "loaded": true,
+        "files": 9,
+        "problems": [],
+        "more": 0
+      },
+      "26.4-snapshot-10": {
+        "ok": true,
+        "loaded": true,
+        "files": 9,
         "problems": [],
         "more": 0
       }
@@ -86,67 +153,71 @@
     "stonecutter-woodworks": {
       "kind": "data",
       "serves": [
-        "1.21.1"
+        "1.21.1",
+        "26.3"
       ],
       "26.3": {
-        "ok": false,
+        "ok": true,
         "loaded": true,
         "files": 56,
-        "problems": [
-          "minecraft:recipe · stonecutter_woodworks:acacia_door_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_fence_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_fence_gate_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_pressure_plate_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_slab_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_stairs_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_trapdoor_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:birch_door_from_birch_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:birch_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:birch_planks\"}; Second: Not a string: {\"item\":\"minecraft:birch_planks\"}"
-        ],
-        "more": 49
+        "problems": [],
+        "more": 0
       },
       "26.4-snapshot-10": {
-        "ok": false,
+        "ok": true,
         "loaded": true,
         "files": 56,
-        "problems": [
-          "minecraft:recipe · stonecutter_woodworks:acacia_door_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_fence_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_fence_gate_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_pressure_plate_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_slab_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_stairs_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:acacia_trapdoor_from_acacia_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:acacia_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:acacia_planks\"}; Second: Not a string: {\"item\":\"minecraft:acacia_planks\"}",
-          "minecraft:recipe · stonecutter_woodworks:birch_door_from_birch_planks_stonecutting · Failed to parse either. First: Not a string: {\"item\":\"minecraft:birch_planks\"}; Second: Failed to parse either. First: Not a json array: {\"item\":\"minecraft:birch_planks\"}; Second: Not a string: {\"item\":\"minecraft:birch_planks\"}"
-        ],
-        "more": 49
+        "problems": [],
+        "more": 0
+      }
+    },
+    "trigger-homes": {
+      "kind": "data",
+      "serves": [
+        "1.21.1",
+        "26.3"
+      ],
+      "26.3": {
+        "ok": true,
+        "loaded": true,
+        "files": 9,
+        "problems": [],
+        "more": 0
+      },
+      "26.4-snapshot-10": {
+        "ok": true,
+        "loaded": true,
+        "files": 9,
+        "problems": [],
+        "more": 0
       }
     },
     "uncraft-basics": {
       "kind": "data",
       "serves": [
-        "1.21.1"
+        "1.21.1",
+        "26.3"
       ],
       "26.3": {
-        "ok": false,
-        "loaded": false,
-        "files": 0,
-        "problems": [
-          "the generator fails: white_wool → string: vanilla has no compacting recipe for this pair"
-        ]
+        "ok": true,
+        "loaded": true,
+        "files": 58,
+        "problems": [],
+        "more": 0
       },
       "26.4-snapshot-10": {
-        "ok": false,
-        "loaded": false,
-        "files": 0,
-        "problems": [
-          "the generator fails: white_wool → string: vanilla has no compacting recipe for this pair"
-        ]
+        "ok": true,
+        "loaded": true,
+        "files": 58,
+        "problems": [],
+        "more": 0
       }
     },
     "villages-nearby": {
       "kind": "data",
       "serves": [
-        "1.21.1"
+        "1.21.1",
+        "26.3"
       ],
       "26.3": {
         "ok": true,
