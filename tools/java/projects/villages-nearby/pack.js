@@ -1,11 +1,18 @@
 // Villages Nearby: villages (and since V1.2 pillager outposts and the four small temples: desert
-// pyramids, jungle temples, swamp huts and igloos) appear more often in newly generated land. A
-// vanilla structure set places one attempt per region of `spacing` × `spacing` chunks, at least
-// `separation` chunks from the region's far edge. This pack copies the vanilla file of its
-// Minecraft version and only shrinks those regions; salt, structures, weights, frequency and
-// exclusion zones stay vanilla.
+// pyramids, jungle temples, swamp huts and igloos, since V1.3 ocean ruins and shipwrecks) appear
+// more often in newly generated land. A vanilla structure set places one attempt per region of
+// `spacing` × `spacing` chunks, at least `separation` chunks from the region's far edge. This pack
+// copies the vanilla file of its Minecraft version and only shrinks those regions; salt,
+// structures, weights, frequency and exclusion zones stay vanilla.
+// One rule for every set: spacing × 0.65 (rounded), separation × 0.75, so about 2.2 to 2.4 times
+// as many attempts per area.
 //   villages:          34 / 8 → 22 / 6, (34 / 22)² ≈ 2.4 times as many attempts per area
 //   outposts, temples: 32 / 8 → 21 / 6, (32 / 21)² ≈ 2.3 times as many attempts per area
+//   ocean ruins:       20 / 8 → 13 / 6, (20 / 13)² ≈ 2.4 times as many attempts per area
+//   shipwrecks:        24 / 4 → 16 / 3, (24 / 16)² = 2.25 times as many attempts per area
+// Ocean monuments stay vanilla on purpose: each one holds eight gold blocks, rooms of sponges and
+// three elder guardians whose Mining Fatigue covers 50 blocks around them. More of them would hand
+// out non-renewable loot faster and put more of the ocean under Mining Fatigue.
 import fs from 'fs';
 import path from 'path';
 
@@ -29,7 +36,11 @@ export const SETS = [
   { set: 'swamp_huts', vanilla: { spacing: 32, separation: 8 }, nearby: { spacing: 21, separation: 6 },
     structures: ['minecraft:swamp_hut'] },
   { set: 'igloos', vanilla: { spacing: 32, separation: 8 }, nearby: { spacing: 21, separation: 6 },
-    structures: ['minecraft:igloo'] }
+    structures: ['minecraft:igloo'] },
+  { set: 'ocean_ruins', vanilla: { spacing: 20, separation: 8 }, nearby: { spacing: 13, separation: 6 },
+    structures: ['minecraft:ocean_ruin_cold', 'minecraft:ocean_ruin_warm'] },
+  { set: 'shipwrecks', vanilla: { spacing: 24, separation: 4 }, nearby: { spacing: 16, separation: 3 },
+    structures: ['minecraft:shipwreck', 'minecraft:shipwreck_beached'] }
 ];
 
 // Kept from V1.0/V1.1 for the villages row.
