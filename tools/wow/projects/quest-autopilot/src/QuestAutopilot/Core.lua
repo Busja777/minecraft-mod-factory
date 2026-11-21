@@ -328,15 +328,23 @@ function ns.StackValue(price, count)
   return price * count
 end
 
+-- 1.4: the coin letters as the game itself writes them, from the client's own GlobalStrings in the
+-- player's language ("g", "s", "c" in English, "G", "S", "K" in German); a client without one gets
+-- the English letter.
+local function coin(global, english)
+  local symbol = _G[global]
+  if type(symbol) ~= "string" or symbol == "" then return english end
+  return symbol
+end
+
 -- Copper as "1g 20s", "45s 3c" or "7c".
 function ns.MoneyText(copper)
-  local L = ns.L
   copper = math.floor(copper or 0)
   local gold, silver, rest = math.floor(copper / 10000), math.floor(copper / 100) % 100, copper % 100
   local parts = {}
-  if gold > 0 then parts[#parts + 1] = string.format(L["%dg"], gold) end
-  if silver > 0 then parts[#parts + 1] = string.format(L["%ds"], silver) end
-  if rest > 0 or #parts == 0 then parts[#parts + 1] = string.format(L["%dc"], rest) end
+  if gold > 0 then parts[#parts + 1] = gold .. coin("GOLD_AMOUNT_SYMBOL", "g") end
+  if silver > 0 then parts[#parts + 1] = silver .. coin("SILVER_AMOUNT_SYMBOL", "s") end
+  if rest > 0 or #parts == 0 then parts[#parts + 1] = rest .. coin("COPPER_AMOUNT_SYMBOL", "c") end
   return table.concat(parts, " ")
 end
 

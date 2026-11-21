@@ -23,24 +23,26 @@ local function showState()
   ns.Print(ns.SoundText(ns.settings))
   ns.Print(ns.ScreenText(ns.settings))
   if ns.BackgroundSoundOff(backgroundSound()) then
-    ns.Print(L["Sound in Background is off in the game's sound options, so you hear nothing while tabbed out."])
+    -- 1.3: the option named the way the game's sound options name it, in the player's language.
+    local option = ns.GameText("ENABLE_BGSOUND", "Sound in Background")
+    ns.Print(string.format(L["%s is off in the game's sound options, so you hear nothing while tabbed out."], option))
   end
   ns.Print(help())
 end
 
 local function chooseSound(kind, name)
   if not ns.ChooseSound(ns.settings, kind, name) then return ns.Print(help()) end
-  ns.Print(string.format(L["%s now plays %s."], L[ns.KIND_LABEL[kind]], name))
+  ns.Print(string.format(L["%s now plays %s."], ns.KindName(kind), name))
   ns.PlayAlertSound(kind) -- a preview of the new choice
 end
 
 local function chooseScreen(kind, name)
   if not ns.ChooseScreen(ns.settings, kind, name) then return ns.Print(help()) end
   if name == ns.SCREEN_OFF then
-    ns.Print(string.format(L["%s: no screen flash."], L[ns.KIND_LABEL[kind]]))
+    ns.Print(string.format(L["%s: no screen flash."], ns.KindName(kind)))
     return
   end
-  ns.Print(string.format(L["%s now flashes the screen %s."], L[ns.KIND_LABEL[kind]], name))
+  ns.Print(string.format(L["%s now flashes the screen %s."], ns.KindName(kind), name))
   ns.ShowScreenFlash(name) -- a preview of the new choice
 end
 
@@ -56,7 +58,7 @@ SlashCmdList.QUEUEHORN = function(msg)
     showState()
   elseif words == "test" then
     ns.Play(nil)
-  elseif testKind and ns.KIND_LABEL[testKind] then
+  elseif testKind and ns.IS_KIND[testKind] then
     ns.Play(testKind, true)
   elseif words == "sound" or words == "sounds" then
     ns.Print(ns.SoundText(ns.settings))

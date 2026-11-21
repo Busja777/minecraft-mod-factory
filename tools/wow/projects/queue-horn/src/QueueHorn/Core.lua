@@ -15,9 +15,34 @@ ns.EVENT_KIND = {
   PET_BATTLE_QUEUE_PROPOSE_MATCH = "pet",
 }
 
-ns.KIND_LABEL = {
-  lfg = "Group finder", ready = "Ready check", pvp = "Battleground and arena", pet = "Pet battle",
+-- The alerts a player can name in /qh (lfg, ready, pvp, pet).
+ns.IS_KIND = { lfg = true, ready = true, pvp = true, pet = true }
+
+-- 1.3: the name of each alert as the game itself writes it, from the client's own GlobalStrings in
+-- the player's language: { global, English name for a client without it }. The battleground and
+-- arena alert joins two names.
+ns.KIND_NAME = {
+  lfg = { { "DUNGEONS_BUTTON", "Group Finder" } },
+  ready = { { "QUEUED_STATUS_READY_CHECK_IN_PROGRESS", "Ready Check" } },
+  pvp = { { "BATTLEGROUND", "Battleground" }, { "ARENA", "Arena" } },
+  pet = { { "PET_BATTLE_PVP_QUEUE", "Pet Battle" } },
 }
+
+-- A text of the game (a GlobalStrings name); the English text when the client has none.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
+-- The name of one alert, in the player's language.
+function ns.KindName(kind)
+  local names = ns.KIND_NAME[kind]
+  if not names then return nil end
+  local first = ns.GameText(names[1][1], names[1][2])
+  if not names[2] then return first end
+  return string.format(ns.L["%s and %s"], first, ns.GameText(names[2][1], names[2][2]))
+end
 
 -- The sounds a player can pick per alert: the word typed in /qh sound, and the game's SOUNDKIT
 -- name behind it. "horn" is the ready check sound every alert played in 1.0.
@@ -88,18 +113,18 @@ end
 
 -- Picks a sound for one alert. Returns true, or nil when the alert or the sound is not known.
 function ns.ChooseSound(settings, kind, name)
-  if not ns.KIND_LABEL[kind] or not ns.SOUND_KIT[name] then return nil end
+  if not ns.IS_KIND[kind] or not ns.SOUND_KIT[name] then return nil end
   if type(settings.sounds) ~= "table" then settings.sounds = {} end
   settings.sounds[kind] = name
   return true
 end
 
--- "Sounds: Group finder horn, ... Choices: horn, warning, alarm, invite, whisper."
+-- "Sounds: Group Finder horn, ... Choices: horn, warning, alarm, invite, whisper."
 function ns.SoundText(settings)
   local L = ns.L
   local parts = {}
   for _, kind in ipairs(ns.KINDS) do
-    parts[#parts + 1] = L[ns.KIND_LABEL[kind]] .. " " .. ns.SoundFor(settings, kind)
+    parts[#parts + 1] = ns.KindName(kind) .. " " .. ns.SoundFor(settings, kind)
   end
   return string.format(L["Sounds: %s. Choices: %s."], table.concat(parts, ", "), table.concat(ns.SOUND_NAMES, ", "))
 end
@@ -115,19 +140,19 @@ end
 -- Picks the screen flash colour (or "off") for one alert. Returns true, or nil when the alert or the
 -- colour is not known.
 function ns.ChooseScreen(settings, kind, name)
-  if not ns.KIND_LABEL[kind] then return nil end
+  if not ns.IS_KIND[kind] then return nil end
   if name ~= ns.SCREEN_OFF and not ns.SCREEN_RGB[name] then return nil end
   if type(settings.screen) ~= "table" then settings.screen = {} end
   settings.screen[kind] = name
   return true
 end
 
--- "Screen flash: Group finder off, Ready check red, ... Choices: red, gold, blue, green, off. Icon flash: on."
+-- "Screen flash: Group Finder off, Ready Check red, ... Choices: red, gold, blue, green, off. Icon flash: on."
 function ns.ScreenText(settings)
   local L = ns.L
   local parts = {}
   for _, kind in ipairs(ns.KINDS) do
-    parts[#parts + 1] = L[ns.KIND_LABEL[kind]] .. " " .. (ns.ScreenFor(settings, kind) or ns.SCREEN_OFF)
+    parts[#parts + 1] = ns.KindName(kind) .. " " .. (ns.ScreenFor(settings, kind) or ns.SCREEN_OFF)
   end
   local choices = table.concat(ns.SCREEN_NAMES, ", ") .. ", " .. ns.SCREEN_OFF
   local icon = settings.flash and L["on"] or L["off"]
@@ -215,7 +240,7 @@ function ns.StateText(settings)
   local function word(on) return on and L["on"] or L["off"] end
   local parts = {}
   for _, kind in ipairs(ns.KINDS) do
-    parts[#parts + 1] = L[ns.KIND_LABEL[kind]] .. " " .. word(settings[kind])
+    parts[#parts + 1] = ns.KindName(kind) .. " " .. word(settings[kind])
   end
   return string.format(L["Alerts: %s. Icon flash: %s."], table.concat(parts, ", "), word(settings.flash))
 end
