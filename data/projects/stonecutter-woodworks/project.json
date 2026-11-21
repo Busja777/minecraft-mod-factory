@@ -25,6 +25,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "StonecutterWoodworks-1.2.zip",
+      "changelog": "## Stonecutter Woodworks 1.2\n\nThree more woods.\n\n- Bamboo, crimson and warped planks now work in the stonecutter too: stairs, slabs, fences, fence gates, doors, trapdoors and pressure plates.\n- 21 new recipes, 77 in total, with the same amounts as before: one plank gives two slabs or one of everything else.\n- Works on Minecraft 1.21, 1.21.1 and 26.3 as before. Pale oak is not included, because it only exists in 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
