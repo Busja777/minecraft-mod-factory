@@ -1,0 +1,8 @@
+{
+  "name": "Museum Rewards Plus",
+  "description": "Gunther gives ten extra small rewards for museum donations, at milestones the vanilla rewards do not use.",
+  "uniqueId": "SevEvolution.MuseumRewardsPlus",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}
