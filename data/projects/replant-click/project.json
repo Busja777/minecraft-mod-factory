@@ -17,6 +17,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "ReplantClick-1.1.jar",
+      "changelog": "## Replant Click 1.1\n\nNow also for nether wart and cocoa pods.\n\n- Right-click fully grown nether wart to harvest it; one nether wart from the drops is planted again, and Fortune still gives more.\n- Right-click a ripe cocoa pod to pick it; one cocoa bean is planted again on the same side of the log.\n- Young nether wart and young pods are left alone. Sneaking and bone meal work as before.\n- Everything from 1.0 stays as it was. Only the server needs the mod.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }
