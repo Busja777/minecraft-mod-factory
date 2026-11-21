@@ -2,6 +2,17 @@
 // crafted at a lower Farming level. The player picks one of three levels in the Content Patcher
 // config (Light, Medium = default, Strong). Only the unlock condition changes: ingredients, output
 // and every other recipe stay vanilla, and so does the Iridium Sprinkler.
+// Since 1.1 four more farm basics follow the same setting: Quality Fertilizer and Deluxe Speed-Gro
+// (Farming), the Bee House (Farming) and the Tapper (Foraging, the skill it already uses).
+// Chosen on purpose and left vanilla:
+// - Keg (Farming 8) and Iridium Sprinkler (Farming 9): the biggest money and late-game levers.
+// - Scarecrow and Basic Fertilizer already unlock at Farming 1, the lowest level; Cask has no skill
+//   unlock at all (field 4 is "null", it comes with the farmhouse cellar). Nothing to make sooner.
+// Vanilla levels checked on the item pages as well: Quality Fertilizer Farming 9
+// (https://stardewvalleywiki.com/Quality_Fertilizer), Deluxe Speed-Gro Farming 8
+// (https://stardewvalleywiki.com/Deluxe_Speed-Gro), Bee House Farming 3
+// (https://stardewvalleywiki.com/Bee_House), Tapper Foraging 4 since 1.6
+// (https://stardewvalleywiki.com/Tapper, history: "now learned at Foraging Level 4 instead of Level 3").
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/CraftingRecipes is a string → string lookup keyed by the recipe name; each value is a
@@ -30,16 +41,31 @@ export const VANILLA = {
   'Quality Sprinkler': '335 1 336 1 338 1/Home/621/false/s Farming 6/',
   'Basic Retaining Soil': '390 2/Field/370/false/s Farming 4/',
   'Quality Retaining Soil': '390 3 330 1/Field/371 2/false/s Farming 7/',
-  'Speed-Gro': '726 1 Moss 5/Field/465 5/false/s Farming 3/'
+  'Speed-Gro': '726 1 Moss 5/Field/465 5/false/s Farming 3/',
+  // 1.1
+  'Quality Fertilizer': '92 4 -4 1/Field/369 2/false/s Farming 9/',
+  'Deluxe Speed-Gro': '725 1 881 5/Field/466 5/false/s Farming 8/',
+  'Bee House': '388 40 382 8 335 1 724 1/Home/10/true/s Farming 3/',
+  Tapper: '388 40 334 2/Home/105/true/s Foraging 4/'
 };
-// Never changed (brief: the Iridium Sprinkler stays vanilla).
-export const UNTOUCHED = { 'Iridium Sprinkler': '336 1 337 1 787 1/Home/645/false/s Farming 9/' };
+// Big craftables are not in items.json (objects only): their output IDs as the raw recipe data gives
+// them (field 2), so a wrong row in VANILLA is still caught.
+export const BIG_OUTPUT = { 'Bee House': '10', Tapper: '105' };
+// Skills a recipe may unlock with in this pack.
+export const SKILLS = ['Farming', 'Foraging'];
+// Never changed: the Iridium Sprinkler (brief) and the Keg (the biggest money lever of the farm).
+export const UNTOUCHED = {
+  'Iridium Sprinkler': '336 1 337 1 787 1/Home/645/false/s Farming 9/',
+  Keg: '388 30 334 1 335 1 725 1/Home/12/true/s Farming 8/'
+};
 
-// Config value → Farming level per recipe (never later than vanilla, never below level 1).
+// Config value → skill level per recipe (never later than vanilla, never below level 1).
+// 1.1 recipes: Light one level sooner, Medium two, Strong three (never below 1); the Bee House only
+// one level at Medium because honey is an income source.
 export const LEVELS = {
-  Light: { Sprinkler: 1, 'Quality Sprinkler': 5, 'Basic Retaining Soil': 3, 'Quality Retaining Soil': 6, 'Speed-Gro': 2 },
-  Medium: { Sprinkler: 1, 'Quality Sprinkler': 4, 'Basic Retaining Soil': 2, 'Quality Retaining Soil': 5, 'Speed-Gro': 1 },
-  Strong: { Sprinkler: 1, 'Quality Sprinkler': 3, 'Basic Retaining Soil': 1, 'Quality Retaining Soil': 4, 'Speed-Gro': 1 }
+  Light: { Sprinkler: 1, 'Quality Sprinkler': 5, 'Basic Retaining Soil': 3, 'Quality Retaining Soil': 6, 'Speed-Gro': 2, 'Quality Fertilizer': 8, 'Deluxe Speed-Gro': 7, 'Bee House': 2, Tapper: 3 },
+  Medium: { Sprinkler: 1, 'Quality Sprinkler': 4, 'Basic Retaining Soil': 2, 'Quality Retaining Soil': 5, 'Speed-Gro': 1, 'Quality Fertilizer': 7, 'Deluxe Speed-Gro': 6, 'Bee House': 2, Tapper: 2 },
+  Strong: { Sprinkler: 1, 'Quality Sprinkler': 3, 'Basic Retaining Soil': 1, 'Quality Retaining Soil': 4, 'Speed-Gro': 1, 'Quality Fertilizer': 6, 'Deluxe Speed-Gro': 5, 'Bee House': 1, Tapper: 1 }
 };
 export const DEFAULT = 'Medium';
 
@@ -55,8 +81,10 @@ export default async function ({ items }) {
   if (!(DEFAULT in LEVELS)) throw new Error(`default ${DEFAULT} is not an allowed value`);
   for (const [name, raw] of Object.entries(VANILLA)) {
     const { skill, output, big } = parseRecipe(raw);
-    if (skill !== 'Farming') throw new Error(`${name}: unlocks with ${skill}, not Farming`);
-    if (big !== 'false' || items.items[`(O)${output}`] !== name) throw new Error(`${name}: vanilla output ${output} is not the object ${name} (items.json)`);
+    if (!SKILLS.includes(skill)) throw new Error(`${name}: unlocks with ${skill}, not ${SKILLS.join(' or ')}`);
+    if (big === 'true') {
+      if (BIG_OUTPUT[name] !== output) throw new Error(`${name}: vanilla output ${output} is not the big craftable ${BIG_OUTPUT[name]}`);
+    } else if (big !== 'false' || items.items[`(O)${output}`] !== name) throw new Error(`${name}: vanilla output ${output} is not the object ${name} (items.json)`);
   }
   for (const name of Object.keys(UNTOUCHED)) if (name in VANILLA) throw new Error(`${name} must stay vanilla`);
 
@@ -84,7 +112,7 @@ export default async function ({ items }) {
         Level: {
           AllowValues: Object.keys(LEVELS).join(', '),
           Default: DEFAULT,
-          Description: 'How much sooner the recipes unlock. Medium: Sprinkler at Farming 1, Quality Sprinkler at 4. Light stays closer to the original levels, Strong goes lower still. The Iridium Sprinkler is not changed.'
+          Description: 'How much sooner the recipes unlock. Medium: Sprinkler at Farming 1, Quality Sprinkler at 4, Quality Fertilizer at 7, Tapper at Foraging 2. Light stays closer to the original levels, Strong goes lower still. The Iridium Sprinkler and the Keg are not changed.'
         }
       },
       Changes: changes

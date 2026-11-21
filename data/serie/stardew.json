@@ -188,9 +188,9 @@
       "art": "CP",
       "was": "Mehr Angebot bei Willy",
       "updates": [
-        "Krobus",
-        "Sandy",
-        "Regler je Laden"
+        "Sandy (Oasis)",
+        "Stufen für die Tageslimits",
+        "Deutsch (Einstellungstexte)"
       ],
       "banner": {
         "from": "chatgpt",
@@ -388,9 +388,9 @@
       "art": "CP",
       "was": "Sprinkler und Co. früher herstellbar",
       "updates": [
-        "Regler",
-        "mehr Rezepte",
-        "Deutsch"
+        "Werkzeug-Upgrades bei Clint schneller (falls Daten-Feld)",
+        "Deutsch (Einstellungstexte)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
