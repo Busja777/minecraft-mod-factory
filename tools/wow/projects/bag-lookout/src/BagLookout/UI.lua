@@ -1,10 +1,11 @@
 local _, ns = ...
 local L = ns.L
 
--- The small counter: "Bags 12/98", movable unless locked, a click shows the reagent bag.
+-- The small counter: "Bags 12/98", movable unless locked. A click switches to the split view:
+-- one more line for the reagent bag and one for each kind of profession bag.
 
-local WIDTH = 120
-local SHORT, TALL = 24, 40
+local WIDTH, SPLIT_WIDTH = 120, 140
+local SHORT, LINE = 24, 16 -- the counter alone, and every line below it
 
 local ui
 local dragging = false
@@ -27,7 +28,7 @@ end
 local function showTooltip(self)
   GameTooltip:SetOwner(self, "ANCHOR_TOP")
   GameTooltip:AddLine(L["Bag Lookout"])
-  GameTooltip:AddLine(L["Click to show or hide the reagent bag."])
+  GameTooltip:AddLine(L["Click to switch between the total and one line per bag type."])
   if ns.settings.locked then
     GameTooltip:AddLine(L["Locked. Type /bl lock to move it."])
   else
@@ -67,7 +68,7 @@ local function create()
     savePosition(self)
   end)
   f:SetScript("OnClick", function()
-    ns.settings.details = not ns.settings.details
+    ns.settings.view = ns.settings.view == "split" and "total" or "split"
     ns.Render()
   end)
   f:SetScript("OnEnter", showTooltip)
@@ -86,13 +87,14 @@ function ns.Render()
   if not ui or not ns.settings then return end
   local s, c = ns.settings, ns.counts or {}
   ui.label:SetText(ns.CounterText(c.free, c.total, s.threshold))
-  if s.details then
-    ui.detail:SetText(ns.ReagentText(c.reagentFree, c.reagentTotal, s.threshold))
+  if s.view == "split" then
+    local lines = ns.SplitLines(c, s.threshold)
+    ui.detail:SetText(table.concat(lines, "\n"))
     ui.detail:Show()
-    ui:SetHeight(TALL)
+    ui:SetSize(SPLIT_WIDTH, SHORT + LINE * #lines)
   else
     ui.detail:Hide()
-    ui:SetHeight(SHORT)
+    ui:SetSize(WIDTH, SHORT)
   end
   ui:SetShown(not s.hidden)
 end

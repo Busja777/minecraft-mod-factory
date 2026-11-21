@@ -91,11 +91,16 @@ test("addon defines only its own globals", function(wow)
   wow.slash("/vendorrefill list")
   wow.slash("/vr remove 4540")
   wow.slash("/vr off")
+  eq(w.bags[WATER], 10)
+  wow.clock = wow.clock + 60
+  w.bags[WATER] = 1
+  wow.fire("BAG_UPDATE_DELAYED")
+  wow.slash("/vr warn 40")
   local allowed = { VendorRefillDB = true, SLASH_VENDORREFILL1 = true, SLASH_VENDORREFILL2 = true }
   for k in pairs(_G) do
     if not mine[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
   end
-  eq(w.bags[WATER], 10)
+  eq(#wow.chat > 0 and wow.chat[#wow.chat]:find("running low", 1, true) ~= nil, true)
 end)
 
 test("core: item links, item IDs and the add command are read", function(wow)
@@ -393,7 +398,7 @@ test("slash commands add, remove, list and show the state", function(wow)
   w.names[WATER] = "Refreshing Spring Water"
   local ns = boot(wow, 100000)
   wow.slash("/vr")
-  eq(wow.chat[1], PREFIX .. "Refilling is on. Your list is empty.")
+  eq(wow.chat[1], PREFIX .. "Refilling is on. Your list is empty. Low stock warning below 25% of your count.")
   eq(wow.chat[2]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/vr add <item> <count> keeps an item stocked") ~= nil, true)
   wow.slash("/vr add 159 20")
   eq(wow.chat[3], PREFIX .. "Refreshing Spring Water: keeping 20 in your bags.")
@@ -404,7 +409,7 @@ test("slash commands add, remove, list and show the state", function(wow)
   wow.slash("/vr add 159 40")
   eq(ns.list[WATER], 40, "adding again changes the count")
   wow.slash("/vr")
-  eq(wow.chat[6], PREFIX .. "Refilling is on. 2 items are on your list.")
+  eq(wow.chat[6], PREFIX .. "Refilling is on. 2 items are on your list. Low stock warning below 25% of your count.")
   wow.slash("/vr list")
   eq(wow.chat[8], PREFIX .. "Your list:")
   eq(wow.chat[9], PREFIX .. "  Refreshing Spring Water: 40")
@@ -421,7 +426,7 @@ test("slash commands add, remove, list and show the state", function(wow)
   wow.slash("/vr remove water")
   eq(wow.chat[15], PREFIX .. "Use /vr remove <item link or item ID>.")
   wow.slash("/vendorrefill")
-  eq(wow.chat[16], PREFIX .. "Refilling is on. 1 item is on your list.")
+  eq(wow.chat[16], PREFIX .. "Refilling is on. 1 item is on your list. Low stock warning below 25% of your count.")
   wow.slash("/vr nonsense")
   eq(wow.chat[18]:match("Hold Shift while you open a vendor to skip one visit%.$") ~= nil, true)
   eq(#wow.chat, 18)
@@ -441,7 +446,7 @@ test("/vr off and /vr on switch refilling for all characters", function(wow)
   w.leave()
   eq(#w.bought, 0)
   wow.slash("/vr")
-  eq(wow.chat[2], PREFIX .. "Refilling is off. 1 item is on your list.")
+  eq(wow.chat[2], PREFIX .. "Refilling is off. 1 item is on your list. Low stock warning below 25% of your count.")
   wow.slash("/vr  On ")
   eq(wow.chat[4], PREFIX .. "Refilling is on.")
   w.visit()
@@ -452,7 +457,7 @@ end)
 test("each character keeps its own list, saved values survive the next login", function(wow)
   local w = world(wow, { water(10), bread(10) })
   boot(wow, 100000, { [WATER] = 5 })
-  eq(VendorRefillDB.version, 1)
+  eq(VendorRefillDB.version, 2)
   eq(VendorRefillDB.enabled, true)
 
   -- As the game loads it at the next login, now on another character.
@@ -559,4 +564,208 @@ test("a slash command before login does nothing", function(wow)
   wow.fire("MERCHANT_SHOW")
   eq(#wow.chat, 0)
   eq(VendorRefillDB, nil)
+end)
+
+-- 1.1: the low stock warning away from vendors.
+
+-- The bags change after the login wait is over (eating, drinking, using an item).
+local function bagsChanged(wow)
+  if wow.clock < 2000 then wow.clock = 2000 end
+  wow.fire("BAG_UPDATE_DELAYED")
+end
+
+test("core: the warning share is read and checked", function(wow)
+  local ns = boot(wow)
+  eq(ns.ParseShare("25"), 25)
+  eq(ns.ParseShare(" 40% "), 40)
+  eq(ns.ParseShare("40 %"), 40)
+  eq(ns.ParseShare("off"), 0)
+  eq(ns.ParseShare("OFF"), 0)
+  eq(ns.ParseShare("0"), 0)
+  eq(ns.ParseShare("90"), 90)
+  eq(ns.ParseShare("91"), nil)
+  eq(ns.ParseShare("-5"), nil)
+  eq(ns.ParseShare("2.5"), nil)
+  eq(ns.ParseShare("lots"), nil)
+  eq(ns.ParseShare(""), nil)
+  eq(ns.ParseShare(nil), nil)
+  eq(ns.ValidShare(25), 25)
+  eq(ns.ValidShare("25"), nil, "only numbers are kept from saved settings")
+  eq(ns.ValidShare(0 / 0), nil)
+  eq(ns.IsLow(4, 20, 25), true)
+  eq(ns.IsLow(5, 20, 25), false, "exactly the share is not below it")
+  eq(ns.IsLow(0, 1, 25), true, "a count of 1: low only when none is left")
+  eq(ns.IsLow(1, 1, 25), false)
+  eq(ns.IsLow(0, 20, 0), false, "share 0: never")
+  eq(ns.IsLow(nil, 20, 25), false)
+end)
+
+test("core: each item is warned about once, and again only after it was restocked", function(wow)
+  local ns = boot(wow)
+  local warned = {}
+  local wanted = { [WATER] = 20, [BREAD] = 10, [FEATHER] = "broken" }
+  local function due(owned, share)
+    local parts = {}
+    for _, e in ipairs(ns.LowStock(owned, wanted, share or 25, warned)) do parts[#parts + 1] = e.itemID .. ":" .. e.have .. "/" .. e.want end
+    return table.concat(parts, " ")
+  end
+  eq(due({ [WATER] = 10, [BREAD] = 5 }), "")
+  eq(due({ [WATER] = 4, [BREAD] = 2, [FEATHER] = 0 }), "159:4/20 4540:2/10", "sorted by item ID, broken entries left out")
+  eq(due({ [WATER] = 3, [BREAD] = 1 }), "", "no repeat while it keeps dropping")
+  eq(due({ [WATER] = 0, [BREAD] = 0 }), "")
+  eq(due({ [BREAD] = 9 }), "", "water unknown: left as it is")
+  eq(warned[WATER], true)
+  eq(warned[BREAD], nil, "bread went back up and is armed again")
+  eq(due({ [WATER] = 2, [BREAD] = 2 }), "4540:2/10")
+  eq(due({ [WATER] = 5, [BREAD] = 2 }), "")
+  eq(due({ [WATER] = 4, [BREAD] = 2 }), "159:4/20")
+  eq(due({ [WATER] = 0, [BREAD] = 0 }, 0), "", "share 0 says nothing")
+  eq(next(warned), nil, "and arms everything again")
+  eq(due({ [WATER] = 10 }, 60), "159:10/20", "a higher share")
+  eq(#ns.LowStock(nil, wanted, 25, warned), 0)
+  eq(ns.LowLine({ itemID = WATER, have = 4, want = 20 }, "Water"), "Water is running low: 4 of 20 left.")
+  eq(ns.LowLine({ itemID = WATER, have = 0, want = 20 }), "item 159 is running low: 0 of 20 left.")
+end)
+
+test("low stock: one chat line per item when the bags change away from a vendor", function(wow)
+  local w = world(wow, {}, { [WATER] = 20, [BREAD] = 10, [FEATHER] = 1 })
+  w.names[WATER] = "Water"
+  boot(wow, 100000, { [WATER] = 20, [BREAD] = 10, [FEATHER] = 2 })
+  bagsChanged(wow)
+  eq(#wow.chat, 0, "everything is stocked")
+  w.bags[WATER] = 5
+  bagsChanged(wow)
+  eq(#wow.chat, 0, "5 of 20 is exactly 25 %")
+  w.bags[WATER] = 4
+  bagsChanged(wow)
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "Water is running low: 4 of 20 left.")
+  for n = 3, 0, -1 do
+    w.bags[WATER] = n
+    bagsChanged(wow)
+  end
+  eq(#wow.chat, 1, "one warning, not one per drink")
+  w.bags[BREAD] = 0
+  w.bags[FEATHER] = 0
+  bagsChanged(wow)
+  eq(#wow.chat, 3)
+  eq(wow.chat[2], PREFIX .. "item 4540 is running low: 0 of 10 left.", "a name the game does not know yet")
+  eq(wow.chat[3], PREFIX .. "item 17056 is running low: 0 of 2 left.")
+  w.bags[WATER] = 20 -- restocked
+  bagsChanged(wow)
+  w.bags[WATER] = 2
+  bagsChanged(wow)
+  eq(#wow.chat, 4, "warned again after a restock")
+  eq(wow.chat[4], PREFIX .. "Water is running low: 2 of 20 left.")
+end)
+
+test("low stock: no warning while a vendor is open, and none in the first seconds after login", function(wow)
+  local w = world(wow, { water(10) }, { [WATER] = 1, [BREAD] = 0 })
+  local ns = boot(wow, 100000, { [WATER] = 20, [BREAD] = 10 })
+  wow.fire("BAG_UPDATE_DELAYED")
+  wow.clock = wow.clock + ns.WARN_DELAY - 1
+  wow.fire("BAG_UPDATE_DELAYED")
+  eq(#wow.chat, 0, "the bags may still be loading")
+  wow.clock = wow.clock + 1
+  w.visit()
+  w.run()
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "Bought 19 Water for 1s 90c.")
+  wow.fire("BAG_UPDATE_DELAYED") -- the bought water arrives while the vendor is open
+  eq(#wow.chat, 1, "no warning about bread while the vendor is open")
+  w.leave()
+  wow.fire("BAG_UPDATE_DELAYED")
+  eq(#wow.chat, 2)
+  eq(wow.chat[2], PREFIX .. "item 4540 is running low: 0 of 10 left.", "this vendor had no bread")
+end)
+
+test("/vr warn sets the share, checks at once and switches the warning off", function(wow)
+  local w = world(wow, {}, { [WATER] = 7 })
+  w.names[WATER] = "Water"
+  boot(wow, 100000, { [WATER] = 20 })
+  eq(VendorRefillDB.warnShare, 25)
+  wow.slash("/vr warn")
+  eq(wow.chat[1], PREFIX .. "Low stock warning below 25% of your count.")
+  wow.slash("/vr warn 40%")
+  eq(VendorRefillDB.warnShare, 40)
+  eq(wow.chat[2], PREFIX .. "Low stock warning below 40% of your count.")
+  eq(wow.chat[3], PREFIX .. "Water is running low: 7 of 20 left.", "checked at once, even right after login")
+  wow.slash("/vr WARN 30")
+  eq(wow.chat[4], PREFIX .. "Low stock warning below 30% of your count.")
+  eq(#wow.chat, 4, "7 of 20 is not below 30 %")
+  for _, bad in ipairs({ "91", "-1", "2.5", "half" }) do
+    wow.slash("/vr warn " .. bad)
+    eq(wow.chat[#wow.chat], PREFIX .. "The warning must be a whole percent from 1 to 90, or off.", bad)
+  end
+  eq(VendorRefillDB.warnShare, 30)
+  wow.slash("/vr warn off")
+  eq(VendorRefillDB.warnShare, 0)
+  eq(wow.chat[#wow.chat], PREFIX .. "The low stock warning is off.")
+  local n = #wow.chat
+  w.bags[WATER] = 0
+  bagsChanged(wow)
+  eq(#wow.chat, n, "off means off")
+  wow.slash("/vr")
+  eq(wow.chat[n + 1], PREFIX .. "Refilling is on. 1 item is on your list. The low stock warning is off.")
+  eq(wow.chat[n + 2]:match("/vr warn <percent> or /vr warn off sets the low stock warning%.") ~= nil, true)
+end)
+
+test("/vr remove forgets the warning, /vr off keeps warnings on", function(wow)
+  local w = world(wow, {}, { [WATER] = 0 })
+  local ns = boot(wow, 100000, { [WATER] = 20 })
+  wow.slash("/vr off")
+  bagsChanged(wow)
+  eq(#wow.chat, 2, "the warning has its own switch")
+  eq(wow.chat[2], PREFIX .. "item 159 is running low: 0 of 20 left.")
+  wow.slash("/vr remove 159")
+  eq(ns.warned[WATER], nil)
+  bagsChanged(wow)
+  eq(#wow.chat, 3, "not on the list any more")
+  wow.slash("/vr add 159 10")
+  bagsChanged(wow)
+  eq(wow.chat[5], PREFIX .. "item 159 is running low: 0 of 10 left.", "back on the list: warned again")
+end)
+
+test("1.0 settings move on to 1.1: the list stays, the warning starts at 25 %", function(wow)
+  local w = world(wow, {}, { [BREAD] = 1 })
+  -- As 1.0 saved it.
+  VendorRefillDB = { version = 1, enabled = false, lists = { ["Yubi-Silvermoon"] = { [BREAD] = 12 } } }
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  eq(VendorRefillDB.version, 2)
+  eq(VendorRefillDB.enabled, false)
+  eq(VendorRefillDB.warnShare, 25)
+  eq(ns.list[BREAD], 12)
+  bagsChanged(wow)
+  eq(wow.chat[1], PREFIX .. "item 4540 is running low: 1 of 12 left.")
+
+  VendorRefillDB = { version = 2, warnShare = 0, lists = {} }
+  wow.fire("PLAYER_LOGIN")
+  eq(VendorRefillDB.warnShare, 0, "off stays off")
+  VendorRefillDB = { warnShare = 95 }
+  wow.fire("PLAYER_LOGIN")
+  eq(VendorRefillDB.warnShare, 25)
+  VendorRefillDB = { warnShare = "lots" }
+  wow.fire("PLAYER_LOGIN")
+  eq(VendorRefillDB.warnShare, 25)
+  eq(#wow.chat, 1)
+end)
+
+test("low stock: secret or missing counts never warn, missing functions are no error", function(wow)
+  local w = world(wow, {}, { [WATER] = 0, [BREAD] = 0 })
+  local ns = boot(wow, 100000, { [WATER] = 20, [BREAD] = 10 })
+  local count = C_Item.GetItemCount
+  C_Item.GetItemCount = function(id) if id == WATER then return { secret = true } end return count(id) end
+  bagsChanged(wow)
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "item 4540 is running low: 0 of 10 left.")
+  eq(ns.warned[WATER], nil)
+  C_Item = nil
+  GetItemCount = nil
+  w.bags[BREAD] = 10
+  bagsChanged(wow)
+  eq(ns.warned[BREAD], true, "an unknown count changes nothing")
+  GetTime = nil
+  bagsChanged(wow)
+  eq(#wow.chat, 1)
 end)

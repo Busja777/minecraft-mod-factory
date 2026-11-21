@@ -85,9 +85,9 @@
       "art": "RF",
       "was": "Kauft beim Händler bis zur Wunschmenge nach",
       "updates": [
-        "Profile je Charakter",
-        "Warnung bei knappem Vorrat",
-        "Auffüllen aus der Bank"
+        "Auffüllen aus der Bank",
+        "Mengen je Spezialisierung",
+        "Liste teilen"
       ]
     },
     {
@@ -97,9 +97,9 @@
       "art": "RF",
       "was": "Freie Taschenplätze, Warnung bei vollen Taschen",
       "updates": [
-        "nach Taschentyp",
         "Schwelle und Ton",
-        "Liste der wertlosesten Gegenstände"
+        "Liste der wertlosesten Gegenstände",
+        "Bank-Plätze"
       ]
     },
     {

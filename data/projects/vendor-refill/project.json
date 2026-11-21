@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "VendorRefill-1.1.zip",
+      "changelog": "## Vendor Refill 1.1\n\n- New **low stock warning**: when an item of your list drops below 25 % of the count you want, one chat line tells you, for example \"Water is running low: 4 of 20 left.\" So you know to stock up before you reach the next vendor.\n- Each item warns once. It warns again only after you restocked it.\n- No warnings while a vendor window is open, and the warning keeps working when refilling is switched off.\n- `/vr warn <percent>` sets the share (1 to 90), `/vr warn off` switches the warning off, `/vr warn` shows the setting.\n- Your list and settings from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

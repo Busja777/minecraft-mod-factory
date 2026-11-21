@@ -4,6 +4,9 @@ local L = ns.L
 -- One vendor visit: read what the vendor sells, buy what the list misses step by step, then tell the result.
 
 local visit -- the running visit; nil when no vendor is open or the work is done
+local atVendor = false -- a vendor window is open: no low stock warnings then
+local readyAt -- GetTime() from which on low stock is checked; nil before login
+ns.warned = {} -- itemID → true: already warned about this session
 
 function ns.Print(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cffffd100" .. L["Vendor Refill"] .. ":|r " .. msg)
@@ -119,7 +122,27 @@ local function buyStep(v)
   C_Timer.After(ns.DELAY, function() buyStep(v) end)
 end
 
+-- Away from vendors: one chat line for each listed item that dropped below the warning share.
+-- force skips the wait after login (a command the player typed).
+function ns.CheckStock(force)
+  if not ns.db or atVendor or not readyAt then return end
+  local share = ns.ValidShare(ns.db.warnShare) or 0
+  if share == 0 then return end
+  if not force and GetTime then
+    local now = plain(GetTime())
+    if type(now) ~= "number" or now < readyAt then return end
+  end
+  local wanted = ns.CleanList(ns.list)
+  if not next(wanted) then return end
+  local owned = {}
+  for id in pairs(wanted) do owned[id] = ns.Owned(id) end
+  for _, entry in ipairs(ns.LowStock(owned, wanted, share, ns.warned)) do
+    ns.Print(ns.LowLine(entry, ns.ItemName(entry.itemID)))
+  end
+end
+
 local function onMerchantShow()
+  atVendor = true
   if visit or not ns.db or not ns.db.enabled then return end
   if IsShiftKeyDown and IsShiftKeyDown() then return end
   if not (BuyMerchantItem and C_Timer and C_Timer.After) then return end
@@ -140,14 +163,19 @@ local function onMerchantShow()
 end
 
 local function onMerchantClosed()
+  atVendor = false
   if visit then finish(visit) end
 end
 
 local function onLogin()
   if type(VendorRefillDB) ~= "table" then VendorRefillDB = {} end
   local db = VendorRefillDB
-  db.version = 1
+  db.version = 2 -- 2: warnShare (1.1); a list from 1.0 is kept as it is
   if type(db.enabled) ~= "boolean" then db.enabled = true end
+  db.warnShare = ns.ValidShare(db.warnShare) or ns.DEFAULT_SHARE
+  ns.warned = {}
+  local now = GetTime and plain(GetTime()) or nil
+  readyAt = (type(now) == "number" and now or 0) + ns.WARN_DELAY
   if type(db.lists) ~= "table" then db.lists = {} end
   local key = ns.CharKey()
   if type(db.lists[key]) ~= "table" then db.lists[key] = {} end
@@ -165,6 +193,8 @@ frame:SetScript("OnEvent", function(_, event)
     onMerchantShow()
   elseif event == "MERCHANT_CLOSED" then
     onMerchantClosed()
+  elseif event == "BAG_UPDATE_DELAYED" then
+    ns.CheckStock()
   end
 end)
 
@@ -176,3 +206,4 @@ end
 listen("PLAYER_LOGIN")
 listen("MERCHANT_SHOW")
 listen("MERCHANT_CLOSED")
+listen("BAG_UPDATE_DELAYED") -- once after a batch of bag changes: eating, drinking, using an item

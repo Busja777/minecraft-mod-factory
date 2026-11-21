@@ -5,6 +5,9 @@ local _, ns = ...
 ns.MAX_WANTED = 1000 -- highest count a list entry may ask for
 ns.STEP = 4          -- purchases in one step
 ns.DELAY = 0.2       -- seconds between two steps
+ns.DEFAULT_SHARE = 25 -- warn when an item drops below this percent of its count
+ns.MAX_SHARE = 90
+ns.WARN_DELAY = 5     -- seconds after login before the first low stock check (the bags are still loading)
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
@@ -185,6 +188,58 @@ end
 function ns.ShortLine(short)
   if type(short) ~= "table" or #short == 0 then return nil end
   return string.format(ns.L["Not enough gold for everything, still missing: %s."], items(short))
+end
+
+-- The low stock warning: a share (in percent) of the count on the list; 0 switches it off.
+function ns.ValidShare(value)
+  if not whole(value) or value < 0 or value > ns.MAX_SHARE then return nil end
+  return value
+end
+
+-- "25", "25%" or "off" → a share; nil for anything else.
+function ns.ParseShare(text)
+  if type(text) ~= "string" then return nil end
+  text = trim(text):lower()
+  if text == "off" then return 0 end
+  local digits = text:match("^(%d+)%s*%%?$")
+  return ns.ValidShare(tonumber(digits or ""))
+end
+
+-- True when have is below share percent of want (whole numbers only, no rounding).
+function ns.IsLow(have, want, share)
+  if type(have) ~= "number" or type(want) ~= "number" or type(share) ~= "number" or share <= 0 then return false end
+  return have * 100 < want * share
+end
+
+-- The items to warn about now, sorted by item ID: { { itemID, have, want } }.
+--   owned:  itemID → count in the bags (nil = unknown, that item is left as it is)
+--   warned: itemID → true for items already warned about; updated here. An item is warned about
+--           once, and again only after its count went back up to the share or above.
+function ns.LowStock(owned, wanted, share, warned)
+  local due = {}
+  if type(owned) ~= "table" or type(warned) ~= "table" then return due end
+  share = ns.ValidShare(share) or 0
+  wanted = ns.CleanList(wanted)
+  local ids = {}
+  for id in pairs(wanted) do ids[#ids + 1] = id end
+  table.sort(ids)
+  for _, id in ipairs(ids) do
+    local have = owned[id]
+    if type(have) == "number" then
+      if not ns.IsLow(have, wanted[id], share) then
+        warned[id] = nil
+      elseif not warned[id] then
+        warned[id] = true
+        due[#due + 1] = { itemID = id, have = have, want = wanted[id] }
+      end
+    end
+  end
+  return due
+end
+
+-- "Water is running low: 4 of 20 left."
+function ns.LowLine(entry, name)
+  return string.format(ns.L["%s is running low: %d of %d left."], name or string.format(ns.L["item %d"], entry.itemID), entry.have, entry.want)
 end
 
 -- The list sorted by name (then ID) as lines "Name: 20". nameOf(itemID) gives the name or nil.

@@ -4,7 +4,7 @@ local L = ns.L
 -- Counts the bag slots after every bag change and warns when the bags are about to be full.
 
 ns.warner = ns.NewWarner()
-ns.counts = nil -- the last count: { free, total, reagentFree, reagentTotal }
+ns.counts = nil -- the last count: { free, total, reagentFree, reagentTotal, professions }
 
 function ns.Print(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cffffd100" .. L["Bag Lookout"] .. ":|r " .. msg)
@@ -43,6 +43,7 @@ function ns.Count()
   local bags = {}
   for bag = first, last do bags[#bags + 1] = readBag(bag) end
   local counts = ns.Totals(bags)
+  counts.professions = ns.Professions(bags) -- profession bags sit in the normal bag slots
   if reagent then
     local r = readBag(reagent)
     r.family = nil -- the reagent bag only holds reagents by design; it is counted on its own
@@ -80,14 +81,16 @@ end
 local function onLogin()
   if type(BagLookoutDB) ~= "table" then BagLookoutDB = {} end
   local db = BagLookoutDB
-  db.version = 1
+  db.version = 2 -- 2: settings.view (1.1) replaces settings.details
   if type(db.settings) ~= "table" then db.settings = {} end
   local s = db.settings
   s.threshold = ns.ValidThreshold(s.threshold) or ns.DEFAULT_THRESHOLD
   s.sound = flag(s.sound, true)
   s.locked = flag(s.locked, false)
   s.hidden = flag(s.hidden, false)
-  s.details = flag(s.details, false)
+  -- 1.0 showed the reagent bag on a click (details); 1.1 shows it in the split view instead.
+  s.view = ns.ValidView(s.view) or (s.details == true and "split" or "total")
+  s.details = nil
   ns.db = db
   ns.settings = s
   ns.ResetWarner(ns.warner) -- no warning for what the bags already were at login

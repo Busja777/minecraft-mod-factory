@@ -70,6 +70,68 @@ function ns.ReagentText(free, total, threshold)
   return paint(state, string.format(ns.L["Reagents %d/%d"], free, total))
 end
 
+-- The two views of the counter: "total" (one line, the normal bags) and "split" (one line per bag type).
+function ns.ValidView(value)
+  if value == "total" or value == "split" then return value end
+  return nil
+end
+
+-- What a profession bag holds, by its bag family (the item family bits the game reports for it).
+-- A family that is not listed, or a bag for more than one kind, is shown as "Profession".
+local OTHER = 0 -- the "Profession" line: every other kind, listed after the named ones
+local FAMILY_LABEL = {
+  [OTHER] = "Profession",
+  [8] = "Leather", [16] = "Inscription", [32] = "Herbs", [64] = "Enchanting", [128] = "Engineering",
+  [512] = "Gems", [1024] = "Mining", [32768] = "Fishing", [65536] = "Cooking",
+}
+
+function ns.FamilyLabel(family)
+  return FAMILY_LABEL[family] or FAMILY_LABEL[OTHER]
+end
+
+-- The bags that hold only one kind of item, added up per kind and sorted by family (unknown last).
+-- bags = { { free, total, family } ... } as for Totals. Returns { { family, label, free, total } ... }.
+function ns.Professions(bags)
+  local groups, list = {}, {}
+  for _, bag in ipairs(bags) do
+    local family = bag.family
+    local special = type(family) == "number" and family ~= 0 and not ns.IsSecret(family)
+    if special and count(bag.free) and count(bag.total) and bag.total > 0 then
+      local key = FAMILY_LABEL[family] and family or OTHER
+      local g = groups[key]
+      if not g then
+        g = { family = key, label = ns.FamilyLabel(key), free = 0, total = 0 }
+        groups[key] = g
+        list[#list + 1] = g
+      end
+      g.free = g.free + math.min(bag.free, bag.total)
+      g.total = g.total + bag.total
+    end
+  end
+  table.sort(list, function(a, b)
+    if (a.family == OTHER) ~= (b.family == OTHER) then return b.family == OTHER end
+    return a.family < b.family
+  end)
+  return list
+end
+
+-- "Herbs 12/36", coloured with the same rule as the counter.
+function ns.ProfessionText(label, free, total, threshold)
+  local state = ns.State(free, total, threshold)
+  return paint(state, string.format(ns.L["%s %d/%d"], ns.L[label], free or 0, total or 0))
+end
+
+-- The lines under the counter in the split view: the reagent bag (or that there is none), then
+-- one line per kind of profession bag.
+function ns.SplitLines(counts, threshold)
+  counts = type(counts) == "table" and counts or {}
+  local lines = { ns.ReagentText(counts.reagentFree, counts.reagentTotal, threshold) }
+  for _, g in ipairs(type(counts.professions) == "table" and counts.professions or {}) do
+    lines[#lines + 1] = ns.ProfessionText(g.label, g.free, g.total, threshold)
+  end
+  return lines
+end
+
 -- The warning state machine. It warns once when the free count drops to or below the threshold,
 -- once more when it reaches 0, and is armed again only after the count went above the threshold.
 -- The first count it sees (login, reload, a new threshold) only sets its state and never warns.
