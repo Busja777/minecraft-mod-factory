@@ -1,0 +1,37 @@
+{
+  "name": "Owner Safe Pets",
+  "summary": "Swing, shoot and blast away without worry: your tamed wolves, cats, parrots and horses never take damage from you.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A single red leather pet collar with a small golden heart-shaped tag hanging from it, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Your pets are safe from your own sword.",
+    "bullets": [
+      "No damage from hits or sweeps",
+      "Arrows and your TNT spare them",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Owner Safe Pets stops you from hurting your own animals, so a missed swing in a fight never costs you your dog.**",
+    "",
+    "## Features",
+    "- Tamed wolves, cats and parrots take no damage from the player who tamed them.",
+    "- The same goes for tamed horses, donkeys, mules, llamas and camels.",
+    "- Covers direct hits, sword sweeps, arrows, tridents and explosions you caused, such as TNT you lit.",
+    "- A sitting wolf or parrot stays seated when you bump into it by mistake.",
+    "- Everyone else is unchanged: other players, mobs, fall damage and lava still hurt your pets.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Tame an animal as usual and fight next to it; your hits pass it by.",
+    "",
+    "## Good to know",
+    "- Made for Fabric Loader on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players can join without installing anything.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

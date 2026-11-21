@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.factory.fastleaffall.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": ["LeavesBlockMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

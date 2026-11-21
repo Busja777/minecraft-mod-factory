@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "ownersafepets-gametest",
+  "version": "1.0.0",
+  "name": "Owner Safe Pets game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.ownersafepets.gametest.OwnerSafePetsGameTest"]
+  },
+  "depends": {
+    "ownersafepets": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

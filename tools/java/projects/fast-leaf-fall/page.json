@@ -1,0 +1,37 @@
+{
+  "name": "Fast Leaf Fall",
+  "summary": "Chop down a tree and watch its crown fall apart in moments, dropping saplings and apples right where you stand.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A single green oak leaf drifting down at a slight angle, with a few small falling leaf particles around it, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Fell a tree, the leaves follow fast.",
+    "bullets": [
+      "Leaves gone within seconds",
+      "Placed leaves are never touched",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Fast Leaf Fall clears the leaves of a felled tree within a few seconds, so you no longer wait minutes for saplings or leave floating crowns behind.**",
+    "",
+    "## Features",
+    "- Once the last log of a tree is gone, its leaves decay one after another within about three seconds.",
+    "- The drops are the usual ones: saplings, sticks and apples.",
+    "- Only leaves the game would let decay anyway are sped up; leaves you placed yourself stay forever.",
+    "- Leaves still close enough to another trunk stay, so neighbouring trees keep their crowns.",
+    "- Works however the logs disappear: axe, fire or explosion.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Chop a tree as usual and collect the saplings.",
+    "",
+    "## Good to know",
+    "- Made for Fabric Loader on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players can join without installing anything.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}
