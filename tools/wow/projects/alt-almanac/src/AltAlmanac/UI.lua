@@ -5,17 +5,30 @@ local GREY, BLUE, WHITE = "|cff9d9d9d", "|cff4da6ff", "|cffffffff"
 local UNKNOWN = GREY .. "?|r"
 local NOT_YET = GREY .. "\226\128\148|r" -- an em dash: played time not read yet
 
--- Columns of the window: field, x offset, width, alignment.
+-- Columns of the window: field, x offset, width, alignment. 1.3: the level column took 10 from the
+-- name column, so its heading still fits with the sort arrow ("Level v").
 local COLUMNS = {
-  { "name", 16, 130, "LEFT" },
-  { "level", 150, 34, "RIGHT" },
+  { "name", 16, 120, "LEFT" },
+  { "level", 140, 44, "RIGHT" },
   { "gold", 190, 130, "RIGHT" },
   { "zone", 334, 190, "LEFT" },
   { "rested", 528, 50, "RIGHT" },
   { "played", 582, 76, "RIGHT" },
   { "seen", 662, 40, "RIGHT" },
 }
-local HEADINGS = { name = "Character", level = "Level", gold = "Gold", zone = "Zone", rested = "Rested", played = "Played", seen = "Seen" }
+-- 1.3: the headings the game itself has come from its GlobalStrings, in the client's language:
+-- { global, English }. Gold and Seen are this addon's own words.
+local GAME_HEADINGS = {
+  name = { "CHARACTER", "Character" }, level = { "LEVEL", "Level" }, zone = { "ZONE", "Zone" },
+  rested = { "TUTORIAL_TITLE26", "Rested" }, played = { "PLAYED", "Played" },
+}
+
+local function headingLabel(field)
+  if field == "gold" then return L["Gold"] end
+  if field == "seen" then return L["Seen"] end
+  local g = GAME_HEADINGS[field]
+  return ns.GameText(g[1], g[2])
+end
 
 local ui
 
@@ -154,7 +167,7 @@ local function create()
 
   f.totalLabel = text(f, "GameFontNormal")
   f.totalLabel:SetPoint("TOPLEFT", 16, -318)
-  f.totalLabel:SetText(L["Total"])
+  f.totalLabel:SetText(ns.GameText("TOTAL", "Total"))
   f.total = text(f, "GameFontHighlight", "RIGHT")
   f.total:SetPoint("TOPLEFT", 190, -318)
   f.total:SetWidth(130)
@@ -194,7 +207,7 @@ end
 
 -- The heading of a column: the column you sort by is white, with "v" for highest first, "^" else.
 function ns.HeadingText(field, sortBy, reverse)
-  local label = L[HEADINGS[field]]
+  local label = headingLabel(field)
   if field ~= sortBy then return label end
   local desc = ns.SORT_DESC[field]
   if reverse then desc = not desc end

@@ -953,3 +953,148 @@ test("saved data of 1.1 keeps everything and gets the old order, broken sort set
   eq(AltAlmanacDB.settings.realmOnly, true)
   eq(AltAlmanacDB.settings.minLevel, nil)
 end)
+
+-- 1.3: German ------------------------------------------------------------------------------------------
+
+local P = "|cffffd100Alt Almanac:|r "
+local WHITE = "|cffffffff"
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and the words it has for the headings and the total (GlobalStrings).
+-- The stand-in client has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  CHARACTER, LEVEL, ZONE, TUTORIAL_TITLE26, PLAYED, TOTAL = "Charakter", "Stufe", "Zone", "Erholt", "Gespielt", "Gesamt"
+end
+
+test("headings and the total come from the game, English when the client has none", function(wow)
+  local ns = boot(wow)
+  eq(ns.GameText("LEVEL", "Level"), "Level")
+  eq(ns.HeadingText("rested", "level", false), "Rested")
+  eq(ns.HeadingText("played", "played", false), WHITE .. "Played v|r")
+  eq(ns.HeadingText("seen", "seen", false), WHITE .. "Seen ^|r")
+  germanClient(wow)
+  eq(ns.HeadingText("level", "level", false), WHITE .. "Stufe v|r")
+  eq(ns.HeadingText("name", "level", false), "Charakter")
+  eq(ns.HeadingText("zone", "level", false), "Zone")
+  eq(ns.HeadingText("rested", "level", false), "Erholt")
+  eq(ns.HeadingText("played", "level", false), "Gespielt")
+  eq(ns.HeadingText("gold", "level", false), "Gold", "the addon's own word, the English client's language here")
+  LEVEL = ""
+  eq(ns.HeadingText("level", "gold", false), "Level", "an empty one stays English")
+  LEVEL = { secret = true }
+  eq(ns.GameText("LEVEL", "Level"), "Level", "so does anything that is not a text")
+end)
+
+test("German client: window, headings, filters and tooltip in German", function(wow)
+  family(wow)
+  germanClient(wow)
+  local ns = boot(wow, { level = 20 }, 7000)
+  wow.slash("/aa")
+  local f = AltAlmanacFrame
+  eq(f.head.name:GetText(), "Charakter")
+  eq(f.head.level:GetText(), WHITE .. "Stufe v|r")
+  eq(f.head.gold:GetText(), "Gold")
+  eq(f.head.zone:GetText(), "Zone")
+  eq(f.head.rested:GetText(), "Erholt")
+  eq(f.head.played:GetText(), "Gespielt")
+  eq(f.head.seen:GetText(), "Zul.")
+  eq(names(), "Brakk,Lia-Argent Dawn,Yubi,anna")
+  local r = row(1)
+  eq(r.level, "80")
+  eq(r.zone, "Dornogal")
+  eq(r.played, "10d 0h")
+  eq(r.seen, "1d")
+  eq(row(2).played, "1h 0m")
+  eq(row(2).seen, "2h")
+  eq(row(3).seen, "jetzt")
+  eq(row(4).rested, "|cff4da6ff105%|r", "60 + 3 days in an inn")
+  eq(f.totalLabel:GetText(), "Gesamt")
+  eq(f.total:GetText(), "95g 71s 00c")
+  eq(f.totalPlayed:GetText(), "10d 1h")
+  eq(f.realmLabel:GetText(), "Nur dieser Realm")
+  eq(f.levelLabel:GetText(), "Mindeststufe")
+  f.headButtons.seen:Click()
+  eq(f.head.seen:GetText(), WHITE .. "Zul. ^|r")
+  eq(f.head.level:GetText(), "Stufe")
+  f.headButtons.seen.scripts.OnEnter(f.headButtons.seen)
+  eq(wow.tooltip.lines[1], "Klicken, um nach dieser Spalte zu sortieren, erneut klicken, um die Reihenfolge umzukehren.")
+  f.realmCheck:Click()
+  eq(wow.chat[1], P .. "Nur die Charaktere dieses Realms werden angezeigt.")
+  eq(f.filterInfo:GetText(), "1 durch den Filter ausgeblendet")
+  f.realmCheck:Click()
+  eq(wow.chat[2], P .. "Die Charaktere aller Realms werden angezeigt.")
+  f.levelBox:SetText("30")
+  f.levelBox.scripts.OnEnterPressed(f.levelBox)
+  eq(wow.chat[3], P .. "Charaktere unter Stufe 30 werden ausgeblendet.")
+  eq(f.filterInfo:GetText(), "1 durch den Filter ausgeblendet")
+end)
+
+test("German client: every command answers in German, the command words stay English", function(wow)
+  family(wow)
+  germanClient(wow)
+  local ns = boot(wow, { level = 20 }, 7000)
+  wow.slash("/aa realm this")
+  eq(wow.chat[1], P .. "Nur die Charaktere dieses Realms werden angezeigt.")
+  eq(AltAlmanacDB.settings.realmOnly, true)
+  wow.slash("/aa realm all")
+  eq(wow.chat[2], P .. "Die Charaktere aller Realms werden angezeigt.")
+  wow.slash("/aa level 70")
+  eq(wow.chat[3], P .. "Charaktere unter Stufe 70 werden ausgeblendet.")
+  wow.slash("/aa level 101")
+  eq(wow.chat[4], P .. "Nutze eine ganze Zahl von 1 bis 100, zum Beispiel /aa level 70, oder /aa level off.")
+  wow.slash("/aa level off")
+  eq(wow.chat[5], P .. "Charaktere jeder Stufe werden angezeigt.")
+  wow.slash("/aa forget anna-silvermoon")
+  eq(wow.chat[6], P .. "anna-Silvermoon entfernt.")
+  wow.slash("/aa forget Yubi-Silvermoon")
+  eq(wow.chat[7], P .. "Den Charakter, den du gerade spielst, kannst du nicht entfernen.")
+  wow.slash("/aa forget Nobody-Realm")
+  eq(wow.chat[8], P .. "Kein Charakter namens Nobody-Realm. Schreibweise: Name-Realm.")
+  wow.slash("/aa hilfe")
+  eq(wow.chat[9], P .. "/aa öffnet oder schließt den Almanach, /aa forget Name-Realm entfernt einen Charakter.")
+  eq(wow.chat[10], P .. "Klicke auf eine Spaltenüberschrift, um zu sortieren. /aa realm this oder /aa realm all filtert nach Realm, /aa level 70 blendet Charaktere unter Stufe 70 aus, /aa level off zeigt sie wieder an.")
+  eq(#wow.chat, 10)
+end)
+
+test("German client: the last row counts the rest in German", function(wow)
+  AltAlmanacDB = { chars = {} }
+  for i = 1, 20 do AltAlmanacDB.chars["Alt" .. string.format("%02d", i) .. "-Silvermoon"] = { level = i } end
+  germanClient(wow)
+  local ns = boot(wow, { level = 70 })
+  wow.slash("/aa")
+  eq(row(15).name, "|cff9d9d9dund 7 weitere|r")
+  eq(row(2).seen, "?")
+  eq(row(2).played, DASH)
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 25, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  family(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow, { level = 20 }, 7000)
+  eq(next(ns.L), nil)
+  wow.slash("/aa")
+  eq(AltAlmanacFrame.head.level:GetText(), WHITE .. "Level v|r")
+  eq(AltAlmanacFrame.head.seen:GetText(), "Seen")
+  eq(AltAlmanacFrame.totalLabel:GetText(), "Total")
+  eq(row(3).seen, "now")
+  wow.slash("/aa realm this")
+  eq(wow.chat[1], P .. "Showing the characters of this realm only.")
+end)

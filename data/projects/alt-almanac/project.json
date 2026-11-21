@@ -31,6 +31,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.3",
+      "file": "AltAlmanac-1.3.zip",
+      "changelog": "## Alt Almanac 1.3\n\n- Alt Almanac now speaks **German**: the window, the filters, the tooltip and every chat line. On clients in other languages it stays in English.\n- The column headings Character, Level, Zone, Rested and Played and the Total line come from the game itself now, so they read exactly like in your client's language. In English they stay the same words.\n- The Level column is a little wider, so its heading always fits next to the sort arrow. The Character column gave up the space.\n- The commands stay the same in every language, for example `/aa realm this` or `/aa level off`.\n- All your characters, your sort order and your filters from 1.2 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }
