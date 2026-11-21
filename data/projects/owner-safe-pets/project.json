@@ -17,6 +17,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "OwnerSafePets-1.1.jar",
+      "changelog": "## Owner Safe Pets 1.1\n\nSettings.\n\n- New file `config/ownersafepets.json`, created on the first start. Without changes everything works exactly like 1.0.\n- `sneakToHit` (default `false`): set it to `true` and you can hurt your own pet while sneaking, for example to put down a sick animal. Only your own hits count; your arrows and explosions stay harmless to your pets.\n- `protectFromOwnerExplosions` (default `true`): set it to `false` and TNT you lit or crystals you hit can hurt your pets again.\n- A broken value falls back to its default with a warning in the server log.\n- Everything from 1.0 stays the same.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }

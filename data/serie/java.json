@@ -146,9 +146,9 @@
       "art": "M",
       "was": "Gezähmte Tiere nehmen keinen Schaden von ihrem Besitzer, auch nicht durch Pfeile oder Schwung-Treffer",
       "updates": [
-        "Schutz vor Lava und Ertrinken",
-        "Einstellungen",
-        "NeoForge"
+        "Schutz vor eigenen Tränken (Wurftränke)",
+        "NeoForge",
+        "Hinweis beim ersten geschützten Treffer"
       ],
       "banner": {
         "from": "claude",
@@ -186,9 +186,9 @@
       "art": "M",
       "was": "Laub verschwindet schnell nach dem Fällen",
       "updates": [
-        "Tempo",
-        "Feinschliff",
-        "NeoForge"
+        "Feinschliff nach Kommentaren",
+        "NeoForge",
+        "Laub aus alten Chunks beim Betreten mit erfassen"
       ],
       "banner": {
         "from": "chatgpt",

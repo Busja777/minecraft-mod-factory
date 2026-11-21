@@ -1,5 +1,7 @@
 package com.factory.ownersafepets.gametest;
 
+import com.factory.ownersafepets.OwnerConfig;
+import com.factory.ownersafepets.OwnerSafePets;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -27,6 +29,8 @@ import net.minecraft.world.World;
  * In-world tests on a headless game test server (gradlew :owner-safe-pets:runGametest).
  * Mock server players hit through the real {@code PlayerEntity.attack}; arrows fly for real; the
  * explosions are real explosions that break no blocks. Animals have no AI so they stay in place.
+ * Tests with other settings than the defaults set them and put the defaults back within the same
+ * call, so the tests running next to them see the defaults.
  */
 public class OwnerSafePetsGameTest implements FabricGameTest {
     private static final Vec3d PET = new Vec3d(2.5, 2, 2.5);
@@ -86,6 +90,81 @@ public class OwnerSafePetsGameTest implements FabricGameTest {
         owner.attack(wolf);
         ctx.assertTrue(unhurt(wolf), "the owner's hit does no damage: " + hp(wolf));
         ctx.assertTrue(wolf.getAttacker() == null, "the wolf does not remember the owner as attacker");
+        ctx.complete();
+    }
+
+    /** Runs {@code body} with other settings and puts the previous ones back. */
+    private static void with(OwnerConfig settings, Runnable body) {
+        OwnerConfig before = OwnerSafePets.config();
+        OwnerSafePets.setConfig(settings);
+        try {
+            body.run();
+        } finally {
+            OwnerSafePets.setConfig(before);
+        }
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void theDefaultsAreThoseOf10(TestContext ctx) {
+        ctx.assertTrue(OwnerSafePets.config().equals(OwnerConfig.defaults()), "the game test server runs with the defaults: " + OwnerSafePets.config());
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void aSneakingOwnersHitDoesNoDamageByDefault(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        WolfEntity wolf = wolf(ctx, PET, owner);
+        owner.setSneaking(true);
+        ctx.assertTrue(owner.isSneaking(), "the owner sneaks");
+        owner.attack(wolf);
+        ctx.assertTrue(unhurt(wolf), "without sneakToHit a sneaking owner's hit does no damage: " + hp(wolf));
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void withSneakToHitOnlyASneakingOwnersHitHurts(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        WolfEntity wolf = wolf(ctx, PET, owner);
+        with(new OwnerConfig(true, true), () -> {
+            owner.attack(wolf);
+            ctx.assertTrue(unhurt(wolf), "a standing owner's hit still does no damage: " + hp(wolf));
+            owner.setSneaking(true);
+            owner.attack(wolf);
+            ctx.assertTrue(!unhurt(wolf), "a sneaking owner's hit does damage: " + hp(wolf));
+        });
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void withSneakToHitTheOwnersExplosionStillDoesNoDamage(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        WolfEntity wolf = wolf(ctx, PET, owner);
+        owner.setSneaking(true);
+        Vec3d at = ctx.getAbsolute(new Vec3d(2.5, 2.5, 3.5));
+        with(new OwnerConfig(true, true), () -> {
+            TntEntity tnt = new TntEntity(ctx.getWorld(), at.x, at.y, at.z, owner);
+            ctx.getWorld().createExplosion(tnt, null, null, at.x, at.y, at.z, 1.0f, false, World.ExplosionSourceType.NONE);
+        });
+        ctx.assertTrue(unhurt(wolf), "sneaking does not let the owner's TNT through: " + hp(wolf));
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void withoutTheExplosionGuardTheOwnersExplosionHurts(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        WolfEntity wolf = wolf(ctx, PET, owner);
+        Vec3d at = ctx.getAbsolute(new Vec3d(2.5, 2.5, 3.5));
+        with(new OwnerConfig(false, false), () -> {
+            owner.attack(wolf);
+            ctx.assertTrue(unhurt(wolf), "the owner's hit still does no damage: " + hp(wolf));
+            TntEntity tnt = new TntEntity(ctx.getWorld(), at.x, at.y, at.z, owner);
+            ctx.getWorld().createExplosion(tnt, null, null, at.x, at.y, at.z, 1.0f, false, World.ExplosionSourceType.NONE);
+        });
+        ctx.assertTrue(!unhurt(wolf), "with protectFromOwnerExplosions false the owner's TNT does damage: " + hp(wolf));
         ctx.complete();
     }
 

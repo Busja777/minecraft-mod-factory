@@ -7,13 +7,13 @@ public final class LeafRules {
     /** Vanilla's distance mark for "no log within reach" (LeavesBlock.MAX_DISTANCE in 1.21.1). */
     public static final int VANILLA_MAX_DISTANCE = 7;
 
-    /** Shortest wait between a leaf losing its tree and its decay: half a second. */
+    /** Shortest wait between a leaf losing its tree and its decay: half a second (the default of minDelayTicks). */
     public static final int MIN_DELAY_TICKS = 10;
 
     /** The wait is spread over this many ticks (here up to two seconds more), so a crown falls apart leaf by leaf. */
     public static final int DELAY_SPREAD_TICKS = 40;
 
-    /** At most this many leaves decay per world and tick; the rest wait for the next tick. */
+    /** At most this many leaves decay per world and tick; the rest wait for the next tick (the default of leavesPerTick). */
     public static final int DECAYS_PER_TICK = 64;
 
     /** At most this many leaves wait per world; beyond that vanilla's slow decay takes over for the rest. */
@@ -29,7 +29,7 @@ public final class LeafRules {
         return !persistent && distance >= maxDistance;
     }
 
-    /** The wait in ticks for a random roll in [0, DELAY_SPREAD_TICKS). */
+    /** The wait in ticks for a random roll in [0, DELAY_SPREAD_TICKS), with the default settings (see {@link LeafConfig#delay}). */
     public static int delay(int roll) {
         return MIN_DELAY_TICKS + Math.floorMod(roll, DELAY_SPREAD_TICKS);
     }
