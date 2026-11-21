@@ -92,3 +92,90 @@ function ns.TooltipText(known)
   if not known then return L["Flight time: not timed yet"] end
   return string.format(L["Flight time: %s"], ns.FormatTime(known))
 end
+
+-- 1.2: the arrival sound. Off by default; it can play a few seconds before the learned landing
+-- time, at the landing, or both. The word typed in /fm sound and the game's SOUNDKIT name behind it.
+ns.SOUND_WHEN = { "off", "before", "landing", "both" }
+ns.SOUND_NAMES = { "bell", "chime", "horn", "warning", "whisper" }
+ns.SOUND_KIT = {
+  bell = "ALARM_CLOCK_WARNING_3",
+  chime = "MAP_PING",
+  horn = "READY_CHECK",
+  warning = "RAID_WARNING",
+  whisper = "TELL_MESSAGE",
+}
+ns.DEFAULT_SOUND = "bell"
+ns.SOUND_LEAD = 10 -- seconds before the learned landing time
+
+function ns.ValidWhen(value)
+  for _, when in ipairs(ns.SOUND_WHEN) do
+    if value == when then return when end
+  end
+  return nil
+end
+
+function ns.ValidSound(value)
+  if type(value) == "string" and ns.SOUND_KIT[value] then return value end
+  return nil
+end
+
+function ns.PlaysBefore(when)
+  return when == "before" or when == "both"
+end
+
+function ns.PlaysAtLanding(when)
+  return when == "landing" or when == "both"
+end
+
+-- True once the flight is SOUND_LEAD seconds or less from its learned landing time. Needs a known
+-- route; a route shorter than twice the lead gets no early sound (it would come right at take-off).
+function ns.ArrivalDue(known, elapsed)
+  if type(known) ~= "number" or type(elapsed) ~= "number" then return false end
+  if known < ns.SOUND_LEAD * 2 then return false end
+  return elapsed >= known - ns.SOUND_LEAD
+end
+
+-- The sound id for a name from the game's SOUNDKIT table. A sound this client does not know falls
+-- back to the bell; nil when not even that is there.
+function ns.SoundId(kit, name)
+  if type(kit) ~= "table" then return nil end
+  local id = kit[ns.SOUND_KIT[name] or ""]
+  if type(id) == "number" then return id end
+  id = kit[ns.SOUND_KIT[ns.DEFAULT_SOUND]]
+  if type(id) == "number" then return id end
+  return nil
+end
+
+-- "a, b or c"
+function ns.OrList(words)
+  if #words < 2 then return words[1] or "" end
+  local head = {}
+  for i = 1, #words - 1 do head[i] = words[i] end
+  return string.format(L["%s or %s"], table.concat(head, ", "), words[#words])
+end
+
+-- "Arrival sound: 10 seconds before landing and at landing, bell." or "Arrival sound is off."
+function ns.SoundText(when, name)
+  name = ns.ValidSound(name) or ns.DEFAULT_SOUND
+  if when == "before" then
+    return string.format(L["Arrival sound: %d seconds before landing, %s."], ns.SOUND_LEAD, name)
+  elseif when == "landing" then
+    return string.format(L["Arrival sound: at landing, %s."], name)
+  elseif when == "both" then
+    return string.format(L["Arrival sound: %d seconds before landing and at landing, %s."], ns.SOUND_LEAD, name)
+  end
+  return L["Arrival sound is off."]
+end
+
+-- Applies one word of /fm sound. Returns "when" or "sound" for what was changed, nil for an unknown word.
+function ns.ChooseSound(settings, word)
+  if ns.ValidWhen(word) then
+    settings.soundWhen = word
+    return "when"
+  end
+  if ns.ValidSound(word) then
+    settings.soundName = word
+    return "sound"
+  end
+  return nil
+end

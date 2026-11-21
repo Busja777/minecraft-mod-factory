@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "MailBell-1.2.zip",
+      "changelog": "## Mail Bell 1.2\n\n- New **choice of bell**: `/mb sound bell`, `chime`, `horn`, `warning` or `whisper` picks the sound for new mail and plays it once so you can hear it.\n- `bell` is the sound of 1.0 and 1.1 and stays the default. If your game does not know a sound, Mail Bell rings the old bell instead.\n- `/mb sound on/off` works as before and keeps your choice. Picking a bell switches the sound on.\n- `/mb sound` and `/mb` show the chosen bell.\n- Your characters and settings from 1.1 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

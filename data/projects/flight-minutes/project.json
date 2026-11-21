@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "FlightMinutes-1.2.zip",
+      "changelog": "## Flight Minutes 1.2\n\n- New **arrival sound**: Flight Minutes can play a short sound 10 seconds before the learned landing time, when you land, or both. It is off until you switch it on, so nothing changes unless you want it.\n- `/fm sound before`, `/fm sound landing`, `/fm sound both` and `/fm sound off` set when it plays. `/fm sound` shows the setting.\n- Pick the sound with `/fm sound bell`, `chime`, `horn`, `warning` or `whisper`. The new choice plays once so you can hear it.\n- The early sound needs a timed route and does not play when you stop a flight early. Routes shorter than 20 seconds only get the landing sound.\n- The sound plays on the Master channel, so you hear it even with sound effects muted.\n- Your routes and the frame position from 1.1 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

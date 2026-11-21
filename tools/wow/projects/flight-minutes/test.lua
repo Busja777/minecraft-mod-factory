@@ -6,7 +6,7 @@ local SW_IF = "Stormwind, Elwynn > Ironforge, Dun Morogh"
 -- The flight functions of the game that the stand-in client lacks. They must exist before the addon
 -- loads, because it hooks TakeTaxiNode right away.
 local function world(faction)
-  local w = { nodes = NODES, current = SW, onTaxi = false, faction = faction or "Alliance", taken = {} }
+  local w = { nodes = NODES, current = SW, onTaxi = false, faction = faction or "Alliance", taken = {}, sounds = {} }
   NumTaxiNodes = function() return #w.nodes end
   TaxiNodeName = function(i) return w.nodes[i] end
   TaxiNodeGetType = function(i) return w.types and w.types[i] or (i == w.current and "CURRENT" or "REACHABLE") end
@@ -14,6 +14,8 @@ local function world(faction)
   TaxiRequestEarlyLanding = function() end
   UnitOnTaxi = function() return w.onTaxi end
   UnitFactionGroup = function() return w.faction, w.faction end
+  SOUNDKIT = { ALARM_CLOCK_WARNING_3 = 12889, MAP_PING = 3175, READY_CHECK = 8960, RAID_WARNING = 8959, TELL_MESSAGE = 3081 }
+  PlaySound = function(id, channel) w.sounds[#w.sounds + 1] = { id = id, channel = channel } end
   return w
 end
 
@@ -81,7 +83,7 @@ end)
 test("login prepares the saved data and keeps what is there", function(wow)
   FlightMinutesDB = { factions = { Alliance = { [SW_IF] = { times = { 100 }, seconds = 100 } } }, settings = { point = { "LEFT", "LEFT", 5, 6 } } }
   local ns = boot(wow)
-  eq(FlightMinutesDB.version, 1)
+  eq(FlightMinutesDB.version, 2)
   eq(ns.routes, FlightMinutesDB.factions.Alliance)
   eq(ns.Seconds(ns.routes, SW_IF), 100)
   eq(FlightMinutesDB.settings.point[3], 5)
@@ -345,16 +347,17 @@ test("/fm counts, lists and forgets the routes", function(wow)
   eq(wow.chat[7], "|cffffd100Flight Minutes:|r Stormwind, Elwynn > Sentinel Hill, Westfall  |cffffffff1:15|r")
   wow.slash("/fm help")
   eq(wow.chat[8]:match("/fm list shows them with their times") ~= nil, true)
+  eq(wow.chat[9]:match("/fm sound before, landing, both or off") ~= nil, true, "the help names the sound too")
   wow.slash("/fm forget")
-  eq(wow.chat[9]:match("All routes forgotten") ~= nil, true)
+  eq(wow.chat[10]:match("All routes forgotten") ~= nil, true)
   eq(ns.Count(ns.routes), 0)
   eq(ns.Count(FlightMinutesDB.factions.Horde), 0)
   eq(ns.routes, FlightMinutesDB.factions.Alliance, "still the saved table")
   wow.slash("/fm")
-  eq(wow.chat[10], wow.chat[1])
+  eq(wow.chat[11], wow.chat[1])
   fly(wow, w, SW, IF, 150) -- learned again from scratch
   eq(ns.routes[SW_IF].seconds, 150)
-  eq(#wow.chat, 11)
+  eq(#wow.chat, 12)
 end)
 
 test("/fm list stops after 40 lines and counts the rest", function(wow)
@@ -544,7 +547,7 @@ test("the tooltip shows times other characters of the faction learned", function
   wow.fire("TAXIMAP_OPENED")
   TaxiNodeOnButtonEnter(button(IF))
   eq(lines(wow), "Ironforge, Dun Morogh | Flight time: 2:50")
-  eq(FlightMinutesDB.version, 1, "1.0 data is used as it is")
+  eq(FlightMinutesDB.factions.Alliance[SW_IF].seconds, 170, "1.0 data is used as it is")
 end)
 
 test("a Horde character does not see Alliance times in the tooltip", function(wow)
@@ -588,4 +591,224 @@ test("a client without the tooltip functions does not break it", function(wow)
   wow.fire("ADDON_LOADED", "Another")
   TaxiNodeOnButtonEnter(button(IF))
   eq(lines(wow), "Ironforge, Dun Morogh | Flight time: not timed yet", "hooked only once")
+end)
+
+
+-- 1.2: the arrival sound
+
+test("core: when the arrival sound plays", function(wow)
+  local ns = boot(wow)
+  eq(ns.ValidWhen("both"), "both")
+  eq(ns.ValidWhen("off"), "off")
+  eq(ns.ValidWhen("sometimes"), nil)
+  eq(ns.ValidWhen(true), nil)
+  eq(ns.PlaysBefore("before"), true)
+  eq(ns.PlaysBefore("both"), true)
+  eq(ns.PlaysBefore("landing"), false)
+  eq(ns.PlaysBefore("off"), false)
+  eq(ns.PlaysAtLanding("landing"), true)
+  eq(ns.PlaysAtLanding("both"), true)
+  eq(ns.PlaysAtLanding("before"), false)
+  eq(ns.PlaysAtLanding(nil), false)
+  eq(ns.SOUND_LEAD, 10)
+  eq(ns.ArrivalDue(161, 150), false)
+  eq(ns.ArrivalDue(161, 151), true, "10 seconds before the learned time")
+  eq(ns.ArrivalDue(161, 200), true)
+  eq(ns.ArrivalDue(20, 10), true, "the shortest route with an early sound")
+  eq(ns.ArrivalDue(19.9, 15), false, "a shorter route gets no early sound")
+  eq(ns.ArrivalDue(nil, 500), false, "a route still being learned")
+  eq(ns.ArrivalDue(161, nil), false)
+end)
+
+test("core: sound names, ids and the setting text", function(wow)
+  local ns = boot(wow)
+  eq(ns.ValidSound("chime"), "chime")
+  eq(ns.ValidSound("trumpet"), nil)
+  eq(ns.ValidSound(5), nil)
+  local kit = { ALARM_CLOCK_WARNING_3 = 12889, MAP_PING = 3175 }
+  eq(ns.SoundId(kit, "chime"), 3175)
+  eq(ns.SoundId(kit, "horn"), 12889, "a sound the client does not know falls back to the bell")
+  eq(ns.SoundId(kit, nil), 12889)
+  eq(ns.SoundId({ MAP_PING = 3175 }, "horn"), nil, "not even the bell")
+  eq(ns.SoundId({ ALARM_CLOCK_WARNING_3 = "x" }, "bell"), nil)
+  eq(ns.SoundId(nil, "bell"), nil)
+  eq(ns.SoundText("off", "bell"), "Arrival sound is off.")
+  eq(ns.SoundText("before", "chime"), "Arrival sound: 10 seconds before landing, chime.")
+  eq(ns.SoundText("landing", "horn"), "Arrival sound: at landing, horn.")
+  eq(ns.SoundText("both", "nonsense"), "Arrival sound: 10 seconds before landing and at landing, bell.")
+  local settings = { soundWhen = "off", soundName = "bell" }
+  eq(ns.ChooseSound(settings, "both"), "when")
+  eq(settings.soundWhen, "both")
+  eq(ns.ChooseSound(settings, "whisper"), "sound")
+  eq(settings.soundName, "whisper")
+  eq(ns.ChooseSound(settings, "loud"), nil)
+  eq(settings.soundWhen, "both")
+  eq(settings.soundName, "whisper")
+end)
+
+test("the arrival sound is off by default: flights stay silent", function(wow)
+  local ns, w = boot(wow)
+  eq(FlightMinutesDB.settings.soundWhen, "off")
+  eq(FlightMinutesDB.settings.soundName, "bell")
+  fly(wow, w, SW, IF, 161)
+  takeOff(wow, w, SW, IF)
+  for _ = 1, 170 do tick(wow, ns, 1) end
+  land(wow, w)
+  eq(#w.sounds, 0)
+end)
+
+test("before: one sound 10 seconds before the learned landing, on the Master channel", function(wow)
+  local ns, w = boot(wow)
+  FlightMinutesDB.settings.soundWhen = "before"
+  fly(wow, w, SW, IF, 161)
+  eq(#w.sounds, 0, "a route still being learned gets no early sound, and not at landing")
+  takeOff(wow, w, SW, IF)
+  tick(wow, ns, 150)
+  eq(#w.sounds, 0)
+  tick(wow, ns, 0.6)
+  eq(#w.sounds, 0, "150.6 seconds in: still more than 10 seconds to go")
+  tick(wow, ns, 0.4)
+  eq(#w.sounds, 1)
+  eq(w.sounds[1].id, 12889)
+  eq(w.sounds[1].channel, "Master")
+  eq(FlightMinutesFrame.text:GetText(), "Landing in 0:10")
+  for _ = 1, 20 do tick(wow, ns, 1) end
+  eq(#w.sounds, 1, "only once per flight")
+  land(wow, w)
+  eq(#w.sounds, 1, "no sound at the landing in this mode")
+  takeOff(wow, w, SW, IF)
+  for _ = 1, 170 do tick(wow, ns, 1) end
+  land(wow, w)
+  eq(#w.sounds, 2, "the next flight gets its own sound")
+end)
+
+test("landing: a sound when the flight ends, also on a route still being learned", function(wow)
+  local ns, w = boot(wow)
+  wow.slash("/fm sound landing")
+  eq(wow.chat[1], "|cffffd100Flight Minutes:|r Arrival sound: at landing, bell.")
+  eq(#w.sounds, 0, "choosing when does not play anything")
+  takeOff(wow, w, SW, IF)
+  tick(wow, ns, 100)
+  eq(#w.sounds, 0)
+  wow.clock = wow.clock + 61
+  land(wow, w)
+  eq(#w.sounds, 1)
+  eq(ns.routes[SW_IF].seconds, 161)
+  fly(wow, w, SW, IF, 3) -- too short to be stored, but still a landing
+  eq(#w.sounds, 2)
+end)
+
+test("both: the early sound and the landing sound", function(wow)
+  local ns, w = boot(wow)
+  wow.slash("/fm sound both")
+  wow.slash("/fm sound chime")
+  local preview = #w.sounds
+  eq(preview, 1, "picking a sound plays it once")
+  eq(w.sounds[1].id, 3175)
+  fly(wow, w, SW, IF, 161)
+  takeOff(wow, w, SW, IF)
+  for _ = 1, 160 do tick(wow, ns, 1) end
+  eq(#w.sounds, preview + 2, "landing of the first flight, then the early sound")
+  land(wow, w)
+  eq(#w.sounds, preview + 3)
+  eq(w.sounds[#w.sounds].id, 3175)
+end)
+
+test("no early sound when the flight is stopped early or the routes are forgotten", function(wow)
+  local ns, w = boot(wow)
+  FlightMinutesDB.settings.soundWhen = "before"
+  fly(wow, w, SW, IF, 161)
+  takeOff(wow, w, SW, IF)
+  tick(wow, ns, 30)
+  TaxiRequestEarlyLanding()
+  for _ = 1, 140 do tick(wow, ns, 1) end
+  eq(#w.sounds, 0, "the stop button ends the flight somewhere else")
+  land(wow, w)
+  takeOff(wow, w, SW, IF)
+  tick(wow, ns, 30)
+  wow.slash("/fm forget")
+  for _ = 1, 140 do tick(wow, ns, 1) end
+  eq(#w.sounds, 0, "no learned time any more")
+  land(wow, w)
+end)
+
+test("a short moment off the taxi does not play the landing sound", function(wow)
+  local ns, w = boot(wow)
+  FlightMinutesDB.settings.soundWhen = "landing"
+  takeOff(wow, w, SW, IF)
+  wow.clock = wow.clock + 60
+  w.onTaxi = false
+  wow.fire("PLAYER_CONTROL_GAINED")
+  wow.clock = wow.clock + 1
+  w.onTaxi = true
+  wow.fire("PLAYER_CONTROL_LOST")
+  eq(#w.sounds, 0)
+  wow.clock = wow.clock + 100
+  land(wow, w)
+  eq(#w.sounds, 1)
+end)
+
+test("/fm sound tells, sets and checks its words", function(wow)
+  local ns, w = boot(wow)
+  local P = "|cffffd100Flight Minutes:|r "
+  wow.slash("/fm sound")
+  eq(wow.chat[1], P .. "Arrival sound is off.")
+  eq(wow.chat[2], P .. "/fm sound before, landing, both or off sets when it plays; /fm sound followed by bell, chime, horn, warning or whisper picks the sound.")
+  eq(select(2, wow.chat[2]:gsub("|", "")), 2, "no escape code in the help but the prefix colour")
+  wow.slash("/fm sound horn")
+  eq(wow.chat[3], P .. "Arrival sound is off.")
+  eq(wow.chat[4], P .. "/fm sound both switches it on.")
+  eq(#w.sounds, 1, "a preview even while it is off")
+  eq(w.sounds[1].id, 8960)
+  eq(FlightMinutesDB.settings.soundName, "horn")
+  wow.slash("/fm SOUND Before ")
+  eq(wow.chat[5], P .. "Arrival sound: 10 seconds before landing, horn.")
+  eq(FlightMinutesDB.settings.soundWhen, "before")
+  wow.slash("/fm sound trumpet")
+  eq(wow.chat[6]:match("/fm sound before, landing, both or off") ~= nil, true, "an unknown word shows the help")
+  eq(FlightMinutesDB.settings.soundWhen, "before")
+  eq(FlightMinutesDB.settings.soundName, "horn")
+  wow.slash("/fm sound warning")
+  eq(#wow.chat, 7, "no hint while the sound is on")
+  wow.slash("/fm sound off")
+  eq(wow.chat[8], P .. "Arrival sound is off.")
+end)
+
+test("1.1 data keeps its routes and gets the sound settings, a saved choice is kept", function(wow)
+  FlightMinutesDB = { version = 1, factions = { Alliance = { [SW_IF] = { times = { 161 }, seconds = 161 } } }, settings = { point = { "LEFT", "LEFT", 5, 6 } } }
+  local ns, w = boot(wow)
+  eq(FlightMinutesDB.version, 2)
+  eq(ns.routes[SW_IF].seconds, 161)
+  eq(FlightMinutesDB.settings.point[1], "LEFT")
+  eq(FlightMinutesDB.settings.soundWhen, "off")
+  eq(FlightMinutesDB.settings.soundName, "bell")
+
+  FlightMinutesDB = { version = 2, settings = { soundWhen = "both", soundName = "whisper" } }
+  wow.fire("PLAYER_LOGIN")
+  eq(FlightMinutesDB.settings.soundWhen, "both")
+  eq(FlightMinutesDB.settings.soundName, "whisper")
+  FlightMinutesDB = { settings = { soundWhen = "always", soundName = 7 } }
+  wow.fire("PLAYER_LOGIN")
+  eq(FlightMinutesDB.settings.soundWhen, "off", "a broken value gets the default")
+  eq(FlightMinutesDB.settings.soundName, "bell")
+end)
+
+test("a client without sounds flies on without an error", function(wow)
+  local ns, w = boot(wow)
+  FlightMinutesDB.settings.soundWhen = "both"
+  fly(wow, w, SW, IF, 161)
+  eq(#w.sounds, 1)
+  SOUNDKIT = { MAP_PING = 3175 } -- neither the chosen sound nor the bell
+  fly(wow, w, SW, IF, 161)
+  eq(#w.sounds, 1)
+  SOUNDKIT = nil
+  wow.slash("/fm sound chime")
+  eq(#w.sounds, 1)
+  SOUNDKIT = { MAP_PING = 3175 }
+  PlaySound = nil
+  fly(wow, w, SW, IF, 161)
+  wow.slash("/fm sound chime")
+  PlaySound = function() error("sound system busy") end
+  fly(wow, w, SW, IF, 161)
+  eq(#ns.routes[SW_IF].times, 4, "every flight was still timed")
 end)

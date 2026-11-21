@@ -73,9 +73,9 @@
       "art": "RF",
       "was": "Lernt Flugzeiten, zeigt Countdown",
       "updates": [
-        "Ankunfts-Ton",
         "Gesamtflugzeit der Sitzung",
-        "Routenliste im Fenster"
+        "Routenliste im Fenster",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -97,9 +97,9 @@
       "art": "RF",
       "was": "Freie Taschenplätze, Warnung bei vollen Taschen",
       "updates": [
-        "Schwelle und Ton",
         "Liste der wertlosesten Gegenstände",
-        "Bank-Plätze"
+        "Bank-Plätze",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -133,9 +133,9 @@
       "art": "RF",
       "was": "Meldet neue Post, merkt sich Post auf Twinks",
       "updates": [
-        "Ton wählbar",
         "Auktionspost-Summe",
-        "Erinnerung an Post auf Twinks beim Login"
+        "Erinnerung an Post auf Twinks beim Login",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
