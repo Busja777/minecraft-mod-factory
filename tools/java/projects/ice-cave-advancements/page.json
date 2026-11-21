@@ -1,0 +1,36 @@
+{
+  "name": "Ice Cave Advancements",
+  "summary": "Eighteen goals for the frozen caves of the winter update, from the first icicle to defeating a Frostbite while you freeze.",
+  "class": "Data Packs",
+  "category": "Adventure",
+  "logoPrompt": "A glowing blue ice crystal cluster growing out of a block of packed ice bricks inside a dark frozen cave, hanging icicles above, in blocky voxel style",
+  "cover": {
+    "tagline": "Eighteen goals for the new ice caves.",
+    "bullets": [
+      "Explore the frozen depths",
+      "Face the Frostbite",
+      "Build with every new block"
+    ]
+  },
+  "description": [
+    "**Ice Cave Advancements adds a new advancement tab, Frozen Depths, with 18 goals for the ice caves of Minecraft 26.4.**",
+    "",
+    "## Features",
+    "- Exploring: find the ice caves, collect icicles, ice crystals and brittle ice, and find the music disc hidden in igloos.",
+    "- Fighting the cold: defeat a Frostbite, pick up its ice balls, suffer the Freezing effect and brew a Potion of Freezing.",
+    "- Building: craft packed ice bricks, chiseled packed ice, snow bricks, polished calcite, calcite bricks and the calcite pillar.",
+    "- Three harder goals: defeat a Frostbite while you are freezing, collect every new ice, snow and calcite block, and become an ice cave veteran. These give experience, none give items.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). The new tab opens as soon as you enter the ice caves.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 26.4. It only adds advancements, so it is safe to add to an existing world.",
+    "- Works in singleplayer and on servers; players need nothing installed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}
