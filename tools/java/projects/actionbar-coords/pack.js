@@ -25,6 +25,11 @@
 //   way is one `execute if biome ~ ~ ~ <id>` per biome (64 in 1.21.1, more in 26.3, none for biomes
 //   of other data packs) for every player four times a second, which is not cheap.
 // - toggle: flips ac.hide, clears the actionbar when switching off and says how to switch back.
+// - Colour styles (since V1.2): ac.style per player (unset = 0 = the colours of 1.0/1.1).
+//   /trigger coords (value 1) still switches the display, /trigger coords set 2 moves on to the
+//   next style and names it, other values print a short help. show picks one of
+//   STYLES × DIRECTIONS lines through #sel = style * 8 + direction, so it stays one actionbar
+//   command per player and update.
 // Text components are written so that the JSON reader of 1.21.1 and the SNBT reader of 26.x both
 // accept them: quoted keys, strings only, lists that hold only compounds. Every command line is
 // checked against reports/commands.json of the version it is built for (checkCommands below).
@@ -36,9 +41,21 @@ const fn = name => `${NS}:${name}`;
 
 export const UPDATE_TICKS = 5; // four updates per second; the actionbar itself stays for 3 s
 export const TRIGGER = 'coords';
-export const OBJ = { hide: 'ac.hide', tmp: 'ac.tmp' };
+export const OBJ = { hide: 'ac.hide', tmp: 'ac.tmp', style: 'ac.style' };
 const STORAGE = `${NS}:pos`;
-const CONSTANTS = [6, 10, 24, 60, 1000];
+const CONSTANTS = [6, 8, 10, 24, 60, 1000];
+
+// Colour styles (since V1.2): [name, labels, numbers, direction, time, separators]. Style 0 is the
+// look of 1.0 and 1.1, so nothing changes for anyone who does not pick another one.
+export const STYLES = [
+  ['Classic', 'gray', 'white', 'aqua', 'yellow', 'dark_gray'],
+  ['Plain', 'white', 'white', 'white', 'white', 'gray'],
+  ['Gold', 'gold', 'yellow', 'gold', 'yellow', 'dark_gray'],
+  ['Green', 'dark_green', 'green', 'green', 'green', 'dark_gray'],
+  ['Blue', 'dark_aqua', 'aqua', 'aqua', 'aqua', 'dark_gray'],
+  ['Quiet', 'dark_gray', 'gray', 'gray', 'gray', 'dark_gray']
+];
+const COLOURS = ['black', 'dark_blue', 'dark_green', 'dark_aqua', 'dark_red', 'dark_purple', 'gold', 'gray', 'dark_gray', 'blue', 'green', 'aqua', 'red', 'light_purple', 'yellow', 'white'];
 
 // The eight directions: name and yaw range (degrees, inclusive, min > max wraps across ±180).
 export const DIRECTIONS = [
@@ -63,15 +80,16 @@ const score = (name, color) => ({ score: { name, objective: OBJ.tmp }, color });
 const json = parts => JSON.stringify([t(''), ...parts]);
 const tell = (color, text) => `tellraw @s ${JSON.stringify(t(text, color))}`;
 
-// One actionbar line for one direction; the time is four one-digit scores (hh:mm).
-export function line(dir) {
-  const label = s => t(s, 'gray');
+// One actionbar line for one direction and colour style; the time is four one-digit scores (hh:mm).
+export function line(dir, style = STYLES[0]) {
+  const [, lab, num, dirC, time, sep] = style;
+  const label = s => t(s, lab);
   return json([
-    label('X '), score('#x', 'white'),
-    label('  Y '), score('#y', 'white'),
-    label('  Z '), score('#z', 'white'),
-    t(' · ', 'dark_gray'), t(dir, 'aqua'), t(' · ', 'dark_gray'),
-    score('#h10', 'yellow'), score('#h1', 'yellow'), t(':', 'yellow'), score('#m10', 'yellow'), score('#m1', 'yellow')
+    label('X '), score('#x', num),
+    label('  Y '), score('#y', num),
+    label('  Z '), score('#z', num),
+    t(' · ', sep), t(dir, dirC), t(' · ', sep),
+    score('#h10', time), score('#h1', time), t(':', time), score('#m10', time), score('#m1', time)
   ]);
 }
 
@@ -86,7 +104,7 @@ export function functions(query) {
   ];
   const op = (a, o, b) => `scoreboard players operation #${a} ${OBJ.tmp} ${o} #${b} ${OBJ.tmp}`;
   f.update = [
-    `execute as @a[scores={${TRIGGER}=1..}] run function ${fn('toggle')}`,
+    `execute as @a[scores={${TRIGGER}=1..}] run function ${fn('trigger')}`,
     `scoreboard players set @a[scores={${TRIGGER}=..-1}] ${TRIGGER} 0`,
     // the game disables a trigger for a player after each use, and new players start disabled
     `scoreboard players enable @a ${TRIGGER}`,
@@ -107,7 +125,25 @@ export function functions(query) {
     // data get floors a double, so -32.3 becomes -33, the block the player stands in (as on F3)
     ...['x', 'y', 'z'].map((axis, i) => `execute store result score #${axis} ${OBJ.tmp} run data get storage ${STORAGE} p[${i}]`),
     ...DIRECTIONS.map(([, range], i) => `execute if entity @s[y_rotation=${range}] run scoreboard players set #dir ${OBJ.tmp} ${i}`),
-    ...DIRECTIONS.map(([name], i) => `execute if score #dir ${OBJ.tmp} matches ${i} run title @s actionbar ${line(name)}`)
+    // #sel = style * 8 + direction (style unset counts as 0)
+    `scoreboard players set #sel ${OBJ.tmp} 0`,
+    `execute if score @s ${OBJ.style} matches 1..${STYLES.length - 1} run scoreboard players operation #sel ${OBJ.tmp} = @s ${OBJ.style}`,
+    `scoreboard players operation #sel ${OBJ.tmp} *= #8 ${OBJ.tmp}`,
+    `scoreboard players operation #sel ${OBJ.tmp} += #dir ${OBJ.tmp}`,
+    ...STYLES.flatMap((style, s) => DIRECTIONS.map(([name], i) => `execute if score #sel ${OBJ.tmp} matches ${s * DIRECTIONS.length + i} run title @s actionbar ${line(name, style)}`))
+  ];
+  // /trigger coords → 1 switches the display, set 2 → next colour style, anything else → help.
+  f.trigger = [
+    `execute if score @s ${TRIGGER} matches 1 run function ${fn('toggle')}`,
+    `execute if score @s ${TRIGGER} matches 2 run function ${fn('style')}`,
+    `execute if score @s ${TRIGGER} matches 3.. run ${tell('gray', 'Type /trigger coords to show or hide the coordinates, /trigger coords set 2 for the next colour style.')}`,
+    `scoreboard players set @s ${TRIGGER} 0`
+  ];
+  f.style = [
+    `execute unless score @s ${OBJ.style} matches 0..${STYLES.length - 1} run scoreboard players set @s ${OBJ.style} 0`,
+    `scoreboard players add @s ${OBJ.style} 1`,
+    `execute if score @s ${OBJ.style} matches ${STYLES.length}.. run scoreboard players set @s ${OBJ.style} 0`,
+    ...STYLES.map(([name], s) => `execute if score @s ${OBJ.style} matches ${s} run ${tell('gray', `Colour style: ${name} (${s + 1} of ${STYLES.length}). Type /trigger coords set 2 for the next one.`)}`)
   ];
   f.toggle = [
     `scoreboard players set @s ${TRIGGER} 0`,
@@ -116,7 +152,7 @@ export function functions(query) {
     `execute if score @s ${OBJ.hide} matches 2.. run scoreboard players set @s ${OBJ.hide} 0`,
     `execute if score @s ${OBJ.hide} matches 1 run title @s actionbar ${JSON.stringify(t(''))}`,
     `execute if score @s ${OBJ.hide} matches 1 run ${tell('gray', 'Coordinates hidden. Type /trigger coords to show them again.')}`,
-    `execute if score @s ${OBJ.hide} matches 0 run ${tell('gray', 'Coordinates shown. Type /trigger coords to hide them.')}`
+    `execute if score @s ${OBJ.hide} matches 0 run ${tell('gray', 'Coordinates shown. Type /trigger coords to hide them, /trigger coords set 2 for another colour style.')}`
   ];
   return f;
 }
@@ -124,6 +160,7 @@ export function functions(query) {
 // ── checks ────────────────────────────────────────────────────────────────────────────────────
 // Every "function <ns>:<name>" must point to a function of the pack.
 export function checkFunctions(f) {
+  for (const [, ...colours] of STYLES) for (const c of colours) if (!COLOURS.includes(c)) throw new Error(`style colour ${c} is not a text colour`);
   for (const [name, lines] of Object.entries(f)) {
     for (const l of lines) {
       for (const m of l.matchAll(new RegExp(`function ${NS}:([a-z_/]+)`, 'g'))) {

@@ -314,9 +314,9 @@
       "art": "D",
       "was": "/trigger home, sethome, spawn ohne Mod",
       "updates": [
-        "zurück zum Todesort",
         "Abklingzeit einstellbar",
-        "Home-Liste"
+        "Home-Liste",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -383,9 +383,9 @@
       "art": "D",
       "was": "Koordinaten und Uhrzeit über der Leiste",
       "updates": [
-        "Farben wählbar",
-        "Todes-Koordinaten",
-        "Anzeige je Spieler kürzen (nur Koordinaten)"
+        "Todes-Koordinaten (nur Anzeige; der Weg zurück steckt schon in Trigger Homes)",
+        "Anzeige je Spieler kürzen (nur Koordinaten)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
