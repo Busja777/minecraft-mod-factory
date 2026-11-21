@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "CraftItSooner-1.1.zip",
+      "changelog": "## Craft It Sooner 1.1\n\nFour more farm basics come sooner.\n\n- Quality Fertilizer, Deluxe Speed-Gro, the Bee House and the Tapper now unlock earlier too, with the same config setting.\n- At Medium (default): Quality Fertilizer at Farming 7 instead of 9, Deluxe Speed-Gro at 6 instead of 8, the Bee House at 2 instead of 3, and the Tapper at Foraging 2 instead of 4.\n- Light: 8, 7, 2 and Foraging 3. Strong: 6, 5, 1 and Foraging 1.\n- Your setting carries over. Ingredients and results stay as they are. The Keg and the Iridium Sprinkler keep their usual levels.\n- If your level is already high enough, the game adds the new recipes when the save loads.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "Stocked Shelves",
-  "description": "Willy also sells Wild Bait, the Quality Bobber and fishing dishes once you could make them yourself.",
+  "description": "Willy also sells Wild Bait, the Quality Bobber and fishing dishes, Krobus a few dark goods, once you could get them yourself.",
   "uniqueId": "SevEvolution.StockedShelves",
   "minimumApiVersion": "4.4.0",
   "contentPatcher": "2.9.0",

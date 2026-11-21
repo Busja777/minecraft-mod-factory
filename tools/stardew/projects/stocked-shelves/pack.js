@@ -1,6 +1,8 @@
 // Stocked Shelves: Willy's fish shop also sells the fishing supplies he does not stock in the base
 // game, as soon as the player could make them at home: Wild Bait, the Quality Bobber, and the two
 // fishing dishes Dish O' The Sea and Seafoam Pudding. His own stock stays as it is.
+// Since 1.1 Krobus' shop in the sewers sells three more dark goods (Void Salmon, Squid Ink, Bug
+// Steak) once the player could get them on their own. His own stock stays as it is too.
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/Shops, shop "FishShop" = Willy's fish shop ("Vanilla shop IDs");
@@ -28,6 +30,29 @@
 //   at its default, like his entries.
 // - Left out on purpose (rare rewards or legendary-fish helpers): Magic Bait (Qi gems), Challenge
 //   Bait (fishing mastery), Curiosity Lure (only drops), any fish.
+//
+// Krobus (1.1):
+// - Data/Shops, shop "ShadowShop" = Krobus' shop ("Vanilla shop IDs" on Modding:Shops). Same kind
+//   of EditData on TargetField ["ShadowShop", "Items"] with the pack's own Ids, so his entries stay.
+//   No sorting patch: the IDs of his vanilla entries are not documented, so the goods go to the end.
+// - AvailableStock = "The maximum number of the item which can be purchased in one day"
+//   (Modding:Shops, item fields). Krobus limits his own goods per day (https://stardewvalleywiki.com/Krobus#Shop,
+//   revision 194307): 5 fish on Wednesdays, 5 dishes on Saturdays, 10 of each essence.
+// - Prices follow his markup on monster loot: twice the sell price (Void Essence sells for 50 and
+//   costs 100, Solar Essence 40 → 80, Bat Wing 15 → 30, Slime 5 → 10; sell prices from each item's
+//   wiki page). At twice the price nothing can be resold at a profit, not even a fish with the
+//   Angler profession (+50 %).
+// - Conditions: each good appears once the player could get it on their own.
+//   Void Salmon (sell 150, https://stardewvalleywiki.com/Void_Salmon): after catching one,
+//   PLAYER_HAS_CAUGHT_FISH Current (O)795 ("have caught any of the specified fish qualified IDs").
+//   Squid Ink (sell 110, https://stardewvalleywiki.com/Squid_Ink): comes from Squid and Midnight
+//   Squid fish ponds, so after catching either: PLAYER_HAS_CAUGHT_FISH Current (O)151 (O)798.
+//   Bug Steak (sell 50, https://stardewvalleywiki.com/Bug_Steak): crafting recipe at Combat level 1
+//   ("Bug Steak":"684 10/Home/874/false/s Combat 1/", Modding:Recipe data),
+//   PLAYER_HAS_CRAFTING_RECIPE Current Bug Steak.
+// - Left out on purpose: Void Mayonnaise and Monster Musk (both loved gifts of Krobus: buying them
+//   would buy his friendship; Monster Musk is also a Wizard special-order reward), Bug Meat (Willy's
+//   "Juicy Bugs Wanted!" order asks for 100 of it), Stardrops and other unique rewards.
 
 // name → [kind, sell price from the item's wiki page, condition, sort after (vanilla entry ID or own key)]
 export const SUPPLIES = {
@@ -47,6 +72,17 @@ export const NEVER = ['Magic Bait', 'Challenge Bait', 'Curiosity Lure'];
 export const keyOf = name => name.replace(/[^A-Za-z]/g, '');
 const QUERY = /^PLAYER_HAS_(CRAFTING|COOKING)_RECIPE Current [A-Z][A-Za-z' ]+$/;
 
+// Krobus (1.1): name → [sell price from the item's wiki page, stock per day, condition]
+export const KROBUS = {
+  'Void Salmon': [150, 5, 'PLAYER_HAS_CAUGHT_FISH Current (O)795'],
+  'Squid Ink': [110, 5, 'PLAYER_HAS_CAUGHT_FISH Current (O)151 (O)798'],
+  'Bug Steak': [50, 5, 'PLAYER_HAS_CRAFTING_RECIPE Current Bug Steak']
+};
+export const KROBUS_MARKUP = 2; // Void Essence 50 → 100, Solar Essence 40 → 80, Bat Wing 15 → 30
+export const KROBUS_NEVER = ['Void Mayonnaise', 'Monster Musk', 'Bug Meat', 'Stardrop', 'Void Egg', 'Void Ghost Pendant'];
+const KROBUS_QUERY = /^(PLAYER_HAS_CAUGHT_FISH Current( \(O\)\d+)+|PLAYER_HAS_CRAFTING_RECIPE Current [A-Z][A-Za-z' ]+)$/;
+const FISH = { '(O)795': 'Void Salmon', '(O)151': 'Squid', '(O)798': 'Midnight Squid' };
+
 export default async function ({ items }) {
   const idOf = {};
   for (const [id, name] of Object.entries(items.items)) if (/^\(O\)/.test(id)) idOf[name] = id;
@@ -62,6 +98,18 @@ export default async function ({ items }) {
     if (after && !/^\(O\)\d+$/.test(after) && !SUPPLIES[after]) throw new Error(`${name}: sort target ${after}`);
   }
 
+  for (const [name, [sell, stock, condition]] of Object.entries(KROBUS)) {
+    if (!idOf[name]) throw new Error(`${name} is not in items.json`);
+    if (KROBUS_NEVER.includes(name)) throw new Error(`${name} must not be sold by Krobus`);
+    if (!(Number.isInteger(sell) && sell > 0)) throw new Error(`${name}: sell price ${sell}`);
+    if (!(Number.isInteger(stock) && stock >= 1 && stock <= 10)) throw new Error(`${name}: stock ${stock} (Krobus sells 5 to 10 a day)`);
+    if (!KROBUS_QUERY.test(condition)) throw new Error(`${name}: condition "${condition}"`);
+    for (const id of condition.match(/\(O\)\d+/g) || []) if (items.items[id] !== FISH[id]) throw new Error(`${name}: ${id} is not the fish ${FISH[id]}`);
+    if (condition.startsWith('PLAYER_HAS_CRAFTING') && !condition.endsWith(` ${name}`)) throw new Error(`${name}: recipe condition is for another item`);
+    const price = sell * KROBUS_MARKUP;
+    if (!(price <= 1000)) throw new Error(`${name}: price ${price}`);
+  }
+
   const entries = {};
   const moves = [];
   for (const [name, [kind, sell, condition, after]] of Object.entries(SUPPLIES)) {
@@ -69,12 +117,18 @@ export default async function ({ items }) {
     entries[id] = { Id: id, ItemId: idOf[name], Price: priceOf(kind, sell), Condition: condition };
     if (after) moves.push({ ID: id, AfterID: SUPPLIES[after] ? `{{ModId}}_${keyOf(after)}` : after });
   }
+  const krobus = {};
+  for (const [name, [sell, stock, condition]] of Object.entries(KROBUS)) {
+    const id = `{{ModId}}_Krobus_${keyOf(name)}`;
+    krobus[id] = { Id: id, ItemId: idOf[name], Price: sell * KROBUS_MARKUP, AvailableStock: stock, Condition: condition };
+  }
   return {
     'content.json': {
       Format: '2.9.0',
       Changes: [
         { LogName: "More fishing supplies at Willy's", Action: 'EditData', Target: 'Data/Shops', TargetField: ['FishShop', 'Items'], Entries: entries },
-        { LogName: "Sort them next to Willy's bait and soup", Action: 'EditData', Target: 'Data/Shops', TargetField: ['FishShop', 'Items'], MoveEntries: moves }
+        { LogName: "Sort them next to Willy's bait and soup", Action: 'EditData', Target: 'Data/Shops', TargetField: ['FishShop', 'Items'], MoveEntries: moves },
+        { LogName: "More dark goods at Krobus'", Action: 'EditData', Target: 'Data/Shops', TargetField: ['ShadowShop', 'Items'], Entries: krobus }
       ]
     }
   };

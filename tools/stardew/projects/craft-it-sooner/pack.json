@@ -1,6 +1,6 @@
 {
   "name": "Craft It Sooner",
-  "description": "Sprinklers, retaining soil and Speed-Gro unlock at a lower Farming level; three levels in the config.",
+  "description": "Sprinklers, soil helpers, fertilizer, the Bee House and the Tapper unlock at a lower skill level; three levels in the config.",
   "uniqueId": "SevEvolution.CraftItSooner",
   "minimumApiVersion": "4.4.0",
   "contentPatcher": "2.9.0",
