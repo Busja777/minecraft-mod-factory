@@ -5,7 +5,8 @@ local _, ns = ...
 
 -- manualDailies (1.1): daily and weekly quests are left to the player. Off, so 1.0 behaviour stays.
 -- gossip (1.2): picks a character's only dialogue option when there are no quests. Off, so nothing changes.
-ns.DEFAULTS = { enabled = true, accept = true, turnin = true, manualDailies = false, gossip = false }
+-- hint (1.3): marks the reward with the highest vendor value when a quest offers a choice. On.
+ns.DEFAULTS = { enabled = true, accept = true, turnin = true, manualDailies = false, gossip = false, hint = true }
 
 ns.GRACE = 1.5 -- seconds between two windows that still belong to the same conversation
 ns.MAX_OPTIONS = 5 -- dialogue options picked in one conversation at most
@@ -271,11 +272,75 @@ function ns.Apply(settings, word)
   return true
 end
 
+-- 1.3: /qa hint, /qa hint on, /qa hint off. Returns true when the word was known.
+function ns.ApplyHint(settings, word)
+  if word == "" then
+    settings.hint = not settings.hint
+  elseif word == "on" or word == "off" then
+    settings.hint = word == "on"
+  else
+    return false
+  end
+  return true
+end
+
 -- count = number of quests the player keeps manual.
 function ns.StateText(settings, count)
   local L = ns.L
   local function word(on) return on and L["on"] or L["off"] end
-  return string.format(L["Autopilot is %s. Accepting quests: %s. Handing in quests: %s. Daily and weekly quests: %s. Only dialogue option: %s. Kept manual: %d."],
+  return string.format(L["Autopilot is %s. Accepting quests: %s. Handing in quests: %s. Daily and weekly quests: %s. Only dialogue option: %s. Reward hint: %s. Kept manual: %d."],
     word(settings.enabled), word(settings.accept), word(settings.turnin),
-    settings.manualDailies and L["manual"] or L["automatic"], word(settings.gossip), count or 0)
+    settings.manualDailies and L["manual"] or L["automatic"], word(settings.gossip), word(settings.hint), count or 0)
+end
+
+-- 1.3: the reward hint ------------------------------------------------------------------------------
+-- The autopilot never picks between rewards. It only points at the one a vendor pays most for, so
+-- the player sees it at a glance. It says nothing about which reward is better to wear.
+
+-- Whether the hint is wanted for this reward window. q = { enabled, hint, paused, choices }
+function ns.WantHint(q)
+  return q.enabled == true and q.hint == true and not q.paused and type(q.choices) == "number" and q.choices > 1
+end
+
+-- The reward choices as { { value = vendor price of the whole stack in copper, or nil when not known yet } }.
+-- → index of the reward worth the most at a vendor, and its value; nil when a price is still
+-- unknown, when every reward is worth nothing, or when two rewards share the top price.
+function ns.BestReward(choices)
+  if type(choices) ~= "table" or #choices < 2 then return nil end
+  local best, value, tie = nil, 0, false
+  for i, choice in ipairs(choices) do
+    local v = type(choice) == "table" and choice.value or nil
+    if type(v) ~= "number" or v ~= v or v < 0 then return nil end
+    if v > value then
+      best, value, tie = i, v, false
+    elseif v == value and v > 0 then
+      tie = true
+    end
+  end
+  if not best or tie then return nil end
+  return best, value
+end
+
+-- The price of one item times the stack size. A missing or broken count counts as one item.
+function ns.StackValue(price, count)
+  if type(price) ~= "number" or price ~= price or price < 0 then return nil end
+  if type(count) ~= "number" or count < 1 then count = 1 end
+  return price * count
+end
+
+-- Copper as "1g 20s", "45s 3c" or "7c".
+function ns.MoneyText(copper)
+  local L = ns.L
+  copper = math.floor(copper or 0)
+  local gold, silver, rest = math.floor(copper / 10000), math.floor(copper / 100) % 100, copper % 100
+  local parts = {}
+  if gold > 0 then parts[#parts + 1] = string.format(L["%dg"], gold) end
+  if silver > 0 then parts[#parts + 1] = string.format(L["%ds"], silver) end
+  if rest > 0 or #parts == 0 then parts[#parts + 1] = string.format(L["%dc"], rest) end
+  return table.concat(parts, " ")
+end
+
+-- The chat line for the hint. name is the item link or name of the reward.
+function ns.HintText(name, value)
+  return string.format(ns.L["Highest vendor value: %s (%s). The choice is still yours."], name or "?", ns.MoneyText(value))
 end

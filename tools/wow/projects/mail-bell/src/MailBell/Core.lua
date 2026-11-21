@@ -12,6 +12,9 @@ ns.DEFAULTS = { sound = true, login = true }
 ns.EXPIRE_DEFAULT = 3 -- days: mail with items or gold that runs out within this many days is named
 ns.EXPIRE_MAX = 30    -- the game keeps mail for 30 days at most
 ns.DAY = 86400        -- seconds
+ns.LETTERS = 5        -- letters with items or gold remembered per character (1.3)
+ns.NAMED = 3          -- letters named in one chat line (1.3)
+ns.SUBJECT_SIZE = 32  -- longer subjects are shortened in chat (1.3)
 
 -- 1.2: the bell can be picked. The word typed in /mb sound and the game's SOUNDKIT name behind it.
 -- "bell" is the sound of 1.0 and 1.1; a client without it falls back to the whisper sound, as before.
@@ -133,9 +136,10 @@ end
 -- Makes the saved table usable: settings with their defaults, the character list, nothing lost.
 -- Version 1 (Mail Bell 1.0) had no expiry setting; it starts at 3 days.
 -- Version 2 (1.1) had no choice of bell; it starts with the bell it always played.
+-- Version 3 (1.2) had no remembered letters; they come with the next visit to a mailbox.
 function ns.PrepareDB(db)
   if type(db) ~= "table" then db = {} end
-  db.version = 3
+  db.version = 4
   if type(db.settings) ~= "table" then db.settings = {} end
   for _, name in ipairs(ns.SETTINGS) do
     if type(db.settings[name]) ~= "boolean" then db.settings[name] = ns.DEFAULTS[name] end
@@ -143,6 +147,9 @@ function ns.PrepareDB(db)
   if not ns.ValidDays(db.settings.expire) then db.settings.expire = ns.EXPIRE_DEFAULT end
   db.settings.bell = ns.ValidSound(db.settings.bell) or ns.DEFAULT_SOUND
   if type(db.chars) ~= "table" then db.chars = {} end
+  for _, c in pairs(db.chars) do
+    if type(c) == "table" and c.letters ~= nil then c.letters = ns.CleanLetters(c.letters) end
+  end
   return db
 end
 
@@ -160,8 +167,30 @@ end
 -- Returns the days left of the letter that runs out first (nil when there is none), how many run
 -- out within warnDays, and the days left of the first of those.
 function ns.ScanExpiry(letters, warnDays)
-  local soonest, count = nil, 0
-  for _, m in ipairs(letters) do
+  local counted = ns.CountedLetters(letters)
+  local count = 0
+  for _, m in ipairs(counted) do
+    if ns.Within(m.days, warnDays) then count = count + 1 end
+  end
+  return counted[1] and counted[1].days or nil, count
+end
+
+-- Whether a letter with days left is named by a warning for warnDays (0: the warning is off).
+function ns.Within(days, warnDays)
+  return type(warnDays) == "number" and warnDays > 0 and math.floor(days) <= warnDays
+end
+
+-- A text from the game for a chat line, or nil when it is missing, secret or empty.
+local function plainText(value)
+  if ns.IsSecret(value) or type(value) ~= "string" or value == "" then return nil end
+  return value
+end
+
+-- 1.3: the letters that count (items or gold, no cash on delivery, see ScanExpiry) as
+-- { days, sender, subject }, the one that runs out first at the top.
+function ns.CountedLetters(letters)
+  local list = {}
+  for i, m in ipairs(letters) do
     local days, money, cod, items = m.daysLeft, m.money, m.cod, m.hasItem
     local usable = not (ns.IsSecret(days) or ns.IsSecret(money) or ns.IsSecret(cod) or ns.IsSecret(items))
     if usable and type(days) == "number" and days >= 0 then
@@ -169,12 +198,15 @@ function ns.ScanExpiry(letters, warnDays)
       local hasItems = (type(items) == "number" and items > 0) or items == true
       local isCod = type(cod) == "number" and cod > 0
       if (hasGold or hasItems) and not isCod then
-        if not soonest or days < soonest then soonest = days end
-        if warnDays and warnDays > 0 and math.floor(days) <= warnDays then count = count + 1 end
+        list[#list + 1] = { days = days, sender = plainText(m.sender), subject = plainText(m.subject), order = i }
       end
     end
   end
-  return soonest, count
+  table.sort(list, function(a, b)
+    if a.days ~= b.days then return a.days < b.days end
+    return a.order < b.order
+  end)
+  return list
 end
 
 -- Remembers when the first letter with items or gold of a character runs out (a time() value),
@@ -193,6 +225,69 @@ function ns.NoteExpiry(chars, key, soonestDays, now)
   return c
 end
 
+-- 1.3: remembers the letters with items or gold that run out first (up to ns.LETTERS), each with
+-- its sender, subject and the time() it runs out; nothing when there are none.
+function ns.NoteLetters(chars, key, counted, now)
+  local c = chars[key]
+  if type(c) ~= "table" then
+    c = {}
+    chars[key] = c
+  end
+  local letters = {}
+  if type(now) == "number" and type(counted) == "table" then
+    for _, m in ipairs(counted) do
+      if #letters >= ns.LETTERS then break end
+      letters[#letters + 1] = { sender = m.sender, subject = m.subject, expires = math.floor(now + m.days * ns.DAY) }
+    end
+  end
+  c.letters = #letters > 0 and letters or nil
+  return c
+end
+
+-- Saved letters that can be used; nil when none is left.
+function ns.CleanLetters(list)
+  if type(list) ~= "table" then return nil end
+  local clean = {}
+  for _, m in ipairs(list) do
+    if type(m) == "table" and type(m.expires) == "number" and m.expires == m.expires and #clean < ns.LETTERS then
+      clean[#clean + 1] = {
+        expires = m.expires,
+        sender = type(m.sender) == "string" and m.sender ~= "" and m.sender or nil,
+        subject = type(m.subject) == "string" and m.subject ~= "" and m.subject or nil,
+      }
+    end
+  end
+  return #clean > 0 and clean or nil
+end
+
+-- A text other players wrote, safe for the chat: shortened, and "|" cannot start a link or a colour.
+local function chatSafe(text, size)
+  if size and #text > size then
+    text = text:sub(1, size - 3):gsub("[\192-\255][\128-\191]*$", "") .. "..."
+  end
+  return (text:gsub("|", "||"))
+end
+
+-- How a letter is named in chat: Brakk "Herbs", Brakk, "Herbs" or "a letter".
+function ns.LetterLabel(sender, subject)
+  local L = ns.L
+  sender = type(sender) == "string" and sender ~= "" and chatSafe(sender) or nil
+  subject = type(subject) == "string" and subject ~= "" and chatSafe(subject, ns.SUBJECT_SIZE) or nil
+  if sender and subject then return string.format(L["%s \"%s\""], sender, subject) end
+  if sender then return sender end
+  if subject then return string.format(L["\"%s\""], subject) end
+  return L["a letter"]
+end
+
+-- The first ns.NAMED names, then "and 2 more".
+function ns.NameList(names)
+  local shown = {}
+  for i = 1, math.min(#names, ns.NAMED) do shown[i] = names[i] end
+  local text = table.concat(shown, ", ")
+  if #names > ns.NAMED then text = string.format(ns.L["%s and %d more"], text, #names - ns.NAMED) end
+  return text
+end
+
 -- "less than a day", "1 day", "4 days": whole days, as the mailbox shows them.
 function ns.DaysText(days)
   local L = ns.L
@@ -202,10 +297,19 @@ function ns.DaysText(days)
   return string.format(L["%d days"], whole)
 end
 
--- The chat line when the mailbox is open; nil when nothing runs out soon.
-function ns.ExpiryWarning(count, soonest, warnDays)
+-- The chat line when the mailbox is open; nil when nothing runs out soon. names (1.3, optional)
+-- are the labels of the letters that run out soon, the first one first.
+function ns.ExpiryWarning(count, soonest, warnDays, names)
   local L = ns.L
   if type(count) ~= "number" or count < 1 or type(soonest) ~= "number" then return nil end
+  if type(names) == "table" and #names > 0 then
+    if count == 1 then
+      return string.format(L["A letter with items or gold runs out in %s: %s. Take it out before it is returned or deleted."],
+        ns.DaysText(soonest), ns.NameList(names))
+    end
+    return string.format(L["%d letters with items or gold run out within %s, the first in %s: %s. Take them out before they are returned or deleted."],
+      count, ns.DaysText(warnDays), ns.DaysText(soonest), ns.NameList(names))
+  end
   if count == 1 then
     return string.format(L["A letter with items or gold runs out in %s. Take it out before it is returned or deleted."], ns.DaysText(soonest))
   end
@@ -213,13 +317,78 @@ function ns.ExpiryWarning(count, soonest, warnDays)
     count, ns.DaysText(warnDays), ns.DaysText(soonest))
 end
 
+-- 1.3: the line at login for the character being played, from what its last mailbox visit showed
+-- (the inbox cannot be read at login). nil when nothing it saw runs out within warnDays from now.
+function ns.OwnExpiryText(c, now, warnDays)
+  local L = ns.L
+  if type(c) ~= "table" or type(now) ~= "number" or not ns.ValidDays(warnDays) or warnDays == 0 then return nil end
+  local names, soonest = {}, nil
+  for _, m in ipairs(type(c.letters) == "table" and c.letters or {}) do
+    local left = (m.expires - now) / ns.DAY
+    if left > 0 and ns.Within(left, warnDays) then
+      names[#names + 1] = ns.LetterLabel(m.sender, m.subject)
+      soonest = soonest or left
+    end
+  end
+  if #names == 1 then
+    return string.format(L["From your last mailbox visit: a letter with items or gold on this character runs out in %s: %s. Open a mailbox to take it out."],
+      ns.DaysText(soonest), names[1])
+  elseif #names > 1 then
+    return string.format(L["From your last mailbox visit: %d letters with items or gold on this character run out within %s, the first in %s: %s. Open a mailbox to take them out."],
+      #names, ns.DaysText(warnDays), ns.DaysText(soonest), ns.NameList(names))
+  end
+  -- Saved by 1.1 or 1.2: only the date of the first letter is known.
+  if c.letters == nil and type(c.expires) == "number" then
+    local left = (c.expires - now) / ns.DAY
+    if left > 0 and ns.Within(left, warnDays) then
+      return string.format(L["From your last mailbox visit: mail with items or gold on this character runs out in %s. Open a mailbox to take it out."], ns.DaysText(left))
+    end
+  end
+  return nil
+end
+
+-- 1.3: /mb letters. One line per character with the letters it still has, as of its last mailbox
+-- visit, the character whose first letter runs out soonest first. An empty list when none.
+function ns.LetterLines(chars, now, myRealm)
+  local L = ns.L
+  local rows = {}
+  for key, c in pairs(chars) do
+    if type(c) == "table" then
+      local parts, first = {}, nil
+      if type(c.letters) == "table" then
+        for _, m in ipairs(c.letters) do
+          local left = (m.expires - now) / ns.DAY
+          if left > 0 then
+            parts[#parts + 1] = string.format(L["%s in %s"], ns.LetterLabel(m.sender, m.subject), ns.DaysText(left))
+            first = first or left
+          end
+        end
+      elseif type(c.expires) == "number" and c.expires > now then
+        first = (c.expires - now) / ns.DAY
+        parts[1] = string.format(L["the first in %s"], ns.DaysText(first))
+      end
+      if first then rows[#rows + 1] = { key = key, first = first, text = table.concat(parts, ", ") } end
+    end
+  end
+  table.sort(rows, function(a, b)
+    if a.first ~= b.first then return a.first < b.first end
+    return a.key < b.key
+  end)
+  local lines = {}
+  for i, row in ipairs(rows) do
+    lines[i] = string.format(L["%s: %s"], ns.DisplayName(row.key, myRealm), row.text)
+  end
+  return lines
+end
+
 -- The characters whose first letter with items or gold runs out within warnDays from now, soonest
 -- first, the player's own character included. A time that has passed is skipped: that mail is gone.
-function ns.Expiring(chars, now, warnDays)
+-- except (1.3, optional) leaves out one character: the one being played gets its own line at login.
+function ns.Expiring(chars, now, warnDays, except)
   local list = {}
   if type(now) ~= "number" or not ns.ValidDays(warnDays) or warnDays == 0 then return list end
   for key, c in pairs(chars) do
-    if type(c) == "table" and type(c.expires) == "number" then
+    if key ~= except and type(c) == "table" and type(c.expires) == "number" then
       local left = (c.expires - now) / ns.DAY
       if left > 0 and math.floor(left) <= warnDays then list[#list + 1] = { key = key, left = left } end
     end
@@ -232,8 +401,8 @@ function ns.Expiring(chars, now, warnDays)
 end
 
 -- "Mail with items or gold runs out soon on: Yubi in 1 day, Brakk (Silvermoon) in 2 days"; nil when none.
-function ns.ExpiringText(chars, now, warnDays, myRealm)
-  local list = ns.Expiring(chars, now, warnDays)
+function ns.ExpiringText(chars, now, warnDays, myRealm, except)
+  local list = ns.Expiring(chars, now, warnDays, except)
   if #list == 0 then return nil end
   local parts = {}
   for i, entry in ipairs(list) do

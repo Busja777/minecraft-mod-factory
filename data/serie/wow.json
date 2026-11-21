@@ -37,8 +37,8 @@
       "art": "RF",
       "was": "EP pro Stunde, Zeit bis Level-Up, Erholungsbonus",
       "updates": [
-        "Level-Historie je Charakter",
         "Wochenübersicht",
+        "Level-Historie im Fenster",
         "Feinschliff nach Kommentaren"
       ]
     },
@@ -49,9 +49,9 @@
       "art": "RF",
       "was": "Nimmt Quests an und gibt sie ab, Umschalttaste pausiert",
       "updates": [
-        "Belohnungs-Hinweis",
         "Ausnahmen per Rechtsklick im Questlog",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Questtexte schneller anzeigen (Schalter)"
       ]
     },
     {
@@ -133,9 +133,9 @@
       "art": "RF",
       "was": "Meldet neue Post, merkt sich Post auf Twinks",
       "updates": [
-        "Ton wählbar",
-        "Warnung bei bald ablaufender Post (beim Öffnen des Briefkastens)",
-        "Feinschliff nach Kommentaren (Auktionspost-Summe gestrichen: steckt schon in Gold Diary)"
+        "Feinschliff nach Kommentaren",
+        "Briefe mit Nachnahme gesondert melden",
+        "Post auf Twinks im Fenster statt im Chat"
       ]
     },
     {
