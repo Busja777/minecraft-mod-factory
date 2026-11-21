@@ -2,7 +2,8 @@
 // season (Pierre's shop is closed on most festival days), seasonal flowers and festive food. Every
 // item is one the player can get in the game anyway; the vanilla stock of each booth stays as it is.
 // Since 1.1 the magic shop boat of the Night Market sells a little winter forage and a few beach finds
-// too, one small selection per night.
+// too, one small selection per night. Since 1.2 the player picks how much the booths charge for
+// these goods: Fair, Normal (default) or Steep.
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/Shops holds the festival shops; their IDs are listed under "And the main festival shops"
@@ -21,9 +22,9 @@
 //     revision 193979; the same as https://stardewvalleywiki.com/Pierre%27s_General_Store,
 //     revision 195226). Pierre's shop is locked on the day of every festival that starts before
 //     7pm (https://stardewvalleywiki.com/Festivals, "Shop Closures", revision 194215).
-//   goods: 1.5 × the sell price, rounded up to 10g. The booths' own everyday goods sell between
-//     0.83× and 1.67× their sell price (ANCHORS below); 1.5× is inside that range and above 1.4×,
-//     so nothing can be sold back at a profit, not even with the Artisan profession (+40 %).
+//   goods: a multiple of the sell price, rounded up to 10g. The booths' own everyday goods sell
+//     between 0.83× and 1.67× their sell price (ANCHORS below); the default 1.5× is inside that range.
+//     Since 1.2 the player picks the multiple in the config (see "Price levels" below).
 //     Sell prices: the {{tprice|<sell price>}} values on https://stardewvalleywiki.com/Traveling_Cart
 //     (revision 192698; Module:Tcartprice multiplies that value by 3–5, so it is the sell price).
 //   Goods are limited to 10 per player and day (like the Flower Dance's "Daffodil (10)"), seeds are
@@ -46,6 +47,32 @@
 // harvested outdoors, which the seed rule above requires. Coral, Sea Urchin and Nautilus Shell are
 // beach forage, not fish, so the Fisher/Angler bonus ("Fish worth 25/50% more",
 // https://stardewvalleywiki.com/Fishing/Skill, revision 190353) does not raise their sell price.
+//
+// 1.2, price levels: a config option "Prices" (author-guide/config.md: ConfigSchema with AllowValues
+// and Default) selects the multiple for every added good: Fair 1.25×, Normal 1.5× (default, the
+// prices of 1.0 and 1.1), Steep 2×. Each level is its own set of patches with "When": { "Prices":
+// <level> } (author-guide.md#conditions), like Machine Tempo. Seeds keep Pierre's price at every
+// level (their rule is his shop price, not the sell price), and the booths' own stock is untouched.
+// The floor is 1.25×, so nothing bought here can be sold back at a profit, professions included.
+// Which sell bonuses can apply is set by the item category ("Properties" column of the category
+// table on https://stardewvalleywiki.com/Modding:Items, revision 193945): Rancher for animal products
+// (-5, -6, -18), Tiller for vegetables, fruits (if not foraged) and flowers (-75, -79, -80), Artisan
+// (-26) and Tapper (-27) for artisan goods, Fisher/Angler for fish (-4), Gemologist for minerals;
+// cooking (-7), seeds (-74) and forage greens (-81) get none. KIND_BONUS below gives each good the
+// highest bonus its kind can get:
+//   Egg: Rancher +20 % (the Farming page with the profession text is not in the cache; the in-game
+//     text is "Animal products worth 20% more"; at Fair the Egg costs 70g = 1.4×, so even a bonus
+//     up to 40 % would not make a profit);
+//   flowers, crops and winter forage: Tiller +10 % at most ("+10% Tiller profession",
+//     https://stardewvalleywiki.com/Blackberry, revision 193839; foraged fruit not even that,
+//     https://stardewvalleywiki.com/Grape, revision 192072);
+//   dishes and Winter Seeds: none;
+//   Coral and Sea Urchin: none, they are "considered forage and not fish"
+//     (https://stardewvalleywiki.com/Fish_Pond, revision 194160), and Nautilus Shell is not on the
+//     list of fish (https://stardewvalleywiki.com/Fish, revision 195502), so Fisher (+25 %) and
+//     Angler (+50 %, https://stardewvalleywiki.com/Fishing/Skill) do not apply.
+//   No good here is an artisan good, so Artisan (+40 %) does not apply either. The highest bonus is
+//   Rancher's 20 % on the Egg, below the 1.25× floor; the build checks every good at every level.
 //
 // Left out on purpose: the Stardew Valley Fair (Festival_StardewValleyFair_StarTokens sells for
 // star tokens, which have no gold value to price against), the Desert Festival (its egg merchant
@@ -156,11 +183,26 @@ export const ANCHORS = {
   'Pumpkin Soup': [250, 300]
 };
 
-export const MARKUP = 1.5;
-export const MIN_MARKUP = 1.4; // the highest sell bonus that applies to these goods: Artisan +40 %
+// 1.2: config value → multiple of the sell price for the goods (seeds keep Pierre's price)
+export const PRICE_LEVELS = { Fair: 1.25, Normal: 1.5, Steep: 2 };
+export const DEFAULT_LEVEL = 'Normal'; // = the 1.5× of 1.0 and 1.1
+export const MIN_MARKUP = 1.25; // floor: above every sell bonus a profession gives these goods (KIND_BONUS)
+export const MAX_MARKUP = 2;
+export const MARKUP = PRICE_LEVELS[DEFAULT_LEVEL];
+
+// the highest profession sell bonus each kind of good can get (Modding:Items category table, see above)
+export const KIND_BONUS = { animal: 0.2, plant: 0.1, dish: 0, seeds: 0, beach: 0 };
+export const KIND = {
+  Egg: 'animal',
+  Tulip: 'plant', 'Blue Jazz': 'plant', Pumpkin: 'plant', Holly: 'plant', 'Crystal Fruit': 'plant', 'Snow Yam': 'plant', Crocus: 'plant',
+  'Pumpkin Pie': 'dish', 'Cranberry Candy': 'dish', Chowder: 'dish', 'Fish Stew': 'dish', 'Plum Pudding': 'dish', Cookie: 'dish',
+  'Winter Seeds': 'seeds',
+  Coral: 'beach', 'Sea Urchin': 'beach', 'Nautilus Shell': 'beach'
+};
+
 export const GOODS_STOCK = 10;
-export const priceOfGoods = sell => Math.ceil(sell * MARKUP / 10) * 10;
-export const priceOf = name => (SEEDS[name] ? SEEDS[name][0] : priceOfGoods(GOODS[name]));
+export const priceOfGoods = (sell, markup = MARKUP) => Math.ceil(sell * markup / 10) * 10;
+export const priceOf = (name, markup = MARKUP) => (SEEDS[name] ? SEEDS[name][0] : priceOfGoods(GOODS[name], markup));
 
 export const keyOf = name => name.replace(/[^A-Za-z]/g, '');
 
@@ -174,11 +216,19 @@ export default async function ({ items }) {
   const idOf = {};
   for (const [id, name] of Object.entries(items.items)) if (/^\(O\)\d+$/.test(id)) idOf[name] = id;
   const ratios = Object.values(ANCHORS).map(([price, sell]) => price / sell);
-  if (!(MARKUP >= Math.min(...ratios) && MARKUP <= Math.max(...ratios))) throw new Error(`markup ${MARKUP} is outside the booths' own range`);
-  if (!(MARKUP >= MIN_MARKUP)) throw new Error('goods could be sold back at a profit');
+  if (!(DEFAULT_LEVEL in PRICE_LEVELS)) throw new Error(`default ${DEFAULT_LEVEL} is not a price level`);
+  if (!(MARKUP >= Math.min(...ratios) && MARKUP <= Math.max(...ratios))) throw new Error(`default markup ${MARKUP} is outside the booths' own range`);
+  for (const [level, markup] of Object.entries(PRICE_LEVELS)) {
+    if (!/^[A-Z][a-z]+$/.test(level)) throw new Error(`price level "${level}"`);
+    if (!(markup >= MIN_MARKUP && markup <= MAX_MARKUP)) throw new Error(`${level}: ${markup}× is outside ${MIN_MARKUP}× to ${MAX_MARKUP}×`);
+  }
+  if (!(MIN_MARKUP > 1 + Math.max(...Object.values(KIND_BONUS)))) throw new Error('the floor is not above every profession bonus');
   for (const name of Object.keys(ANCHORS)) if (!idOf[name]) throw new Error(`anchor ${name} is not in items.json`);
+  for (const name of Object.keys(GOODS)) if (!(KIND[name] in KIND_BONUS)) throw new Error(`${name}: no kind for the profession check`);
+  for (const name of Object.keys(KIND)) if (!(name in GOODS)) throw new Error(`${name}: kind without a good`);
 
   const used = new Set();
+  const stalls = [];
   const changes = [];
   for (const [shop, stall] of Object.entries(STALLS)) {
     if (NOT_TOUCHED.includes(shop) || shop.startsWith(NOT_TOUCHED_PREFIX)) throw new Error(`${shop} must stay vanilla`);
@@ -198,20 +248,54 @@ export default async function ({ items }) {
         if (!(Number.isInteger(price) && price > 0)) throw new Error(`${name}: price ${price}`);
       } else {
         const sell = GOODS[name];
-        const price = priceOfGoods(sell);
-        if (!(Number.isInteger(sell) && sell > 0 && price >= sell * MIN_MARKUP)) throw new Error(`${name}: ${price}g for sell price ${sell}`);
+        if (!(Number.isInteger(sell) && sell > 0)) throw new Error(`${name}: sell price ${sell}`);
+        for (const [level, markup] of Object.entries(PRICE_LEVELS)) {
+          const price = priceOfGoods(sell, markup);
+          if (!(price >= sell * MIN_MARKUP)) throw new Error(`${name} (${level}): ${price}g for sell price ${sell}`);
+          if (!(price > sell * (1 + KIND_BONUS[KIND[name]]))) throw new Error(`${name} (${level}): ${price}g could be sold back at a profit with a profession`);
+        }
       }
       used.add(name);
-      const id = `{{ModId}}_${keyOf(name)}`;
-      entries[id] = {
-        Id: id,
-        ItemId: idOf[name],
-        Price: priceOf(name),
-        ...(SEEDS[name] ? {} : { AvailableStock: GOODS_STOCK, AvailableStockLimit: 'Player' })
-      };
     }
-    changes.push({ LogName: `More goods at the ${stall.festival}`, Action: 'EditData', Target: 'Data/Shops', TargetField: [shop, 'Items'], Entries: entries });
+    stalls.push([shop, stall]);
   }
   for (const name of [...Object.keys(SEEDS), ...Object.keys(GOODS)]) if (!used.has(name)) throw new Error(`${name} is in a table but no booth sells it`);
-  return { 'content.json': { Format: '2.9.0', Changes: changes } };
+
+  // one set of patches per price level, selected by the config (When)
+  for (const [level, markup] of Object.entries(PRICE_LEVELS)) {
+    for (const [shop, stall] of stalls) {
+      const entries = {};
+      for (const name of stall.add) {
+        const id = `{{ModId}}_${keyOf(name)}`;
+        entries[id] = {
+          Id: id,
+          ItemId: idOf[name],
+          Price: priceOf(name, markup),
+          ...(SEEDS[name] ? {} : { AvailableStock: GOODS_STOCK, AvailableStockLimit: 'Player' })
+        };
+      }
+      changes.push({
+        LogName: `More goods at the ${stall.festival} (${level} prices)`,
+        Action: 'EditData',
+        Target: 'Data/Shops',
+        TargetField: [shop, 'Items'],
+        Entries: entries,
+        When: { Prices: level }
+      });
+    }
+  }
+  const levels = Object.entries(PRICE_LEVELS).map(([level, markup]) => `${level} ${markup}x`).join(', ');
+  return {
+    'content.json': {
+      Format: '2.9.0',
+      ConfigSchema: {
+        Prices: {
+          AllowValues: Object.keys(PRICE_LEVELS).join(', '),
+          Default: DEFAULT_LEVEL,
+          Description: `What the festival booths charge for the goods this pack adds, as a multiple of the sell price: ${levels}. Seeds always cost what Pierre asks, and the booths' own stock is not changed.`
+        }
+      },
+      Changes: changes
+    }
+  };
 }
