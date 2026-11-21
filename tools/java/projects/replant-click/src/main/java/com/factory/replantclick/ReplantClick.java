@@ -4,7 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
-/** Entry point: right-click a fully grown crop to harvest and replant it. */
+/** Entry point: right-click a fully grown crop, nether wart or cocoa pod to harvest and replant it. */
 public final class ReplantClick implements ModInitializer {
     public static final String MOD_ID = "replantclick";
 

@@ -8,8 +8,12 @@ import java.util.Set;
  * Blocks and items are named by their registry id ("minecraft:wheat").
  */
 public final class HarvestRules {
-    /** Crops V1.0 harvests: the four farmland crops of the CropBlock family. */
-    public static final Set<String> CROPS = Set.of("minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots");
+    /**
+     * Plants that are harvested and replanted: the four farmland crops of V1.0, and since V1.1
+     * nether wart (ripe at age 3) and cocoa pods (ripe at age 2, replanted facing the same log side).
+     */
+    public static final Set<String> CROPS = Set.of("minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots",
+        "minecraft:nether_wart", "minecraft:cocoa");
 
     /** Items that keep their own use on a crop, so right-clicking with them never harvests. */
     public static final Set<String> KEEP_ITEM_USE = Set.of("minecraft:bone_meal");

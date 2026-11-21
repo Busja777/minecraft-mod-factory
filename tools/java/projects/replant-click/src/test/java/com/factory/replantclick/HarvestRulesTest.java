@@ -40,9 +40,40 @@ class HarvestRulesTest {
     }
 
     @Test
+    void harvestsRipeNetherWartAndCocoa() {
+        // V1.1: nether wart is ripe at age 3, a cocoa pod at age 2
+        assertTrue(HarvestRules.isHarvestable("minecraft:nether_wart", 3, 3, false, AIR));
+        assertTrue(HarvestRules.isHarvestable("minecraft:cocoa", 2, 2, false, AIR));
+        assertTrue(HarvestRules.isHarvestable("minecraft:cocoa", 2, 2, false, "minecraft:cocoa_beans"), "beans in hand still harvest, like seeds on wheat");
+        assertTrue(HarvestRules.isHarvestable("minecraft:nether_wart", 3, 3, false, "minecraft:golden_hoe"));
+    }
+
+    @Test
+    void youngNetherWartAndCocoaStay() {
+        for (int age = 0; age < 3; age++) assertFalse(HarvestRules.isHarvestable("minecraft:nether_wart", age, 3, false, AIR), "nether wart age " + age);
+        for (int age = 0; age < 2; age++) assertFalse(HarvestRules.isHarvestable("minecraft:cocoa", age, 2, false, AIR), "cocoa age " + age);
+    }
+
+    @Test
+    void netherWartAndCocoaFollowTheSameRules() {
+        assertFalse(HarvestRules.isHarvestable("minecraft:nether_wart", 3, 3, true, AIR), "sneaking");
+        assertFalse(HarvestRules.isHarvestable("minecraft:cocoa", 2, 2, true, AIR), "sneaking");
+        assertFalse(HarvestRules.isHarvestable("minecraft:cocoa", 2, 2, false, "minecraft:bone_meal"), "bone meal");
+        assertFalse(HarvestRules.isHarvestable("minecraft:nether_wart", 3, 3, false, "minecraft:bone_meal"), "bone meal");
+    }
+
+    @Test
+    void replantsNetherWartAndCocoaFromTheirDrops() {
+        assertEquals(0, HarvestRules.replantIndex(List.of(new Drop("minecraft:nether_wart", 3)), "minecraft:nether_wart"));
+        assertEquals(0, HarvestRules.replantIndex(List.of(new Drop("minecraft:cocoa_beans", 3)), "minecraft:cocoa_beans"));
+        // a young pod drops one bean; it is never harvested, but a ripe one without beans is left alone
+        assertEquals(-1, HarvestRules.replantIndex(List.of(), "minecraft:cocoa_beans"));
+    }
+
+    @Test
     void otherBlocksAreNotHarvested() {
-        // not in V1.0: nether wart, cocoa, torchflower and pitcher crops, modded crops
-        for (String id : List.of("minecraft:nether_wart", "minecraft:cocoa", "minecraft:torchflower_crop", "minecraft:pitcher_crop", "minecraft:melon_stem", "othermod:rice")) {
+        // not handled: torchflower and pitcher crops, stems, sweet berries, modded crops
+        for (String id : List.of("minecraft:torchflower_crop", "minecraft:pitcher_crop", "minecraft:melon_stem", "minecraft:sweet_berry_bush", "othermod:rice")) {
             assertFalse(HarvestRules.isHarvestable(id, 7, 7, false, AIR), id);
         }
         assertFalse(HarvestRules.isHarvestable("minecraft:wheat", 0, 0, false, AIR), "a crop without ages");

@@ -37,9 +37,9 @@
       "art": "R",
       "was": "Leisere Dorfbewohner, Kühe, Portale, Regen",
       "updates": [
-        "26.3-Tiervarianten (warme und kalte Schweine, Kühe, Hühner) leiser, in der 26.3-Fassung der sounds.json",
-        "Stufen wählbar",
-        "Kolben, Wölfe, Pferde"
+        "Stufen wählbar (drei Packs in einem)",
+        "Kolben, Wölfe, Pferde",
+        "Feinschliff nach Kommentaren"
       ],
       "shot": false,
       "banner": {
@@ -118,9 +118,9 @@
       "art": "M",
       "was": "Rechtsklick erntet und pflanzt nach",
       "updates": [
-        "Netherwarze und Kakao",
-        "Flächen-Ernte",
-        "NeoForge"
+        "Flächen-Ernte (3×3 mit Hacke)",
+        "NeoForge",
+        "Statistik der geernteten Pflanzen"
       ],
       "banner": {
         "from": "chatgpt",

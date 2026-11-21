@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.CropBlock;
+import net.minecraft.block.NetherWartBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -22,7 +24,7 @@ import net.minecraft.world.WorldEvents;
 import net.minecraft.world.event.GameEvent;
 
 /**
- * Harvests and replants a fully grown crop on right-click.
+ * Harvests and replants a fully grown crop, nether wart or cocoa pod on right-click.
  *
  * <p>All work happens on the server, so the mod also helps players whose game has no mods. On a
  * client with the mod, the click only answers SUCCESS (arm swing, no block placement guess) and
@@ -34,19 +36,35 @@ public final class CropHarvester {
 
     private CropHarvester() {}
 
-    /** Fabric's UseBlockCallback: SUCCESS when the crop was harvested, PASS to keep vanilla behaviour. */
+    /**
+     * A plant as the harvester sees it: how old it is, when it is ripe, and the state it is
+     * replanted with (age 0, everything else kept, so a cocoa pod stays on the same log side).
+     */
+    record Plant(int age, int maxAge, BlockState replanted) {}
+
+    /** The clicked block as a plant, or null when it has no age the harvester knows. */
+    static Plant plantOf(BlockState state) {
+        Block block = state.getBlock();
+        if (block instanceof CropBlock crop) return new Plant(crop.getAge(state), crop.getMaxAge(), crop.withAge(0));
+        if (block instanceof NetherWartBlock) return new Plant(state.get(NetherWartBlock.AGE), NetherWartBlock.MAX_AGE, state.with(NetherWartBlock.AGE, 0));
+        if (block instanceof CocoaBlock) return new Plant(state.get(CocoaBlock.AGE), CocoaBlock.MAX_AGE, state.with(CocoaBlock.AGE, 0));
+        return null;
+    }
+
+    /** Fabric's UseBlockCallback: SUCCESS when the plant was harvested, PASS to keep vanilla behaviour. */
     public static ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hit) {
         // Only the main hand decides: if it holds bone meal, the off hand must not harvest either.
         if (hand != Hand.MAIN_HAND || player.isSpectator() || !player.canModifyBlocks()) return ActionResult.PASS;
         BlockPos pos = hit.getBlockPos();
         BlockState state = world.getBlockState(pos);
-        if (!(state.getBlock() instanceof CropBlock crop)) return ActionResult.PASS;
+        Plant plant = plantOf(state);
+        if (plant == null) return ActionResult.PASS;
         ItemStack tool = player.getStackInHand(hand);
-        String blockId = Registries.BLOCK.getId(crop).toString();
+        String blockId = Registries.BLOCK.getId(state.getBlock()).toString();
         String heldId = Registries.ITEM.getId(tool.getItem()).toString();
-        if (!HarvestRules.isHarvestable(blockId, crop.getAge(state), crop.getMaxAge(), player.isSneaking(), heldId)) return ActionResult.PASS;
+        if (!HarvestRules.isHarvestable(blockId, plant.age(), plant.maxAge(), player.isSneaking(), heldId)) return ActionResult.PASS;
         if (world.isClient()) return ActionResult.SUCCESS;
-        return harvest((ServerWorld) world, pos, state, crop, player, tool) ? ActionResult.SUCCESS : ActionResult.PASS;
+        return harvest((ServerWorld) world, pos, state, plant, player, tool) ? ActionResult.SUCCESS : ActionResult.PASS;
     }
 
     /**
@@ -60,15 +78,19 @@ public final class CropHarvester {
         return TypedActionResult.fail(stack);
     }
 
-    /** Drops the loot as if the player broke the crop with {@code tool}, keeps one seed and replants. */
-    static boolean harvest(ServerWorld world, BlockPos pos, BlockState state, CropBlock crop, PlayerEntity player, ItemStack tool) {
+    /**
+     * Drops the loot as if the player broke the plant with {@code tool}, keeps one seed and replants.
+     * The seed is the item the plant is planted with (its pick-block item: wheat seeds, carrot,
+     * nether wart, cocoa beans …).
+     */
+    static boolean harvest(ServerWorld world, BlockPos pos, BlockState state, Plant plant, PlayerEntity player, ItemStack tool) {
         List<ItemStack> drops = Block.getDroppedStacks(state, world, pos, null, player, tool);
-        String seedId = Registries.ITEM.getId(crop.getPickStack(world, pos, state).getItem()).toString();
+        String seedId = Registries.ITEM.getId(state.getBlock().getPickStack(world, pos, state).getItem()).toString();
         int seed = HarvestRules.replantIndex(drops.stream().map(s -> new Drop(Registries.ITEM.getId(s.getItem()).toString(), s.getCount())).toList(), seedId);
         if (seed < 0) return false; // a changed loot table without seeds: leave the crop as it is
         drops.get(seed).decrement(1);
 
-        BlockState replanted = crop.withAge(0);
+        BlockState replanted = plant.replanted();
         // break particles and the vanilla break sound for everyone nearby, like breaking the block
         world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
         world.setBlockState(pos, replanted, Block.NOTIFY_ALL);
