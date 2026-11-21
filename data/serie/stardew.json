@@ -271,7 +271,11 @@
         "Angeln und Bergbau",
         "Belohnungen",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 22,

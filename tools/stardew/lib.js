@@ -40,6 +40,8 @@ export const TARGETS = {
   'Data/Buildings': 'https://stardewvalleywiki.com/Modding:Buildings',
   'Data/Monsters': 'https://stardewvalleywiki.com/Modding:Monster_data',
   'Data/SpecialOrders': 'https://stardewvalleywiki.com/Modding:Special_orders',
+  // The texts of special orders: Data/SpecialOrders names them as [key] lookups into this asset.
+  'Strings/SpecialOrderStrings': 'https://stardewvalleywiki.com/Modding:Special_orders',
   'Data/Bundles': 'https://stardewvalleywiki.com/Modding:Bundles',
   'Data/TailoringRecipes': 'https://stardewvalleywiki.com/Modding:Tailoring',
   'Data/MuseumRewards': 'https://stardewvalleywiki.com/Modding:Museum',
