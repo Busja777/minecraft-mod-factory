@@ -1,5 +1,6 @@
-// More to Say: new dialogue lines for Linus and Willy (since 1.0), Pam and Gus (since 1.2) and Marnie
-// and Robin (since 1.3), one per season for each of three moods (a
+// More to Say: new dialogue lines for Linus and Willy (since 1.0), Pam and Gus (since 1.2), Marnie
+// and Robin (since 1.3) and Evelyn, George and the Wizard (since 1.4), one per season for each of
+// three moods (a
 // greeting once you have met, a rain or snow day from 2 hearts, a closer word from 6 hearts). Every
 // line is said once, by the villager it belongs to, and no vanilla dialogue key is touched.
 //
@@ -29,7 +30,11 @@
 // - Text: dialogue format with #$b# (next box), $h / $s / $u portraits (Linus: happy, concerned,
 //   surprised; Willy: happy, concerned, smoking — both villager pages, "Portraits"; Pam's and Gus's
 //   third portrait is a second neutral face, so their lines use only $h and $s; Marnie's third is
-//   "Neutral" and Robin's "Annoyed" on their pages, so their lines use only $h), @ = player name,
+//   "Neutral" and Robin's "Annoyed" on their pages, so their lines use only $h; Evelyn: Happy,
+//   Concerned, then a second "Neutral", George: Happy, Concerned, Annoyed, so both use only $h and
+//   $s; the Wizard has only "Wizard" and "Wizard Surprised", so his lines have no portrait command
+//   and keep the neutral face — portraits are numbered left to right from $0, Modding:Dialogue
+//   "Portrait commands"), @ = player name,
 //   ${male^female}$ gender switch. https://stardewvalleywiki.com/Modding:Dialogue#Format
 // - The text comes from i18n (Content Patcher translations.md); {{ModId}} keeps IDs unique (tokens.md).
 //
@@ -78,6 +83,67 @@
 // after a fresh snow", "My parents were bewildered when I told them I wanted to be a carpenter. They
 // were pretty old-fashioned." Wiki page "Carpenter's Shop": 24 Mountain Road, builds and upgrades
 // farm buildings and the farmhouse, does not work on festival days.
+// Evelyn, George and the Wizard (since 1.4): only regular, seasonal, rain, festival and gift-taste
+// dialogue and the schedules on their villager pages (wiki revisions: Evelyn 191129, George 193909,
+// Wizard 193912). Nothing from heart events — Evelyn's 4-heart cookie event and 7-heart recipe
+// letter, George's 3/7-heart recipe letters and 6-heart event, the Wizard's 4-heart basement — and
+// nothing from events of other villagers they appear in. No Alex, no Clara, nothing about George's
+// legs, health or past work, no clinic visits. Wizard: nothing about the Witch, family, the basement,
+// the forest spirits or Junimos, the Community Center or his quests; only what his first-meeting and
+// regular lines say (fate, mysteries, elementals, magical field, apprentice) and his gift reactions.
+// The quotes below are only the SOURCES of the facts. The lines are new sentences in each villager's
+// voice: none shares a run of 6 or more consecutive words (lower case, punctuation removed) with the
+// villager's cached wiki page, English or German (checked once with a script for 1.4; the check
+// reads the wiki cache, so it is not part of the build). Wiki page "Sweet Pea" (192753): a summer
+// forage flower found around Pelican Town and Cindersap Forest.
+// Evelyn (wiki page "Evelyn"): in charge of the town's public gardens, the flower beds "for weeks, so
+//   don't step on them", "The good Mayor put me in charge" (Gardening); "The flowers seem to love this
+//   rain" (Green Rain, year 2+); the rain schedule keeps her in her kitchen all day; cookie shapes:
+//   flowers in spring, "coconut wonders shaped like little palm trees! Heehee" in summer, little
+//   pumpkins in fall (seasonal lines); 6+ hearts "It's nice of you to take the time to visit George
+//   and I. Without young people around, we'd age much faster"; spring "he really likes leeks! You can
+//   find them in the mountains this time of year"; "Sweet peas are in bloom right now ... wonderful
+//   fragrance", "Be careful out there, dear. You could get sunburnt!", "George is always a little
+//   less grumpy in the summer. The warm weather softens his bones ... I've known him for sixty
+//   years!" (summer); "I can smell fallen leaves and mushrooms. It reminds me of the forests I used
+//   to play in as a girl", "The fall flowers are delicate, so don't go stomping on them!", "I've been
+//   putting raisins in George's oatmeal... but he hasn't said a word. I wonder if he even notices",
+//   "With every year I appreciate the seasons more and more. For young people it's easy to let them
+//   slip by" (fall); "covered in snow. I still like to check up on them now and then", "Be careful
+//   you don't slip on the ice", "wear a thicker jacket", "This weather isn't good for my joints",
+//   "You should make some hot soup to stay warm" (winter); "You've made an old lady very happy"
+//   (loved gift); Festival of Ice: George "pelted me with a snowball in this very festival. He was a
+//   gentleman back then, and came over to see if I was okay".
+// George (wiki page "George"): Egg Festival "Evelyn made eggs and leeks for breakfast, so I'm in a
+//   good mood"; rain "It's awful cold, isn't it? What a rotten day", the rain schedule (at home,
+//   watching TV), "I can't talk right now ... My favorite program is on"; 6+ hearts "I'm surprised
+//   you want to be friends with an old-timer like me" and "Wanna watch the TV with me?"; "Hmmph...
+//   Looks like another gloomy day"; "So you're a farmer, huh? At least it's honest work"; 4+ hearts
+//   "My grand-pap was a farmer. It's a respectable profession. If I wasn't so darned old I'd come to
+//   your farm and show you a thing or two"; loves Fried Mushroom and Leek; Winter 1 "When you're
+//   young the cold doesn't bite as hard", "Aren't you cold? They don't make sweaters like they used
+//   to"; Festival of Ice "Wife dragged me out into the cold for this?"; Night Market "I'm just here
+//   for the free coffee", his and Evelyn's Winter 17 schedules (both go to the Night Market).
+//   Evelyn's page: "George is always a little less grumpy in the summer" and "George spends the whole
+//   day in front of that darned television set. I wish he'd go outside more." Wiki page "Maru": "a
+//   rainy day is still the best tool for watering crops".
+// Wizard (wiki page "Wizard"): lives in the Wizard's Tower in Cindersap Forest and does not leave it
+//   except for some festivals; first meeting "I have predicted your arrival a long time ago, young
+//   [Player]. However, your fate is ultimately in your own hands"; regular "I have seen many things
+//   about your future ... there could be grave consequences", "If you have nothing important to tell
+//   me, leave me be. I have much work to do", "It takes years of study to understand the language of
+//   the elementals. To actually speak their language requires a lifetime", "There are many mysteries
+//   around us. You must be patient if you wish to discover them", "I believe the townsfolk are afraid
+//   of me ... it is human to be afraid of the unknown", "you are standing above a potent magical
+//   field. I built my hut right here on purpose", "I sometimes observe the local villagers in secret.
+//   I am hoping to find an apprentice. Some day I will leave this mortal plane, but my arcane pursuits
+//   must continue"; rain "Stormy days are the only time I can commune with certain elementals. I
+//   don't expect you to understand"; Festival of Ice "Sneaking off to visit my weird tower? You're
+//   odd for a mundane"; Feast of the Winter Star "Ah, the mysterious Winter Star. One of the reasons
+//   I chose this valley as the location for my... research"; gift reactions: loved "imbued with
+//   potent arcane energies", liked "some very interesting properties", disliked "I'll cast it into
+//   the flames and see what happens", hated "utterly mundane"; loves Purple Mushroom (The Mines),
+//   dislikes Common Mushroom. Wiki page "Common Mushroom": foraged throughout the valley in fall.
 // Timed words avoid festival dates that can fall inside a topic's 7 days.
 
 import { LINES_DE } from './de.js';
@@ -142,7 +208,7 @@ export const LINES = {
     spring: {
       met: "Spring means parsnips. Bet you've got a whole field of 'em started already, huh?#$b#Just sayin'. A gal could use some decent grub now and then.",
       weather: "Rain on the trailer roof all night, like somebody playin' the drums. Can't sleep a wink through it.#$b#Stayin' dry, kid? Don't go catchin' a cold out there.",
-      friend: "Penny's always got her nose in some old book. She's a heck of a lot smarter than I ever was.#$b#Don't tell her I said this, but... I'm real proud of that girl.$h"
+      friend: "Penny's always got her nose in some old book. That girl's got brains I never had.#$b#Don't tell her I said this, but... I'm real proud of her.$h"
     },
     summer: {
       met: "Hot one today, kid. Hot enough to fry an egg on the road.#$b#Drink some water and keep your hat on.",
@@ -192,8 +258,8 @@ export const LINES = {
     },
     summer: {
       met: "Jas says the best thing about living on a farm is fresh ice cream from our cows' milk.#$b#I can't argue with that. A cold treat on a hot day never hurt anybody.$h",
-      weather: "A storm like this makes me worry about every animal in the valley. If I don't look after them, who will?#$b#If you have animals, make sure they're safe inside tonight, @.",
-      friend: "Most evenings I head to the Saloon. Animals are great company, but I need to spend time with people too.#$b#Lately you're one of the people I'm happiest to see, @.$h"
+      weather: "A storm like this makes me worry about every animal in the valley. Somebody has to watch out for them, and it might as well be me.#$b#If you have animals, make sure they're safe inside tonight, @.",
+      friend: "Most evenings I head to the Saloon. I love my animals, but a body needs folks to talk to as well.#$b#Lately you're one of the people I'm happiest to see, @.$h"
     },
     fall: {
       met: "Fall's here! Time to cut grass and fill the silo. The animals eat hay all winter long.#$b#No silo yet? Robin can build you one. Or buy your hay from me, of course.",
@@ -201,7 +267,7 @@ export const LINES = {
       friend: "It's always nice when you stop by, @. Even the animals seem calmer.#$b#They can always tell who's kind to them. So can I.$h"
     },
     winter: {
-      met: "Brr! This time of year I feel bad for all the poor, cold animals out there.#$b#Whatever lives on your farm, @, a warm place and a kind word go a long way.",
+      met: "Brr! This time of year my heart goes out to every creature stuck out in the cold.#$b#Whatever lives on your farm, @, a warm place and a kind word go a long way.",
       weather: "Snow day! Jas would play outside until dark if I let her. But the rule is home by six, snow or no snow.#$b#Stay warm, @. A cup of hot milk does wonders on a day like this.$h",
       friend: "Winter nights are long and quiet out here in the forest. I can hear every animal shuffle in the barn.#$b#It's nice when you drop by, @. Makes the long nights feel shorter.$h"
     }
@@ -209,24 +275,93 @@ export const LINES = {
   // since 1.3
   Robin: {
     spring: {
-      met: "Spring is a busy time of year! Fresh mountain air and plenty of work for a carpenter.#$b#Need a coop, a barn or a bigger house? You know where to find me: 24 Mountain Road!$h",
+      met: "Spring keeps me on my toes! Fresh mountain air and plenty of work for a carpenter.#$b#Need a coop, a barn or a bigger house? You know where to find me: 24 Mountain Road!$h",
       weather: "Rain again! I'll spend the day at the counter sorting lumber. Soggy wood is no joy to work with.#$b#Come up and dry off if you're passing by, @. The mountain air smells wonderful after a shower.$h",
-      friend: "Have I told you I built our house from the ground up? Every beam, every board.#$b#Making something that lasts... there's no better feeling. I bet you know it from your farm, @.$h"
+      friend: "Have I told you this whole house is my own work? Every beam, every board, start to finish.#$b#Making something that lasts... there's no better feeling. I bet you know it from your farm, @.$h"
     },
     summer: {
       met: "Summer sun dries the lumber nicely. Perfect weather for a building project!#$b#Want something on your farm upgraded? Bring enough wood and stone, plus the fee, and I'll handle the rest.$h",
       weather: "Hear that thunder? Doesn't worry me. Between storms and my husband's experiments, I built this house to take a beating.#$b#Fire-resistant lacquer on every rafter. Best decision I ever made!$h",
-      friend: "It can get pretty lonely up here in the mountains. That's why I'm always glad when you drop by, @.#$b#Not to buy anything, just to chat. That's what friends do, right?$h"
+      friend: "Living way up on the mountain, I can go days without much company. That's why I'm always glad when you drop by, @.#$b#Not to buy anything, just to chat. That's what friends do, right?$h"
     },
     fall: {
-      met: "Fall's here! Great time to stockpile wood and stone before winter.#$b#Planning a building? Order early. I don't work on festival days!$h",
+      met: "Fall's here! Now's the moment to pile up wood and stone, before the snow comes.#$b#Planning a building? Order early. I don't work on festival days!$h",
       weather: "Rainy days are for daydreaming about new carpentry projects. A new chair, maybe... or a whole set of furniture for the shop.#$b#How's the woodwork in your house holding up, @? Any creaky boards?",
       friend: "Fall always makes me thankful. Demetrius, Maru, Sebastian... a full house, and a job I love.#$b#And good friends like you, @. Don't you forget it.$h"
     },
     winter: {
-      met: "Winter is the perfect time of year to gather wood. All that chopping keeps you warm, too!#$b#Collect enough and you might upgrade your house before spring.$h",
+      met: "Winter's ideal for gathering wood, if you ask me. All that chopping keeps you warm, too!#$b#Collect enough and you might upgrade your house before spring.$h",
       weather: "Everything looks so still after a fresh snow. I love this view from up on the mountain.#$b#Watch your step on the mountain path, @. Snow hides every root and rock.",
-      friend: "My parents were bewildered when I told them I wanted to be a carpenter. They were pretty old-fashioned.#$b#I'm glad I didn't listen. I can't imagine doing anything else, @.$h"
+      friend: "When I said I wanted to build things for a living, my folks just stared at me. They had very traditional ideas.#$b#I'm glad I didn't listen. I can't imagine doing anything else, @.$h"
+    }
+  },
+  // since 1.4
+  Evelyn: {
+    spring: {
+      met: "Good morning, dear! The flower beds in town are mine to look after, and spring is when they need me most.#$b#If you see me on my knees in the dirt, don't worry. I'm only planting!$h",
+      weather: "Such a soft spring rain. My flowers will be drinking it up all morning.#$b#I'm staying in with a bowl of cookie dough today. This time of year I cut them out as little flowers.$h",
+      friend: "George and I don't get many young visitors, dear. Every time you come by, the house feels a little livelier.#$b#A tip, just between us: bring him a leek from the mountains. He'll grumble, but he'll be pleased.$h"
+    },
+    summer: {
+      met: "The sweet peas are out, dear. If you find some on your walks, take a moment to smell them.#$b#And put a hat on in this sun. Farm work and sunburns don't mix.",
+      weather: "Rain on a summer day! Well, that settles it. I'm baking.#$b#Coconut cookies this time, cut out like tiny palm trees. A little taste of the beach, even indoors.$h",
+      friend: "Between you and me, dear, the warm months put George in a gentler mood. Watch him closely and you'll see.#$b#Sixty years together teaches you to read a man like a book.$h"
+    },
+    fall: {
+      met: "Autumn air, dear! Damp leaves and mushrooms... one sniff and I'm a little girl running through the woods again.#$b#Mind the flower beds in town, please. The fall blooms bruise so easily.$h",
+      weather: "A wet fall day, so I'm baking. Pumpkin-shaped cookies, to suit the season.#$b#I've also been sneaking raisins into George's breakfast. Not one word from him yet. Is he even tasting it?$s",
+      friend: 'At my age, every season feels like a gift, dear. I try not to waste a single one.#$b#Spending a few of those days chatting with you is no waste at all.$h'
+    },
+    winter: {
+      met: 'My poor gardens are asleep under the snow. I still go out to peek at them, though.#$b#Watch your footing on those icy paths, dear, and bundle up properly!',
+      weather: "More snow, dear! This cold goes right into my old joints.#$b#Promise me you'll have something hot to eat today. A bowl of soup does wonders.$h",
+      friend: "Shall I tell you a secret, dear? The first time George noticed me, it was with a snowball. At the Festival of Ice, of all places!#$b#He hurried over to make sure I wasn't hurt. Such manners! Heehee.$h"
+    }
+  },
+  // since 1.4
+  George: {
+    spring: {
+      met: "Evelyn cooked leeks with my eggs this morning. Best breakfast a man could ask for.#$b#So I'm in a decent mood. Enjoy it while it lasts.",
+      weather: "Rain. Hmmph. Cold and wet, the whole miserable lot of it.#$b#I'll be in front of the TV. My show starts any minute, so say what you came to say.",
+      friend: "Young folks don't usually bother with an old grouch like me. You're a strange one.#$b#Hmmph. Can't say I mind.$h"
+    },
+    summer: {
+      met: 'Evelyn claims the summer heat makes me friendlier.#$b#Hmmph. That woman thinks she knows everything. ...She usually does.',
+      weather: "Gray skies in the middle of summer. Hmmph. Figures.#$b#At least your fields won't need the watering can today. Somebody ought to be happy about it.",
+      friend: "Pull up a chair, @. There's room in front of the TV.#$b#Evelyn keeps telling me to get out of the house more. I will. After this episode.$h"
+    },
+    fall: {
+      met: "Farming, eh? Fall's when you find out if the work paid off. Good, honest living.#$b#Hmmph. Go on, you've got a harvest to bring in.",
+      weather: "Wet, cold and gray. Hmmph. Days like this call for a plate of fried mushrooms.#$b#I'm not hinting. Just saying.",
+      friend: "My grandfather farmed, you know. Good, solid people, farmers.#$b#A few decades younger, and I'd be out on your field this fall telling you what you're doing wrong.$h"
+    },
+    winter: {
+      met: "Brr. The cold gets into you deeper every year, I'm telling you.#$b#And sweaters these days? Thin as paper. Not like the old wool ones.",
+      weather: "Snow again. Hmmph. Bet Evelyn's already planning some reason to haul me outside.#$b#Not today. Today it's me, a blanket and the television.",
+      friend: "Every winter Evelyn and I make the trip to the Night Market. She enjoys it. Me, I like that the coffee costs nothing.#$b#...And maybe running into you there, @. Don't tell her I said so.$h"
+    }
+  },
+  // since 1.4; the Wizard's only other portrait is "Surprised" (wiki page "Wizard"), so his lines keep the neutral face
+  Wizard: {
+    spring: {
+      met: 'Ah, young @. The forest wakes again, as it does each spring.#$b#Not every secret of this valley reveals itself at once. Patience will serve you well.',
+      weather: 'Rain... and if fortune favors me, thunder by evening. Some elementals will only answer me when a storm is overhead.#$b#Do not ask me to explain. I must prepare.',
+      friend: 'I keep a quiet eye on the people of this valley, young @. Someone must carry on my work one day.#$b#I will not be here forever, after all. Knowledge without an heir is knowledge lost.'
+    },
+    summer: {
+      met: 'Summer warms the forest, young @. Beneath your feet lies a field of great magical power.#$b#That is why my tower stands exactly here. Now, unless your business is urgent, I have work to do.',
+      weather: 'Rain drums on the tower, and the forest is loud today. A fine day for my studies.#$b#The tongue of the elementals cannot be learned in a season, young @. I have given my whole life to it, and I am not finished.',
+      friend: 'Your future is not hidden from me, young @. But sharing what I have seen could do real harm.#$b#So I keep my silence. The choices are yours to make.'
+    },
+    fall: {
+      met: 'The forest is full of mushrooms this time of year. Common ones, mostly. Mundane.#$b#A purple mushroom from the mines, now... that I could put to use.',
+      weather: 'Rain again, young @. A good day to feed the fire with the duller gifts I have received.#$b#If you bring me something, let it hum with arcane power. Ordinary things bore me.',
+      friend: 'I foresaw that you would come to this valley, young @. I did not foresee how often you would knock on my door.#$b#It is... not unwelcome.'
+    },
+    winter: {
+      met: 'The Winter Star has always fascinated me, young @. It is part of why I settled in this valley at all.#$b#But that is all I will say. My work awaits.',
+      weather: 'Through all this snow, just to reach my tower? Most people without magic would never bother, young @.#$b#You are a curious one. I mean that kindly.',
+      friend: 'The people in town keep their distance from me. What they cannot explain makes them nervous.#$b#You, young @, never seemed to mind. In this cold, quiet season, your visits are welcome.'
     }
   }
 };

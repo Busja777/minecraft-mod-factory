@@ -44,6 +44,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "MoretoSay-1.4.zip",
+      "changelog": "## More to Say 1.4\n\nEvelyn, George and the Wizard join in.\n\n- Evelyn, George and the Wizard have 12 new lines each: one per season for meeting them, one for a rainy or snowy day (from 2 hearts) and one for a closer friendship (from 6 hearts).\n- Evelyn talks about the town gardens, her seasonal cookies and George; George about his television, leeks and the cold; the Wizard about the elementals, the forest and the mysteries around us.\n- Each line is said once, in their own voice, and only mentions what you already know at that friendship level.\n- All 36 new lines are in English and German, like the rest of the pack.\n- Linus, Willy, Pam, Gus, Marnie and Robin are unchanged: same lines, same timing.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }
