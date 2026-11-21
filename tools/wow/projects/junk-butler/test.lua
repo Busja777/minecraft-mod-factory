@@ -1245,3 +1245,122 @@ test("a log command before login does nothing", function(wow)
   eq(#wow.chat, 0)
   eq(JunkButlerDB, nil)
 end)
+
+-- 1.4: German
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("German client: sale, repair, keep list, settings and help in German", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow, { [0] = { [1] = grey(2211, 10), [2] = grey(2212, 7, 3), [3] = grey(300, 5) } })
+  w.repairCost = 20000
+  boot(wow, 100000)
+  wow.slash("/jb keep " .. TORN)
+  eq(wow.chat[1], PREFIX .. TORN .. " steht auf deiner Behalteliste und wird nie verkauft.")
+  wow.chat = {}
+  w.visit()
+  w.run()
+  w.leave()
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "4 Stück Plunder für 26c verkauft. Ausrüstung für 2g 00s 00c repariert. Wegen deiner Behalteliste 1 Gegenstand behalten.")
+  wow.slash("/jb")
+  eq(wow.chat[2], PREFIX .. "Plunder verkaufen ist an. Reparieren ist an. Reparieren aus der Gildenbank ist aus.")
+  wow.slash("/jb sell")
+  eq(wow.chat[3], PREFIX .. "Plunder verkaufen ist aus.")
+  wow.slash("/jb unkeep 999")
+  eq(wow.chat[4], PREFIX .. "Gegenstand 999 steht nicht auf deiner Behalteliste.")
+  wow.slash("/jb keep")
+  eq(wow.chat[5], PREFIX .. "Wird nie verkauft (1):")
+  eq(wow.chat[6], "  " .. TORN)
+  wow.slash("/jb unkeep")
+  eq(wow.chat[7], PREFIX .. "Nenne den Gegenstand nach /jb unkeep: per Shift-Klick in den Chat oder mit seiner Gegenstands-ID.")
+  wow.slash("/jb hilfe")
+  eq(#wow.chat, 11)
+  eq(wow.chat[8], PREFIX .. "/jb zeigt die Einstellungen, /jb sell und /jb repair schalten das Verkaufen und das Reparieren einzeln an oder aus. Halte Shift gedrückt, während du einen Händler ansprichst, um diesen Besuch auszulassen.")
+  eq(wow.chat[10], PREFIX .. "/jb guild on/off lässt zuerst die Gildenbank deine Reparaturen bezahlen, wenn dein Gildenrang es erlaubt.")
+end)
+
+test("German client: guild bank repairs in German", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow, { [0] = greys(2, 10) })
+  guildBank(w, 30000, 1000000)
+  w.repairCost = 20000
+  guildBoot(wow, w, 50000)
+  w.visit()
+  w.run()
+  eq(wow.chat[1], PREFIX .. "2 Stück Plunder für 20c verkauft. Ausrüstung für 2g 00s 00c aus der Gildenbank repariert.")
+  wow.slash("/jb guild off")
+  eq(wow.chat[2], PREFIX .. "Reparieren aus der Gildenbank ist aus.")
+  wow.slash("/jb guild maybe")
+  eq(wow.chat[3]:match("^.-/jb guild on lässt zuerst die Gildenbank deine Reparaturen bezahlen") ~= nil, true)
+end)
+
+test("German client: /jb log in German, the Buyback tab named the way the game names it", function(wow)
+  wow.locale = "deDE"
+  BUYBACK = "Rückkauf" -- the German client's own name of the tab
+  local w = world(wow, { [0] = greys(2, 10) })
+  boot(wow, 0)
+  wow.now = wow.now - 3600
+  w.visit()
+  w.run()
+  w.leave()
+  wow.now = wow.now + 3600 - 5 * 60
+  w.vendor = "Tilda"
+  w.bags[0] = { [1] = grey(400, 125, 4) }
+  w.visit()
+  w.run()
+  w.leave()
+  wow.now = wow.now + 5 * 60
+  wow.chat = {}
+  wow.slash("/jb log")
+  eq(#wow.chat, 5)
+  eq(wow.chat[1], PREFIX .. "Deine letzten 2 Händlerbesuche mit Verkäufen, neueste zuerst:")
+  eq(wow.chat[2], "  1. 20.11. 17:55, Tilda: 4 Gegenstände für 5s 00c (vor 5 Min.)")
+  eq(wow.chat[3], "  2. 20.11. 17:00, Grumbold: 2 Gegenstände für 20c")
+  eq(wow.chat[4], PREFIX .. "Zusammen: 6 Gegenstände für 5s 20c. /jb log mit einer Nummer zeigt die Gegenstände dieses Besuchs.")
+  eq(wow.chat[5], PREFIX .. "Verkäufe der letzten 15 Minuten sind markiert. Der Reiter „Rückkauf“ des Händlers hat sie vielleicht noch, er behält aber nur deine zuletzt verkauften Gegenstände und wird beim Ausloggen geleert.")
+  wow.slash("/jb log 7")
+  eq(wow.chat[6], PREFIX .. "Es gibt keinen Besuch 7. /jb log zeigt die Besuche 1 bis 2.")
+  wow.slash("/jb log clear")
+  eq(wow.chat[7], PREFIX .. "Das Verkaufsprotokoll dieses Charakters ist jetzt leer.")
+  wow.slash("/jb log")
+  eq(wow.chat[8], PREFIX .. "Mit diesem Charakter wurde noch nichts verkauft. Jeder Händlerbesuch mit Verkäufen wird hier notiert.")
+end)
+
+test("an English client names the Buyback tab the way the game names it too", function(wow)
+  BUYBACK = "Buyback"
+  local w = world(wow, { [0] = greys(1, 10) })
+  boot(wow, 0)
+  w.visit()
+  w.run()
+  w.leave()
+  wow.chat = {}
+  wow.slash("/jb log")
+  eq(wow.chat[#wow.chat], PREFIX .. "Sales from the last 15 minutes are marked. The vendor's Buyback tab may still have them, but it keeps only your latest sold items and empties when you log out.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  world(wow)
+  local ns = boot(wow, 0)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    if not key:find("%H", 1, true) then eq(placeholders(text), placeholders(key), key) end
+  end
+  eq(n, 37, "every text on screen has its German one")
+  eq(ns.L["%b %d %H:%M"], "%d.%m. %H:%M", "dates the German way")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  world(wow)
+  local ns = boot(wow, 0)
+  eq(next(ns.L), nil)
+  eq(ns.Summary({ items = 1, earned = 5 }), "Sold 1 junk item for 5c.")
+end)

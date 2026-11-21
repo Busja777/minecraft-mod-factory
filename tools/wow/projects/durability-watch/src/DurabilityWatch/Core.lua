@@ -6,12 +6,27 @@ local _, ns = ...
 -- Equipment slots that can wear out: 1 to 18 without the shirt (4); the tabard (19) never does.
 ns.SLOTS = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 }
 
-ns.SLOT_LABEL = {
-  [1] = "Head", [2] = "Neck", [3] = "Shoulders", [5] = "Chest", [6] = "Waist", [7] = "Legs",
-  [8] = "Feet", [9] = "Wrists", [10] = "Hands", [11] = "Ring 1", [12] = "Ring 2",
-  [13] = "Trinket 1", [14] = "Trinket 2", [15] = "Back", [16] = "Main Hand", [17] = "Off Hand",
-  [18] = "Ranged",
+-- 1.3: the name of each slot as the game itself writes it on the character sheet: { global, English,
+-- number }. The client fills these globals (GlobalStrings) in its own language; a client without one
+-- gets the English name. Rings and trinkets add their number.
+ns.SLOT_NAME = {
+  [1] = { "HEADSLOT", "Head" }, [2] = { "NECKSLOT", "Neck" }, [3] = { "SHOULDERSLOT", "Shoulders" },
+  [5] = { "CHESTSLOT", "Chest" }, [6] = { "WAISTSLOT", "Waist" }, [7] = { "LEGSSLOT", "Legs" },
+  [8] = { "FEETSLOT", "Feet" }, [9] = { "WRISTSLOT", "Wrists" }, [10] = { "HANDSSLOT", "Hands" },
+  [11] = { "FINGER0SLOT", "Ring", 1 }, [12] = { "FINGER1SLOT", "Ring", 2 },
+  [13] = { "TRINKET0SLOT", "Trinket", 1 }, [14] = { "TRINKET1SLOT", "Trinket", 2 },
+  [15] = { "BACKSLOT", "Back" }, [16] = { "MAINHANDSLOT", "Main Hand" }, [17] = { "SECONDARYHANDSLOT", "Off Hand" },
+  [18] = { "RANGEDSLOT", "Ranged" },
 }
+
+function ns.SlotName(slot)
+  local entry = ns.SLOT_NAME[slot]
+  if not entry then return ns.L["Other"] end
+  local name = _G[entry[1]]
+  if type(name) ~= "string" or name == "" then name = entry[2] end
+  if entry[3] then name = name .. " " .. entry[3] end
+  return name
+end
 
 ns.DEFAULT_WARN = 25 -- percent
 ns.MIN_WARN = 5
@@ -135,7 +150,7 @@ function ns.DisplayLines(cond)
   end
   local first = L["Gear"] .. " " .. ns.Colored(cond.overall)
   if #cond.damaged == 0 then return first, ns.GREY .. L["No damage"] .. "|r" end
-  return first, L[ns.SLOT_LABEL[cond.lowestSlot]] .. " " .. ns.Colored(cond.lowest)
+  return first, ns.SlotName(cond.lowestSlot) .. " " .. ns.Colored(cond.lowest)
 end
 
 local function thousands(n)

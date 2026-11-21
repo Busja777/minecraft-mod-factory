@@ -18,7 +18,7 @@ local function stateText()
   elseif #cond.damaged == 0 then
     gear = string.format(L["Gear %d%%, nothing damaged."], cond.overall)
   else
-    gear = string.format(L["Gear %d%%, lowest %s %d%%."], cond.overall, L[ns.SLOT_LABEL[cond.lowestSlot]], cond.lowest)
+    gear = string.format(L["Gear %d%%, lowest %s %d%%."], cond.overall, ns.SlotName(cond.lowestSlot), cond.lowest)
   end
   local shown
   if s.hidden then
