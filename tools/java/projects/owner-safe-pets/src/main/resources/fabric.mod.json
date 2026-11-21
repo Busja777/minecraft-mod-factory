@@ -3,7 +3,7 @@
   "id": "ownersafepets",
   "version": "${version}",
   "name": "Owner Safe Pets",
-  "description": "Tamed wolves, cats, parrots, horses and other pets take no damage from their own owner: no hits, sweeps, arrows or explosions. Works on the server alone; players need nothing installed.",
+  "description": "Tamed wolves, cats, parrots, horses and other pets take no damage from their own owner: no hits, sweeps, arrows, explosions or harmful potions. Works on the server alone; players need nothing installed.",
   "authors": ["SevFactory"],
   "contact": {},
   "license": "MIT",
@@ -11,6 +11,7 @@
   "entrypoints": {
     "main": ["com.factory.ownersafepets.OwnerSafePets"]
   },
+  "mixins": ["ownersafepets.mixins.json"],
   "depends": {
     "fabricloader": ">=0.15.0",
     "minecraft": "1.21.1",

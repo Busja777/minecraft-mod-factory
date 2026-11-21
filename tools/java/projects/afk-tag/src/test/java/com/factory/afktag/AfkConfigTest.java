@@ -104,4 +104,41 @@ class AfkConfigTest {
         assertFalse(AfkConfig.load(config, warnings::add).ignoreAfkForSleep());
         assertTrue(warnings.isEmpty(), warnings.toString());
     }
+
+    @Test
+    void theAfkTimeIsShownByDefault() {
+        assertTrue(AfkConfig.DEFAULT_SHOW_AFK_TIME);
+        assertTrue(AfkConfig.defaults().showAfkTime());
+        assertTrue(AfkConfig.defaults().toJson().contains("\"showAfkTime\": true"), "a new file shows the switch");
+        assertTrue(new AfkConfig(9, false).showAfkTime(), "the 1.1 settings keep the default");
+    }
+
+    @Test
+    void aConfigFileOfVersion1_1KeepsWorkingWithoutAWarning() {
+        // exactly what 1.1 wrote, with both values changed
+        AfkConfig old = parse("{\n  \"minutes\": 12,\n  \"ignoreAfkForSleep\": false\n}\n");
+        assertEquals(new AfkConfig(12, false, true), old);
+        assertTrue(warnings.isEmpty(), warnings.toString());
+    }
+
+    @Test
+    void readsTheTimeSwitchAndFallsBackOnItsOwn() {
+        assertEquals(new AfkConfig(5, true, false), parse("{\"minutes\": 5, \"showAfkTime\": false}"));
+        assertEquals(new AfkConfig(7, false, false), parse("{\"minutes\": 7, \"ignoreAfkForSleep\": false, \"showAfkTime\": false}"));
+        assertTrue(warnings.isEmpty(), warnings.toString());
+        for (String bad : List.of("\"no\"", "0", "null", "[]")) {
+            warnings.clear();
+            assertEquals(new AfkConfig(7, false, true), parse("{\"minutes\": 7, \"ignoreAfkForSleep\": false, \"showAfkTime\": " + bad + "}"), bad);
+            assertEquals(1, warnings.size(), bad);
+        }
+    }
+
+    @Test
+    void everyCombinationReadsBack() {
+        for (boolean sleep : new boolean[] {false, true}) for (boolean time : new boolean[] {false, true}) {
+            AfkConfig config = new AfkConfig(3, sleep, time);
+            assertEquals(config, parse(config.toJson()));
+        }
+        assertTrue(warnings.isEmpty(), warnings.toString());
+    }
 }

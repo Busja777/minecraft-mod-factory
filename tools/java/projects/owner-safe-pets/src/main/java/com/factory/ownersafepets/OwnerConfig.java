@@ -21,18 +21,28 @@ import java.util.function.Consumer;
  *                                   they are
  * @param protectFromOwnerExplosions explosions the owner caused (lit TNT, a crystal they hit) do no
  *                                   damage to their pets
+ * @param protectFromOwnerPotions    splash and lingering potions the owner threw (and their clouds)
+ *                                   give their pets no harmful effect and no magic damage; helpful
+ *                                   effects still apply (since 1.2)
  */
-public record OwnerConfig(boolean sneakToHit, boolean protectFromOwnerExplosions) {
+public record OwnerConfig(boolean sneakToHit, boolean protectFromOwnerExplosions, boolean protectFromOwnerPotions) {
     public static final boolean DEFAULT_SNEAK_TO_HIT = false;
     public static final boolean DEFAULT_PROTECT_FROM_OWNER_EXPLOSIONS = true;
+    public static final boolean DEFAULT_PROTECT_FROM_OWNER_POTIONS = true;
     public static final String FILE_NAME = "ownersafepets.json";
 
+    /** The settings of 1.1; the potion guard at its default. */
+    public OwnerConfig(boolean sneakToHit, boolean protectFromOwnerExplosions) {
+        this(sneakToHit, protectFromOwnerExplosions, DEFAULT_PROTECT_FROM_OWNER_POTIONS);
+    }
+
     public static OwnerConfig defaults() {
-        return new OwnerConfig(DEFAULT_SNEAK_TO_HIT, DEFAULT_PROTECT_FROM_OWNER_EXPLOSIONS);
+        return new OwnerConfig(DEFAULT_SNEAK_TO_HIT, DEFAULT_PROTECT_FROM_OWNER_EXPLOSIONS, DEFAULT_PROTECT_FROM_OWNER_POTIONS);
     }
 
     public String toJson() {
-        return "{\n  \"sneakToHit\": " + sneakToHit + ",\n  \"protectFromOwnerExplosions\": " + protectFromOwnerExplosions + "\n}\n";
+        return "{\n  \"sneakToHit\": " + sneakToHit + ",\n  \"protectFromOwnerExplosions\": " + protectFromOwnerExplosions
+            + ",\n  \"protectFromOwnerPotions\": " + protectFromOwnerPotions + "\n}\n";
     }
 
     /** Reads the settings from the file's text; problems go to {@code warn} and use the default. */
@@ -48,8 +58,10 @@ public record OwnerConfig(boolean sneakToHit, boolean protectFromOwnerExplosions
             warn.accept("config/" + FILE_NAME + " is not a JSON object, using the defaults");
             return defaults();
         }
+        // A file of 1.1 has no "protectFromOwnerPotions": it gets the default without a warning.
         return new OwnerConfig(bool(obj, "sneakToHit", DEFAULT_SNEAK_TO_HIT, warn),
-            bool(obj, "protectFromOwnerExplosions", DEFAULT_PROTECT_FROM_OWNER_EXPLOSIONS, warn));
+            bool(obj, "protectFromOwnerExplosions", DEFAULT_PROTECT_FROM_OWNER_EXPLOSIONS, warn),
+            bool(obj, "protectFromOwnerPotions", DEFAULT_PROTECT_FROM_OWNER_POTIONS, warn));
     }
 
     private static boolean bool(JsonObject obj, String key, boolean fallback, Consumer<String> warn) {

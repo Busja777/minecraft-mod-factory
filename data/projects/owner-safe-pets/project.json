@@ -30,6 +30,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "OwnerSafePets-1.2.jar",
+      "changelog": "## Owner Safe Pets 1.2\n\nYour own potions spare your pets.\n\n- Splash and lingering potions you throw no longer give your tamed animals harmful effects: no poison, weakness, slowness or any other harmful effect. This also covers the cloud a lingering potion leaves behind. (Harming potions already did no damage to your pets.)\n- Helpful effects still work: a healing or regeneration potion you throw at your pet heals it as before. A mixed potion such as turtle master gives your pet the resistance but not the slowness.\n- Your pet no longer uses up your own harmful lingering cloud while it stands in it, so the cloud lasts as long as it would without the pet.\n- Potions thrown by other players, witches or dispensers are unchanged.\n- New setting `protectFromOwnerPotions` in `config/ownersafepets.json` (default `true`). Set it to `false` and your potions affect your pets as in vanilla. Config files from 1.1 keep working; without the setting the default is used. `sneakToHit` still only concerns your own hits.\n- Everything from 1.1 stays the same.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }

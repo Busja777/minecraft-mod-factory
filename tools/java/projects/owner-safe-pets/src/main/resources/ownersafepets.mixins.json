@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.factory.ownersafepets.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": ["AreaEffectCloudEntityMixin", "PotionEntityMixin", "ProjectileEntityAccessor"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

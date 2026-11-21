@@ -30,6 +30,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "AFKTag-1.2.jar",
+      "changelog": "## AFK Tag 1.2\n\nThe player list shows how long someone has been away.\n\n- An AFK player's tag now includes their idle time, for example `[AFK 12m]` or `[AFK 1h 5m]`. The time counts from the player's last input, so with the default setting the tag appears as `[AFK 5m]`.\n- The time goes up once a minute; the player list is only sent again when the shown minutes change, not every tick.\n- When the player comes back, the tag and the time disappear at once, as before.\n- New setting `showAfkTime` in `config/afktag.json` (default `true`). Set it to `false` to get the plain `[AFK]` tag of 1.1. Config files from 1.0 and 1.1 keep working; without the setting the default is used.\n- Only the server needs the mod: players without it see the time too.\n- Everything from 1.1 stays the same.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }

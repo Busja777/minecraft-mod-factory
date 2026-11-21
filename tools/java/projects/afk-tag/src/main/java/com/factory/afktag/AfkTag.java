@@ -25,8 +25,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Entry point: players who stay idle get "[AFK]" in front of their name in the player list and a
  * chat line when they go and come back, and (since 1.1) do not count when the server decides
- * whether enough players sleep to skip the night. Everything runs on the server; the player list
- * entry is sent with vanilla packets, so players without the mod see the tag too.
+ * whether enough players sleep to skip the night. Since 1.2 the tag shows how long the player has
+ * been idle ("[AFK 12m]"); the entry is sent again only when the shown minutes change, i.e. once a
+ * minute per AFK player. Everything runs on the server; the player list entry is sent with vanilla
+ * packets, so players without the mod see the tag too.
  */
 public final class AfkTag implements ModInitializer {
     public static final String MOD_ID = "afktag";
@@ -36,6 +38,7 @@ public final class AfkTag implements ModInitializer {
     private static final Map<UUID, AfkRules.Timer> TIMERS = new ConcurrentHashMap<>();
     private static volatile long timeoutTicks = AfkConfig.defaults().timeoutTicks();
     private static volatile boolean ignoreAfkForSleep = AfkConfig.DEFAULT_IGNORE_AFK_FOR_SLEEP;
+    private static volatile boolean showAfkTime = AfkConfig.DEFAULT_SHOW_AFK_TIME;
 
     @Override
     public void onInitialize() {
@@ -43,9 +46,10 @@ public final class AfkTag implements ModInitializer {
             AfkConfig config = AfkConfig.load(FabricLoader.getInstance().getConfigDir(), LOG::warn);
             timeoutTicks = config.timeoutTicks();
             ignoreAfkForSleep = config.ignoreAfkForSleep();
+            showAfkTime = config.showAfkTime();
             TIMERS.clear();
-            LOG.info("Players count as AFK after {} idle minute(s); AFK players {} for skipping the night",
-                config.minutes(), config.ignoreAfkForSleep() ? "do not count" : "count");
+            LOG.info("Players count as AFK after {} idle minute(s); AFK players {} for skipping the night; the player list {} the AFK time",
+                config.minutes(), config.ignoreAfkForSleep() ? "do not count" : "count", config.showAfkTime() ? "shows" : "does not show");
         });
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> TIMERS.clear());
         // A player who leaves starts fresh (not AFK) on the next join.
@@ -59,6 +63,12 @@ public final class AfkTag implements ModInitializer {
         return timer != null && timer.isAfk();
     }
 
+    /** Idle ticks of the player with this id since their last input (0 when unknown). */
+    public static long idleTicks(UUID player) {
+        AfkRules.Timer timer = TIMERS.get(player);
+        return timer == null ? 0 : timer.idleTicks();
+    }
+
     /** For the game tests: idle ticks before the tag (the config file sets it on server start). */
     public static void setTimeoutTicks(long ticks) {
         timeoutTicks = Math.max(1, ticks);
@@ -67,6 +77,17 @@ public final class AfkTag implements ModInitializer {
     /** For the game tests: whether AFK players are left out of the night-skip count (the config file sets it on server start). */
     public static void setIgnoreAfkForSleep(boolean ignore) {
         ignoreAfkForSleep = ignore;
+    }
+
+    /** For the game tests: whether the player list shows the AFK time (the config file sets it on server start). */
+    public static void setShowAfkTime(boolean show) {
+        showAfkTime = show;
+    }
+
+    /** For the game tests: as if the player had been idle {@code ticks} more ticks. */
+    public static void addIdleTicks(UUID player, long ticks) {
+        AfkRules.Timer timer = TIMERS.get(player);
+        if (timer != null) timer.addIdleTicks(ticks);
     }
 
     /** The players the night-skip vote counts (called by the SleepManager mixin). */
@@ -78,7 +99,9 @@ public final class AfkTag implements ModInitializer {
     public static Text tagged(ServerPlayerEntity player, Text listName) {
         // Without a list name the client shows the name with its team prefix and colour, so keep those.
         Text name = listName != null ? listName : Team.decorateName(player.getScoreboardTeam(), player.getName());
-        return Text.empty().append(Text.literal("[AFK] ").formatted(Formatting.GRAY)).append(name);
+        AfkRules.Timer timer = TIMERS.get(player.getUuid());
+        String label = AfkLabel.label(timer == null ? 0 : timer.idleTicks(), showAfkTime);
+        return Text.empty().append(Text.literal(label + " ").formatted(Formatting.GRAY)).append(name);
     }
 
     private static void tick(MinecraftServer server) {
@@ -86,6 +109,8 @@ public final class AfkTag implements ModInitializer {
             AfkRules.Timer timer = TIMERS.computeIfAbsent(player.getUuid(), id -> new AfkRules.Timer());
             Change change = timer.tick(sample(player), timeoutTicks);
             if (change != Change.NONE) announce(server, player, change);
+            // the shown AFK time went up by a minute: only then is the entry sent again
+            else if (showAfkTime && timer.isAfk() && AfkLabel.minuteTurned(timer.idleTicks())) sendListName(server, player);
         }
     }
 
@@ -97,9 +122,14 @@ public final class AfkTag implements ModInitializer {
             player.getYaw(), player.getPitch(), player.getLastActionTime(), pushedAround, steering);
     }
 
+    /** Sends the player's list name (see the mixin) to everyone, with the vanilla packet for display names. */
+    private static void sendListName(MinecraftServer server, ServerPlayerEntity player) {
+        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
+    }
+
     private static void announce(MinecraftServer server, ServerPlayerEntity player, Change change) {
         // the new player list name (see the mixin) to everyone, then the chat line
-        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
+        sendListName(server, player);
         MutableText line = Text.empty().append(player.getDisplayName())
             .append(change == Change.NOW_AFK ? " is now AFK" : " is back");
         server.getPlayerManager().broadcast(line.formatted(Formatting.GRAY), false);
