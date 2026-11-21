@@ -1,6 +1,7 @@
-// Farmers Advancements: a new advancement tab "Farmer's Almanac" with 45 goals about crops, animals,
+// Farmers Advancements: a new advancement tab "Farmer's Almanac" with 60 goals about crops, animals,
 // farm food and farm tools, so a peaceful farm world has something to work towards.
 // 1.0: 30 advancements. 1.2: 15 more about breeding and caring for animals (ANIMAL_CARE below).
+// 1.3: 15 more about cooking and eating farm food (DISHES, CRAFTED, SMOKED, CAMPFIRE_FOOD, FARM_FOODS).
 // Every criterion copies the shape of a vanilla advancement of the Minecraft version it is written for:
 //   placed_block + "is this block"            (husbandry/plant_seed)
 //   inventory_changed + items                 (husbandry/obtain_netherite_hoe; "count" is the item predicate's stack size)
@@ -10,7 +11,16 @@
 //   item_used_on_block + location_check       (husbandry/safely_harvest_honey)
 //   player_interacted_with_entity + item + entity entity_properties (adventure/brush_armadillo,
 //                                             husbandry/feed_snifflet for the baby flag)
+//   recipe_crafted + recipe                   (adventure/trim_with_any_armor_pattern; it also fires when a
+//                                             player takes the result out of a furnace or smoker)
+//   item_used_on_block + location_check with block state + match_tool (adventure/lighten_up)
+//   default_block_use + location_check        (no vanilla advancement uses it; it fires when a block is used
+//                                             with the hand, like eating a slice of cake, and takes the same
+//                                             "location" as item_used_on_block)
 // Only experience as rewards, never items. No recipes, functions or loot table changes.
+import fs from 'fs';
+import path from 'path';
+
 const NS = 'farmers_advancements';
 const id = name => `${NS}:${name}`;
 
@@ -23,8 +33,11 @@ const id = name => `${NS}:${name}`;
 //   display icon            { id, count: 1 }                            { id }
 //   background of the root  minecraft:textures/block/x.png              minecraft:block/x
 //   baby flag of an entity  predicate { flags: { is_baby } }            predicate { "minecraft:flags": { is_baby } }
-// The same in both: item predicates (items, count { min }), location_check and its block predicate,
-// text components, frames, requirements, rewards and all six trigger ids.
+//   recipe of recipe_crafted "recipe_id": "minecraft:x"                 "recipes": "minecraft:x"
+//   two conditions at once  a list of both                              { type: "minecraft:all_of", terms: [both] }
+// The same in both: item predicates (items, count { min }), location_check and its block predicate
+// (with "state"), match_tool, text components, frames, requirements, rewards and all nine trigger ids.
+// checkVanilla() below compares the 1.3 spellings with each version's own vanilla files.
 // The versions between the two have not been looked at, so the pack refuses to guess for them.
 const OLD_SHAPE = 48;
 const NEW_SHAPE = 121;
@@ -67,6 +80,24 @@ const usedOnEntity = (format, item, entity, baby) => ({
 });
 const usedOn = (format, block) => ({
   trigger: 'minecraft:item_used_on_block',
+  conditions: { location: condition(format, 'location_check', { predicate: { block: { blocks: `minecraft:${block}` } } }) }
+});
+// Both conditions must hold; the shape of adventure/lighten_up.
+const allOf = (format, terms) => (isNew(format)
+  ? { type: 'minecraft:all_of', terms: terms.map(([type, fields]) => ({ type: `minecraft:${type}`, ...fields })) }
+  : terms.map(([type, fields]) => ({ condition: `minecraft:${type}`, ...fields })));
+const ids = list => (list.length === 1 ? `minecraft:${list[0]}` : list.map(x => `minecraft:${x}`));
+// One of the items used on one of the blocks in the given state.
+const usedItemOn = (format, items, blocks, state) => ({
+  trigger: 'minecraft:item_used_on_block',
+  conditions: { location: allOf(format, [['location_check', { predicate: { block: { blocks: ids(blocks), ...(state ? { state } : {}) } } }], ['match_tool', { predicate: { items: ids(items) } }]]) }
+});
+// The player crafted (or took out of a furnace, smoker or campfire … with a player) the result of this recipe.
+const crafted = (format, recipe) => ({ trigger: 'minecraft:recipe_crafted', conditions: { [isNew(format) ? 'recipes' : 'recipe_id']: `minecraft:${recipe}` } });
+// The player used a block with the hand and it did something (cake: took a bite). The block is read
+// after the use, so the last slice of a cake (which leaves air) does not count.
+const usedBlock = (format, block) => ({
+  trigger: 'minecraft:default_block_use',
   conditions: { location: condition(format, 'location_check', { predicate: { block: { blocks: `minecraft:${block}` } } }) }
 });
 
@@ -132,6 +163,37 @@ export const COOKING = [
 ];
 export const FEAST = ['bread', 'baked_potato', 'pumpkin_pie', 'beetroot_soup', 'cookie', 'golden_carrot', 'rabbit_stew', 'carrot', 'melon_slice', 'sweet_berries'];
 
+// 1.3: cooking. Every item, block and recipe exists in Minecraft 1.21.1 and 26.3, and every food below
+// is part of vanilla's husbandry/balanced_diet in both, so consume_item fires for it.
+// Left out on purpose: eating golden carrots, rabbit stew, cookies and the raw crops on their own (part
+// of the Harvest Feast already), golden apples and glow berries (not farm food), and the campfire's
+// own cooking (it cooks without a player, so no trigger can see it; putting the food on counts instead).
+// Food eaten on its own: [item, name, parent, title, description]
+export const DISHES = [
+  ['cooked_beef', 'steak', 'cooking/smoker', 'Steak Night', 'Eat a steak'],
+  ['cooked_porkchop', 'porkchop', 'cooking/steak', 'Sunday Roast', 'Eat a cooked porkchop'],
+  ['cooked_chicken', 'roast_chicken', 'cooking/porkchop', 'Chicken Dinner', 'Eat a cooked chicken'],
+  ['cooked_mutton', 'mutton', 'cooking/roast_chicken', "Shepherd's Supper", 'Eat cooked mutton'],
+  ['cooked_rabbit', 'rabbit', 'cooking/mutton', 'Bunny Roast', 'Eat a cooked rabbit'],
+  ['mushroom_stew', 'mushroom_stew', 'cooking/beetroot_soup', 'Forest Bowl', 'Eat a bowl of mushroom stew'],
+  ['suspicious_stew', 'suspicious_stew', 'cooking/mushroom_stew', 'Mystery Soup', 'Eat a suspicious stew'],
+  ['honey_bottle', 'honey', 'cooking/pumpkin_pie', 'Sweet Sip', 'Drink a bottle of honey']
+];
+// Crafted at a crafting table: [recipe, name, parent, title, description]
+export const CRAFTED = [
+  ['cake', 'bake_cake', 'cooking/bread', 'Layer by Layer', 'Bake a cake'],
+  ['golden_carrot', 'golden_carrot', 'cooking/bread', 'Gilded Harvest', 'Craft a golden carrot'],
+  ['glistering_melon_slice', 'glistering_melon', 'cooking/golden_carrot', 'Shimmering Slice', 'Craft a glistering melon slice']
+];
+// The vanilla smoker recipes (result + "_from_smoking"); taking any of them out of a smoker counts.
+export const SMOKED = ['baked_potato', 'cooked_beef', 'cooked_chicken', 'cooked_cod', 'cooked_mutton', 'cooked_porkchop', 'cooked_rabbit', 'cooked_salmon', 'dried_kelp'];
+// What a campfire cooks: raw item → result (the vanilla recipe result + "_from_campfire_cooking").
+export const CAMPFIRE_FOOD = { beef: 'cooked_beef', chicken: 'cooked_chicken', mutton: 'cooked_mutton', porkchop: 'cooked_porkchop', rabbit: 'cooked_rabbit', potato: 'baked_potato', cod: 'cooked_cod', salmon: 'cooked_salmon', kelp: 'dried_kelp' };
+export const CAMPFIRES = ['campfire', 'soul_campfire'];
+// The 15th: every farm food eaten once (consume_item), plus a slice of cake (default_block_use).
+export const FARM_FOODS = ['carrot', 'potato', 'baked_potato', 'beetroot', 'beetroot_soup', 'bread', 'cookie', 'pumpkin_pie', 'melon_slice', 'sweet_berries',
+  'golden_carrot', 'honey_bottle', 'mushroom_stew', 'suspicious_stew', 'rabbit_stew', 'cooked_beef', 'cooked_porkchop', 'cooked_chicken', 'cooked_mutton', 'cooked_rabbit'];
+
 // Experience rewards: small for goals, larger for challenges. Nothing else is ever given.
 export const REWARDS = {
   'planting/pitcher': 20,
@@ -144,9 +206,13 @@ export const REWARDS = {
   'cooking/feast': 50,
   'animals/breed_armadillo': 20,
   'animals/breed_camel': 20,
-  'animals/breed_ranch': 50
+  'animals/breed_ranch': 50,
+  'cooking/suspicious_stew': 20,
+  'cooking/glistering_melon': 20,
+  'cooking/rabbit': 10,
+  'cooking/farm_to_table': 100
 };
-const GOALS = new Set(['animals/breed_armadillo', 'animals/breed_camel']);
+const GOALS = new Set(['animals/breed_armadillo', 'animals/breed_camel', 'cooking/suspicious_stew', 'cooking/glistering_melon', 'cooking/rabbit']);
 
 // ── the tree ──────────────────────────────────────────────────────────────────────────────────
 // Each entry: { name, parent, icon, title, description, frame, criteria, all }
@@ -191,6 +257,19 @@ export function tree(format) {
   add('tools/any_hoe', 'root', 'wooden_hoe', 'Hoe Down', 'Get any hoe', { hoe: has('#minecraft:hoes') });
   add('tools/compost', 'tools/any_hoe', 'composter', 'Nothing Goes to Waste', 'Put something into a composter', { compost: usedOn(format, 'composter') });
   add('tools/diamond_hoe', 'tools/any_hoe', 'diamond_hoe', 'Diamond Harvest', 'Get a diamond hoe', { diamond_hoe: has('diamond_hoe') }, { frame: 'goal' });
+
+  // 1.3: cooking
+  const frame = name => (GOALS.has(name) ? 'goal' : 'task');
+  add('cooking/smoker', 'cooking/baked_potato', 'smoker', 'Smokehouse', 'Take cooked food out of a smoker',
+    Object.fromEntries(SMOKED.map(r => [r, crafted(format, `${r}_from_smoking`)])));
+  add('cooking/campfire', 'cooking/smoker', 'campfire', 'Open Fire', 'Put raw food on a lit campfire',
+    { campfire: usedItemOn(format, Object.keys(CAMPFIRE_FOOD), CAMPFIRES, { lit: 'true' }) });
+  for (const [item, name, parent, title, desc] of DISHES) add(`cooking/${name}`, parent, item, title, desc, { [item]: ate(item) }, { frame: frame(`cooking/${name}`) });
+  for (const [recipe, name, parent, title, desc] of CRAFTED) add(`cooking/${name}`, parent, recipe, title, desc, { [recipe]: crafted(format, recipe) }, { frame: frame(`cooking/${name}`) });
+  add('cooking/cake_slice', 'cooking/bake_cake', 'cake', 'Piece of Cake', 'Eat a slice of cake', { cake: usedBlock(format, 'cake') });
+  add('cooking/farm_to_table', 'cooking/feast', 'rabbit_stew', 'Farm to Table',
+    'Eat carrot, potato, baked potato, beetroot, beetroot soup, bread, a cookie, pumpkin pie, a slice of cake, melon, sweet berries, a golden carrot, honey, mushroom stew, suspicious stew, rabbit stew and cooked beef, porkchop, chicken, mutton and rabbit',
+    { ...Object.fromEntries(FARM_FOODS.map(f => [f, ate(f)])), cake: usedBlock(format, 'cake') }, { frame: 'challenge', all: true });
   return list;
 }
 
@@ -218,11 +297,44 @@ export function checkTree(list) {
 const text = t => ({ text: t });
 const requirements = (criteria, all) => (all ? Object.keys(criteria).map(k => [k]) : [Object.keys(criteria)]);
 
-// Called once per Minecraft version; the same 46 files under the same paths for every version.
-export default async function ({ format }) {
+// The 1.3 spellings, compared with this version's own vanilla files; the build stops if one differs.
+// Also checks that every recipe the cooking branch names exists and cooks what the tables say.
+export function checkVanilla(vanilla, format) {
+  const read = rel => {
+    const file = path.join(vanilla.data, 'minecraft', rel);
+    if (!fs.existsSync(file)) throw new Error(`farmers-advancements: vanilla ${rel} is missing`);
+    return JSON.parse(fs.readFileSync(file, 'utf-8'));
+  };
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const trim = read('advancement/adventure/trim_with_any_armor_pattern.json').criteria;
+  const trimKey = Object.keys(trim).find(k => k.endsWith('bolt_armor_trim_smithing_template_smithing_trim'));
+  if (!trimKey || !same(trim[trimKey], { conditions: crafted(format, 'bolt_armor_trim_smithing_template_smithing_trim').conditions, trigger: 'minecraft:recipe_crafted' })) {
+    throw new Error(`farmers-advancements: vanilla recipe_crafted is written as ${JSON.stringify(trim[trimKey])}`);
+  }
+  const light = read('advancement/adventure/lighten_up.json').criteria.lighten_up.conditions.location;
+  const [where, tool] = isNew(format) ? (light.type === 'minecraft:all_of' ? light.terms : []) : light;
+  if (!where || (isNew(format) ? where.type : where.condition) !== 'minecraft:location_check' || !same(where.predicate.block.state, { lit: 'true' })
+    || (isNew(format) ? tool.type : tool.condition) !== 'minecraft:match_tool' || !Array.isArray(tool.predicate.items)) {
+    throw new Error(`farmers-advancements: vanilla adventure/lighten_up is written as ${JSON.stringify(light)}`);
+  }
+  for (const r of SMOKED) if (read(`recipe/${r}_from_smoking.json`).type !== 'minecraft:smoking') throw new Error(`farmers-advancements: ${r}_from_smoking is not a smoker recipe`);
+  for (const [raw, result] of Object.entries(CAMPFIRE_FOOD)) {
+    const recipe = read(`recipe/${result}_from_campfire_cooking.json`);
+    if (recipe.type !== 'minecraft:campfire_cooking' || !JSON.stringify(recipe.ingredient).includes(`"minecraft:${raw}"`)) throw new Error(`farmers-advancements: ${result}_from_campfire_cooking does not cook ${raw}`);
+  }
+  for (const [recipe] of CRAFTED) if (read(`recipe/${recipe}.json`).result?.id !== `minecraft:${recipe}`) throw new Error(`farmers-advancements: recipe ${recipe} does not make ${recipe}`);
+  const diet = read('advancement/husbandry/balanced_diet.json').criteria;
+  for (const f of new Set([...FARM_FOODS, ...DISHES.map(d => d[0])])) {
+    if (!diet[f] || diet[f].trigger !== 'minecraft:consume_item') throw new Error(`farmers-advancements: ${f} is not eaten in vanilla husbandry/balanced_diet`);
+  }
+}
+
+// Called once per Minecraft version; the same 61 files under the same paths for every version.
+export default async function ({ format, vanilla }) {
   const list = tree(format);
-  if (list.length !== 45) throw new Error(`expected 45 advancements below the root, got ${list.length}`);
+  if (list.length !== 60) throw new Error(`expected 60 advancements below the root, got ${list.length}`);
   checkTree(list);
+  checkVanilla(vanilla, format);
 
   const files = {};
   const rootCriteria = { wheat_seeds: has('wheat_seeds') };

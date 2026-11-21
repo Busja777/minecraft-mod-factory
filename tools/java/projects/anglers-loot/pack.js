@@ -7,6 +7,8 @@
 // gameplay/fishing/treasure (two extra catches) and, since 1.2, gameplay/fishing/fish (biome
 // catches). junk.json stays vanilla; it is still read and checked, because the main table points
 // to it and its jungle bamboo is the model for the biome rule.
+// Since 1.3 the pack also has its own advancement tab about fishing ("Angler's Logbook" below); it
+// only adds advancements and changes nothing about the loot.
 //
 // Chances per cast in open water without Luck of the Sea (weight / sum of weights):
 //   vanilla  junk 10/100 = 10 %,  treasure 5/100 = 5 %,  fish 85/100 = 85 %
@@ -212,6 +214,174 @@ const FOREIGN = new Map([
   [SPELLINGS.single, ['conditions:object', 'functions:object', 'condition:string', 'function:string']]
 ]);
 
+// ── 1.3: the advancement tab "Angler's Logbook" ───────────────────────────────────────────────
+// Own tab instead of a branch under vanilla husbandry: husbandry is already the fullest vanilla tab,
+// an own tab keeps all fishing goals on one screen and leaves the vanilla tabs untouched.
+// Every catch uses minecraft:fishing_rod_hooked as vanilla husbandry/fishy_business writes it
+// ("item" = one of the caught items), plus an "entity" check that the hook itself came back (the
+// trigger passes the hooked entity, or the hook when nothing was hooked): reeling in a dropped item
+// or a mob never counts, only a real catch. Treasure is matched on the caught item, which includes
+// the heart of the sea and the bottles o' enchanting that this pack's treasure table adds.
+// Biome catches check where the hook is, the same position the 1.2 biome catches of the fish table
+// use (BIOME_FISH). No vanilla fishing advancement is copied: Fishy Business wants any one fish,
+// Tactical Fishing a fish bucket; here every fish, the biome fish and the treasures count.
+const NS = 'anglers_loot';
+
+// How each version writes an advancement, checked against its own vanilla advancements (checkShape).
+//   cond     one loot condition where a trigger takes an entity ("entity", "player", "child" …)
+//   entity   the keys of an entity predicate: entity type and location
+//   icon     the display icon;  background  the tab background (a block texture)
+export const ADV_SHAPES = {
+  lists: {
+    cond: (type, fields) => [{ condition: `minecraft:${type}`, ...fields }],
+    entityKeys: { type: 'type', location: 'location' },
+    icon: item => ({ count: 1, id: `minecraft:${item}` }),
+    background: name => `minecraft:textures/${name}.png`
+  },
+  single: {
+    cond: (type, fields) => ({ type: `minecraft:${type}`, ...fields }),
+    entityKeys: { type: 'minecraft:entity_type', location: 'minecraft:location' },
+    icon: item => ({ id: `minecraft:${item}` }),
+    background: name => `minecraft:${name}`
+  }
+};
+const entityIs = (shape, { type, biomes }) => shape.cond('entity_properties', {
+  entity: 'this',
+  predicate: {
+    ...(type ? { [shape.entityKeys.type]: `minecraft:${type}` } : {}),
+    ...(biomes ? { [shape.entityKeys.location]: { biomes: Array.isArray(biomes) ? biomes.map(b => `minecraft:${b}`) : `minecraft:${biomes}` } } : {})
+  }
+});
+const itemsOf = list => (list.length === 1 ? `minecraft:${list[0]}` : list.map(i => `minecraft:${i}`));
+
+// A catch: the hook came back with one of the items (in one of the biomes, if given).
+export const caught = (shape, items, biomes) => ({
+  trigger: 'minecraft:fishing_rod_hooked',
+  conditions: { entity: entityIs(shape, { type: 'fishing_bobber', biomes }), item: { items: itemsOf(items) } }
+});
+
+// The vanilla advancements whose spelling the shapes copy; the build stops if one differs.
+export function checkShape(vanilla, shape) {
+  const adv = rel => {
+    const file = path.join(vanilla.data, 'minecraft', 'advancement', `${rel}.json`);
+    if (!fs.existsSync(file)) fail(`advancement ${rel} is missing`);
+    return JSON.parse(fs.readFileSync(file, 'utf-8'));
+  };
+  const fishy = adv('husbandry/fishy_business');
+  if (!same(fishy.criteria.cod, { trigger: 'minecraft:fishing_rod_hooked', conditions: { item: { items: 'minecraft:cod' } } })) fail(`husbandry/fishy_business: the cod criterion changed (${JSON.stringify(fishy.criteria.cod)})`);
+  if (!same(fishy.display.icon, shape.icon('fishing_rod'))) fail(`husbandry/fishy_business: icon is written as ${JSON.stringify(fishy.display.icon)}`);
+  const bred = adv('husbandry/bred_all_animals').criteria['minecraft:horse'];
+  if (!same(bred?.conditions?.child, entityIs(shape, { type: 'horse' }))) fail(`husbandry/bred_all_animals: entity type is written as ${JSON.stringify(bred?.conditions?.child)}`);
+  const time = adv('adventure/adventuring_time').criteria['minecraft:badlands'];
+  if (!same(time?.conditions?.player, entityIs(shape, { biomes: 'badlands' }))) fail(`adventure/adventuring_time: the biome check is written as ${JSON.stringify(time?.conditions?.player)}`);
+  const root = adv('husbandry/root');
+  if (root.display.background !== shape.background('gui/advancements/backgrounds/husbandry')) fail(`husbandry/root: background is written as ${root.display.background}`);
+}
+
+// What can come up as treasure (the item the player gets): every entry of the built treasure table,
+// the book as the enchanted book it becomes. The fishing rod is left out, junk has one too.
+export function treasureCatches(treasure, junk, fish) {
+  const elsewhere = new Set([junk, fish].flatMap(t => t.pools[0].entries.map(e => e.name)));
+  const out = [];
+  for (const e of treasure.pools[0].entries) {
+    const item = e.name.replace(/^minecraft:/, '');
+    if (elsewhere.has(e.name)) continue;
+    if (item === 'book') {
+      if (!JSON.stringify(e).includes('minecraft:enchant_with_levels')) fail('fishing/treasure.json: the book is not enchanted any more');
+      out.push('enchanted_book');
+    } else out.push(item);
+  }
+  return out;
+}
+
+// Titles of the biome groups of BIOME_FISH, in the same order.
+const BIOME_ADV = [
+  ['warm', 'Tropical Waters', 'Catch a tropical fish in a warm ocean, a jungle or a mangrove swamp'],
+  ['frozen', 'Ice Fishing', 'Catch a salmon in a frozen river, a frozen ocean or a taiga'],
+  ['cold', 'Cold Current', 'Catch a cod in a cold ocean']
+];
+// The fish of the fish table: [item, title, description]
+const FISH_ADV = {
+  cod: ['Cod Squad', 'Catch a cod with a fishing rod'],
+  salmon: ['Upstream', 'Catch a salmon with a fishing rod'],
+  tropical_fish: ['Living Rainbow', 'Catch a tropical fish with a fishing rod'],
+  pufferfish: ['Handle With Care', 'Catch a pufferfish with a fishing rod']
+};
+const TREASURE_NAMES = { name_tag: 'a name tag', saddle: 'a saddle', bow: 'a bow', enchanted_book: 'an enchanted book', nautilus_shell: 'a nautilus shell', heart_of_the_sea: 'a heart of the sea', experience_bottle: "a bottle o' enchanting" };
+const listing = (names, word = 'and') => `${names.slice(0, -1).join(', ')} ${word} ${names.at(-1)}`;
+
+// Experience rewards: small for goals, larger for challenges. Never items.
+export const ADV_REWARDS = {
+  'biome/warm': 10, 'biome/frozen': 10, 'biome/cold': 10,
+  'treasure/heart_of_the_sea': 30,
+  'fish/every_fish': 50,
+  'treasure/every_treasure': 100
+};
+
+// The tab below its root: { name, parent, icon, title, description, frame, criteria, all }.
+export function logbook(shape, treasures) {
+  const list = [];
+  const add = (name, parent, icon, title, description, criteria, { frame = 'task', all = false } = {}) =>
+    list.push({ name, parent, icon, title, description, frame, criteria, all });
+  let parent = 'root';
+  for (const fish of EXPECTED_FISH) {
+    add(`fish/${fish}`, parent, fish, ...FISH_ADV[fish], { [fish]: caught(shape, [fish]) });
+    parent = `fish/${fish}`;
+  }
+  add('fish/every_fish', parent, 'barrel', 'Full Creel', 'Catch a cod, a salmon, a tropical fish and a pufferfish',
+    Object.fromEntries(EXPECTED_FISH.map(f => [f, caught(shape, [f])])), { frame: 'challenge', all: true });
+  BIOME_FISH.forEach(({ item, biomes }, i) => {
+    const [name, title, desc] = BIOME_ADV[i];
+    add(`biome/${name}`, `fish/${item}`, item === 'cod' ? 'cod_bucket' : item === 'salmon' ? 'salmon_bucket' : 'tropical_fish_bucket', title, desc,
+      { [item]: caught(shape, [item], biomes) }, { frame: 'goal' });
+  });
+  add('treasure/any', 'root', 'name_tag', 'Lucky Cast', `Fish up a treasure: ${listing(treasures.map(t => TREASURE_NAMES[t]), 'or')}`,
+    Object.fromEntries(treasures.map(t => [t, caught(shape, [t])])));
+  add('treasure/enchanted_book', 'treasure/any', 'enchanted_book', 'Soggy Spellbook', 'Fish up an enchanted book', { enchanted_book: caught(shape, ['enchanted_book']) });
+  add('treasure/experience_bottle', 'treasure/any', 'experience_bottle', 'Message in a Bottle', "Fish up a bottle o' enchanting", { experience_bottle: caught(shape, ['experience_bottle']) });
+  add('treasure/heart_of_the_sea', 'treasure/experience_bottle', 'heart_of_the_sea', 'Heart of the Deep', 'Fish up a heart of the sea', { heart_of_the_sea: caught(shape, ['heart_of_the_sea']) }, { frame: 'goal' });
+  add('treasure/every_treasure', 'treasure/heart_of_the_sea', 'nautilus_shell', 'Sunken Hoard', `Fish up every treasure: ${listing(treasures.map(t => TREASURE_NAMES[t]))}`,
+    Object.fromEntries(treasures.map(t => [t, caught(shape, [t])])), { frame: 'challenge', all: true });
+  return list;
+}
+
+const requirements = (criteria, all) => (all ? Object.keys(criteria).map(k => [k]) : [Object.keys(criteria)]);
+
+export function buildAdvancements(shape, treasures) {
+  const list = logbook(shape, treasures);
+  const names = new Set(['root', ...list.map(a => a.name)]);
+  if (names.size !== list.length + 1) fail('logbook: an advancement is defined twice');
+  for (const a of list) if (!names.has(a.parent)) throw new Error(`anglers-loot: ${a.name}: parent ${a.parent} does not exist`);
+  for (const key of Object.keys(ADV_REWARDS)) if (!names.has(key)) throw new Error(`anglers-loot: reward for unknown advancement ${key}`);
+  for (const t of treasures) if (!TREASURE_NAMES[t]) throw new Error(`anglers-loot: no name for the treasure ${t}`);
+  const files = {};
+  const rootCriteria = { fishing_rod: { trigger: 'minecraft:inventory_changed', conditions: { items: [{ items: 'minecraft:fishing_rod' }] } } };
+  files[`data/${NS}/advancement/root.json`] = {
+    criteria: rootCriteria,
+    display: {
+      icon: shape.icon('fishing_rod'),
+      title: { text: "Angler's Logbook" },
+      description: { text: 'Pick up a fishing rod and cast a line' },
+      frame: 'task',
+      background: shape.background('block/dark_prismarine'),
+      show_toast: false,
+      announce_to_chat: false
+    },
+    requirements: requirements(rootCriteria, false)
+  };
+  for (const a of list) {
+    const adv = {
+      parent: `${NS}:${a.parent}`,
+      criteria: a.criteria,
+      display: { icon: shape.icon(a.icon), title: { text: a.title }, description: { text: a.description }, frame: a.frame },
+      requirements: requirements(a.criteria, a.all)
+    };
+    if (ADV_REWARDS[a.name]) adv.rewards = { experience: ADV_REWARDS[a.name] };
+    files[`data/${NS}/advancement/${a.name}.json`] = adv;
+  }
+  return files;
+}
+
 export default async function ({ vanilla, registry }) {
   const items = registry('item');
   const junk = read(vanilla, 'fishing/junk.json');
@@ -240,5 +410,11 @@ export default async function ({ vanilla, registry }) {
     const wrong = keysIn(table).filter(k => FOREIGN.get(spelling).includes(k));
     if (wrong.length) throw new Error(`anglers-loot: ${file} mixes two loot table spellings (${[...new Set(wrong)].join(', ')})`);
   }
-  return files;
+  // 1.3: the advancements, in the spelling that belongs to this version's loot tables.
+  const shape = spelling === SPELLINGS.lists ? ADV_SHAPES.lists : ADV_SHAPES.single;
+  checkShape(vanilla, shape);
+  const treasures = treasureCatches(files[`${TABLES}/fishing/treasure.json`], junk, files[`${TABLES}/fishing/fish.json`]);
+  const advancements = buildAdvancements(shape, treasures);
+  if (Object.keys(advancements).length !== 14) throw new Error(`anglers-loot: expected 14 advancement files (root and 13), got ${Object.keys(advancements).length}`);
+  return { ...files, ...advancements };
 }
