@@ -1,0 +1,37 @@
+{
+  "name": "Stocked Shelves",
+  "summary": "Willy finally stocks the fishing supplies you could only craft or cook before, priced like the rest of his shop.",
+  "class": "Mods",
+  "category": "Items",
+  "logoPrompt": "A small wooden tackle box standing open, filled with a red and white bobber, coiled fishing line, hooks and a tin of bait",
+  "cover": {
+    "tagline": "More on the shelves at the docks.",
+    "bullets": [
+      "Wild Bait and Quality Bobber",
+      "Two fishing dishes to buy",
+      "Unlocks with your recipes"
+    ]
+  },
+  "description": [
+    "**Stocked Shelves fills the gaps in Willy's fish shop with the fishing supplies he never sold before.**",
+    "",
+    "## Features",
+    "- Wild Bait, priced like his Deluxe Bait, for a chance at two fish per bite.",
+    "- The Quality Bobber, at twice its sell price like his other tackle.",
+    "- Dish O' The Sea and Seafoam Pudding for a fishing boost, priced like his Trout Soup.",
+    "- Willy's own stock stays exactly as it was.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Visit Willy at the docks once you know the recipe.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Each item appears once you know its recipe, so nothing comes earlier than in your own kitchen or workshop. No legendary fish, no Magic Bait, no Curiosity Lure.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}
