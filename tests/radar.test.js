@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs';
-import { latestJava, latestBedrockSamples, changes, merged, added, nextContent, compatLine } from '../scripts/lib/radar.js';
+import { latestJava, latestBedrockSamples, changes, merged, added, nextContent, compatLine, olderThan, waitingFor } from '../scripts/lib/radar.js';
 
 test('radar: the newest Java release and test version come from Mojang\'s manifest', () => {
   assert.deepEqual(latestJava({ latest: { release: '26.3', snapshot: '26.4-snapshot-10' } }), { release: '26.3', snapshot: '26.4-snapshot-10' });
@@ -58,4 +58,17 @@ test('radar: the baseline and the report in data/radar are well-formed', () => {
       assert.equal(pack[version].ok, pack[version].problems.length === 0, `${slug} on ${version}: ok and problems disagree`);
     }
   }
+});
+
+test('radar: a pack built ahead for a coming version waits instead of failing on older ones', () => {
+  assert.equal(olderThan('26.3', '26.4'), true);
+  assert.equal(olderThan('26.4-snapshot-10', '26.4'), false);
+  assert.equal(olderThan('26.4', '26.4'), false);
+  assert.equal(olderThan('1.21.1', '26.3'), true);
+  assert.equal(olderThan('26.10', '26.4'), false);
+  const ahead = { slug: 'ice-cave-advancements', waitsFor: '26.4' };
+  assert.equal(waitingFor(ahead, '26.3'), '26.4');
+  assert.equal(waitingFor(ahead, '26.4-snapshot-10'), null);
+  assert.equal(waitingFor({ slug: 'hush' }, '26.3'), null);
+  assert.equal(compatLine('ice-cave-advancements', '26.3', { ok: null, waiting: '26.4' }), '… ice-cave-advancements on 26.3: waits for 26.4');
 });
