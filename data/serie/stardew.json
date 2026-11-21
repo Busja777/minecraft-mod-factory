@@ -16,9 +16,9 @@
       "art": "CP",
       "was": "Brief am Morgen jedes Geburtstags mit Geschenk-Tipp",
       "updates": [
-        "Erinnerung am Vortag",
-        "Insel-Bewohner",
-        "Deutsch"
+        "Insel-Bewohner (sobald im Spiel mit Geburtstag)",
+        "Deutsch",
+        "Geschenk-Tipp nach Freundschaftsstufe"
       ],
       "banner": {
         "from": "chatgpt",
@@ -132,9 +132,9 @@
       "art": "CP",
       "was": "Bessere Geoden-Inhalte, drei Stufen",
       "updates": [
-        "Omni-Geode",
-        "Artefakt-Truhen",
-        "Regler"
+        "Artefakt-Truhen, falls deren Inhalt belegt ist",
+        "Omni-Geode erst, wenn die Freischaltregel des Prismasplitters belegt ist (nicht raten)",
+        "Stufen-Feinschliff"
       ],
       "banner": {
         "from": "chatgpt",
