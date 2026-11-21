@@ -1,0 +1,37 @@
+{
+  "name": "Robin's Fair Prices",
+  "summary": "Farm buildings from the carpenter get cheaper and go up faster, and you choose how big the discount is in the config.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small red wooden barn with a white trimmed door, a carpenter's hammer and a short stack of planks leaning against it, one gold coin in front",
+  "cover": {
+    "tagline": "Build your farm for less.",
+    "bullets": [
+      "Less gold and fewer materials",
+      "Faster construction",
+      "Three levels in the config"
+    ]
+  },
+  "description": [
+    "**Robin's Fair Prices lowers the gold, materials and construction days of the farm buildings at the carpenter's shop.**",
+    "",
+    "## Features",
+    "- Covers coops, barns and sheds with all their upgrades, plus fish pond, mill, silo, slime hutch, stable, well, shipping bin and pet bowl.",
+    "- Three levels in the config: 75 %, 50 % (default) and 25 % of the normal cost. At 50 %, a barn costs 3,000g, 175 wood and 75 stone.",
+    "- Faster building: most projects are done the next day at 50 % or less, never in under one day.",
+    "- Gold and materials are rounded up, so every building still needs a little of each material.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the level in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Magical buildings, cabins and house upgrades keep their normal prices.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
