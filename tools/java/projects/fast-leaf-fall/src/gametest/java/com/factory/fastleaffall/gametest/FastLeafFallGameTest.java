@@ -4,14 +4,17 @@ import com.factory.fastleaffall.FastLeafFall;
 import com.factory.fastleaffall.LeafConfig;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameMode;
 
 /**
@@ -128,5 +131,78 @@ public class FastLeafFallGameTest implements FabricGameTest {
                 ctx.complete();
             });
         });
+    }
+    // --- V1.2: leaves that were already without a tree when their chunk loaded ---
+
+    /** Ticks the scan may take to reach a chunk (it works through every chunk loaded before, in order). */
+    private static final int SCAN_TICKS = 200;
+
+    /** Runs {@code then} in the first tick in which {@code check} holds; fails after {@code limit} ticks. */
+    private static void when(TestContext ctx, int limit, String what, BooleanSupplier check, Runnable then) {
+        if (check.getAsBoolean()) {
+            then.run();
+            return;
+        }
+        ctx.assertTrue(limit > 0, what);
+        ctx.waitAndRun(1, () -> when(ctx, limit - 1, what, check, then));
+    }
+
+    /** What Fabric's chunk load event does for the chunk holding {@code at}: its scan is queued. */
+    private static ChunkPos loadChunkOf(TestContext ctx, BlockPos at) {
+        ServerWorld world = ctx.getWorld();
+        BlockPos abs = ctx.getAbsolutePos(at);
+        FastLeafFall.onChunkLoad(world, world.getWorldChunk(abs));
+        return new ChunkPos(abs);
+    }
+
+    private static boolean isLeaf(TestContext ctx, BlockPos at) {
+        return ctx.getBlockState(at).getBlock() instanceof LeavesBlock;
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = SCAN_TICKS + 100)
+    public void anOldOrphanedLeafFallsWhenItsChunkLoads(TestContext ctx) {
+        // a leaf from before the mod: no log anywhere, distance 7, not placed by a player. Nothing
+        // around it changes, so vanilla never gives it a scheduled tick, only a rare random tick.
+        ServerWorld world = ctx.getWorld();
+        BlockPos leaf = new BlockPos(3, 3, 3);
+        BlockPos abs = ctx.getAbsolutePos(leaf);
+        ctx.setBlockState(leaf, leaves(7, false));
+        ctx.assertTrue(!FastLeafFall.isQueued(world, abs), "placing the leaf does not queue it");
+        ChunkPos chunk = loadChunkOf(ctx, leaf);
+        ctx.assertTrue(FastLeafFall.isScanPending(world, chunk), "the loaded chunk waits for its scan");
+        LeafConfig config = FastLeafFall.config();
+        when(ctx, SCAN_TICKS, "the scan does not find the leaf within " + SCAN_TICKS + " ticks",
+            () -> FastLeafFall.isQueued(world, abs) || !isLeaf(ctx, leaf), () -> {
+                ctx.assertTrue(isLeaf(ctx, leaf), "the leaf is still there when the scan finds it");
+                ctx.waitAndRun(config.minDelayTicks() / 2, () -> {
+                    ctx.assertTrue(isLeaf(ctx, leaf), "the leaf waits like the leaves of a felled tree");
+                    ctx.waitAndRun(config.maxDelayTicks() + 2 - config.minDelayTicks() / 2, () -> {
+                        ctx.expectBlock(Blocks.AIR, leaf);
+                        ctx.complete();
+                    });
+                });
+            });
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = SCAN_TICKS + 100)
+    public void theScanLeavesPlacedAndNearLeavesAlone(TestContext ctx) {
+        // a player's leaf without a tree (persistent, distance 7) and a leaf vanilla still counts as
+        // near a log (distance 6): neither decays in vanilla, so the scan leaves both alone
+        ServerWorld world = ctx.getWorld();
+        BlockPos placed = new BlockPos(1, 2, 1);
+        BlockPos near = new BlockPos(5, 2, 5);
+        ctx.setBlockState(placed, leaves(7, true));
+        ctx.setBlockState(near, leaves(6, false));
+        List<ChunkPos> chunks = List.of(loadChunkOf(ctx, placed), loadChunkOf(ctx, near));
+        when(ctx, SCAN_TICKS, "the scan of the chunks does not end within " + SCAN_TICKS + " ticks",
+            () -> chunks.stream().noneMatch(c -> FastLeafFall.isScanPending(world, c)), () -> {
+                ctx.assertTrue(!FastLeafFall.isQueued(world, ctx.getAbsolutePos(placed)), "the placed leaf is not queued");
+                ctx.assertTrue(!FastLeafFall.isQueued(world, ctx.getAbsolutePos(near)), "the leaf near a log is not queued");
+                ctx.waitAndRun(FastLeafFall.config().maxDelayTicks() + 2, () -> {
+                    ctx.assertTrue(isLeaf(ctx, placed) && ctx.getBlockState(placed).get(LeavesBlock.PERSISTENT), "the placed leaf stays");
+                    ctx.assertTrue(isLeaf(ctx, near) && ctx.getBlockState(near).get(LeavesBlock.DISTANCE) == 6, "the leaf near a log stays");
+                    ctx.complete();
+                });
+            });
     }
 }

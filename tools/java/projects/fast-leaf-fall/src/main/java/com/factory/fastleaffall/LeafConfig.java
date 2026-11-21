@@ -13,17 +13,22 @@ import java.util.function.Consumer;
 /**
  * The settings in config/fastleaffall.json (since 1.1), without any Minecraft types. The file is
  * created with the defaults on the first start. Each setting is read on its own: a missing key gets
- * its default without a warning, a broken or out-of-range value gets its default with a warning. The
- * defaults are exactly the fixed values of 1.0, which had no config file.
+ * its default without a warning (so a file of 1.1 keeps its values and gets the newer keys' defaults),
+ * a broken or out-of-range value gets its default with a warning. The delay defaults are exactly the
+ * fixed values of 1.0, which had no config file.
  *
- * @param minDelayTicks shortest wait between a leaf losing its tree and its decay (1 to 400 ticks)
- * @param maxDelayTicks longest wait (minDelayTicks to 400 ticks); each leaf gets a random wait in between
- * @param leavesPerTick at most this many leaves decay per world and tick (1 to 512)
+ * @param minDelayTicks  shortest wait between a leaf losing its tree and its decay (1 to 400 ticks)
+ * @param maxDelayTicks  longest wait (minDelayTicks to 400 ticks); each leaf gets a random wait in between
+ * @param leavesPerTick  at most this many leaves decay per world and tick (1 to 512); also the most
+ *                       leaves the scan of loaded chunks may queue per world and tick (since 1.2)
+ * @param catchOldLeaves leaves that were already without a tree when their chunk loaded (cut or
+ *                       generated before the mod was installed) fall fast too (since 1.2)
  */
-public record LeafConfig(int minDelayTicks, int maxDelayTicks, int leavesPerTick) {
+public record LeafConfig(int minDelayTicks, int maxDelayTicks, int leavesPerTick, boolean catchOldLeaves) {
     public static final int DEFAULT_MIN_DELAY_TICKS = LeafRules.MIN_DELAY_TICKS;
     public static final int DEFAULT_MAX_DELAY_TICKS = LeafRules.MIN_DELAY_TICKS + LeafRules.DELAY_SPREAD_TICKS - 1;
     public static final int DEFAULT_LEAVES_PER_TICK = LeafRules.DECAYS_PER_TICK;
+    public static final boolean DEFAULT_CATCH_OLD_LEAVES = true;
     /** Lower bound of both waits: a leaf never decays in the same tick it lost its tree. */
     public static final int MIN_TICKS = 1;
     /** Upper bound of both waits: 20 seconds; anything slower is close to vanilla's own decay. */
@@ -39,8 +44,13 @@ public record LeafConfig(int minDelayTicks, int maxDelayTicks, int leavesPerTick
             throw new IllegalArgumentException("leavesPerTick " + leavesPerTick);
     }
 
+    /** The settings of 1.1; {@code catchOldLeaves} at its default. */
+    public LeafConfig(int minDelayTicks, int maxDelayTicks, int leavesPerTick) {
+        this(minDelayTicks, maxDelayTicks, leavesPerTick, DEFAULT_CATCH_OLD_LEAVES);
+    }
+
     public static LeafConfig defaults() {
-        return new LeafConfig(DEFAULT_MIN_DELAY_TICKS, DEFAULT_MAX_DELAY_TICKS, DEFAULT_LEAVES_PER_TICK);
+        return new LeafConfig(DEFAULT_MIN_DELAY_TICKS, DEFAULT_MAX_DELAY_TICKS, DEFAULT_LEAVES_PER_TICK, DEFAULT_CATCH_OLD_LEAVES);
     }
 
     /** How many different waits there are (for a random roll in [0, spread)). */
@@ -55,7 +65,7 @@ public record LeafConfig(int minDelayTicks, int maxDelayTicks, int leavesPerTick
 
     public String toJson() {
         return "{\n  \"minDelayTicks\": " + minDelayTicks + ",\n  \"maxDelayTicks\": " + maxDelayTicks
-            + ",\n  \"leavesPerTick\": " + leavesPerTick + "\n}\n";
+            + ",\n  \"leavesPerTick\": " + leavesPerTick + ",\n  \"catchOldLeaves\": " + catchOldLeaves + "\n}\n";
     }
 
     /** Reads the settings from the file's text; problems go to {@code warn} and use the default. */
@@ -79,7 +89,19 @@ public record LeafConfig(int minDelayTicks, int maxDelayTicks, int leavesPerTick
             max = min;
         }
         int perTick = whole(obj, "leavesPerTick", MIN_LEAVES_PER_TICK, MAX_LEAVES_PER_TICK, DEFAULT_LEAVES_PER_TICK, warn);
-        return new LeafConfig(min, max, perTick);
+        boolean catchOld = bool(obj, "catchOldLeaves", DEFAULT_CATCH_OLD_LEAVES, warn);
+        return new LeafConfig(min, max, perTick, catchOld);
+    }
+
+    /** true or false; a missing key is not a problem (files of 1.1 do not have the keys of 1.2). */
+    private static boolean bool(JsonObject obj, String key, boolean fallback, Consumer<String> warn) {
+        if (!obj.has(key)) return fallback;
+        JsonElement value = obj.get(key);
+        if (!(value instanceof JsonPrimitive p) || !p.isBoolean()) {
+            warn.accept("config/" + FILE_NAME + ": \"" + key + "\" must be true or false, using " + fallback);
+            return fallback;
+        }
+        return p.getAsBoolean();
     }
 
     /** A whole number in [low, high]; a missing key is not a problem (config files did not exist before 1.1). */

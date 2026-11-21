@@ -118,9 +118,9 @@
       "art": "M",
       "was": "Rechtsklick erntet und pflanzt nach",
       "updates": [
-        "Flächen-Ernte (3×3 mit Hacke)",
-        "NeoForge",
-        "Statistik der geernteten Pflanzen"
+        "Statistik der geernteten Pflanzen",
+        "NeoForge (braucht einen eigenen Bau, gibt es noch nicht)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -187,8 +187,8 @@
       "was": "Laub verschwindet schnell nach dem Fällen",
       "updates": [
         "Feinschliff nach Kommentaren",
-        "NeoForge",
-        "Laub aus alten Chunks beim Betreten mit erfassen"
+        "NeoForge (braucht einen eigenen Bau, gibt es noch nicht)",
+        "Laub-Partikel beim schnellen Fallen (nur wenn ohne Client-Mod möglich)"
       ],
       "banner": {
         "from": "chatgpt",

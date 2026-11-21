@@ -30,6 +30,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "ReplantClick-1.2.jar",
+      "changelog": "## Replant Click 1.2\n\nArea harvest with a hoe.\n\n- Right-click a ripe crop while holding a hoe: the ripe crops of the same kind in the 3×3 area around it (same height) are harvested and replanted too, each one exactly like a single click.\n- Works for wheat, carrots, potatoes, beetroots and nether wart. Cocoa pods stay one at a time, because they hang on the sides of logs and not in a flat field.\n- Each crop around the clicked one costs the hoe one point of durability (Unbreaking helps as usual); the clicked crop stays free. A hoe with its last point left stops the area and never breaks.\n- Fortune on the hoe counts for every crop of the area. Young crops and crops of another kind are left alone.\n- Crops around the clicked one that you may not change are skipped: spawn protection, the world border, and land protected by claim mods that block breaking there.\n- New file `config/replantclick.json`, created on the first start: `areaWithHoe` (default `true`) turns the area off when set to `false`. A broken value falls back to the default with a warning in the server log.\n- Without a hoe nothing changes. Sneaking and bone meal work as before, and only the server needs the mod.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }

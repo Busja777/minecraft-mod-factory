@@ -121,4 +121,42 @@ class LeafConfigTest {
         assertEquals(new LeafConfig(10, 49, 128), LeafConfig.load(config, warnings::add));
         assertTrue(warnings.isEmpty(), warnings.toString());
     }
+    // --- V1.2: catchOldLeaves ---
+
+    @Test
+    void oldLeavesAreCaughtByDefault() {
+        assertTrue(LeafConfig.defaults().catchOldLeaves());
+        assertTrue(new LeafConfig(10, 49, 64).catchOldLeaves(), "the settings of 1.1 get the default");
+    }
+
+    @Test
+    void readsCatchOldLeaves() {
+        assertEquals(new LeafConfig(10, 49, 64, false), parse("{\"catchOldLeaves\": false}"));
+        assertEquals(new LeafConfig(5, 20, 16, true), parse("{\"minDelayTicks\": 5, \"maxDelayTicks\": 20, \"leavesPerTick\": 16, \"catchOldLeaves\": true}"));
+        assertTrue(warnings.isEmpty(), warnings.toString());
+    }
+
+    @Test
+    void aFileOf11KeepsItsValues() {
+        // written by 1.1: no catchOldLeaves yet
+        String old = "{\n  \"minDelayTicks\": 20,\n  \"maxDelayTicks\": 80,\n  \"leavesPerTick\": 32\n}\n";
+        assertEquals(new LeafConfig(20, 80, 32, true), parse(old));
+        assertTrue(warnings.isEmpty(), warnings.toString());
+    }
+
+    @Test
+    void aBrokenCatchOldLeavesFallsBackWithAWarning() {
+        for (String bad : List.of("0", "1", "\"no\"", "null", "[true]")) {
+            warnings.clear();
+            assertEquals(new LeafConfig(10, 49, 8, true), parse("{\"leavesPerTick\": 8, \"catchOldLeaves\": " + bad + "}"), bad);
+            assertEquals(1, warnings.size(), bad);
+        }
+    }
+
+    @Test
+    void theWrittenFileHasEveryKey() {
+        String json = new LeafConfig(12, 34, 56, false).toJson();
+        for (String key : List.of("minDelayTicks", "maxDelayTicks", "leavesPerTick", "catchOldLeaves")) assertTrue(json.contains("\"" + key + "\""), key);
+        assertEquals(new LeafConfig(12, 34, 56, false), parse(json));
+    }
 }

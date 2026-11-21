@@ -3,7 +3,7 @@
   "id": "replantclick",
   "version": "${version}",
   "name": "Replant Click",
-  "description": "Right-click a fully grown crop, nether wart or cocoa pod to harvest it and replant it in one go. Works on the server alone; players need nothing installed.",
+  "description": "Right-click a fully grown crop, nether wart or cocoa pod to harvest it and replant it in one go; with a hoe the ripe crops around it too. Works on the server alone; players need nothing installed.",
   "authors": ["SevFactory"],
   "contact": {},
   "license": "MIT",
