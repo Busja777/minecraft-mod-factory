@@ -48,9 +48,11 @@ for (const reihe of loadReihen()) {
           assert.equal(mod.version, newest.version);
         });
       } else {
-        test(`stock = source: ${label}`, { skip: !vanillaReady(pack.mc) && 'vanilla data not downloaded yet' }, async () => {
+        test(`stock = source: ${label}`, { skip: !java.versionsOf(pack).every(vanillaReady) && 'vanilla data not downloaded yet' }, async () => {
           const files = await java.generate(pack, vanillaOf(pack.mc));
-          same(entries(file), entries(await java.buildZip(pack, files, newest.version, tmp())), label);
+          const more = [];
+          for (const mc of pack.also || []) more.push({ mc, files: await java.generate(pack, vanillaOf(mc), mc) });
+          same(entries(file), entries(await java.buildZip(pack, files, newest.version, tmp(), more)), label);
         });
       }
     } else if (reihe.reihe === 'stardew') {
