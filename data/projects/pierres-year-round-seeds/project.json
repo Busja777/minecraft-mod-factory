@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "PierresYearRoundSeeds-1.1.zip",
+      "changelog": "## Pierre's Year-Round Seeds 1.1\n\nSandy's Oasis shop joins in.\n\n- Sandy sells her seasonal seeds all year: rhubarb seeds (spring), starfruit seeds (summer) and beet seeds (fall), also in winter.\n- They use the same surcharge setting as Pierre's seeds: at +50 % (default) rhubarb seeds cost 150g instead of 100g, starfruit seeds 600g instead of 400g and beet seeds 30g instead of 20g.\n- In their own season, Sandy's stock and prices stay as they are. Cactus seeds and everything else in her shop are untouched.\n- Your surcharge setting carries over. Crops still only grow in their own season.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

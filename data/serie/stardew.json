@@ -72,7 +72,7 @@
       "art": "CP",
       "was": "Fässer und Einmachgläser schneller, Faktor einstellbar",
       "updates": [
-        "Kristallarium",
+        "Kristallarium erst, wenn Data/Machines im Cache liegt und die Prüfung (BC)-IDs kennt (am 21.11. zurückgestellt: Zeiten nicht belegt, nicht raten)",
         "Zapfhähne",
         "Fischräucherer und Trockengestell"
       ],
@@ -104,9 +104,9 @@
       "art": "CP",
       "was": "Saat ganzjährig, Aufpreis einstellbar",
       "updates": [
-        "Samen aus Sandys Oasis-Laden ganzjährig (gleiche Aufpreis-Regel)",
-        "Einstellungstexte auf Deutsch",
-        "Aufpreis-Stufe 0 % für entspannte Spielstände"
+        "Einstellungstexte auf Deutsch (sobald die Prüfung Übersetzungen der Einstellungen kennt, PR #33)",
+        "Aufpreis-Stufe 0 % für entspannte Spielstände",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -216,9 +216,9 @@
       "art": "CP",
       "was": "Obstbäume tragen öfter zwei Früchte, Stufe wählbar (ersetzt „Faster Fruit Trees“: die Wachstumszeit ist im Spiel fest eingebaut und per Content Patcher nicht ehrlich änderbar)",
       "updates": [
-        "Insel-Bäume (Banane, Mango)",
-        "Stufen",
-        "Deutsch"
+        "Deutsch (sobald die Prüfung Übersetzungen der Einstellungen kennt, PR #33); Insel-Bäume und Stufen sind schon in 1.0",
+        "Balance der Stufen nach Kommentaren",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
