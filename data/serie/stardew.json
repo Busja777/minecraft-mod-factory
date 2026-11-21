@@ -16,9 +16,9 @@
       "art": "CP",
       "was": "Brief am Morgen jedes Geburtstags mit Geschenk-Tipp",
       "updates": [
-        "Insel-Bewohner (sobald im Spiel mit Geburtstag)",
-        "Deutsch",
-        "Geschenk-Tipp nach Freundschaftsstufe"
+        "Geschenk-Tipp nach Freundschaftsstufe",
+        "Deutsch (Briefe und Einstellungstexte, nach PR #75)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -160,9 +160,9 @@
       "art": "CP",
       "was": "Bessere Teich-Erträge",
       "updates": [
+        "legendäre Fische",
         "Flunder und Mitternachtskarpfen (sobald die Quallen-IDs in der Datenliste stehen)",
-        "Stufen wählbar",
-        "legendäre Fische"
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",

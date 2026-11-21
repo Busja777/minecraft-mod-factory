@@ -1,9 +1,10 @@
 // Fish Pond Bounty: fish ponds of 30 common fish give their roe more reliably and, in fuller ponds,
-// in bigger amounts. One fixed level, no config. Roe is the only produce this pack adds; the few
+// in bigger amounts. Since 1.2 the boost has three levels in the config (Gentle, Normal = the
+// numbers of 1.0/1.1 and the default, Generous). Roe is the only produce this pack adds; the few
 // other items some of these fish make (solar essence, rainbow shells, prismatic shards, treasure
 // chests, bug meat) stay exactly as rare as in vanilla. Legendary fish are not touched.
 // 1.0: 23 river and ocean fish whose only vanilla produce is roe. 1.1: 7 more fish (Catfish,
-// Sunfish, Rainbow Trout, Spook Fish, Dorado, Lingcod, Pike).
+// Sunfish, Rainbow Trout, Spook Fish, Dorado, Lingcod, Pike). 1.2: config option "Boost".
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/FishPondData is a list of entries { Id, RequiredTags, Precedence, SpawnTime,
@@ -48,9 +49,20 @@
 //   ocean fish (Albacore … Tuna) 1 roe at 70 % to 100 %, Carp, Herring and Catfish 1 roe at 100 %,
 //   Sunfish 1 roe at 90 %. Five of the 1.1 fish also make one rare item at population 9 or 10.
 // This pack, for every fish: first the rare vanilla items (EXTRAS, same population, chance and
-// amount as vanilla, checked first like in vanilla), then roe: population 7+: 2–3 roe at 40 %, else
-// population 4+: 1–2 roe at 40 %, else 1 roe (100 %). So the rare items keep exactly their vanilla
-// daily chance, and at every population the roe is at least the vanilla roe.
+// amount as vanilla, checked first like in vanilla), then roe by the chosen level (LEVELS):
+//   Gentle:   population 7+: 1–2 roe at 40 %, else 1 roe (100 %);
+//   Normal:   population 7+: 2–3 roe at 40 %, else population 4+: 1–2 roe at 40 %, else 1 roe
+//             (100 %), the numbers of 1.0 and 1.1;
+//   Generous: population 7+: 2–3 roe at 50 %, else population 4+: 1–2 roe at 60 %, else 1 roe.
+// Expected roe per produced item at population 1–3 / 4–6 / 7–10: Gentle 1 / 1 / 1.2, Normal
+// 1 / 1.2 / 1.72, Generous 1 / 1.3 / 1.9 (expectedRoe below). The rare items keep exactly their
+// vanilla daily chance at every level, at every population the roe is at least the vanilla roe, the
+// levels never cross (Gentle ≤ Normal ≤ Generous) and no level gives more than 2 roe per produced
+// item on average. The daily chance to produce (BASE_CHANCE) is the same at every level.
+// - The level is a config option (Content Patcher author-guide/config.md: ConfigSchema with
+//   AllowValues/Default) and selects one of three patches through "When" (author-guide.md#conditions),
+//   like Machine Tempo and Pierre's Year-Round Seeds. The three patches add the same entry IDs, and
+//   exactly one of them applies.
 //
 // The raw vanilla ProducedItems are not published; the wiki gives the share of each item per
 // population ("% of Items", "The first entry that is valid for the current population and passes
@@ -185,12 +197,26 @@ export const DOCUMENTED = {
 };
 
 export const ROE = '(O)812';
-// Checked top to bottom, the first that passes its population and chance gives the roe.
-export const PRODUCE = [
-  { key: 'RoeFullPond', RequiredPopulation: 7, Chance: 0.4, MinStack: 2, MaxStack: 3 },
-  { key: 'RoeBusyPond', RequiredPopulation: 4, Chance: 0.4, MinStack: 1, MaxStack: 2 },
-  { key: 'Roe', RequiredPopulation: 0, Chance: 1, MinStack: 1, MaxStack: 1 }
-];
+// Config value → roe entries, checked top to bottom, the first that passes its population and
+// chance gives the roe.
+export const LEVELS = {
+  Gentle: [
+    { key: 'RoeFullPond', RequiredPopulation: 7, Chance: 0.4, MinStack: 1, MaxStack: 2 },
+    { key: 'Roe', RequiredPopulation: 0, Chance: 1, MinStack: 1, MaxStack: 1 }
+  ],
+  Normal: [
+    { key: 'RoeFullPond', RequiredPopulation: 7, Chance: 0.4, MinStack: 2, MaxStack: 3 },
+    { key: 'RoeBusyPond', RequiredPopulation: 4, Chance: 0.4, MinStack: 1, MaxStack: 2 },
+    { key: 'Roe', RequiredPopulation: 0, Chance: 1, MinStack: 1, MaxStack: 1 }
+  ],
+  Generous: [
+    { key: 'RoeFullPond', RequiredPopulation: 7, Chance: 0.5, MinStack: 2, MaxStack: 3 },
+    { key: 'RoeBusyPond', RequiredPopulation: 4, Chance: 0.6, MinStack: 1, MaxStack: 2 },
+    { key: 'Roe', RequiredPopulation: 0, Chance: 1, MinStack: 1, MaxStack: 1 }
+  ]
+};
+export const DEFAULT = 'Normal';
+export const PRODUCE = LEVELS[DEFAULT];
 export const PRECEDENCE = -10;
 export const BASE_CHANCE = { min: 0.15, max: 0.95 };
 
@@ -199,10 +225,10 @@ const keyOf = name => name.replace(/[^A-Za-z]/g, '');
 
 // Expected roe per produced item at a population (without the game's extra-roe roll, which applies
 // on top in both cases).
-export function expectedRoe(population) {
+export function expectedRoe(population, produce = PRODUCE) {
   let rest = 1;
   let sum = 0;
-  for (const p of PRODUCE) {
+  for (const p of produce) {
     if (population < p.RequiredPopulation) continue;
     sum += rest * p.Chance * (p.MinStack + p.MaxStack) / 2;
     rest *= 1 - p.Chance;
@@ -211,8 +237,9 @@ export function expectedRoe(population) {
 }
 
 // Share of each item among the days the base chance passed ("% of Items"), first match wins.
-// roe: vanilla (one entry, 1 roe at the vanilla chance) or this pack (expected roe count).
-export function shares(name, population, roe = 'vanilla') {
+// roe: vanilla (one entry, 1 roe at the vanilla chance) or this pack (expected roe count of the
+// given level's entries).
+export function shares(name, population, roe = 'vanilla', produce = PRODUCE) {
   let rest = 1;
   const out = {};
   for (const e of EXTRAS[name] || []) {
@@ -220,7 +247,7 @@ export function shares(name, population, roe = 'vanilla') {
     out[e.item] = (out[e.item] || 0) + rest * e.Chance;
     rest *= 1 - e.Chance;
   }
-  out.Roe = rest * (roe === 'vanilla' ? FISH[name][2] : expectedRoe(population));
+  out.Roe = rest * (roe === 'vanilla' ? FISH[name][2] : expectedRoe(population, produce));
   return out;
 }
 
@@ -248,17 +275,27 @@ export default async function ({ items }) {
     }
   }
   for (const name of Object.keys(EXTRAS)) if (!DOCUMENTED[name]) throw new Error(`${name}: rare items without documented shares`);
-  // every population must get at least the vanilla roe, and the rare items exactly the vanilla chance
-  for (const name of Object.keys(FISH)) {
-    for (let pop = 1; pop <= 10; pop++) {
-      const vanilla = shares(name, pop);
-      const pack = shares(name, pop, 'pack');
-      if (pack.Roe < vanilla.Roe) throw new Error(`${name}: less roe than vanilla at population ${pop}`);
-      for (const item of Object.keys(vanilla)) if (item !== 'Roe' && pack[item] !== vanilla[item]) throw new Error(`${name}: ${item} differs from vanilla`);
+  if (!(DEFAULT in LEVELS)) throw new Error(`default ${DEFAULT} is not an allowed value`);
+  // at every level: every population gets at least the vanilla roe, the rare items exactly the
+  // vanilla chance, the last entry always gives roe and the average stays at most 2 roe
+  for (const [level, produce] of Object.entries(LEVELS)) {
+    for (const name of Object.keys(FISH)) {
+      for (let pop = 1; pop <= 10; pop++) {
+        const vanilla = shares(name, pop);
+        const pack = shares(name, pop, 'pack', produce);
+        if (pack.Roe < vanilla.Roe) throw new Error(`${level}: ${name}: less roe than vanilla at population ${pop}`);
+        for (const item of Object.keys(vanilla)) if (item !== 'Roe' && pack[item] !== vanilla[item]) throw new Error(`${level}: ${name}: ${item} differs from vanilla`);
+      }
     }
+    if (produce.at(-1).Chance !== 1 || produce.at(-1).RequiredPopulation !== 0) throw new Error(`${level}: the last produce entry must always give roe`);
+    for (const p of produce) if (!(p.Chance > 0 && p.Chance <= 1 && p.MinStack >= 1 && p.MaxStack >= p.MinStack)) throw new Error(`${level}: ${p.key}: chance or stack out of range`);
+    if (expectedRoe(10, produce) > 2) throw new Error(`${level}: more than double roe is not a fair value`);
   }
-  if (PRODUCE.at(-1).Chance !== 1 || PRODUCE.at(-1).RequiredPopulation !== 0) throw new Error('the last produce entry must always give roe');
-  if (expectedRoe(10) > 2) throw new Error('more than double roe is not a fair value');
+  // the levels are ordered: Gentle ≤ Normal ≤ Generous at every population
+  const order = Object.values(LEVELS);
+  for (let pop = 1; pop <= 10; pop++) {
+    for (let i = 1; i < order.length; i++) if (expectedRoe(pop, order[i]) < expectedRoe(pop, order[i - 1])) throw new Error(`levels out of order at population ${pop}`);
+  }
 
   const gatesOf = group => {
     const gates = {};
@@ -273,33 +310,45 @@ export default async function ({ items }) {
   const example = gatesOf(DOCUMENTED_GATE.group)[DOCUMENTED_GATE.key] || [];
   if (example.length !== DOCUMENTED_GATE.items.length || !DOCUMENTED_GATE.items.every(q => example.includes(q))) throw new Error(`gate ${DOCUMENTED_GATE.key} of ${DOCUMENTED_GATE.group} is ${JSON.stringify(example)}, the wiki example is ${JSON.stringify(DOCUMENTED_GATE.items)}`);
 
-  const entries = {};
-  for (const [name, [group, spawn]] of Object.entries(FISH)) {
-    if (!(spawn >= 1 && spawn <= 5)) throw new Error(`${name}: spawn time ${spawn}`);
-    const id = `{{ModId}}_${keyOf(name)}`;
-    entries[id] = {
-      Id: id,
-      RequiredTags: [tagOf(name)],
-      Precedence: PRECEDENCE,
-      SpawnTime: spawn,
-      BaseMinProduceChance: BASE_CHANCE.min,
-      BaseMaxProduceChance: BASE_CHANCE.max,
-      ProducedItems: [
-        ...(EXTRAS[name] || []).map(({ key, item, ...p }) => ({ Id: `{{ModId}}_${key}`, ItemId: idOf(item), ...p })),
-        ...PRODUCE.map(({ key, ...p }) => ({ Id: `{{ModId}}_${key}`, ItemId: ROE, ...p }))
-      ],
-      PopulationGates: gatesOf(group)
-    };
+  for (const [name, [, spawn]] of Object.entries(FISH)) if (!(spawn >= 1 && spawn <= 5)) throw new Error(`${name}: spawn time ${spawn}`);
+  const changes = [];
+  for (const [level, produce] of Object.entries(LEVELS)) {
+    const entries = {};
+    for (const [name, [group, spawn]] of Object.entries(FISH)) {
+      const id = `{{ModId}}_${keyOf(name)}`;
+      entries[id] = {
+        Id: id,
+        RequiredTags: [tagOf(name)],
+        Precedence: PRECEDENCE,
+        SpawnTime: spawn,
+        BaseMinProduceChance: BASE_CHANCE.min,
+        BaseMaxProduceChance: BASE_CHANCE.max,
+        ProducedItems: [
+          ...(EXTRAS[name] || []).map(({ key, item, ...p }) => ({ Id: `{{ModId}}_${key}`, ItemId: idOf(item), ...p })),
+          ...produce.map(({ key, ...p }) => ({ Id: `{{ModId}}_${key}`, ItemId: ROE, ...p }))
+        ],
+        PopulationGates: gatesOf(group)
+      };
+    }
+    changes.push({
+      LogName: `More roe from the ponds of common fish (${level})`,
+      Action: 'EditData',
+      Target: 'Data/FishPondData',
+      Entries: entries,
+      When: { Boost: level }
+    });
   }
   return {
     'content.json': {
       Format: '2.9.0',
-      Changes: [{
-        LogName: 'More roe from the ponds of common fish',
-        Action: 'EditData',
-        Target: 'Data/FishPondData',
-        Entries: entries
-      }]
+      ConfigSchema: {
+        Boost: {
+          AllowValues: Object.keys(LEVELS).join(', '),
+          Default: DEFAULT,
+          Description: 'How much extra roe the fish ponds give. Normal is the boost of earlier versions, Gentle gives a little less, Generous a little more. Special finds, quests and the daily chance to produce stay as in the normal game.'
+        }
+      },
+      Changes: changes
     }
   };
 }
