@@ -25,6 +25,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "UncraftBasics-1.2.zip",
+      "changelog": "## Uncraft Basics 1.2\n\nStone and glass.\n\n- Stone bricks and chiseled stone bricks turn back into stone.\n- Polished andesite, diorite and granite turn back into their plain stone.\n- Polished deepslate, deepslate bricks, deepslate tiles and chiseled deepslate turn back into cobbled deepslate.\n- Polished tuff, tuff bricks, chiseled tuff and chiseled tuff bricks turn back into tuff.\n- Polished blackstone bricks and chiseled polished blackstone turn back into blackstone.\n- Cut and chiseled sandstone (also red) turn back into sandstone, end stone bricks into end stone, purpur pillars into purpur blocks, polished basalt into basalt and mud bricks into packed mud.\n- Quartz bricks give 4 nether quartz and chiseled nether bricks give 4 nether bricks.\n- 8 glass panes give 3 glass.\n- 26 new recipes, 55 in total. Every amount is what the cheapest vanilla recipe takes (one stone block back for one block, as in the stonecutter), so nothing is ever gained. Blocks made in a furnace (smooth stone, cracked bricks, terracotta) stay as they are.\n- Works on Minecraft 1.21, 1.21.1 and 26.3 as before.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
