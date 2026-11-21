@@ -21,7 +21,30 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 - **Die Nacht-Sitzung lief noch nie:** Diese Sitzung und sie teilen sich ein Ausgabe-Limit. Claude baut tagsüber mit höchstens zwei Helfern und abends nichts Großes. Besser wäre ein höheres Limit (deine Entscheidung).
 - **Blind bleibt blind:** Stardew, Bedrock und 1.21.1 sind ungetestet im Spiel; die Seiten sagen nichts anderes.
 
-**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #33 → #37 → #31 → #34. Danach `npm run cf -- serie` für die 18 Minecraft-Projekte, die schon warten.
+**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #33 → #37 → #75 → #31 → #34. Danach `npm run cf -- serie` für die 18 Minecraft-Projekte, die schon warten.
+
+## Nachmittag 21.11.: Updates statt neuer Projekte
+
+**Gebaut (alles nur Inhalte, von selbst übernommen oder unterwegs):**
+- WoW: alle 12 Addons haben jetzt V1.2 (Gold Diary V1.3).
+- Java: Trigger Homes, Actionbar Coords, Ore Abundance, Owner Safe Pets, AFK Tag, Replant Click, Fast Leaf Fall V1.2, Uncraft Basics V1.3, Hush V1.4. Die Fabric-Mods jeweils mit Gradle- und GameTests.
+- Stardew: More to Say (Pam und Gus), Joja Junk Mail (Fest-Briefe), Villager Birthday Reminders (Leo), Fish Pond Bounty (Stufen), Festival Stalls Plus (Preis-Stufen), Stocked Shelves V1.2, Pierre's Year-Round Seeds V1.1 (Sandy).
+
+**Abgelehnt oder zurückgestellt, mit Grund im Plan:**
+- Enchanting Extras in Beute und Handel: Die Seite verspricht „nur vom Verzauberungstisch“.
+- Machine Tempo Kristallarium: Maschinendaten nicht im Zwischenspeicher, nicht raten.
+- Sandys Fischtheke: Gekaufter Fisch ließe sich räuchern und mit Gewinn verkaufen.
+- Platzhalter-Rezepte für 1.21.1: Das Spiel kann sie hier nicht prüfen.
+
+**Gefunden und korrigiert:** Stocked Shelves 1.1 ließ Krobus jeden Tag Leerenlachs verkaufen. Mit Räucherofen und Berufen (bis 630g aus 300g) war das eine kleine Gelddruck-Schleife. 1.2 verkauft ihn nur mittwochs, wie Krobus' eigenen Fisch.
+
+**Was gut lief:** Gegenlesen vor dem Bau. Bei fünf Updates habe ich etwas zurückgeschickt oder gestrichen, unter anderem Claim-Schutz bei der 3×3-Ernte, `/vr off` auch für die Bank und zwei erfundene Details in Pams Sätzen.
+
+**Was nicht gut lief:** Zweimal stand im Plan ein Update, das schon gebaut war. Ein Abgleich aller 126 Pläne mit dem Code hat das aufgeräumt (#76). Ab jetzt lese ich vor jedem Auftrag die Changelogs des Projekts.
+
+**Neuer Werkzeug-PR #75 (wartet auf dich):** Die Stardew-Prüfung lässt jetzt übersetzte Einstellungstexte zu. Danach können sieben Stardew-Projekte ein Update „Deutsch“ bekommen.
+
+**Der Vorrat ist weit voraus:** WoW und viele Java-Packs haben 3 bis 5 Versionen, bei einem Update pro Bein und Tag reicht das für Monate. Neue Projekte bremsen die fehlenden Logos (OpenAI-Guthaben) und das Anlegen.
 
 ## Für dich (einmalig)
 
