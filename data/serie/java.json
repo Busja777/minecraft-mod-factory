@@ -102,9 +102,9 @@
       "art": "D",
       "was": "Angel-Beute: mehr Schätze, weniger Müll",
       "updates": [
-        "Biom-Fänge",
         "Varianten",
-        "Fortschritte"
+        "Fortschritte rund ums Angeln",
+        "Fänge in Flüssen je umgebendem Biom, falls belegbar"
       ],
       "banner": {
         "from": "chatgpt",
@@ -246,9 +246,9 @@
       "art": "D",
       "was": "Sinnvolle Zusatz-Beute (Wüstenzombie: Sand …)",
       "updates": [
-        "Stray und Bogged (nach Korrektur der Prüfung für Trank-IDs)",
-        "+10 Mobs",
-        "Varianten"
+        "Stray und Bogged (nach Korrektur der Prüfung für Trank-IDs, PR #37)",
+        "Varianten",
+        "Fortschritt „alle Zusatz-Drops gesehen“"
       ],
       "banner": {
         "from": "chatgpt",

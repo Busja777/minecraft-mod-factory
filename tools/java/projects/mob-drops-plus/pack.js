@@ -1,8 +1,9 @@
-// Mob Drops Plus: one small, sensible extra drop for ten mobs that give little or nothing in vanilla.
-// Each mob's vanilla loot table of the version is read and copied unchanged; one new pool is added
-// at the end. Nothing rare or valuable: only blocks and materials that are cheap anyway.
+// Mob Drops Plus: one small, sensible extra drop for twenty mobs that give little or nothing fitting
+// in vanilla. Each mob's vanilla loot table of the version is read and copied unchanged; one new pool
+// is added at the end. Nothing rare or valuable: only blocks and materials that are cheap anyway.
 //
 //   mob          extra drop       amount per kill                     like vanilla's
+//   1.0
 //   husk         sand             0–2, Looting +0–1 per level         rotten flesh of the husk
 //   drowned      kelp             0–1, Looting +0–1 per level         —
 //   pillager     arrow            0–2, Looting +0–1 per level         arrows of the skeleton
@@ -14,14 +15,28 @@
 //   ocelot       string           0–2, no Looting                     string of the cat
 //   cave spider  cobweb           1, only when killed by a player:    the drowned's copper ingot
 //                                 5 %, with Looting 7 / 9 / 11 %
+//   1.1
+//   piglin       arrow            0–2, Looting +0–1 per level         arrows of the skeleton (it shoots a crossbow)
+//   hoglin       crimson fungus   0–1, Looting +0–1 per level         — (what it is bred with)
+//   strider      warped fungus    0–1, Looting +0–1 per level         — (what it is bred with)
+//   polar bear   leather          0–1, Looting +0–1 per level         leather of the hoglin
+//   glow squid   glow lichen      0–1, Looting +0–1 per level         — (grows where it lives)
+//   breeze       wind charge      0–1, Looting +0–1 per level         — (what it shoots)
+//   spider       cobweb           1, player kill: 5 % (7 / 9 / 11 %)  as the cave spider above
+//   witch        nether wart      1, player kill: 5 % (7 / 9 / 11 %)  — (brewing ingredient)
+//   frog         slime ball       1, player kill: 5 % (7 / 9 / 11 %)  — (what a frog gets from slimes)
+//   evoker       book             1, player kill: 5 % (7 / 9 / 11 %)  — (spellcaster)
 // "0–2" is a whole number from 0 to 2, each equally likely. Looting adds 0 or 1 per level, as for
-// vanilla drops. Common drops fall whatever kills the mob (as rotten flesh does); the one chance
-// drop needs a player, as every vanilla chance drop does.
+// vanilla drops. Common drops fall whatever kills the mob (as rotten flesh does); the chance drops
+// need a player, as every vanilla chance drop does.
 //
 // Left out on purpose: stray (snowballs) and bogged (mushrooms) – their vanilla tables carry tipped
 // arrows written as set_potion "id": "minecraft:slowness", which the shared pack check reads as an
 // unknown item; vex, endermite and silverfish (farmable from evokers, ender pearls and spawners);
-// piglins (bartering stays the way to get gold from them); every rare or valuable item.
+// gold or anything valuable from piglins (bartering stays the way to get gold from them); enderman
+// (pearls), dolphin, wolf, bee and other friendly animals; mooshroom and llama (the fitting drop,
+// mushrooms or wool, depends on the variant); zombie horse (does not spawn on its own in 1.21.1);
+// every rare or valuable item.
 //
 // The game reads two spellings of a loot table, each copied from the version's own vanilla tables:
 //   1.21.1 (format 48)  "functions" / "conditions" lists, each element names itself under
@@ -45,7 +60,18 @@ export const DROPS = [
   { mob: 'goat', item: 'leather', count: [0, 1], looting: true },
   { mob: 'fox', item: 'sweet_berries', count: [0, 1], looting: true },
   { mob: 'ocelot', item: 'string', count: [0, 2], looting: false },
-  { mob: 'cave_spider', item: 'cobweb', chance: { unenchanted: 0.05, base: 0.07, perLevel: 0.02 } }
+  { mob: 'cave_spider', item: 'cobweb', chance: { unenchanted: 0.05, base: 0.07, perLevel: 0.02 } },
+  // 1.1
+  { mob: 'piglin', item: 'arrow', count: [0, 2], looting: true },
+  { mob: 'hoglin', item: 'crimson_fungus', count: [0, 1], looting: true },
+  { mob: 'strider', item: 'warped_fungus', count: [0, 1], looting: true },
+  { mob: 'polar_bear', item: 'leather', count: [0, 1], looting: true },
+  { mob: 'glow_squid', item: 'glow_lichen', count: [0, 1], looting: true },
+  { mob: 'breeze', item: 'wind_charge', count: [0, 1], looting: true },
+  { mob: 'spider', item: 'cobweb', chance: { unenchanted: 0.05, base: 0.07, perLevel: 0.02 } },
+  { mob: 'witch', item: 'nether_wart', chance: { unenchanted: 0.05, base: 0.07, perLevel: 0.02 } },
+  { mob: 'frog', item: 'slime_ball', chance: { unenchanted: 0.05, base: 0.07, perLevel: 0.02 } },
+  { mob: 'evoker', item: 'book', chance: { unenchanted: 0.05, base: 0.07, perLevel: 0.02 } }
 ];
 
 // Never as a drop of this pack.
