@@ -1,0 +1,20 @@
+{
+  "slug": "six-more-enchantments",
+  "game": "java",
+  "name": "Six More Enchantments",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "SixMoreEnchantments-1.0.zip",
+      "changelog": "## Six More Enchantments 1.0\n\nFirst release.\n\n- Six new enchantments from the enchanting table, for Minecraft 1.21, 1.21.1 and 26.3.\n- Reach I–II for pickaxes, axes, shovels and hoes: half a block more reach per level.\n- Stepping for boots: walk up full blocks. Leaping I–II for boots: higher jumps and one block more safe fall per level. The two exclude each other.\n- Vitality I–II for chestplates: one extra heart per level, instead of a protection enchantment.\n- Swiftness I–II (5% faster walking per level) or Steadfast I–II (10% less knockback per level) for leggings.\n- Not in chest loot, villager trades or mob gear.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}

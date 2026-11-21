@@ -1,0 +1,20 @@
+{
+  "slug": "trigger-homes",
+  "game": "java",
+  "name": "Trigger Homes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "TriggerHomes-1.0.zip",
+      "changelog": "## Trigger Homes 1.0\n\nFirst release.\n\n- `/trigger sethome` saves the block you stand on as your home (one home per player, Overworld, Nether or End).\n- `/trigger home` teleports you to the middle of that block, also from another dimension.\n- `/trigger spawn` teleports you to the world spawn.\n- Home and spawn share a 30-second cooldown; the message tells you how many seconds are left.\n- Works for every player without operator rights.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}

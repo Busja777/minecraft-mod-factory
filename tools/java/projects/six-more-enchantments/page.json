@@ -1,0 +1,38 @@
+{
+  "name": "Six More Enchantments",
+  "summary": "New enchantments for longer reach, step assist, higher jumps, extra hearts, faster walking and steady footing, straight from the enchanting table.",
+  "class": "Data Packs",
+  "category": "Magic",
+  "logoPrompt": "A single open enchanted book glowing with purple light, with a few small floating rune particles above its pages, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Six fair enchantments from the table.",
+    "bullets": [
+      "Reach, Stepping, Leaping",
+      "Vitality for extra hearts",
+      "Swiftness or Steadfast"
+    ]
+  },
+  "description": [
+    "**Six More Enchantments adds six new enchantments to the enchanting table, each a small, fair boost.**",
+    "",
+    "## Features",
+    "- Reach I–II (pickaxe, axe, shovel, hoe): half a block more reach per level.",
+    "- Stepping (boots): walk up full blocks without jumping.",
+    "- Leaping I–II (boots): jump higher and fall one more block per level without damage. Level II clears fences.",
+    "- Vitality I–II (chestplate): one extra heart per level, instead of a protection enchantment.",
+    "- Swiftness or Steadfast I–II (leggings): walk 5% faster or take 10% less knockback per level.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then enchant tools, armour or books at an enchanting table as usual.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Works in singleplayer and on servers; players need nothing installed.",
+    "- The new enchantments only come from the enchanting table, not from loot, villagers or mobs. Stepping and Leaping exclude each other, as do Swiftness and Steadfast.",
+    "- Keep the pack in a world once items carry these enchantments.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

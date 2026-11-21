@@ -1,0 +1,38 @@
+{
+  "name": "Mob Drops Plus",
+  "summary": "Husks, drowned, pillagers, foxes and other mobs that drop little now leave a small, fitting extra item when they die.",
+  "class": "Data Packs",
+  "category": "Adventure",
+  "logoPrompt": "A single open brown leather loot pouch with a little sand, a strand of green kelp and one arrow poking out of it, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Small, fitting extra drops for ten mobs.",
+    "bullets": [
+      "Sand from husks, kelp from drowned",
+      "Leather from camels and goats",
+      "Cobwebs from cave spiders"
+    ]
+  },
+  "description": [
+    "**Mob Drops Plus gives ten mobs a small extra drop that suits them, from sand for husks to leather for camels and goats.**",
+    "",
+    "## Features",
+    "- Husks drop sand, drowned a bit of kelp and pillagers arrows.",
+    "- Zoglins, ravagers, camels and goats drop leather.",
+    "- Foxes drop sweet berries, and ocelots drop string like cats do.",
+    "- Cave spiders sometimes leave a cobweb when a player kills them.",
+    "- Looting works as in vanilla, and every vanilla drop stays as it was.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Then play as usual; the new drops fall right away.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Works in singleplayer and on servers; players need nothing installed.",
+    "- Only cheap, common items: no diamonds, gold, emeralds or other rare drops. At most two at a time, plus Looting.",
+    "- It changes the loot of these ten mobs, so another pack that changes the same mobs can override it or be overridden by it.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "slug": "mob-drops-plus",
+  "game": "java",
+  "name": "Mob Drops Plus",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MobDropsPlus-1.0.zip",
+      "changelog": "## Mob Drops Plus 1.0\n\nFirst release.\n\n- One small extra drop for ten mobs, for Minecraft 1.21, 1.21.1 and 26.3.\n- Husk: 0–2 sand. Drowned: 0–1 kelp. Pillager: 0–2 arrows.\n- Zoglin and goat: 0–1 leather. Ravager and camel: 0–2 leather.\n- Fox: 0–1 sweet berries. Ocelot: 0–2 string, like the cat.\n- Cave spider: a cobweb, 5% of the time when a player kills it (up to 11% with Looting III).\n- Looting adds up to one more per level to every amount above. All vanilla drops stay as they were.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}

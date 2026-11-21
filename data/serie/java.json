@@ -197,7 +197,11 @@
         "+3",
         "in Beute und Handel",
         "Balance"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 14,
@@ -230,10 +234,14 @@
       "art": "D",
       "was": "Sinnvolle Zusatz-Beute (Wüstenzombie: Sand …)",
       "updates": [
+        "Stray und Bogged (nach Korrektur der Prüfung für Trank-IDs)",
         "+10 Mobs",
-        "seltene Drops",
         "Varianten"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 17,
@@ -257,7 +265,11 @@
         "einzelne Erze",
         "Nether",
         "26.1"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 19,
@@ -293,7 +305,11 @@
         "mehrere Homes",
         "Abklingzeit",
         "zurück zum Todesort"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 22,
