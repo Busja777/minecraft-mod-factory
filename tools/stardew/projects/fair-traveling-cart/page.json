@@ -1,0 +1,37 @@
+{
+  "name": "Fair Traveling Cart",
+  "summary": "The merchant in the forest still brings rare finds, but no longer asks a hundred times what they are worth.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small wooden market cart with a striped canvas roof, a brass price tag hanging from its side and a short stack of gold coins on its front board",
+  "cover": {
+    "tagline": "Rare finds without the wild prices.",
+    "bullets": [
+      "Price cap on the cart's stock",
+      "2x, 3x or 4x the sell price",
+      "Same goods, same days"
+    ]
+  },
+  "description": [
+    "**Fair Traveling Cart puts a price cap on the traveling cart, so no regular item costs more than a set multiple of its sell price.**",
+    "",
+    "## Features",
+    "- Every food, crop, fish, seed, resource and tackle item of the cart's regular stock is capped.",
+    "- Choose the cap in the config: 2x, 3x (default) or 4x the item's normal sell price.",
+    "- At 3x, Coal costs 45g instead of up to 1,000g, and Starfruit 2,250g instead of up to 3,750g.",
+    "- The cart still brings the same random goods on the same days, in the same amounts.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the cap in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Furniture, Rare Seeds, Coffee Beans and the rare special items keep their prices.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

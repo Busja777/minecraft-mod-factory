@@ -1,0 +1,8 @@
+{
+  "name": "Festival Stalls Plus",
+  "description": "The festival booths also sell seasonal seeds, flowers and festive food, next to their own stock.",
+  "uniqueId": "SevEvolution.FestivalStallsPlus",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}
