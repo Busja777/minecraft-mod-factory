@@ -1,0 +1,19 @@
+{
+  "slug": "joja-junk-mail",
+  "game": "stardewvalley",
+  "name": "Joja Junk Mail",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "JojaJunkMail-1.0.zip",
+      "changelog": "## Joja Junk Mail 1.0\n\nFirst release.\n\n- A JojaMart advertising letter arrives every Wednesday morning: sixteen different letters a year, four per season, on the Joja letter paper. From year 2 on, an anniversary letter replaces the welcome letter.\n- The letters are just for fun: no items, no money, no effect on the game.\n- They stop once the Community Center is restored or the Joja community development form is completed.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
