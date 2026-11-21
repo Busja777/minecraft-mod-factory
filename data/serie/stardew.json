@@ -188,9 +188,9 @@
       "art": "CP",
       "was": "Mehr Angebot bei Willy",
       "updates": [
-        "Sandy (Oasis), ohne Samen (die stecken in Pierre's Year-Round Seeds)",
+        "Krobus: Leerenlachs-Preis über dem Wert als Räucherfisch mit Artisan (heute 300g Einkauf gegen 420g: kleine Gelddruck-Schleife, gefunden am 21.11.)",
         "Stufen für die Tageslimits",
-        "Deutsch (Einstellungstexte, nach PR #75)"
+        "Deutsch (Einstellungstexte, nach PR #75). Sandy gestrichen: Fisch ließe sich mit Räucherofen + Artisan mit Gewinn verkaufen, Samen gehören zu Pierre's Year-Round Seeds"
       ],
       "banner": {
         "from": "chatgpt",
@@ -404,9 +404,9 @@
       "art": "CP",
       "was": "Mehr Ware an den Fest-Ständen",
       "updates": [
-        "Stufen für die Preise",
         "Deutsch (Einstellungstexte, nach PR #75)",
-        "Feinschliff nach Kommentaren (Geschenk-Ideen gestrichen: gehören zu Villager Birthday Reminders)"
+        "Eierfest und Blumentanz: weitere Stände, falls belegbar",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "claude",
