@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "QueueHorn-1.2.zip",
+      "changelog": "## Queue Horn 1.2\n\n- New: **screen flash for each alert**. A coloured glow at the edges of your screen fades in and out three times, so you see the alert even with the sound off. Four colours to pick from: red, gold, blue and green.\n- `/qh flash` lists the screen flash of every alert. `/qh flash ready red` gives the ready check a red flash and shows it once so you see it. `/qh flash ready off` takes it away again. The same works for `lfg`, `pvp` and `pet`.\n- `/qh test ready` (or `lfg`, `pvp`, `pet`) now shows the screen flash of that alert too.\n- The flash takes no clicks and works in combat. Flashing the game icon in your taskbar or dock stays as it was: `/qh flash on` and `/qh flash off` still switch it.\n- Every alert starts without a screen flash, so nothing changes unless you want it to. Your settings from 1.1 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

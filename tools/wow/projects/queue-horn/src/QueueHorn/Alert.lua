@@ -2,7 +2,8 @@ local _, ns = ...
 local L = ns.L
 
 -- Listens for the moments a queue pops or a ready check starts and plays the alert:
--- one sound on the Master channel, the flashing game icon and one line in the middle of the screen.
+-- one sound on the Master channel, the flashing game icon, one line in the middle of the screen and,
+-- if chosen for that alert, the screen flash (Screen.lua).
 
 local COLOR = { r = 1, g = 0.82, b = 0 }
 
@@ -37,10 +38,11 @@ local function showMessage(text)
 end
 
 -- The alert itself, without any check. kind = nil is the test from /qh test; test = true plays the
--- sound of that kind with the test message (/qh test lfg).
+-- sound and the screen flash of that kind with the test message (/qh test lfg).
 function ns.Play(kind, test)
   ns.PlayAlertSound(kind)
   if ns.settings.flash and FlashClientIcon then FlashClientIcon() end
+  ns.ShowScreenFlash(ns.ScreenFor(ns.settings, kind))
   showMessage(ns.Message((not test) and kind or nil))
 end
 
@@ -67,7 +69,7 @@ end
 local function onLogin()
   if type(QueueHornDB) ~= "table" then QueueHornDB = {} end
   local db = QueueHornDB
-  db.version = 2 -- 2 since 1.1: settings.sounds[kind]
+  db.version = 3 -- 2 since 1.1: settings.sounds[kind]; 3 since 1.2: settings.screen[kind]
   if type(db.settings) ~= "table" then db.settings = {} end
   ns.db = db
   ns.settings = ns.Settings(db.settings)

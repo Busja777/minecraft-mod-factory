@@ -125,7 +125,7 @@ end
 -- Away from vendors: one chat line for each listed item that dropped below the warning share.
 -- force skips the wait after login (a command the player typed).
 function ns.CheckStock(force)
-  if not ns.db or atVendor or not readyAt then return end
+  if not ns.db or atVendor or ns.bankOpen or not readyAt then return end
   local share = ns.ValidShare(ns.db.warnShare) or 0
   if share == 0 then return end
   if not force and GetTime then
@@ -170,8 +170,9 @@ end
 local function onLogin()
   if type(VendorRefillDB) ~= "table" then VendorRefillDB = {} end
   local db = VendorRefillDB
-  db.version = 2 -- 2: warnShare (1.1); a list from 1.0 is kept as it is
+  db.version = 3 -- 2: warnShare (1.1), 3: bank (1.2); a list from 1.0 is kept as it is
   if type(db.enabled) ~= "boolean" then db.enabled = true end
+  if type(db.bank) ~= "boolean" then db.bank = true end
   db.warnShare = ns.ValidShare(db.warnShare) or ns.DEFAULT_SHARE
   ns.warned = {}
   local now = GetTime and plain(GetTime()) or nil

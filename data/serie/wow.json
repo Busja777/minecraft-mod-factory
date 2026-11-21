@@ -85,9 +85,9 @@
       "art": "RF",
       "was": "Kauft beim Händler bis zur Wunschmenge nach",
       "updates": [
-        "Auffüllen aus der Bank",
         "Mengen je Spezialisierung",
-        "Liste teilen"
+        "Liste teilen",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -145,9 +145,9 @@
       "art": "R",
       "was": "Lauter Ton bei Dungeon-Einladung und Bereitschaftscheck, auch bei stummem Spiel",
       "updates": [
-        "Bildschirm-Blitz wählbar",
         "weitere Anlässe (Rollencheck)",
-        "Lautstärke-Hinweis"
+        "Lautstärke-Hinweis",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {

@@ -358,23 +358,25 @@ end)
 test("slash commands show the state, help and switch alerts", function(wow)
   local _, g = boot(wow)
   wow.slash("/qh")
-  eq(#wow.chat, 3)
+  eq(#wow.chat, 4)
   eq(wow.chat[1], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena on, Pet battle on. Icon flash: on.")
   eq(wow.chat[2], PREFIX .. "Sounds: Group finder horn, Ready check horn, Battleground and arena horn, Pet battle horn. Choices: horn, warning, alarm, invite, whisper.")
-  eq(wow.chat[3]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/qh shows this") ~= nil, true)
-  eq(wow.chat[3]:match("/qh sound lfg alarm picks one for an alert, /qh test lfg plays it%.$") ~= nil, true)
+  eq(wow.chat[3], PREFIX .. "Screen flash: Group finder off, Ready check off, Battleground and arena off, Pet battle off. Choices: red, gold, blue, green, off. Icon flash: on.")
+  eq(wow.chat[4]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/qh shows this") ~= nil, true)
+  eq(wow.chat[4]:find("/qh sound lfg alarm picks one for an alert, /qh test lfg plays it.", 1, true) ~= nil, true)
+  eq(wow.chat[4]:match("/qh flash lfg red gives an alert a coloured flash at the screen edges %(red, gold, blue, green or off%)%.$") ~= nil, true)
   wow.slash("/qh pvp off")
-  eq(wow.chat[4], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena off, Pet battle on. Icon flash: on.")
+  eq(wow.chat[5], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena off, Pet battle on. Icon flash: on.")
   eq(QueueHornDB.settings.pvp, false)
   wow.slash("/queuehorn  Ready   OFF ")
   eq(QueueHornDB.settings.ready, false)
-  eq(wow.chat[5]:match("Ready check off") ~= nil, true)
+  eq(wow.chat[6]:match("Ready check off") ~= nil, true)
   wow.slash("/qh flash off")
   eq(QueueHornDB.settings.flash, false)
   wow.slash("/qh sound on")
-  eq(wow.chat[7]:match("/qh shows this") ~= nil, true, "unknown words show the help")
+  eq(wow.chat[8]:match("/qh shows this") ~= nil, true, "unknown words show the help")
   wow.slash("/qh pvp")
-  eq(wow.chat[8]:match("/qh shows this") ~= nil, true)
+  eq(wow.chat[9]:match("/qh shows this") ~= nil, true)
   eq(QueueHornDB.settings.pvp, false)
   for _, line in ipairs(wow.chat) do
     eq(line:sub(#PREFIX + 1):find("|", 1, true), nil, "no colour code by accident in: " .. line)
@@ -386,20 +388,20 @@ test("/qh warns when the game is silent in the background", function(wow)
   local _, g = boot(wow)
   g.cvars.Sound_EnableSoundWhenGameIsInBG = "1"
   wow.slash("/qh")
-  eq(#wow.chat, 3)
+  eq(#wow.chat, 4)
   g.cvars.Sound_EnableSoundWhenGameIsInBG = "0"
   wow.slash("/qh")
-  eq(#wow.chat, 7)
-  eq(wow.chat[6], PREFIX .. "Sound in Background is off in the game's sound options, so you hear nothing while tabbed out.")
+  eq(#wow.chat, 9)
+  eq(wow.chat[8], PREFIX .. "Sound in Background is off in the game's sound options, so you hear nothing while tabbed out.")
   C_CVar = nil
   GetCVar = function(name) return g.cvars[name] end
   wow.slash("/qh")
-  eq(#wow.chat, 11, "the older GetCVar works too")
+  eq(#wow.chat, 14, "the older GetCVar works too")
 end)
 
 test("settings survive: saved values are kept, new ones start switched on", function(wow)
   local _, g = boot(wow)
-  eq(QueueHornDB.version, 2)
+  eq(QueueHornDB.version, 3)
   eq(QueueHornDB.settings.lfg, true)
   eq(QueueHornDB.settings.flash, true)
 
@@ -596,10 +598,302 @@ test("sound choices survive a reload and saved data of 1.0 keeps working", funct
 
   QueueHornDB = { version = 1, settings = { lfg = true, ready = false, pvp = true, pet = true, flash = false } } -- written by 1.0
   wow.fire("PLAYER_LOGIN")
-  eq(QueueHornDB.version, 2)
+  eq(QueueHornDB.version, 3)
   eq(QueueHornDB.settings.ready, false)
   eq(QueueHornDB.settings.flash, false)
   eq(QueueHornDB.settings.sounds.lfg, "horn")
   wow.fire("LFG_PROPOSAL_SHOW")
   eq(g.sounds[2], "8960@Master", "an alert sounds as in 1.0")
+end)
+
+-- Queue Horn 1.2: the screen flash.
+
+-- Notes what the screen flash frame does: alpha, strata, mouse, colours of its edges.
+-- Call before boot(); the flash frame is made on first use.
+local function screen(wow)
+  local s = { colors = {}, frames = {} }
+  CreateColor = function(r, g, b, a) return { r = r, g = g, b = b, a = a } end
+  local original = CreateFrame
+  CreateFrame = function(kind, name, parent, template)
+    local f = original(kind, name, parent, template)
+    f.parent = parent
+    f.alpha = 1
+    f.SetAlpha = function(self, a) self.alpha = a end
+    f.SetFrameStrata = function(self, strata) self.strata = strata end
+    f.EnableMouse = function(self, on) self.mouse = on end
+    f.CreateTexture = function(self)
+      local t = { solid = nil }
+      t.SetPoint = function() end
+      t.SetHeight = function() end
+      t.SetWidth = function() end
+      t.SetColorTexture = function(_, r, g, b, a) t.solid = { r, g, b, a } end
+      t.SetGradient = function(_, orientation, min, max) t.gradient = { orientation = orientation, min = min, max = max } end
+      table.insert(self.children, t)
+      return t
+    end
+    s.frames[#s.frames + 1] = f
+    return f
+  end
+  -- Runs the flash's OnUpdate for some seconds in small steps; returns the alphas seen.
+  function s.run(ns, seconds, step)
+    local f = ns.screenFlash
+    local alphas = {}
+    local t = 0
+    while t < seconds - 1e-9 and f.shown do
+      f.scripts.OnUpdate(f, step or 0.1)
+      alphas[#alphas + 1] = f.alpha
+      t = t + (step or 0.1)
+    end
+    return alphas
+  end
+  return s
+end
+
+local function near(a, b, msg) eq(math.abs(a - b) < 1e-6, true, (msg or "") .. " " .. tostring(a) .. " ~ " .. tostring(b)) end
+
+test("core: every alert starts without a screen flash, a saved colour is kept", function(wow)
+  local ns = boot(wow)
+  local s = ns.Settings({ sounds = { lfg = "alarm" } }) -- as 1.1 saved them
+  for _, kind in ipairs(ns.KINDS) do eq(s.screen[kind], "off", kind) end
+  eq(s.sounds.lfg, "alarm")
+  s = ns.Settings({ screen = { lfg = "red", ready = "purple", pvp = 3, later = "x" } })
+  eq(s.screen.lfg, "red")
+  eq(s.screen.ready, "off", "an unknown colour is replaced")
+  eq(s.screen.pvp, "off")
+  eq(s.screen.later, "x")
+  eq(ns.Settings({ screen = "broken" }).screen.pet, "off")
+  eq(ns.ScreenFor(s, "lfg"), "red")
+  eq(ns.ScreenFor(s, "ready"), nil, "off is no colour")
+  eq(ns.ScreenFor(s, nil), nil, "the plain test has none")
+  eq(ns.ScreenFor(nil, "lfg"), nil)
+  eq(ns.ChooseScreen(s, "pet", "green"), true)
+  eq(ns.ChooseScreen(s, "lfg", "off"), true)
+  eq(ns.ChooseScreen(s, "lfg", "purple"), nil)
+  eq(ns.ChooseScreen(s, "flash", "red"), nil)
+  eq(ns.ChooseScreen(s, "sound", "red"), nil)
+  eq(s.screen.lfg, "off")
+  eq(ns.ScreenText(s), "Screen flash: Group finder off, Ready check off, Battleground and arena off, Pet battle green. Choices: red, gold, blue, green, off. Icon flash: on.")
+  for _, name in ipairs(ns.SCREEN_NAMES) do eq(#ns.SCREEN_RGB[name], 3, name) end
+end)
+
+test("core: the flash fades in and out three times, then it is over", function(wow)
+  local ns = boot(wow)
+  near(ns.FlashAlpha(0), 0, "starts invisible")
+  near(ns.FlashAlpha(0.3), ns.FLASH_ALPHA, "strongest in the middle of a pulse")
+  near(ns.FlashAlpha(0.15), ns.FLASH_ALPHA / 2)
+  near(ns.FlashAlpha(0.6), 0, "the second pulse starts")
+  near(ns.FlashAlpha(1.5), ns.FLASH_ALPHA, "the third pulse")
+  eq(ns.FlashAlpha(1.8), nil, "3 pulses of 0.6 seconds")
+  eq(ns.FlashAlpha(-1), nil)
+  eq(ns.FlashAlpha(nil), nil)
+  eq(ns.FLASH_PULSES, 3)
+  eq(ns.FLASH_ALPHA <= 0.8, true, "never a full cover of the screen")
+end)
+
+test("nothing changes unless chosen: no screen flash and no frame for it", function(wow)
+  local s = screen(wow)
+  local ns, g = boot(wow)
+  local frames = #s.frames
+  wow.fire("LFG_PROPOSAL_SHOW")
+  wow.fire("READY_CHECK", "Tank", 30)
+  g.pvp("confirm")
+  wow.fire("PET_BATTLE_QUEUE_PROPOSE_MATCH")
+  wow.slash("/qh test")
+  wow.slash("/qh test ready")
+  eq(ns.screenFlash, nil)
+  eq(#s.frames, frames, "the flash frame is only made when it is used")
+  eq(g.count(), 6)
+end)
+
+test("/qh flash ready red: a preview, then every ready check flashes red", function(wow)
+  local s = screen(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qh flash ready red")
+  eq(wow.chat[1], PREFIX .. "Ready check now flashes the screen red.")
+  eq(QueueHornDB.settings.screen.ready, "red")
+  local f = ns.screenFlash
+  eq(f.shown, true, "the preview")
+  eq(f.color, "red")
+  eq(g.count(), 0, "the preview has no sound")
+  eq(#g.notices, 0)
+  s.run(ns, 5)
+  eq(f.shown, false, "over after the pulses")
+
+  wow.fire("LFG_PROPOSAL_SHOW")
+  eq(f.shown, false, "the group finder has no flash")
+  wow.fire("READY_CHECK", "Tank", 30)
+  eq(f.shown, true)
+  eq(f.color, "red")
+  eq(g.count(), 2, "the sound plays as before")
+  eq(g.flashes, 2, "and the icon flashes as before")
+  eq(g.notices[2], "Ready check!")
+end)
+
+test("the screen flash: a plain frame over the screen with a glow at each edge", function(wow)
+  local s = screen(wow)
+  local ns = boot(wow)
+  wow.slash("/qh flash pvp blue")
+  local f = ns.screenFlash
+  eq(rawget(f, "name"), nil, "no global name")
+  eq(rawget(f, "template"), nil, "no template, nothing protected")
+  eq(f.parent, UIParent)
+  eq(f.strata, "FULLSCREEN_DIALOG")
+  eq(f.mouse, false, "clicks go through")
+  eq(#f.children, 4)
+  local blue = ns.SCREEN_RGB.blue
+  local function check(t, orientation, outer)
+    eq(t.gradient.orientation, orientation)
+    local strong = outer == "min" and t.gradient.min or t.gradient.max
+    local clear = outer == "min" and t.gradient.max or t.gradient.min
+    eq(strong.a, 1)
+    eq(clear.a, 0)
+    eq(strong.r .. "," .. strong.g .. "," .. strong.b, blue[1] .. "," .. blue[2] .. "," .. blue[3])
+  end
+  check(f.top, "VERTICAL", "max")
+  check(f.bottom, "VERTICAL", "min")
+  check(f.left, "HORIZONTAL", "min")
+  check(f.right, "HORIZONTAL", "max")
+  eq(f.alpha, 0, "starts invisible")
+  local alphas = s.run(ns, 3)
+  eq(#alphas, 18, "1.8 seconds")
+  near(alphas[3], ns.FLASH_ALPHA, "first peak")
+  near(alphas[6], 0, "first fade out")
+  near(alphas[9], ns.FLASH_ALPHA, "second peak")
+  eq(f.alpha, 0)
+  eq(f.shown, false)
+end)
+
+test("a new alert during a flash starts it again in its own colour", function(wow)
+  local s = screen(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qh flash lfg gold")
+  wow.slash("/qh flash pet green")
+  local f = ns.screenFlash
+  s.run(ns, 5)
+  wow.fire("LFG_PROPOSAL_SHOW")
+  s.run(ns, 1.2)
+  eq(f.shown, true)
+  wow.fire("PET_BATTLE_QUEUE_PROPOSE_MATCH")
+  eq(f.color, "green")
+  eq(f.top.gradient.max.g, 1)
+  eq(#s.run(ns, 5), 18, "the full flash again")
+  eq(g.count(), 2)
+end)
+
+test("/qh flash lists, off switches it off, wrong words show the help, the icon switch stays", function(wow)
+  local s = screen(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qh flash")
+  eq(wow.chat[1], PREFIX .. "Screen flash: Group finder off, Ready check off, Battleground and arena off, Pet battle off. Choices: red, gold, blue, green, off. Icon flash: on.")
+  wow.slash("/qh  Flash  LFG  Gold ")
+  eq(wow.chat[2], PREFIX .. "Group finder now flashes the screen gold.")
+  s.run(ns, 5)
+  wow.slash("/qh flash lfg off")
+  eq(wow.chat[3], PREFIX .. "Group finder: no screen flash.")
+  eq(ns.screenFlash.shown, false, "no preview for off")
+  eq(QueueHornDB.settings.screen.lfg, "off")
+  wow.slash("/qh flash lfg purple")
+  eq(wow.chat[4]:match("/qh shows this") ~= nil, true)
+  wow.slash("/qh flash sound red")
+  eq(wow.chat[5]:match("/qh shows this") ~= nil, true)
+  wow.slash("/qh flash lfg")
+  eq(wow.chat[6]:match("/qh shows this") ~= nil, true)
+  eq(QueueHornDB.settings.screen.lfg, "off")
+  wow.slash("/qh flash off")
+  eq(QueueHornDB.settings.flash, false, "/qh flash off still switches the icon flash")
+  eq(wow.chat[7], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena on, Pet battle on. Icon flash: off.")
+  wow.slash("/qh flash ready red")
+  wow.slash("/qh flash")
+  eq(wow.chat[9], PREFIX .. "Screen flash: Group finder off, Ready check red, Battleground and arena off, Pet battle off. Choices: red, gold, blue, green, off. Icon flash: off.")
+  wow.slash("/qh")
+  eq(wow.chat[12], wow.chat[9], "/qh shows it too")
+  for _, line in ipairs(wow.chat) do
+    eq(line:sub(#PREFIX + 1):find("|", 1, true), nil, "no colour code by accident in: " .. line)
+  end
+  wow.fire("READY_CHECK", "Tank", 30)
+  eq(g.flashes, 0)
+  eq(ns.screenFlash.color, "red", "the screen flash does not depend on the icon flash")
+end)
+
+test("/qh test with an alert shows its screen flash, a switched-off alert shows none", function(wow)
+  local s = screen(wow)
+  local ns = boot(wow)
+  wow.slash("/qh flash pet green")
+  s.run(ns, 5)
+  wow.slash("/qh test")
+  eq(ns.screenFlash.shown, false, "the plain test belongs to no alert")
+  wow.slash("/qh test pet")
+  eq(ns.screenFlash.shown, true)
+  eq(ns.screenFlash.color, "green")
+  s.run(ns, 5)
+  wow.slash("/qh pet off")
+  wow.fire("PET_BATTLE_QUEUE_PROPOSE_MATCH")
+  eq(ns.screenFlash.shown, false, "a switched-off alert stays dark")
+  wow.slash("/qh test pet")
+  eq(ns.screenFlash.shown, true, "the test works as for the sound")
+end)
+
+test("without the colour functions the edges get a plain colour, without a screen nothing happens", function(wow)
+  local s = screen(wow)
+  CreateColor = nil
+  local ns, g = boot(wow)
+  wow.slash("/qh flash lfg red")
+  local f = ns.screenFlash
+  eq(f.top.gradient, nil)
+  eq(f.top.solid[1], 1)
+  eq(f.top.solid[4] < 1, true, "a lighter plain colour")
+  eq(f.shown, true)
+  s.run(ns, 5)
+
+  local saved = QueueHornDB
+  QueueHornDB = saved
+  wow.load(ADDON_DIR, ADDON_NAME) -- a fresh copy, which has not made its frame yet
+  for i = 1, #wow.frames - 1 do wow.frames[i].events = {} end
+  wow.fire("PLAYER_LOGIN")
+  UIParent = nil
+  wow.fire("LFG_PROPOSAL_SHOW")
+  eq(wow.ns.screenFlash, nil)
+  eq(g.count(), 1, "the rest of the alert still works")
+end)
+
+test("screen flash choices survive a reload, saved data of 1.1 keeps working", function(wow)
+  local s = screen(wow)
+  boot(wow)
+  wow.slash("/qh flash pvp blue")
+  QueueHornDB = { version = 2, settings = { lfg = true, ready = true, pvp = false, pet = true, flash = false, sounds = { lfg = "alarm", ready = "horn", pvp = "horn", pet = "whisper" } } } -- written by 1.1
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  for i = 1, #wow.frames - 1 do wow.frames[i].events = {} end
+  wow.fire("PLAYER_LOGIN")
+  eq(QueueHornDB.version, 3)
+  eq(QueueHornDB.settings.pvp, false)
+  eq(QueueHornDB.settings.flash, false)
+  eq(QueueHornDB.settings.sounds.lfg, "alarm")
+  eq(QueueHornDB.settings.sounds.pet, "whisper")
+  eq(QueueHornDB.settings.screen.lfg, "off")
+  eq(QueueHornDB.settings.screen.pvp, "off")
+  wow.fire("LFG_PROPOSAL_SHOW")
+  eq(ns.screenFlash, nil, "an alert looks as in 1.1")
+
+  wow.slash("/qh flash lfg gold")
+  QueueHornDB = { version = 3, settings = QueueHornDB.settings }
+  wow.fire("PLAYER_LOGIN")
+  eq(QueueHornDB.settings.screen.lfg, "gold")
+  eq(#s.frames > 0, true)
+end)
+
+test("the screen flash defines no globals", function(wow)
+  local s = screen(wow)
+  local stubs = {}
+  for k in pairs(_G) do stubs[k] = true end
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  wow.slash("/qh flash lfg red")
+  wow.slash("/qh flash")
+  wow.slash("/qh test lfg")
+  s.run(ns, 5)
+  local allowed = { QueueHornDB = true, SLASH_QUEUEHORN1 = true, SLASH_QUEUEHORN2 = true }
+  for k in pairs(_G) do
+    if not stubs[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
+  end
+  eq(ns.screenFlash.shown, false)
 end)

@@ -8,6 +8,8 @@ ns.DELAY = 0.2       -- seconds between two steps
 ns.DEFAULT_SHARE = 25 -- warn when an item drops below this percent of its count
 ns.MAX_SHARE = 90
 ns.WARN_DELAY = 5     -- seconds after login before the first low stock check (the bags are still loading)
+ns.BANK_DELAY = 0.3   -- seconds between two moves out of the bank (the moved slots stay locked a moment)
+ns.BANK_REPORT_DELAY = 0.5 -- seconds after the last move before the bags are counted for the chat line
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
@@ -240,6 +242,84 @@ end
 -- "Water is running low: 4 of 20 left."
 function ns.LowLine(entry, name)
   return string.format(ns.L["%s is running low: %d of %d left."], name or string.format(ns.L["item %d"], entry.itemID), entry.have, entry.want)
+end
+
+-- 1.2: taking items of the list out of the bank.
+
+-- What the bags miss per item: itemID → count (> 0). Items whose count in the bags is unknown are
+-- left out, so nothing is taken for them.
+function ns.BankNeed(owned, wanted)
+  local need = {}
+  if type(owned) ~= "table" then return need end
+  for id, want in pairs(ns.CleanList(wanted)) do
+    local have = owned[id]
+    if type(have) == "number" and have < want then need[id] = want - math.max(0, have) end
+  end
+  return need
+end
+
+-- The next move out of the bank, or nil when nothing more can be taken.
+--   slots: { { bag, slot, itemID, count, locked } } in bank order
+--   need:  itemID → count still missing in the bags
+-- → { bag, slot, itemID, count, whole, name } with whole = true when the full stack moves, else the
+-- stack is split. The first needed item in bank order is taken from its biggest stack (the first
+-- of equal ones), and never more than is missing.
+function ns.NextBankMove(slots, need)
+  if type(slots) ~= "table" or type(need) ~= "table" then return nil end
+  local best
+  for _, s in ipairs(slots) do
+    local id, count = s.itemID, s.count
+    local missing = need[id]
+    if whole(id) and whole(count) and count > 0 and not s.locked and whole(missing) and missing > 0 then
+      if not best or (id == best.itemID and count > best.count) then best = s end
+    end
+  end
+  if not best then return nil end
+  local take = math.min(best.count, need[best.itemID])
+  return { bag = best.bag, slot = best.slot, itemID = best.itemID, count = take, whole = take == best.count, name = best.name }
+end
+
+-- Where in the bags a moved stack can go.
+--   slots: { { bag, slot, itemID (nil = empty), count, locked } } of the normal bags
+--   maxStack: the most of this item one slot holds (nil = unknown)
+-- A stack of the same item with room for all of it comes first, else the first empty slot; nil when
+-- neither is there. A stack is never filled past its limit, so nothing stays on the cursor.
+function ns.BagTarget(slots, itemID, count, maxStack)
+  if type(slots) ~= "table" or not whole(count) or count < 1 then return nil end
+  if whole(maxStack) and maxStack > 1 then
+    for _, s in ipairs(slots) do
+      if s.itemID == itemID and not s.locked and whole(s.count) and s.count + count <= maxStack then return s.bag, s.slot end
+    end
+  end
+  for _, s in ipairs(slots) do
+    if s.itemID == nil and not s.locked then return s.bag, s.slot end
+  end
+  return nil
+end
+
+-- What really arrived in the bags: { { itemID, name, count } } in the order of taken.
+--   taken:  the moves as the addon tallied them (the upper limit)
+--   before: itemID → count in the bags before the first move; now: itemID → count after the moves
+-- An item counts with its increase, at most what was moved; items without an increase or with an
+-- unknown count are left out.
+function ns.Arrived(taken, before, now)
+  local arrived = {}
+  if type(taken) ~= "table" or type(before) ~= "table" or type(now) ~= "table" then return arrived end
+  for _, entry in ipairs(taken) do
+    local was, is = before[entry.itemID], now[entry.itemID]
+    if type(was) == "number" and type(is) == "number" and is > was then
+      ns.Note(arrived, entry.itemID, entry.name, math.min(is - was, entry.count))
+    end
+  end
+  return arrived
+end
+
+-- "Taken from the bank: Water x12, Bread x5."; nil when nothing was taken.
+function ns.TakenLine(taken)
+  if type(taken) ~= "table" or #taken == 0 then return nil end
+  local parts = {}
+  for _, entry in ipairs(taken) do parts[#parts + 1] = label(entry) .. " x" .. entry.count end
+  return string.format(ns.L["Taken from the bank: %s."], table.concat(parts, ", "))
 end
 
 -- The list sorted by name (then ID) as lines "Name: 20". nameOf(itemID) gives the name or nil.

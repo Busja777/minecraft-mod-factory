@@ -7,5 +7,6 @@
 
 Locale.lua
 Core.lua
+Screen.lua
 Alert.lua
 Commands.lua

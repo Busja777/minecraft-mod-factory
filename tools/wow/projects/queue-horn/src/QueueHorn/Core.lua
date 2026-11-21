@@ -31,6 +31,20 @@ ns.SOUND_KIT = {
 }
 ns.DEFAULT_SOUND = "horn"
 
+-- 1.2: the screen flash, a coloured glow at the edges of the screen that fades in and out a few
+-- times. Each alert has its own colour or "off"; every alert starts "off".
+ns.SCREEN_NAMES = { "red", "gold", "blue", "green" }
+ns.SCREEN_RGB = {
+  red = { 1, 0.1, 0.1 },
+  gold = { 1, 0.82, 0 },
+  blue = { 0.2, 0.55, 1 },
+  green = { 0.2, 1, 0.3 },
+}
+ns.SCREEN_OFF = "off"
+ns.FLASH_PULSES = 3   -- how often the glow fades in and out
+ns.FLASH_PULSE = 0.6  -- seconds for one pulse
+ns.FLASH_ALPHA = 0.8  -- the strongest the glow gets
+
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
@@ -44,6 +58,11 @@ function ns.Settings(settings)
   if type(settings.sounds) ~= "table" then settings.sounds = {} end
   for _, kind in ipairs(ns.KINDS) do
     if not ns.SOUND_KIT[settings.sounds[kind]] then settings.sounds[kind] = ns.DEFAULT_SOUND end
+  end
+  -- Settings of 1.0 and 1.1 have no screen flash yet: every alert starts without it.
+  if type(settings.screen) ~= "table" then settings.screen = {} end
+  for _, kind in ipairs(ns.KINDS) do
+    if not ns.SCREEN_RGB[settings.screen[kind]] then settings.screen[kind] = ns.SCREEN_OFF end
   end
   return settings
 end
@@ -83,6 +102,44 @@ function ns.SoundText(settings)
     parts[#parts + 1] = L[ns.KIND_LABEL[kind]] .. " " .. ns.SoundFor(settings, kind)
   end
   return string.format(L["Sounds: %s. Choices: %s."], table.concat(parts, ", "), table.concat(ns.SOUND_NAMES, ", "))
+end
+
+-- The colour of the screen flash for one alert; nil when it has none (off, or the plain test).
+function ns.ScreenFor(settings, kind)
+  local screen = type(settings) == "table" and settings.screen
+  local name = type(screen) == "table" and kind and screen[kind]
+  if ns.SCREEN_RGB[name] then return name end
+  return nil
+end
+
+-- Picks the screen flash colour (or "off") for one alert. Returns true, or nil when the alert or the
+-- colour is not known.
+function ns.ChooseScreen(settings, kind, name)
+  if not ns.KIND_LABEL[kind] then return nil end
+  if name ~= ns.SCREEN_OFF and not ns.SCREEN_RGB[name] then return nil end
+  if type(settings.screen) ~= "table" then settings.screen = {} end
+  settings.screen[kind] = name
+  return true
+end
+
+-- "Screen flash: Group finder off, Ready check red, ... Choices: red, gold, blue, green, off. Icon flash: on."
+function ns.ScreenText(settings)
+  local L = ns.L
+  local parts = {}
+  for _, kind in ipairs(ns.KINDS) do
+    parts[#parts + 1] = L[ns.KIND_LABEL[kind]] .. " " .. (ns.ScreenFor(settings, kind) or ns.SCREEN_OFF)
+  end
+  local choices = table.concat(ns.SCREEN_NAMES, ", ") .. ", " .. ns.SCREEN_OFF
+  local icon = settings.flash and L["on"] or L["off"]
+  return string.format(L["Screen flash: %s. Choices: %s. Icon flash: %s."], table.concat(parts, ", "), choices, icon)
+end
+
+-- How strong the screen flash is after elapsed seconds: it rises from nothing to FLASH_ALPHA and
+-- back, FLASH_PULSES times. nil when the flash is over.
+function ns.FlashAlpha(elapsed)
+  if type(elapsed) ~= "number" or elapsed < 0 or elapsed >= ns.FLASH_PULSES * ns.FLASH_PULSE then return nil end
+  local phase = (elapsed % ns.FLASH_PULSE) / ns.FLASH_PULSE
+  return ns.FLASH_ALPHA * (1 - math.abs(2 * phase - 1))
 end
 
 -- The text in the middle of the screen for one kind of alert.
