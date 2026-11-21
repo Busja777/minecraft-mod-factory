@@ -4,13 +4,16 @@ local _, ns = ...
 -- A reading is the XP bar at one moment: { xp, max, level, rested }.
 
 ns.MIN_SECONDS = 60 -- a rate from less playing time than this jumps around too much to show
+ns.HISTORY = 10     -- finished sessions kept per character
+ns.MERGE_GAP = 300  -- seconds between logout and login that still count as one session (a reload, a quick relog)
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
 
-function ns.NewSession(now, reading)
-  return { start = now, gained = 0, levels = 0, last = reading }
+-- startedAt is the clock time (time()) the session began; login is true for a session begun at login.
+function ns.NewSession(now, reading, startedAt, login)
+  return { start = now, gained = 0, levels = 0, last = reading, startedAt = startedAt, login = login }
 end
 
 -- XP gained between two readings, and the levels gained on the way.
@@ -88,13 +91,97 @@ function ns.View(session, now)
   return view
 end
 
--- What is kept of a session once it is over.
+-- What is kept of a session once it is over. at and from are clock times (time()): its end and its start.
 function ns.SessionSummary(session, now, at)
+  local seconds = math.floor(now - session.start)
   return {
     xp = session.gained,
-    seconds = math.floor(now - session.start),
+    seconds = seconds,
     levels = session.levels,
     level = session.last and session.last.level or nil,
     at = at,
+    from = session.startedAt or (at and at - seconds),
   }
+end
+
+-- A saved session that can be shown; anything else (broken or empty) is dropped.
+function ns.ValidEntry(e)
+  return type(e) == "table" and type(e.xp) == "number" and e.xp > 0
+    and type(e.seconds) == "number" and e.seconds >= 0
+end
+
+local function copy(e)
+  local c = {}
+  for k, v in pairs(e) do c[k] = v end
+  return c
+end
+
+-- Puts a finished session at the top of the history (newest first) and keeps the newest ns.HISTORY.
+-- With merge, a session that began within ns.MERGE_GAP of the end of the newest entry continues
+-- that entry: a UI reload or a quick relog does not split one evening into pieces.
+function ns.AddToHistory(history, entry, merge)
+  local top = history[1]
+  local gap = top and top.at and entry.from and entry.from - top.at
+  if merge and gap and gap >= 0 and gap <= ns.MERGE_GAP then
+    top.xp = top.xp + entry.xp
+    top.seconds = top.seconds + entry.seconds
+    top.levels = (top.levels or 0) + (entry.levels or 0)
+    top.level = entry.level or top.level
+    top.at = entry.at
+  else
+    table.insert(history, 1, copy(entry))
+  end
+  while #history > ns.HISTORY do table.remove(history) end
+end
+
+-- Brings the saved data of one character to the current shape. Version 1.0 kept only the
+-- last session (char.last); it becomes the first entry of the history. Broken rows are dropped.
+function ns.MigrateChar(char)
+  if type(char.history) ~= "table" then
+    char.history = {}
+    local last = char.last
+    if ns.ValidEntry(last) then
+      local e = copy(last)
+      if e.from == nil and type(e.at) == "number" then e.from = e.at - e.seconds end
+      char.history[1] = e
+    end
+  end
+  local clean = {}
+  for _, e in ipairs(char.history) do
+    if ns.ValidEntry(e) and #clean < ns.HISTORY then clean[#clean + 1] = e end
+  end
+  char.history = clean
+end
+
+-- One history entry as texts: when it started, how long, XP, XP per hour, levels gained.
+function ns.HistoryRow(e)
+  local when = type(e.from) == "number" and date and date(ns.L["%b %d %H:%M"], e.from) or "-"
+  local perHour = ns.PerHour(e.xp, e.seconds)
+  local levels = e.levels or 0
+  return {
+    when = when,
+    duration = ns.FormatDuration(e.seconds),
+    xp = ns.FormatNumber(e.xp),
+    perHour = perHour and ns.FormatNumber(perHour) or "-",
+    levels = levels > 0 and string.format(ns.L["+%d"], levels) or "",
+  }
+end
+
+-- One history entry as a chat line.
+function ns.HistoryText(e)
+  local r = ns.HistoryRow(e)
+  local L = ns.L
+  local text
+  if r.perHour ~= "-" then
+    text = string.format(L["%s: %s XP in %s, %s XP per hour"], r.when, r.xp, r.duration, r.perHour)
+  else
+    text = string.format(L["%s: %s XP in %s"], r.when, r.xp, r.duration)
+  end
+  local levels = e.levels or 0
+  if levels == 1 then
+    text = text .. L[", 1 level up"]
+  elseif levels > 1 then
+    text = text .. string.format(L[", %d levels up"], levels)
+  end
+  return text
 end

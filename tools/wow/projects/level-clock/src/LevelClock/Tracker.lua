@@ -32,33 +32,38 @@ local function sample()
   if ns.Refresh then ns.Refresh() end
 end
 
--- Keeps a summary of the session that ends. A session without XP does not replace the last real one.
+-- Keeps a summary of the session that ends, in the history and as the last session (as 1.0 did).
+-- A session without XP is not kept.
 function ns.EndSession()
   if ns.char and ns.session.gained > 0 then
-    ns.char.last = ns.SessionSummary(ns.session, GetTime(), time())
+    local summary = ns.SessionSummary(ns.session, GetTime(), time())
+    ns.char.last = summary
+    ns.AddToHistory(ns.char.history, summary, ns.session.login)
   end
 end
 
+-- A session started by hand is never merged into the one before it.
 function ns.Reset()
   ns.EndSession()
-  ns.session = ns.NewSession(GetTime(), ns.session.last)
+  ns.session = ns.NewSession(GetTime(), ns.session.last, time(), false)
   if ns.Refresh then ns.Refresh() end
 end
 
 local function onLogin()
-  LevelClockDB = LevelClockDB or {}
+  if type(LevelClockDB) ~= "table" then LevelClockDB = {} end
   local db = LevelClockDB
-  db.version = 1
-  db.chars = db.chars or {}
-  db.settings = db.settings or {}
+  db.version = 2
+  if type(db.chars) ~= "table" then db.chars = {} end
+  if type(db.settings) ~= "table" then db.settings = {} end
   ns.db = db
 
   local key = ns.CharKey()
-  local char = db.chars[key] or {}
+  local char = type(db.chars[key]) == "table" and db.chars[key] or {}
   db.chars[key] = char
+  ns.MigrateChar(char)
   ns.char = char
 
-  ns.session = ns.NewSession(GetTime(), read())
+  ns.session = ns.NewSession(GetTime(), read(), time(), true)
 end
 
 local frame = CreateFrame("Frame")

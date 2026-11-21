@@ -19,10 +19,22 @@ local function lastBag()
   return NUM_TOTAL_EQUIPPED_BAG_SLOTS or ((NUM_BAG_SLOTS or 4) + (NUM_REAGENTBAG_SLOTS or 0))
 end
 
+local function infoFunction()
+  return C_Item and C_Item.GetItemInfo or GetItemInfo
+end
+
 local function vendorPrice(item)
-  local getInfo = C_Item and C_Item.GetItemInfo or GetItemInfo
+  local getInfo = infoFunction()
   if not getInfo or not item then return nil end
   return plain((select(11, getInfo(item))))
+end
+
+-- The item's link as the game knows it; nil while the game has not loaded the item yet.
+function ns.ItemLink(id)
+  local getInfo = infoFunction()
+  if not getInfo then return nil end
+  local link = plain((select(2, getInfo(id))))
+  return type(link) == "string" and link or nil
 end
 
 -- One bag slot as the plain record Core.lua works with; nil for an empty or unreadable slot.
@@ -81,7 +93,9 @@ local function sellStep(v)
   for _, planned in ipairs(step) do
     -- The slot is read again: something may have moved since the bags were scanned.
     local item = ns.ReadSlot(planned.bag, planned.slot)
-    if item and item.id == planned.id and ns.Sellable(item) then
+    if item and item.id == planned.id and ns.Sellable(item) and ns.IsKept(ns.db.keep, item.id) then
+      v.kept = v.kept + item.count -- put on the keep list during the visit
+    elseif item and item.id == planned.id and ns.Sellable(item) then
       C_Container.UseContainerItem(planned.bag, planned.slot)
       v.items = v.items + item.count
       v.earned = v.earned + item.price * item.count
@@ -95,10 +109,10 @@ end
 local function onMerchantShow()
   if visit or not ns.settings then return end
   if IsShiftKeyDown and IsShiftKeyDown() then return end
-  local v = { items = 0, earned = 0, index = 1, plan = {} }
+  local v = { items = 0, earned = 0, kept = 0, index = 1, plan = {} }
   visit = v
   repair(v)
-  if ns.settings.sell and C_Container and C_Container.UseContainerItem then v.plan = ns.SellPlan(ns.ScanBags()) end
+  if ns.settings.sell and C_Container and C_Container.UseContainerItem then v.plan, v.kept = ns.SellPlan(ns.ScanBags(), ns.db.keep) end
   sellStep(v)
 end
 
@@ -109,8 +123,9 @@ end
 local function onLogin()
   if type(JunkButlerDB) ~= "table" then JunkButlerDB = {} end
   local db = JunkButlerDB
-  db.version = 1
+  db.version = 2
   if type(db.settings) ~= "table" then db.settings = {} end
+  db.keep = ns.CleanKeepList(db.keep) -- new in 1.1; 1.0 data has none and starts with an empty list
   if db.settings.sell == nil then db.settings.sell = true end
   if db.settings.repair == nil then db.settings.repair = true end
   ns.db = db

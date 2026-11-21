@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "LevelClock-1.1.zip",
+      "changelog": "## Level Clock 1.1\n\n- New **History** view: click the History button in the window to see your last 10 sessions with XP for this character: when they started, how long they lasted, XP gained, XP per hour and levels gained.\n- New command `/lc history`: lists the same sessions in the chat.\n- A UI reload or a quick relog (within five minutes) continues the session instead of splitting it. `/lc reset` still starts a fresh one.\n- The last session saved by version 1.0 becomes the first entry of the history, nothing is lost.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }
