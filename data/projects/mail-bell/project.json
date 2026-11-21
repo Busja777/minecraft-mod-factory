@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "MailBell-1.1.zip",
+      "changelog": "## Mail Bell 1.1\n\n- New **expiry warning**: when you open a mailbox, one chat line tells you if letters with items or gold run out within the next 3 days, for example \"2 letters with items or gold run out within 3 days, the first in 1 day.\" It comes once per session.\n- Mail Bell remembers this for every character. The list a few seconds after login now also names the characters whose items or gold run out soon, the one you are playing included, for example \"Mail with items or gold runs out soon on: Brakk in 2 days\".\n- Cash-on-delivery letters and letters without items or gold are left out.\n- `/mb expire 5` sets the days (1 to 30), `/mb expire off` switches the warning off. `/mb` shows the setting.\n- Your characters and settings from 1.0 are kept. A character's dates are known after its next visit to a mailbox.\n\n- The help text now reads \"on/off\" instead of \"on|off\", which the chat could show garbled.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

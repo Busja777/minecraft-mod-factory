@@ -7,6 +7,7 @@ local function world(wow)
   local w = {
     friends = {}, bnet = {}, guild = {}, inGuild = nil, -- nil: in a guild when the roster has members
     cancelled = 0, declined = 0, hidden = {}, timers = {}, rosterRequests = 0,
+    whispers = {}, instance = false, instanceType = "none", lockdown = false,
   }
 
   GetNormalizedRealmName = function() return "Silvermoon" end
@@ -49,6 +50,13 @@ local function world(wow)
   DeclineGroup = function() w.declined = w.declined + 1 end
   StaticPopup_Hide = function(which) w.hidden[#w.hidden + 1] = which end
   C_Timer = { After = function(seconds, fn) w.timers[#w.timers + 1] = { seconds = seconds, fn = fn } end }
+  IsInInstance = function() return w.instance, w.instanceType end
+  C_ChatInfo = {
+    SendChatMessage = function(text, chatType, language, target)
+      w.whispers[#w.whispers + 1] = { text = text, chatType = chatType, language = language, target = target }
+    end,
+    InChatMessagingLockdown = function() return w.lockdown end,
+  }
 
   function w.run()
     local due = w.timers
@@ -308,35 +316,38 @@ test("slash commands show the state and switch duels, invites and quiet mode", f
   local w = world(wow)
   boot(wow)
   wow.slash("/pd")
-  eq(wow.chat[1], PREFIX .. "Declining duels from strangers is on. Declining group invites from strangers is on. Quiet mode is off.")
-  eq(wow.chat[2], PREFIX .. "/pd duels on|off, /pd invites on|off, /pd quiet on|off, /pd allow Name, /pd unallow Name, /pd list.")
+  eq(wow.chat[1], PREFIX .. "Declining duels from strangers is on. Declining group invites from strangers is on. Quiet mode is off. Reply whisper is off.")
+  eq(wow.chat[2], PREFIX .. "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list.")
+  eq(wow.chat[3], PREFIX .. "/pd whisper on or off sends declined strangers a short polite whisper, /pd whisper text Your words sets it, /pd whisper reset brings back the default.")
   wow.slash("/pd duels off")
-  eq(wow.chat[3], PREFIX .. "Declining duels from strangers is off.")
+  eq(wow.chat[4], PREFIX .. "Declining duels from strangers is off.")
   eq(PoliteDeclineDB.settings.duels, false)
   w.duel("Grumbash")
   eq(w.cancelled, 0)
   wow.slash("/politedecline  DUELS On ")
-  eq(wow.chat[4], PREFIX .. "Declining duels from strangers is on.")
+  eq(wow.chat[5], PREFIX .. "Declining duels from strangers is on.")
   wow.slash("/pd invites off")
-  eq(wow.chat[5], PREFIX .. "Declining group invites from strangers is off.")
+  eq(wow.chat[6], PREFIX .. "Declining group invites from strangers is off.")
   w.invite("Grumbash", "Player-1-0005")
   eq(w.declined, 0)
   wow.slash("/pd invites on")
   wow.slash("/pd quiet on")
-  eq(wow.chat[7], PREFIX .. "Quiet mode is on: nothing is said in chat.")
+  eq(wow.chat[8], PREFIX .. "Quiet mode is on: nothing is said in chat.")
   w.duel("Grumbash")
   w.invite("Grumbash", "Player-1-0005")
   eq(w.cancelled, 1, "quiet mode still declines")
   eq(w.declined, 1)
-  eq(#wow.chat, 7, "but says nothing")
+  eq(#wow.chat, 8, "but says nothing")
   wow.slash("/pd quiet off")
   w.duel("Grumbash")
-  eq(wow.chat[9], PREFIX .. "Declined a duel from Grumbash (2 this session).", "quiet declines are counted too")
+  eq(wow.chat[10], PREFIX .. "Declined a duel from Grumbash (2 this session).", "quiet declines are counted too")
   wow.slash("/pd duels maybe")
-  eq(wow.chat[10]:match("/pd duels on|off") ~= nil, true)
+  eq(wow.chat[11]:match("/pd duels on/off") ~= nil, true)
+  eq(wow.chat[12]:match("/pd whisper on or off") ~= nil, true)
   wow.slash("/pd help")
-  eq(wow.chat[11], wow.chat[10])
-  eq(#wow.chat, 11)
+  eq(wow.chat[13], wow.chat[11])
+  eq(#wow.chat, 14)
+  eq(#w.whispers, 0, "no whisper unless switched on")
 end)
 
 test("slash commands keep the allow list", function(wow)
@@ -376,7 +387,7 @@ test("settings survive: saved values are kept, new ones get their defaults", fun
   local w = world(wow)
   w.inGuild = true
   boot(wow)
-  eq(PoliteDeclineDB.version, 1)
+  eq(PoliteDeclineDB.version, 2)
   eq(PoliteDeclineDB.settings.duels, true)
   eq(PoliteDeclineDB.settings.invites, true)
   eq(PoliteDeclineDB.settings.quiet, false)
@@ -431,4 +442,227 @@ test("events and slash commands before login do nothing", function(wow)
   eq(w.cancelled + w.declined, 0)
   eq(#wow.chat, 0)
   eq(PoliteDeclineDB, nil)
+end)
+
+-- Polite Decline 1.1: the reply whisper.
+
+local DEFAULT = "Thanks, but I don't take duels or group invites from people I don't know. Have a good day!"
+
+test("core: a custom reply is cleaned, a name gets one key per character", function(wow)
+  local ns = boot(wow)
+  eq(ns.CleanWhisper("  Not   today,  friend! "), "Not today, friend!")
+  eq(ns.CleanWhisper("No |cffff0000colours|r here"), "No cffff0000coloursr here", "no chat codes")
+  eq(select(2, ns.CleanWhisper("   ")), "empty")
+  eq(select(2, ns.CleanWhisper("||")), "empty")
+  eq(select(2, ns.CleanWhisper(nil)), "empty")
+  eq(select(2, ns.CleanWhisper(SECRET)), "empty")
+  eq(ns.CleanWhisper(string.rep("a", 200)), string.rep("a", 200))
+  eq(select(2, ns.CleanWhisper(string.rep("a", 201))), "long")
+  eq(ns.WhisperKey("Grumbash", "Silvermoon"), "grumbash-silvermoon")
+  eq(ns.WhisperKey("grumbash-Silvermoon", "Silvermoon"), "grumbash-silvermoon", "the same character")
+  eq(ns.WhisperKey("Grumbash-Argent Dawn", "Silvermoon"), "grumbash-argentdawn")
+  eq(ns.WhisperKey("Grumbash", nil), "grumbash-")
+  eq(ns.WhisperKey(SECRET, "Silvermoon"), nil)
+  eq(ns.WhisperKey("", "Silvermoon"), nil)
+end)
+
+test("core: one whisper per name in 30 minutes, never two within 10 seconds", function(wow)
+  local ns = boot(wow)
+  local st = ns.NewWhisperState()
+  eq(ns.MayWhisper(st, "a-x", 100), true)
+  eq(ns.MayWhisper(st, "b-x", 105), false, "too soon after the last whisper")
+  eq(ns.MayWhisper(st, "b-x", 110), true, "10 seconds later")
+  eq(ns.MayWhisper(st, "a-x", 1000), false, "the same name within 30 minutes")
+  eq(ns.MayWhisper(st, "a-x", 100 + ns.WHISPER_GAP), true, "30 minutes later")
+  eq(ns.MayWhisper(st, nil, 5000), false)
+  eq(ns.MayWhisper(st, "c-x", nil), false)
+  eq(ns.WHISPER_GAP, 1800)
+  eq(ns.WHISPER_SPACING, 10)
+end)
+
+test("core: whispers only in the open world", function(wow)
+  local ns = boot(wow)
+  eq(ns.SafeToWhisper(false, "none", false), true)
+  eq(ns.SafeToWhisper(false, nil, nil), true)
+  eq(ns.SafeToWhisper(nil, "none", nil), true, "an old-style nil means outside")
+  eq(ns.SafeToWhisper(true, "party", false), false)
+  eq(ns.SafeToWhisper(true, "pvp", false), false)
+  eq(ns.SafeToWhisper(false, "arena", false), false, "the type counts too")
+  eq(ns.SafeToWhisper(false, "none", true), false, "chat locked")
+  eq(ns.SafeToWhisper(SECRET, "none", false), false)
+  eq(ns.SafeToWhisper(false, SECRET, false), false)
+  eq(ns.SafeToWhisper(false, "none", SECRET), false)
+end)
+
+test("reply whisper: off by default, settings of 1.0 are kept", function(wow)
+  local w = world(wow)
+  PoliteDeclineDB = { version = 1, settings = { duels = true, invites = false, quiet = true }, allow = { thrall = "Thrall" } }
+  boot(wow)
+  eq(PoliteDeclineDB.version, 2)
+  eq(PoliteDeclineDB.settings.whisper, false)
+  eq(PoliteDeclineDB.settings.whisperText, nil)
+  eq(PoliteDeclineDB.settings.invites, false)
+  eq(PoliteDeclineDB.settings.quiet, true)
+  eq(PoliteDeclineDB.allow.thrall, "Thrall")
+  w.duel("Grumbash")
+  eq(w.cancelled, 1)
+  eq(#w.whispers, 0)
+end)
+
+test("reply whisper: a declined stranger gets one polite whisper", function(wow)
+  local w = world(wow)
+  w.friends["Player-1-0001"] = "Pal"
+  boot(wow)
+  wow.slash("/pd whisper on")
+  eq(wow.chat[1], PREFIX .. "Reply whisper is on.")
+  eq(wow.chat[2], PREFIX .. "Reply text: " .. DEFAULT)
+  w.duel("Grumbash")
+  eq(#w.whispers, 1)
+  eq(w.whispers[1].text, DEFAULT)
+  eq(w.whispers[1].chatType, "WHISPER")
+  eq(w.whispers[1].target, "Grumbash")
+  eq(wow.chat[3], PREFIX .. "Declined a duel from Grumbash (1 this session).")
+  wow.clock = wow.clock + 10
+  w.invite("Stranger-Kazzak", "Player-2-0099")
+  eq(w.whispers[2].target, "Stranger-Kazzak", "cross-realm names keep their realm")
+  wow.clock = wow.clock + 10
+  w.duel("Pal")
+  w.invite("Grumbash", nil) -- unsure: let through
+  eq(#w.whispers, 2, "nobody who got through is whispered")
+  wow.slash("/pd quiet on")
+  w.duel("Orcy")
+  eq(#w.whispers, 3, "quiet mode only silences the chat lines")
+end)
+
+test("reply whisper: at most once per name in 30 minutes, never two within 10 seconds", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd whisper on")
+  w.duel("Grumbash")
+  wow.clock = wow.clock + 60
+  w.duel("Grumbash")
+  w.invite("grumbash-Silvermoon", "Player-1-0005")
+  eq(w.cancelled, 2, "still declined")
+  eq(w.declined, 1)
+  eq(#w.whispers, 1, "the same character is whispered once")
+  w.duel("Orcy")
+  eq(#w.whispers, 2)
+  wow.clock = wow.clock + 3
+  w.duel("Spammer")
+  eq(#w.whispers, 2, "a second whisper within 10 seconds waits")
+  wow.clock = wow.clock + 1800
+  w.duel("Grumbash")
+  eq(#w.whispers, 3, "30 minutes later Grumbash may get it again")
+end)
+
+test("reply whisper: never in instances, battlegrounds or while chat is locked", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd whisper on")
+  w.instance, w.instanceType = true, "party"
+  w.duel("Grumbash")
+  w.instance, w.instanceType = true, "pvp"
+  w.invite("Grumbash", "Player-1-0005")
+  w.instance, w.instanceType = false, "none"
+  w.lockdown = true
+  w.duel("Grumbash")
+  w.lockdown = SECRET
+  w.duel("Grumbash")
+  w.lockdown = false
+  IsInInstance = function() return SECRET, "none" end
+  w.duel("Grumbash")
+  IsInInstance = nil
+  w.duel("Grumbash")
+  eq(w.cancelled, 5, "declining goes on")
+  eq(w.declined, 1)
+  eq(#w.whispers, 0)
+  IsInInstance = function() return w.instance, w.instanceType end
+  w.duel("Grumbash")
+  eq(#w.whispers, 1, "outside again, and the skipped ones did not use up the limit")
+  C_ChatInfo.InChatMessagingLockdown = nil
+  wow.clock = wow.clock + 10
+  w.duel("Orcy")
+  eq(#w.whispers, 2, "a client without the lockdown check whispers outside")
+end)
+
+test("reply whisper: a custom text, its checks and the default again", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd whisper")
+  eq(wow.chat[1], PREFIX .. "Reply whisper is off.")
+  eq(wow.chat[2], PREFIX .. "Reply text: " .. DEFAULT)
+  wow.slash("/pd whisper text   No duels today, sorry!  ")
+  eq(wow.chat[3], PREFIX .. "Reply text: No duels today, sorry!")
+  eq(PoliteDeclineDB.settings.whisperText, "No duels today, sorry!")
+  wow.slash("/pd WHISPER Text")
+  eq(wow.chat[4], PREFIX .. "Reply text: No duels today, sorry!")
+  wow.slash("/pd whisper text " .. string.rep("x", 201))
+  eq(wow.chat[5], PREFIX .. "That text is too long: 200 characters at most.")
+  wow.slash("/pd whisper text ||")
+  eq(wow.chat[6]:match("/pd duels on/off") ~= nil, true, "an empty text shows the help")
+  eq(PoliteDeclineDB.settings.whisperText, "No duels today, sorry!")
+  wow.slash("/pd whisper on")
+  w.duel("Grumbash")
+  eq(w.whispers[1].text, "No duels today, sorry!")
+  wow.slash("/pd whisper reset")
+  eq(wow.chat[#wow.chat], PREFIX .. "Reply text: " .. DEFAULT)
+  eq(PoliteDeclineDB.settings.whisperText, nil)
+  wow.slash("/pd whisper loud")
+  eq(wow.chat[#wow.chat]:match("/pd whisper on or off") ~= nil, true)
+  wow.slash("/pd whisper off")
+  eq(wow.chat[#wow.chat], PREFIX .. "Reply whisper is off.")
+  wow.clock = wow.clock + 60
+  w.duel("Orcy")
+  eq(#w.whispers, 1)
+end)
+
+test("reply whisper: the choice and text survive a reload, broken values are replaced", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd whisper on")
+  wow.slash("/pd whisper text Busy, sorry.")
+  local saved = PoliteDeclineDB
+  PoliteDeclineDB = saved
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.frames[1].events = {}
+  wow.fire("PLAYER_LOGIN")
+  eq(PoliteDeclineDB.settings.whisper, true)
+  eq(PoliteDeclineDB.settings.whisperText, "Busy, sorry.")
+  w.duel("Grumbash")
+  eq(w.whispers[1].text, "Busy, sorry.")
+
+  PoliteDeclineDB = { settings = { whisper = "yes", whisperText = 42 } }
+  wow.fire("PLAYER_LOGIN")
+  eq(PoliteDeclineDB.settings.whisper, false)
+  eq(PoliteDeclineDB.settings.whisperText, nil)
+  PoliteDeclineDB = { settings = { whisper = true, whisperText = "  |cffff0000Hi|r  " } }
+  wow.fire("PLAYER_LOGIN")
+  eq(PoliteDeclineDB.settings.whisperText, "cffff0000Hir")
+end)
+
+test("reply whisper: missing chat functions are no error, nothing declined means no whisper", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd whisper on")
+  local older = {}
+  C_ChatInfo = nil
+  SendChatMessage = function(text, chatType, _, target) older[#older + 1] = chatType .. ":" .. target end
+  w.duel("Grumbash")
+  eq(table.concat(older, " "), "WHISPER:Grumbash", "the older SendChatMessage")
+  SendChatMessage = function() error("blocked") end
+  wow.clock = wow.clock + 10
+  w.duel("Orcy")
+  SendChatMessage = nil
+  wow.clock = wow.clock + 10
+  w.duel("Spammer")
+  eq(w.cancelled, 3)
+  SendChatMessage = function(text, chatType, _, target) older[#older + 1] = chatType .. ":" .. target end
+  CancelDuel = nil
+  wow.clock = wow.clock + 10
+  w.duel("Newcomer")
+  eq(#older, 1, "the duel was not declined, so no whisper")
+  wow.clock = wow.clock + 10
+  w.invite("Newcomer", "Player-1-0042")
+  eq(older[2], "WHISPER:Newcomer", "the limit was not used up by the duel")
+  eq(#w.whispers, 0)
 end)

@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "PoliteDecline-1.1.zip",
+      "changelog": "## Polite Decline 1.1\n\n- New **reply whisper**: a stranger whose duel or group invite was declined can get one short, polite whisper, so they know it was not personal. It is off until you switch it on with `/pd whisper on`.\n- The default reply is \"Thanks, but I don't take duels or group invites from people I don't know. Have a good day!\" `/pd whisper text` followed by your own words sets your own (up to 200 characters), `/pd whisper reset` brings back the default, `/pd whisper` shows the reply.\n- No spam: the same character gets the whisper at most once every 30 minutes, and two whispers never go out within 10 seconds.\n- No whispers inside dungeons, raids, battlegrounds, arenas or scenarios, or while the game has chat locked. Declining works there as before.\n- Friends, guild mates, your allow list and anyone the addon is unsure about are never whispered, because they are never declined.\n- Your settings and allow list from 1.0 are kept.\n\n- The help text now reads \"on/off\" instead of \"on|off\", which the chat could show garbled.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

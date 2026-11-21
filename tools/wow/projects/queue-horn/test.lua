@@ -4,7 +4,7 @@
 -- the battleground queue slots and the sound options. Every alert is noted in g.
 local function game(wow)
   local g = { sounds = {}, flashes = 0, notices = {}, errors = {}, slots = {}, cvars = {} }
-  SOUNDKIT = { READY_CHECK = 8960 }
+  SOUNDKIT = { READY_CHECK = 8960, RAID_WARNING = 8959, ALARM_CLOCK_WARNING_3 = 12889, IG_PLAYER_INVITE = 880, TELL_MESSAGE = 3081 }
   PlaySound = function(id, channel) g.sounds[#g.sounds + 1] = tostring(id) .. "@" .. tostring(channel) end
   FlashClientIcon = function() g.flashes = g.flashes + 1 end
   RaidWarningFrame = {}
@@ -323,7 +323,7 @@ test("missing parts of the game are no error", function(wow)
   wow.fire("LFG_PROPOSAL_SHOW")
   wow.fire("READY_CHECK", "Yubi-Silvermoon", 30)
   eq(g.count(), 0, "no sound without SOUNDKIT")
-  SOUNDKIT = { READY_CHECK = 8960 }
+  SOUNDKIT = { READY_CHECK = 8960, RAID_WARNING = 8959, ALARM_CLOCK_WARNING_3 = 12889, IG_PLAYER_INVITE = 880, TELL_MESSAGE = 3081 }
   PlaySound = nil
   GetBattlefieldStatus = nil
   GetMaxBattlefieldID = nil
@@ -358,21 +358,23 @@ end)
 test("slash commands show the state, help and switch alerts", function(wow)
   local _, g = boot(wow)
   wow.slash("/qh")
-  eq(#wow.chat, 2)
+  eq(#wow.chat, 3)
   eq(wow.chat[1], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena on, Pet battle on. Icon flash: on.")
-  eq(wow.chat[2]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/qh shows this") ~= nil, true)
+  eq(wow.chat[2], PREFIX .. "Sounds: Group finder horn, Ready check horn, Battleground and arena horn, Pet battle horn. Choices: horn, warning, alarm, invite, whisper.")
+  eq(wow.chat[3]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/qh shows this") ~= nil, true)
+  eq(wow.chat[3]:match("/qh sound lfg alarm picks one for an alert, /qh test lfg plays it%.$") ~= nil, true)
   wow.slash("/qh pvp off")
-  eq(wow.chat[3], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena off, Pet battle on. Icon flash: on.")
+  eq(wow.chat[4], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena off, Pet battle on. Icon flash: on.")
   eq(QueueHornDB.settings.pvp, false)
   wow.slash("/queuehorn  Ready   OFF ")
   eq(QueueHornDB.settings.ready, false)
-  eq(wow.chat[4]:match("Ready check off") ~= nil, true)
+  eq(wow.chat[5]:match("Ready check off") ~= nil, true)
   wow.slash("/qh flash off")
   eq(QueueHornDB.settings.flash, false)
   wow.slash("/qh sound on")
-  eq(wow.chat[6]:match("/qh shows this") ~= nil, true, "unknown words show the help")
+  eq(wow.chat[7]:match("/qh shows this") ~= nil, true, "unknown words show the help")
   wow.slash("/qh pvp")
-  eq(wow.chat[7]:match("/qh shows this") ~= nil, true)
+  eq(wow.chat[8]:match("/qh shows this") ~= nil, true)
   eq(QueueHornDB.settings.pvp, false)
   for _, line in ipairs(wow.chat) do
     eq(line:sub(#PREFIX + 1):find("|", 1, true), nil, "no colour code by accident in: " .. line)
@@ -384,20 +386,20 @@ test("/qh warns when the game is silent in the background", function(wow)
   local _, g = boot(wow)
   g.cvars.Sound_EnableSoundWhenGameIsInBG = "1"
   wow.slash("/qh")
-  eq(#wow.chat, 2)
+  eq(#wow.chat, 3)
   g.cvars.Sound_EnableSoundWhenGameIsInBG = "0"
   wow.slash("/qh")
-  eq(#wow.chat, 5)
-  eq(wow.chat[4], PREFIX .. "Sound in Background is off in the game's sound options, so you hear nothing while tabbed out.")
+  eq(#wow.chat, 7)
+  eq(wow.chat[6], PREFIX .. "Sound in Background is off in the game's sound options, so you hear nothing while tabbed out.")
   C_CVar = nil
   GetCVar = function(name) return g.cvars[name] end
   wow.slash("/qh")
-  eq(#wow.chat, 8, "the older GetCVar works too")
+  eq(#wow.chat, 11, "the older GetCVar works too")
 end)
 
 test("settings survive: saved values are kept, new ones start switched on", function(wow)
   local _, g = boot(wow)
-  eq(QueueHornDB.version, 1)
+  eq(QueueHornDB.version, 2)
   eq(QueueHornDB.settings.lfg, true)
   eq(QueueHornDB.settings.flash, true)
 
@@ -452,4 +454,152 @@ test("an event the client does not know is skipped when registering", function(w
   eq(g.count(), 0)
   wow.fire("LFG_PROPOSAL_SHOW")
   eq(g.count(), 1)
+end)
+
+-- Queue Horn 1.1: a sound per alert.
+
+test("core: every alert starts with the horn, a saved choice is kept", function(wow)
+  local ns = boot(wow)
+  local s = ns.Settings({ lfg = false }) -- settings as 1.0 saved them
+  eq(s.sounds.lfg, "horn")
+  eq(s.sounds.ready, "horn")
+  eq(s.sounds.pvp, "horn")
+  eq(s.sounds.pet, "horn")
+  eq(s.lfg, false)
+  s = ns.Settings({ sounds = { lfg = "alarm", ready = "trumpet", pvp = 5, later = "x" } })
+  eq(s.sounds.lfg, "alarm")
+  eq(s.sounds.ready, "horn", "an unknown sound is replaced")
+  eq(s.sounds.pvp, "horn")
+  eq(s.sounds.later, "x", "unknown keys are kept")
+  eq(ns.Settings({ sounds = "broken" }).sounds.pet, "horn")
+  eq(ns.DEFAULT_SOUND, "horn")
+  eq(ns.SOUND_KIT.horn, "READY_CHECK", "the default is the sound of 1.0")
+end)
+
+test("core: sound names, ids and the fallback to the horn", function(wow)
+  local ns = boot(wow)
+  local s = ns.Settings({ sounds = { pet = "whisper" } })
+  eq(ns.SoundFor(s, "pet"), "whisper")
+  eq(ns.SoundFor(s, "lfg"), "horn")
+  eq(ns.SoundFor(s, nil), "horn", "the plain test")
+  eq(ns.SoundFor(nil, "pet"), "horn")
+  eq(ns.SoundId(SOUNDKIT, "horn"), 8960)
+  eq(ns.SoundId(SOUNDKIT, "warning"), 8959)
+  eq(ns.SoundId(SOUNDKIT, "alarm"), 12889)
+  eq(ns.SoundId(SOUNDKIT, "invite"), 880)
+  eq(ns.SoundId(SOUNDKIT, "whisper"), 3081)
+  eq(ns.SoundId({ READY_CHECK = 8960 }, "alarm"), 8960, "a sound this client lacks: the horn")
+  eq(ns.SoundId({ READY_CHECK = 8960, TELL_MESSAGE = "x" }, "whisper"), 8960)
+  eq(ns.SoundId({ READY_CHECK = 8960 }, "nonsense"), 8960)
+  eq(ns.SoundId({}, "alarm"), nil)
+  eq(ns.SoundId(nil, "alarm"), nil)
+  eq(ns.ChooseSound(s, "lfg", "alarm"), true)
+  eq(s.sounds.lfg, "alarm")
+  eq(ns.ChooseSound(s, "lfg", "trumpet"), nil)
+  eq(ns.ChooseSound(s, "flash", "alarm"), nil)
+  eq(ns.ChooseSound(s, "sounds", "alarm"), nil)
+  eq(s.sounds.lfg, "alarm")
+  eq(ns.SoundText(s), "Sounds: Group finder alarm, Ready check horn, Battleground and arena horn, Pet battle whisper. Choices: horn, warning, alarm, invite, whisper.")
+  for _, name in ipairs(ns.SOUND_NAMES) do eq(type(ns.SOUND_KIT[name]), "string", name) end
+end)
+
+test("each alert plays the sound chosen for it", function(wow)
+  local _, g = boot(wow)
+  wow.slash("/qh sound lfg alarm")
+  wow.slash("/qh sound ready warning")
+  wow.slash("/qh sound pvp invite")
+  wow.slash("/qh sound pet whisper")
+  g.sounds = {}
+  wow.fire("LFG_PROPOSAL_SHOW")
+  wow.fire("READY_CHECK", "Tank", 30)
+  g.pvp("confirm")
+  wow.fire("PET_BATTLE_QUEUE_PROPOSE_MATCH")
+  eq(table.concat(g.sounds, " "), "12889@Master 8959@Master 880@Master 3081@Master")
+  eq(g.flashes, 4)
+  eq(g.notices[1], "Your group is ready!")
+end)
+
+test("/qh sound lists the sounds and picks one with a preview", function(wow)
+  local _, g = boot(wow)
+  wow.slash("/qh sound")
+  eq(wow.chat[1], PREFIX .. "Sounds: Group finder horn, Ready check horn, Battleground and arena horn, Pet battle horn. Choices: horn, warning, alarm, invite, whisper.")
+  wow.slash("/qh SOUNDS")
+  eq(wow.chat[2], wow.chat[1])
+  wow.slash("/queuehorn  Sound  LFG  Alarm ")
+  eq(wow.chat[3], PREFIX .. "Group finder now plays alarm.")
+  eq(QueueHornDB.settings.sounds.lfg, "alarm")
+  eq(table.concat(g.sounds, " "), "12889@Master", "the new sound plays once")
+  eq(g.flashes, 0, "a preview does not flash")
+  eq(#g.notices, 0, "nor show a message")
+  wow.slash("/qh sound pet trumpet")
+  eq(wow.chat[4]:match("/qh shows this") ~= nil, true, "an unknown sound shows the help")
+  wow.slash("/qh sound flash alarm")
+  eq(wow.chat[5]:match("/qh shows this") ~= nil, true)
+  wow.slash("/qh sound lfg")
+  eq(wow.chat[6]:match("/qh shows this") ~= nil, true)
+  eq(QueueHornDB.settings.sounds.pet, "horn")
+  eq(g.count(), 1)
+  wow.fire("LFG_PROPOSAL_SHOW")
+  eq(g.sounds[2], "12889@Master", "the preview does not hold back a real alert")
+end)
+
+test("/qh test with an alert plays its sound with the test message", function(wow)
+  local _, g = boot(wow)
+  wow.slash("/qh sound ready warning")
+  g.sounds = {}
+  wow.slash("/qh test ready")
+  eq(table.concat(g.sounds, " "), "8959@Master")
+  eq(g.flashes, 1)
+  eq(g.notices[1], "Queue Horn test: this is how an alert looks.")
+  wow.slash("/qh test")
+  eq(g.sounds[2], "8960@Master", "the plain test plays the horn as in 1.0")
+  wow.slash("/qh ready off")
+  wow.slash("/qh test ready")
+  eq(g.sounds[3], "8959@Master", "also when that alert is switched off")
+  wow.slash("/qh test lfg")
+  eq(g.sounds[4], "8960@Master")
+  wow.slash("/qh test nonsense")
+  eq(g.count(), 4)
+  eq(wow.chat[#wow.chat]:match("/qh shows this") ~= nil, true)
+end)
+
+test("a sound the client does not know plays the horn, no SOUNDKIT plays nothing", function(wow)
+  local _, g = boot(wow)
+  wow.slash("/qh sound lfg alarm")
+  SOUNDKIT = { READY_CHECK = 8960 }
+  g.sounds = {}
+  wow.fire("LFG_PROPOSAL_SHOW")
+  eq(g.sounds[1], "8960@Master")
+  SOUNDKIT = nil
+  wow.slash("/qh sound pet invite")
+  wow.fire("PET_BATTLE_QUEUE_PROPOSE_MATCH")
+  eq(g.count(), 1)
+  eq(g.flashes, 2, "the rest of the alert still works")
+  PlaySound = nil
+  SOUNDKIT = { READY_CHECK = 8960 }
+  wow.slash("/qh test pet")
+  eq(g.count(), 1)
+end)
+
+test("sound choices survive a reload and saved data of 1.0 keeps working", function(wow)
+  local _, g = boot(wow)
+  wow.slash("/qh sound pvp alarm")
+  local saved = QueueHornDB
+  QueueHornDB = saved
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.frames[1].events = {}
+  wow.fire("PLAYER_LOGIN")
+  eq(QueueHornDB.settings.sounds.pvp, "alarm")
+  g.sounds = {}
+  g.pvp("confirm")
+  eq(g.sounds[1], "12889@Master")
+
+  QueueHornDB = { version = 1, settings = { lfg = true, ready = false, pvp = true, pet = true, flash = false } } -- written by 1.0
+  wow.fire("PLAYER_LOGIN")
+  eq(QueueHornDB.version, 2)
+  eq(QueueHornDB.settings.ready, false)
+  eq(QueueHornDB.settings.flash, false)
+  eq(QueueHornDB.settings.sounds.lfg, "horn")
+  wow.fire("LFG_PROPOSAL_SHOW")
+  eq(g.sounds[2], "8960@Master", "an alert sounds as in 1.0")
 end)

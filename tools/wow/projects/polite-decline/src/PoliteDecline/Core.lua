@@ -5,6 +5,12 @@ local L = ns.L
 
 ns.KINDS = { duel = true, invite = true }
 
+-- The reply whisper (1.1): at most one per name in 30 minutes, and never two within 10 seconds.
+ns.WHISPER_GAP = 1800
+ns.WHISPER_SPACING = 10
+ns.WHISPER_MAX = 200 -- characters of a custom reply; a whisper takes 255
+ns.DEFAULT_WHISPER = "Thanks, but I don't take duels or group invites from people I don't know. Have a good day!"
+
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
@@ -88,4 +94,49 @@ function ns.AllowNames(allow)
   for _, shown in pairs(allow or {}) do names[#names + 1] = shown end
   table.sort(names, function(a, b) return a:lower() < b:lower() end)
   return names
+end
+
+-- A reply text the player typed, made safe to send: no "|" (the chat would read it as a code),
+-- single spaces, trimmed. Returns the text, or nil and "empty" or "long".
+function ns.CleanWhisper(text)
+  if type(text) ~= "string" or ns.IsSecret(text) then return nil, "empty" end
+  text = trim((text:gsub("|", ""):gsub("%s+", " ")))
+  if text == "" then return nil, "empty" end
+  if #text > ns.WHISPER_MAX then return nil, "long" end
+  return text
+end
+
+-- One key per character for the whisper limit: "grumbash-argentdawn". A name without a realm is on
+-- the player's own realm. nil when the name cannot be read.
+function ns.WhisperKey(name, homeRealm)
+  local base, realm = ns.SplitName(name)
+  if not base then return nil end
+  realm = realm or ns.NormalizeRealm(homeRealm) or ""
+  return base .. "-" .. realm
+end
+
+function ns.NewWhisperState()
+  return { last = {}, lastAny = nil }
+end
+
+-- true when a reply whisper to this key may go out now, and notes the time.
+function ns.MayWhisper(state, key, now)
+  if type(key) ~= "string" or type(now) ~= "number" then return false end
+  if state.lastAny and now - state.lastAny < ns.WHISPER_SPACING then return false end
+  local before = state.last[key]
+  if before and now - before < ns.WHISPER_GAP then return false end
+  state.last[key] = now
+  state.lastAny = now
+  return true
+end
+
+-- Whispers only go out in the open world, read from IsInInstance() (inInstance, instanceType) and
+-- C_ChatInfo.InChatMessagingLockdown(). Inside a dungeon, raid, battleground, arena or scenario, while
+-- the game has chat locked, or when a value is secret, no whisper goes out.
+function ns.SafeToWhisper(inInstance, instanceType, lockdown)
+  if ns.IsSecret(inInstance) or ns.IsSecret(instanceType) or ns.IsSecret(lockdown) then return false end
+  if inInstance then return false end
+  if instanceType ~= nil and instanceType ~= "none" then return false end
+  if lockdown then return false end
+  return true
 end

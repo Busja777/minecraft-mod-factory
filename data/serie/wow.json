@@ -133,9 +133,9 @@
       "art": "RF",
       "was": "Meldet neue Post, merkt sich Post auf Twinks",
       "updates": [
-        "Ablauf-Warnung",
         "Ton wählbar",
-        "Auktionspost-Summe"
+        "Auktionspost-Summe",
+        "Erinnerung an Post auf Twinks beim Login"
       ]
     },
     {
@@ -145,9 +145,9 @@
       "art": "R",
       "was": "Lauter Ton bei Dungeon-Einladung und Bereitschaftscheck, auch bei stummem Spiel",
       "updates": [
-        "Töne wählbar",
-        "Bildschirm-Blitz",
-        "weitere Anlässe"
+        "Bildschirm-Blitz wählbar",
+        "weitere Anlässe (Rollencheck)",
+        "Lautstärke-Hinweis"
       ]
     },
     {
@@ -157,9 +157,9 @@
       "art": "RF",
       "was": "Lehnt Duelle und Einladungen von Fremden ab",
       "updates": [
-        "Ausnahmen Freunde/Gilde",
-        "Antwort-Flüstern",
-        "Protokoll"
+        "Protokoll",
+        "Ausnahme für Gruppenmitglieder der letzten Stunde",
+        "Handelsanfragen optional"
       ]
     },
     {
