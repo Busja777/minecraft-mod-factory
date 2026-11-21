@@ -87,8 +87,8 @@
       "was": "Rück-Rezepte (Wolle zu Faden, Quarzblock zu Quarz …)",
       "updates": [
         "Werkzeug-Recycling",
-        "Kupfer (jede Stufe)",
-        "neue Blöcke der nächsten Version"
+        "neue Blöcke der nächsten Version (Kupferstangen und gealterte Blitzableiter aus 26.x, sobald 1.21.1 nicht mehr bedient wird)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -202,8 +202,8 @@
       "art": "D",
       "was": "Neue Verzauberungen am Zaubertisch (1.0: sechs, 1.1: neun). Umbenannt von „Six More Enchantments“, weil die Zahl im Namen mit jedem Update veraltet.",
       "updates": [
-        "in Beute und Handel (Schalter)",
-        "Balance nach Kommentaren",
+        "Balance nach Kommentaren (Beute und Handel abgelehnt am 21.11.: die Seite verspricht „nur vom Verzauberungstisch“)",
+        "Steadfast auch für Brustpanzer, falls die Balance es trägt (höchstens Netherit-Niveau)",
         "weitere Attribut-Verzauberungen, wenn neue Attribute kommen"
       ],
       "banner": {
