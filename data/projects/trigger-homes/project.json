@@ -15,6 +15,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "TriggerHomes-1.1.zip",
+      "changelog": "## Trigger Homes 1.1\n\nUp to three homes.\n\n- `/trigger sethome set 2` and `/trigger sethome set 3` save a second and a third home; `/trigger home set 2` and `/trigger home set 3` take you there.\n- `/trigger sethome` and `/trigger home` still mean home 1, so nothing changes if you only need one.\n- Your home from 1.0 is kept as home 1, also for players who are offline during the update.\n- Each home can be in the Overworld, the Nether or the End; a new home 2 only replaces home 2.\n- All homes and `/trigger spawn` share the 30-second cooldown, as before.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

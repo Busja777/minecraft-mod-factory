@@ -1,12 +1,16 @@
 // Uncraft Basics: crafting recipes that take apart blocks vanilla packs but never unpacks again
 // (wool, quartz, clay, snow, glowstone, amethyst, bricks, honeycomb, ice, dripstone; not magma: magma blocks are mined in bulk, so 4 cream per block would skip magma cubes).
+// Since V1.2 also the polished, bricks, tiles and chiseled blocks of the stone families back into
+// the stone they are cut from, and glass panes back into glass.
 //
-// Nothing is typed in by hand except the allow list below. The list of candidates comes from the
+// Nothing is typed in by hand except the two allow lists below. The list of candidates comes from the
 // vanilla recipes of the version: every crafting recipe that packs one repeated ingredient into a
 // single block ("compacting", 2×2 or 3×3), minus the pairs vanilla already takes apart itself
 // (iron block, hay, slime, honey, bone, dried kelp …). Every amount is the cheapest amount of the
 // material that any chain of vanilla recipes needs for the block, so a reverse recipe never gives
-// more than went in and no loop can create items.
+// more than went in and no loop can create items. `gains` checks this once more for all pairs
+// together, measured in every material the blocks can be made from (a stonecutter 1:1 and our
+// reverse 1:1 make a loop that gives back exactly what went in, never more).
 //
 // The pack is generated once per Minecraft version it serves (1.21.1 and 26.3), from that version's
 // own vanilla recipes and in that version's own spelling. What differs between versions is kept in
@@ -28,17 +32,46 @@ const NS = 'uncraft_basics';
 export const COLOURS = ['white', 'orange', 'magenta', 'light_blue', 'yellow', 'lime', 'pink', 'gray', 'light_gray', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black'];
 export const ALLOW = [
   { group: 'wool', block: 'white_wool', item: 'string', variants: COLOURS.filter(c => c !== 'white').map(c => `${c}_wool`) },
-  { group: 'quartz', block: 'quartz_block', item: 'quartz', variants: ['quartz_pillar', 'chiseled_quartz_block'] },
+  // quartz_bricks since V1.2
+  { group: 'quartz', block: 'quartz_block', item: 'quartz', variants: ['quartz_pillar', 'chiseled_quartz_block', 'quartz_bricks'] },
   { group: 'clay', block: 'clay', item: 'clay_ball' },
   { group: 'snow', block: 'snow_block', item: 'snowball' },
   { group: 'glowstone', block: 'glowstone', item: 'glowstone_dust' },
   { group: 'amethyst', block: 'amethyst_block', item: 'amethyst_shard' },
   { group: 'bricks', block: 'bricks', item: 'brick' },
-  { group: 'nether bricks', block: 'nether_bricks', item: 'nether_brick' },
+  // chiseled_nether_bricks since V1.2
+  { group: 'nether bricks', block: 'nether_bricks', item: 'nether_brick', variants: ['chiseled_nether_bricks'] },
   { group: 'honeycomb', block: 'honeycomb_block', item: 'honeycomb' },
   { group: 'ice', block: 'packed_ice', item: 'ice' },
   { group: 'ice', block: 'blue_ice', item: 'packed_ice' },
   { group: 'dripstone', block: 'dripstone_block', item: 'pointed_dripstone' }
+];
+
+// V1.2: blocks made from one stone without a furnace and without other ingredients (crafted 4 → 4
+// or cut 1:1 in the stonecutter) go back into that stone, n of them at once (1 unless given).
+// The amount is again the cheapest vanilla amount: 1 for every stone block, and for glass panes
+// (6 glass → 16 panes) 8 panes → 3 glass, the only grid-sized amount that is a whole number.
+// Left out on purpose: blocks made in the furnace (smooth stone, cracked bricks, smooth sandstone,
+// smooth quartz, terracotta: undoing a furnace is not uncrafting), blocks that need a second
+// ingredient (mossy stone bricks: vine or moss; red nether bricks: nether wart; tinted glass:
+// amethyst), stairs, slabs and walls, polished blackstone (vanilla already makes a button from that
+// block alone), stained glass panes (most are dyed from plain panes, which contain no stained glass,
+// so the cheapest amount is 0) and copper (oxidation and wax would need a recipe per stage).
+export const FAMILIES = [
+  { group: 'stone', base: 'stone', variants: ['stone_bricks', 'chiseled_stone_bricks'] },
+  { group: 'andesite', base: 'andesite', variants: ['polished_andesite'] },
+  { group: 'diorite', base: 'diorite', variants: ['polished_diorite'] },
+  { group: 'granite', base: 'granite', variants: ['polished_granite'] },
+  { group: 'deepslate', base: 'cobbled_deepslate', variants: ['polished_deepslate', 'deepslate_bricks', 'deepslate_tiles', 'chiseled_deepslate'] },
+  { group: 'tuff', base: 'tuff', variants: ['polished_tuff', 'tuff_bricks', 'chiseled_tuff', 'chiseled_tuff_bricks'] },
+  { group: 'blackstone', base: 'blackstone', variants: ['polished_blackstone_bricks', 'chiseled_polished_blackstone'] },
+  { group: 'sandstone', base: 'sandstone', variants: ['cut_sandstone', 'chiseled_sandstone'] },
+  { group: 'red sandstone', base: 'red_sandstone', variants: ['cut_red_sandstone', 'chiseled_red_sandstone'] },
+  { group: 'end stone', base: 'end_stone', variants: ['end_stone_bricks'] },
+  { group: 'purpur', base: 'purpur_block', variants: ['purpur_pillar'] },
+  { group: 'basalt', base: 'basalt', variants: ['polished_basalt'] },
+  { group: 'mud', base: 'packed_mud', variants: ['mud_bricks'] },
+  { group: 'glass', base: 'glass', variants: ['glass_pane'], n: 8 }
 ];
 
 const strip = id => String(id).replace(/^minecraft:/, '');
@@ -126,20 +159,61 @@ export function baseCost(flat, base) {
   return of;
 }
 
-// A vanilla crafting recipe that also takes just this one block would clash with ours.
-export const clashes = (flat, block) =>
-  flat.filter(r => r && r.type.startsWith('crafting_') && r.inputs.length === 1 && r.inputs[0].includes(block)).map(r => r.name);
+// A vanilla crafting recipe that also takes just n of this block (and nothing else) would clash with ours.
+export const clashes = (flat, block, n = 1) =>
+  flat.filter(r => r && r.type.startsWith('crafting_') && r.inputs.length === n && r.inputs.every(c => c.includes(block))).map(r => r.name);
 
-// → [{ group, from, to, count }] in a stable order; throws when vanilla does not back a pair.
+// Every item that appears in a vanilla recipe chain leading to `id` (not `id` itself).
+export function ancestors(flat, id) {
+  const found = new Set();
+  const todo = [id];
+  while (todo.length) {
+    const cur = todo.pop();
+    for (const r of flat) {
+      if (!r || r.out !== cur) continue;
+      for (const c of r.inputs) for (const i of c) if (i !== id && !found.has(i)) { found.add(i); todo.push(i); }
+    }
+  }
+  return found;
+}
+
+// No loop of vanilla recipes and ours creates a material. Each material m that one of our blocks can
+// be made of gives a measure "cheapest amount of m" (baseCost). Vanilla recipes never raise it, by
+// definition of "cheapest"; every recipe of ours must not raise it either:
+// count × (m in `to`) ≤ n × (m in `from`). Then nothing measured in m can be gained, whatever the
+// chain. One exception: when vanilla cannot make `to` from m at all (m in `to` is Infinity, as for
+// stone from stone bricks in 26.3, where stone and cobblestone only make each other), m must itself
+// be made from `to`; the measure "cheapest `to`" is checked too and already covers m.
+// → the broken measures as text (empty = fair).
+export function gains(flat, pairs, costOf) {
+  const measures = new Set(pairs.flatMap(p => [p.to, ...ancestors(flat, p.from)]));
+  const broken = [];
+  for (const m of measures) {
+    const cost = costOf(m);
+    for (const { from, to, count, n = 1 } of pairs) {
+      const out = count * cost(to);
+      const into = n * cost(from);
+      if (out <= into + 1e-9) continue;
+      const mFromTo = costOf(to)(m);
+      if (out === Infinity && Number.isFinite(mFromTo) && mFromTo > 0) continue;
+      broken.push(`${n} ${from} → ${count} ${to} creates ${m} (${into} in, ${out} out)`);
+    }
+  }
+  return broken;
+}
+
+// → [{ group, from, to, count, n }] in a stable order; throws when vanilla does not back a pair.
 export function plan(vanilla, recipes = loadRecipes(vanilla)) {
   const flat = recipes.map(r => flatten(vanilla, r));
   const forward = compacting(flat);
+  const costs = new Map();
+  const costOf = base => { if (!costs.has(base)) costs.set(base, baseCost(flat, base)); return costs.get(base); };
   const out = [];
   for (const { group, block, item, variants = [] } of ALLOW) {
     const fwd = forward.find(f => f.block === block && f.item === item);
     if (!fwd) throw new Error(`${block} → ${item}: vanilla has no compacting recipe for this pair`);
     if (hasReverse(flat, block, item)) throw new Error(`${block} → ${item}: vanilla already has the reverse recipe`);
-    const cost = baseCost(flat, item);
+    const cost = costOf(item);
     for (const from of [block, ...variants]) {
       const amount = Math.floor(cost(from) + 1e-9);
       if (from === block && amount !== fwd.n) throw new Error(`${block}: a vanilla route needs only ${cost(from)} ${item}, not ${fwd.n}`);
@@ -147,7 +221,18 @@ export function plan(vanilla, recipes = loadRecipes(vanilla)) {
       if (from !== block && hasReverse(flat, from, item)) throw new Error(`${from} → ${item}: vanilla already has the reverse recipe`);
       const clash = clashes(flat, from);
       if (clash.length) throw new Error(`${from}: vanilla recipe ${clash.join(', ')} already takes this block alone`);
-      out.push({ group, from, to: item, count: amount });
+      out.push({ group, from, to: item, count: amount, n: 1 });
+    }
+  }
+  for (const { group, base, variants, n = 1 } of FAMILIES) {
+    const cost = costOf(base);
+    for (const from of variants) {
+      const amount = Math.floor(n * cost(from) + 1e-9);
+      if (!(amount >= 1) || !Number.isFinite(cost(from))) throw new Error(`${n} ${from} → ${base}: vanilla makes it from less than one ${base} (cost ${cost(from)} each)`);
+      if (hasReverse(flat, from, base)) throw new Error(`${from} → ${base}: vanilla already has the reverse recipe`);
+      const clash = clashes(flat, from, n);
+      if (clash.length) throw new Error(`${from}: vanilla recipe ${clash.join(', ')} already takes ${n} of this block alone`);
+      out.push({ group, from, to: base, count: amount, n });
     }
   }
   const seen = new Set();
@@ -155,6 +240,8 @@ export function plan(vanilla, recipes = loadRecipes(vanilla)) {
     if (seen.has(p.from)) throw new Error(`${p.from} is taken apart twice`);
     seen.add(p.from);
   }
+  const broken = gains(flat, out, costOf);
+  if (broken.length) throw new Error(`not fair:\n${broken.join('\n')}`);
   return out;
 }
 
@@ -163,12 +250,12 @@ export function plan(vanilla, recipes = loadRecipes(vanilla)) {
 // spells our files.
 const TWIN = { from: 'netherite_block', to: 'netherite_ingot', count: 9, id: 'minecraft:netherite_ingot_from_netherite_block' };
 
-// One block alone in the crafting grid → count pieces, in the spelling `d` (see dialect).
-function recipe(d, from, to, count) {
+// n of one block (1 = the block alone) in the crafting grid → count pieces, in the spelling `d` (see dialect).
+function recipe(d, from, to, count, n = 1) {
   return {
     type: 'minecraft:crafting_shapeless',
     ...(d.category ? { category: 'misc' } : {}),
-    ingredients: [d.plainIngredient ? `minecraft:${from}` : { item: `minecraft:${from}` }],
+    ingredients: Array.from({ length: n }, () => (d.plainIngredient ? `minecraft:${from}` : { item: `minecraft:${from}` })),
     result: { count, id: `minecraft:${to}` }
   };
 }
@@ -215,13 +302,13 @@ export function dialect(vanilla) {
   return d;
 }
 
-// Called once per Minecraft version: the same 29 recipes under the same paths for every version.
+// Called once per Minecraft version: the same 55 recipes under the same paths for every version.
 export default async function ({ vanilla }) {
   const d = dialect(vanilla);
   const files = {};
-  for (const { from, to, count } of plan(vanilla)) {
+  for (const { from, to, count, n } of plan(vanilla)) {
     const name = `${from}_to_${to}`;
-    files[`data/${NS}/recipe/${name}.json`] = recipe(d, from, to, count);
+    files[`data/${NS}/recipe/${name}.json`] = recipe(d, from, to, count, n);
     files[`data/${NS}/advancement/recipes/misc/${name}.json`] = unlock(d, from, `${NS}:${name}`);
   }
   return files;

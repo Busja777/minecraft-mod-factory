@@ -86,9 +86,9 @@
       "art": "D",
       "was": "Rück-Rezepte (Wolle zu Faden, Quarzblock zu Quarz …)",
       "updates": [
-        "Stein",
-        "Glas und Ton",
-        "Werkzeug-Recycling"
+        "Werkzeug-Recycling",
+        "Kupfer (jede Stufe)",
+        "neue Blöcke der nächsten Version"
       ],
       "banner": {
         "from": "chatgpt",
@@ -314,9 +314,9 @@
       "art": "D",
       "was": "/trigger home, sethome, spawn ohne Mod",
       "updates": [
-        "mehrere Homes",
-        "Abklingzeit",
-        "zurück zum Todesort"
+        "zurück zum Todesort",
+        "Abklingzeit einstellbar",
+        "Home-Liste"
       ],
       "banner": {
         "from": "chatgpt",
