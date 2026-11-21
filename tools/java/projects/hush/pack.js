@@ -48,7 +48,18 @@ export const GROUPS = [
   { group: 'nether portal', factor: 0.25, events: ['block.portal.ambient', 'block.portal.travel', 'block.portal.trigger'] },
   { group: 'rain', factor: 0.45, events: ['weather.rain', 'weather.rain.above'] },
   { group: 'minecart', factor: 0.35, events: ['entity.minecart.riding', 'entity.minecart.inside', 'entity.minecart.inside.underwater'] },
-  { group: 'anvil', factor: 0.4, events: ['block.anvil.use', 'block.anvil.land', 'block.anvil.place'] }
+  { group: 'anvil', factor: 0.4, events: ['block.anvil.use', 'block.anvil.land', 'block.anvil.place'] },
+  // V1.4. Wolves: idle bark, panting and whining. The growl (an angry wolf), howl, shake, hurt and
+  // death stay as they are. 26.3 gives wolves sound variants (data/minecraft/wolf_sound_variant);
+  // each has its own ambient/pant/whine. All played at volume 0.4 (Wolf.getSoundVolume, 26.3 client jar).
+  { group: 'wolves', factor: 0.35, events: ['entity.wolf.ambient', 'entity.wolf.pant', 'entity.wolf.whine'], later: [
+    { since: '26.3', events: ['angry', 'big', 'cute', 'grumpy', 'puglin', 'sad'].flatMap(v => ['ambient', 'pant', 'whine'].map(k => `entity.wolf_${v}.${k}`)) }
+  ] },
+  // V1.4. Horses, donkeys and mules: idle calls and the horse's breathing. Angry (taming), eating,
+  // steps, gallop, hurt and death stay. Played at volume 0.8 (AbstractHorse.getSoundVolume, 26.3 client jar).
+  { group: 'horses', factor: 0.35, events: ['entity.horse.ambient', 'entity.horse.breathe', 'entity.donkey.ambient', 'entity.mule.ambient'] },
+  // V1.4. Pistons, so redstone machines are easier to live next to. Played at volume 0.5 (PistonBaseBlock, 26.3 client jar).
+  { group: 'pistons', factor: 0.4, events: ['block.piston.extend', 'block.piston.contract'] }
 ];
 
 // Lowest loudness a sound may keep, so nothing is ever silenced.

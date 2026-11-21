@@ -37,8 +37,8 @@
       "art": "R",
       "was": "Leisere Dorfbewohner, Kühe, Portale, Regen",
       "updates": [
-        "Kolben, Wölfe, Pferde",
         "Lagerfeuer, Kessel und Braustand leiser",
+        "Höhlen-Tropfen und Lava-Blubbern leiser (Höhlen-Stimmung bleibt)",
         "Feinschliff nach Kommentaren (Stufen als Schalter gehen nicht: ein Data/Resource Pack hat keinen Schalter, eine zweite Datei verstößt gegen die Null-Aufwand-Regel)"
       ],
       "shot": false,
