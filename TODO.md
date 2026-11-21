@@ -1,6 +1,50 @@
 # To-dos
 
-Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit heute: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
+Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
+
+## Auf einen Blick (21.11.)
+
+**Fertig gebaut:**
+- auf `main`: Java 12 (davon 11 im Vorrat; Ice Cave Advancements wartet auf 26.4), Stardew 5, WoW 12;
+- in offenen PRs: Bedrock 7 (#29), Stardew 6 (#33, #39).
+
+**Online ist noch nichts:** Der Engpass ist das Anlegen, nicht das Bauen.
+
+**Was gut läuft**
+- Helfer bauen nach `BRIEF.md`, Claude liest gegen, prüft die Bilder und baut. Die Helfer haben vier echte Fehler in Claudes Prüfungen gefunden.
+- Inhalte gehen über `serie/auto-…` von `main` ohne dich durch (#25, #32, #35, #36, #38). Die Sperre hält dicht: Ein Inhalts-PR auf einem Werkzeug-Stand bleibt offen.
+- Für Minecraft 26.x lädt das Spiel unsere Data Packs selbst und meldet jeden Fehler. Trigger Homes wurde im Testserver sogar durchgespielt.
+- Ehrlichkeit vor Menge: „Faster Fruit Trees“ ist ersetzt, weil die Wachstumszeit im Spiel fest eingebaut ist; „Gentle Ghasts“ geht in Calm Creepers auf (Fair Play).
+
+**Was nicht gut läuft**
+- **Zu viele Werkzeug-PRs warten:** #27 Bilder, #28 WoW-Seiten, #29 Bedrock, #30 Anlegen, #31 Saison, #33 Stardew-Post, #34 Trend-Radar, #37 Trank-IDs. Ohne #29, #30 und #28 kommen Bedrock, das Anlegen in einer Minute und neue WoW-Addons nicht voran. Neue Werkzeug-PRs gibt es nur noch für Fehler, die beim Bauen auftauchen.
+- **Die Nacht-Sitzung lief noch nie:** Diese Sitzung und sie teilen sich ein Ausgabe-Limit. Claude baut tagsüber mit höchstens zwei Helfern und abends nichts Großes. Besser wäre ein höheres Limit (deine Entscheidung).
+- **Blind bleibt blind:** Stardew, Bedrock und 1.21.1 sind ungetestet im Spiel; die Seiten sagen nichts anderes.
+
+**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #33 → #37 → #75 → #31 → #34. Danach `npm run cf -- serie` für die 18 Minecraft-Projekte, die schon warten.
+
+## Nachmittag 21.11.: Updates statt neuer Projekte
+
+**Gebaut (alles nur Inhalte, von selbst übernommen oder unterwegs):**
+- WoW: alle 12 Addons haben jetzt V1.2 (Gold Diary V1.3).
+- Java: Trigger Homes, Actionbar Coords, Ore Abundance, Owner Safe Pets, AFK Tag, Replant Click, Fast Leaf Fall V1.2, Uncraft Basics V1.3, Hush V1.4. Die Fabric-Mods jeweils mit Gradle- und GameTests.
+- Stardew: More to Say (Pam und Gus), Joja Junk Mail (Fest-Briefe), Villager Birthday Reminders (Leo), Fish Pond Bounty (Stufen), Festival Stalls Plus (Preis-Stufen), Stocked Shelves V1.2, Pierre's Year-Round Seeds V1.1 (Sandy).
+
+**Abgelehnt oder zurückgestellt, mit Grund im Plan:**
+- Enchanting Extras in Beute und Handel: Die Seite verspricht „nur vom Verzauberungstisch“.
+- Machine Tempo Kristallarium: Maschinendaten nicht im Zwischenspeicher, nicht raten.
+- Sandys Fischtheke: Gekaufter Fisch ließe sich räuchern und mit Gewinn verkaufen.
+- Platzhalter-Rezepte für 1.21.1: Das Spiel kann sie hier nicht prüfen.
+
+**Gefunden und korrigiert:** Stocked Shelves 1.1 ließ Krobus jeden Tag Leerenlachs verkaufen. Mit Räucherofen und Berufen (bis 630g aus 300g) war das eine kleine Gelddruck-Schleife. 1.2 verkauft ihn nur mittwochs, wie Krobus' eigenen Fisch.
+
+**Was gut lief:** Gegenlesen vor dem Bau. Bei fünf Updates habe ich etwas zurückgeschickt oder gestrichen, unter anderem Claim-Schutz bei der 3×3-Ernte, `/vr off` auch für die Bank und zwei erfundene Details in Pams Sätzen.
+
+**Was nicht gut lief:** Zweimal stand im Plan ein Update, das schon gebaut war. Ein Abgleich aller 126 Pläne mit dem Code hat das aufgeräumt (#76). Ab jetzt lese ich vor jedem Auftrag die Changelogs des Projekts.
+
+**Neuer Werkzeug-PR #75 (wartet auf dich):** Die Stardew-Prüfung lässt jetzt übersetzte Einstellungstexte zu. Danach können sieben Stardew-Projekte ein Update „Deutsch“ bekommen.
+
+**Der Vorrat ist weit voraus:** WoW und viele Java-Packs haben 3 bis 5 Versionen, bei einem Update pro Bein und Tag reicht das für Monate. Neue Projekte bremsen die fehlenden Logos (OpenAI-Guthaben) und das Anlegen.
 
 ## Für dich (einmalig)
 
@@ -10,7 +54,6 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
 - [ ] **Entscheidung Ladetest für 1.21.1:** Für Minecraft 26.x lädt das Spiel unsere Data Packs schon selbst (Mojangs eingebauter Testserver, ohne EULA-Schritt). Für 1.21.1 ginge das nur über den Fabric-Testserver, der schon die Mod-Tests fährt. Er überspringt die EULA-Abfrage des Servers. Einmal habe ich so geprüft, dass die Zwei-Versionen-Datei auf 1.21.1 lädt. Soll das fester Teil von Bau und Tests werden?
 - [ ] **Entscheidung:** Herz des Meeres in Anglers Loot (etwa einmal in 120 Würfen) so lassen?
 - [ ] **Entscheidung:** Amethyst-Block zu 4 Scherben in Uncraft Basics in Ordnung?
-- [ ] PR für `feat/radar` freigeben (enthält Werkzeuge, wird deshalb nicht von selbst gemergt).
 
 ## Für dich (laufend)
 
