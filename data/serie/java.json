@@ -54,9 +54,9 @@
       "art": "D",
       "was": "30 neue Fortschritte zu Ackerbau und Tieren",
       "updates": [
-        "+15 Kochen",
-        "EP-Belohnungen",
-        "Fortschritte zu den Neuerungen von 26.4"
+        "Fortschritte zu den Neuerungen von 26.4 (sobald 1.21.1 nicht mehr bedient wird)",
+        "Imkerei: Honigwaben, Bienenstöcke umsiedeln",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -102,9 +102,9 @@
       "art": "D",
       "was": "Angel-Beute: mehr Schätze, weniger Müll",
       "updates": [
-        "Varianten",
-        "Fortschritte rund ums Angeln",
-        "Fänge in Flüssen je umgebendem Biom, falls belegbar"
+        "Fänge in Flüssen je umgebendem Biom, falls belegbar",
+        "Feinschliff nach Kommentaren",
+        "Fortschritte für die Fische neuer Minecraft-Versionen, sobald 1.21.1 nicht mehr bedient wird"
       ],
       "banner": {
         "from": "chatgpt",
