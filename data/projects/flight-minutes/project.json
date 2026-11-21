@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "FlightMinutes-1.1.zip",
+      "changelog": "## Flight Minutes 1.1\n\n- New: hover a destination on the flight map to see how long the flight from where you stand takes, for example \"Flight time: 2:41\".\n- Destinations you can fly to but have not timed yet say \"not timed yet\".\n- Works on both flight maps of the game.\n- As in 1.0, the times are shared by all your characters of the same faction, so a new character sees them from the first visit.\n- Your routes from 1.0 are kept and used as they are.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

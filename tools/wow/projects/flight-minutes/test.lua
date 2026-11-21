@@ -9,7 +9,7 @@ local function world(faction)
   local w = { nodes = NODES, current = SW, onTaxi = false, faction = faction or "Alliance", taken = {} }
   NumTaxiNodes = function() return #w.nodes end
   TaxiNodeName = function(i) return w.nodes[i] end
-  TaxiNodeGetType = function(i) return i == w.current and "CURRENT" or "REACHABLE" end
+  TaxiNodeGetType = function(i) return w.types and w.types[i] or (i == w.current and "CURRENT" or "REACHABLE") end
   TakeTaxiNode = function(i) w.taken[#w.taken + 1] = i end
   TaxiRequestEarlyLanding = function() end
   UnitOnTaxi = function() return w.onTaxi end
@@ -432,3 +432,160 @@ test("a short moment off the taxi (a loading screen) does not end the flight", f
   eq(FlightMinutesDB.factions.Alliance[SW_IF].seconds, 161, "timed until the real landing, not the blip")
 end)
 
+
+-- 1.1: the learned duration in the flight map tooltip
+
+-- What the game does when the mouse enters a node, on the older map (a button whose ID is the
+-- node's slot) and on the newer map (a pin carrying taxiNodeData). The game's own tooltip text
+-- is the node name; Flight Minutes adds its line after that.
+local function tooltipGame(wow)
+  GameTooltip.GetOwner = function() return wow.tooltip.owner end
+  GameTooltip.NumLines = function() return #(wow.tooltip.lines or {}) end
+  TaxiNodeOnButtonEnter = function(button)
+    GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(TaxiNodeName(button:GetID()))
+    GameTooltip:Show()
+  end
+end
+
+local function button(slot) return { GetID = function() return slot end } end
+local function pin(slot) return { taxiNodeData = { slotIndex = slot, name = NODES[slot] } } end
+
+local function hoverPin(p)
+  GameTooltip:SetOwner(p, "ANCHOR_RIGHT")
+  GameTooltip:AddLine(p.taxiNodeData.name)
+  GameTooltip:Show()
+end
+
+local function lines(wow) return table.concat(wow.tooltip.lines or {}, " | ") end
+
+local function bootWithTooltip(wow, faction)
+  local w = world(faction)
+  tooltipGame(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("ADDON_LOADED", "FlightMinutes")
+  wow.fire("PLAYER_LOGIN")
+  return ns, w
+end
+
+test("tooltip text", function(wow)
+  local ns = boot(wow)
+  eq(ns.TooltipText(161), "Flight time: 2:41")
+  eq(ns.TooltipText(59.6), "Flight time: 1:00")
+  eq(ns.TooltipText(nil), "Flight time: not timed yet")
+end)
+
+test("older flight map: hovering a destination shows the learned time", function(wow)
+  local ns, w = bootWithTooltip(wow)
+  eq(wow.hooks.TaxiNodeOnButtonEnter, true)
+  fly(wow, w, SW, IF, 161)
+  w.current = SW
+  wow.fire("TAXIMAP_OPENED")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: 2:41")
+  eq(wow.tooltip.shown, true)
+  TaxiNodeOnButtonEnter(button(WF))
+  eq(lines(wow), "Sentinel Hill, Westfall | Flight time: not timed yet")
+  TaxiNodeOnButtonEnter(button(SW))
+  eq(lines(wow), "Stormwind, Elwynn", "the place you stand at gets no line")
+  wow.fire("TAXIMAP_CLOSED")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh", "map closed: nothing added")
+end)
+
+test("newer flight map: the pin tooltip gets the line once", function(wow)
+  local ns, w = bootWithTooltip(wow)
+  fly(wow, w, IF, SW, 150)
+  w.current = IF
+  wow.fire("TAXIMAP_OPENED")
+  local p = pin(SW)
+  hoverPin(p)
+  eq(lines(wow), "Stormwind, Elwynn | Flight time: 2:30")
+  GameTooltip:Show() -- the game refreshes the tooltip without clearing it
+  GameTooltip:Show()
+  eq(lines(wow), "Stormwind, Elwynn | Flight time: 2:30", "no second line")
+  hoverPin(p) -- mouse leaves and comes back: the game rebuilds the tooltip
+  eq(lines(wow), "Stormwind, Elwynn | Flight time: 2:30")
+  hoverPin(pin(WF))
+  eq(lines(wow), "Sentinel Hill, Westfall | Flight time: not timed yet")
+  GameTooltip:SetOwner({}, "ANCHOR_RIGHT") -- any other tooltip while the map is open
+  GameTooltip:AddLine("Hearthstone")
+  GameTooltip:Show()
+  eq(lines(wow), "Hearthstone")
+  wow.fire("TAXIMAP_CLOSED")
+  hoverPin(p)
+  eq(lines(wow), "Stormwind, Elwynn", "map closed: nothing added")
+end)
+
+test("the pin's name is used when its slot is unknown", function(wow)
+  local ns, w = bootWithTooltip(wow)
+  fly(wow, w, SW, IF, 161)
+  w.current = SW
+  wow.fire("TAXIMAP_OPENED")
+  hoverPin({ taxiNodeData = { name = "Ironforge, Dun Morogh" } })
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: 2:41")
+end)
+
+test("places you cannot fly to show no line unless a time is known", function(wow)
+  local ns, w = bootWithTooltip(wow)
+  fly(wow, w, SW, IF, 161)
+  w.current = SW
+  w.types = { [IF] = "DISTANT", [WF] = "NONE" }
+  wow.fire("TAXIMAP_OPENED")
+  TaxiNodeOnButtonEnter(button(WF))
+  eq(lines(wow), "Sentinel Hill, Westfall")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: 2:41")
+end)
+
+test("the tooltip shows times other characters of the faction learned", function(wow)
+  FlightMinutesDB = { version = 1, factions = { Alliance = { [SW_IF] = { times = { 170 }, seconds = 170 } } } }
+  local ns, w = bootWithTooltip(wow) -- a character that never flew this route
+  wow.fire("TAXIMAP_OPENED")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: 2:50")
+  eq(FlightMinutesDB.version, 1, "1.0 data is used as it is")
+end)
+
+test("a Horde character does not see Alliance times in the tooltip", function(wow)
+  FlightMinutesDB = { factions = { Alliance = { [SW_IF] = { times = { 170 }, seconds = 170 } } } }
+  local ns, w = bootWithTooltip(wow, "Horde")
+  wow.fire("TAXIMAP_OPENED")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: not timed yet")
+end)
+
+test("secret values in the flight map are skipped", function(wow)
+  local ns, w = bootWithTooltip(wow)
+  fly(wow, w, SW, IF, 161)
+  w.current = SW
+  wow.fire("TAXIMAP_OPENED")
+  local secret = { secret = true }
+  GameTooltip:SetOwner({ taxiNodeData = { slotIndex = secret, name = secret } })
+  GameTooltip:AddLine("Hidden")
+  GameTooltip:Show()
+  eq(lines(wow), "Hidden", "nothing added, no error")
+  w.types = { [WF] = secret }
+  TaxiNodeOnButtonEnter(button(WF))
+  eq(lines(wow), "Sentinel Hill, Westfall")
+end)
+
+test("a client without the tooltip functions does not break it", function(wow)
+  local w = world() -- no TaxiNodeOnButtonEnter, no GetOwner, no NumLines
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  eq(wow.hooks.TaxiNodeOnButtonEnter, nil)
+  wow.fire("TAXIMAP_OPENED")
+  GameTooltip:SetOwner(pin(IF))
+  GameTooltip:Show()
+  eq(lines(wow), "")
+  -- the older map arrives later with another part of the game
+  tooltipGame(wow)
+  wow.fire("ADDON_LOADED", "Blizzard_SomethingLater")
+  eq(wow.hooks.TaxiNodeOnButtonEnter, true)
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: not timed yet")
+  wow.fire("ADDON_LOADED", "Another")
+  TaxiNodeOnButtonEnter(button(IF))
+  eq(lines(wow), "Ironforge, Dun Morogh | Flight time: not timed yet", "hooked only once")
+end)

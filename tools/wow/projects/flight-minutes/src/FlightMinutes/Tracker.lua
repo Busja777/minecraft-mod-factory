@@ -36,6 +36,19 @@ local function readMap()
   end
 end
 
+function ns.FlightMapOpen()
+  return map ~= nil
+end
+
+-- The route from where the player stands to a node of the open flight map (1.1, for the tooltip).
+-- index = the node's slot on the map, name = its name when the slot is unknown. Nil while the map is closed.
+function ns.RouteToNode(index, name)
+  if not map or ns.IsSecret(index) or ns.IsSecret(name) then return nil end
+  local to = type(index) == "number" and map.names[index] or nil
+  if not to and type(name) == "string" and name ~= "" then to = name end
+  return ns.RouteKey(map.from, to)
+end
+
 local frame = CreateFrame("Frame")
 ns.eventFrame = frame
 
