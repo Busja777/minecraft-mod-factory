@@ -56,12 +56,17 @@ function ns.ExpiringLine()
   return ns.ExpiringText(ns.db.chars, time(), ns.settings.expire, ns.MyRealm())
 end
 
+-- After login: the other characters with mail, the other characters whose items or gold run out
+-- soon, and (1.3) the letters of this character that run out soon, from its last mailbox visit.
 local function loginList()
   if not ns.settings.login then return end
   local text = ns.WaitingText(ns.db.chars, ns.me, ns.MyRealm())
   if text then ns.Print(text) end
-  local expiring = ns.ExpiringLine()
+  local now = time()
+  local expiring = ns.ExpiringText(ns.db.chars, now, ns.settings.expire, ns.MyRealm(), ns.me)
   if expiring then ns.Print(expiring) end
+  local own = ns.OwnExpiryText(ns.db.chars[ns.me], now, ns.settings.expire)
+  if own then ns.Print(own) end
 end
 
 local function onLogin()
@@ -92,20 +97,29 @@ local function readLetters(count)
   local letters = {}
   if not GetInboxHeaderInfo then return letters end
   for i = 1, count do
-    local ok, _, _, _, _, money, cod, daysLeft, hasItem = pcall(GetInboxHeaderInfo, i)
-    if ok then letters[#letters + 1] = { money = money, cod = cod, daysLeft = daysLeft, hasItem = hasItem } end
+    local ok, _, _, sender, subject, money, cod, daysLeft, hasItem = pcall(GetInboxHeaderInfo, i)
+    if ok then
+      letters[#letters + 1] = { sender = sender, subject = subject, money = money, cod = cod, daysLeft = daysLeft, hasItem = hasItem }
+    end
   end
   return letters
 end
 
 local function checkExpiry(count)
   if not GetInboxHeaderInfo then return end
-  local soonest, expiring = ns.ScanExpiry(readLetters(count), ns.settings.expire)
-  ns.NoteExpiry(ns.db.chars, ns.me, soonest, time())
+  local letters, now = readLetters(count), time()
+  local soonest, expiring = ns.ScanExpiry(letters, ns.settings.expire)
+  local counted = ns.CountedLetters(letters)
+  ns.NoteExpiry(ns.db.chars, ns.me, soonest, now)
+  ns.NoteLetters(ns.db.chars, ns.me, counted, now) -- 1.3: for the login line and /mb letters
   if expiryWarned or ns.settings.expire == 0 then return end
   local firstSoon = nil
   if expiring > 0 then firstSoon = soonest end
-  local text = ns.ExpiryWarning(expiring, firstSoon, ns.settings.expire)
+  local names = {}
+  for _, m in ipairs(counted) do
+    if ns.Within(m.days, ns.settings.expire) then names[#names + 1] = ns.LetterLabel(m.sender, m.subject) end
+  end
+  local text = ns.ExpiryWarning(expiring, firstSoon, ns.settings.expire, names)
   if text then
     expiryWarned = true
     ns.Print(text)

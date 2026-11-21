@@ -8,6 +8,7 @@ local function help()
   ns.Say(L["/qa manual keeps the quest you just saw manual, /qa manual <ID, name or quest link> adds one, /qa auto <ID or name> hands it back, /qa list shows them."])
   ns.Say(L["/qa dailies leaves all daily and weekly quests to you, type it again to undo."])
   ns.Say(L["/qa gossip picks the only dialogue option of a character without quests for you, type it again to undo."])
+  ns.Say(L["/qa hint on or /qa hint off: marks the reward a vendor pays most for when a quest lets you choose. It never picks for you."])
 end
 
 local function title(id)
@@ -76,6 +77,12 @@ SlashCmdList.QUESTAUTOPILOT = function(msg)
     removeManual(rest)
   elseif word == "list" and rest == "" then
     list()
+  elseif word == "hint" and ns.ApplyHint(ns.settings, rest:lower()) then
+    if ns.settings.hint then
+      ns.Say(L["Reward hint is on: when a quest lets you choose, the reward a vendor pays most for gets a coin."])
+    else
+      ns.Say(L["Reward hint is off."])
+    end
   elseif word == "" or (rest == "" and ns.Apply(ns.settings, word)) then
     ns.Say(ns.StateText(ns.settings, ns.ManualCount(ns.manual)))
   else

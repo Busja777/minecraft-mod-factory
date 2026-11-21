@@ -41,6 +41,9 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/lc scale 1.2")
   wow.slash("/lc hidemax")
   wow.slash("/lc options")
+  wow.fire("TIME_PLAYED_MSG", 5000, 100)
+  wow.fire("PLAYER_LEVEL_UP", 11)
+  wow.slash("/lc levels")
   wow.fire("PLAYER_LOGOUT")
   local allowed = { LevelClockDB = true, LevelClockFrame = true, SLASH_LEVELCLOCK1 = true, SLASH_LEVELCLOCK2 = true }
   for _, name in ipairs(STAND_IN) do installed[name] = true end
@@ -121,7 +124,7 @@ test("login takes the first reading without counting it", function(wow)
   eq(ns.session.start, wow.clock)
   eq(ns.session.last.xp, 4200)
   eq(ns.session.last.rested, 2500)
-  eq(LevelClockDB.version, 3)
+  eq(LevelClockDB.version, 4)
   eq(LevelClockDB.chars["Yubi-Silvermoon"], ns.char)
   local v = ns.View(ns.session, wow.clock + 10)
   eq(v.needed, 5800)
@@ -420,7 +423,7 @@ test("history: the 1.0 last session becomes the first entry, nothing is lost", f
     ["Brakk-Silvermoon"] = { last = { xp = 5, seconds = 90, levels = 0, level = 3, at = 2 } },
   } }
   local ns = boot(wow)
-  eq(LevelClockDB.version, 3)
+  eq(LevelClockDB.version, 4)
   local h = ns.char.history
   eq(#h, 1)
   eq(h[1].xp, 12000)
@@ -455,7 +458,7 @@ test("history: migration runs once and drops only broken rows", function(wow)
   eq(type(LevelClockDB.settings), "table")
   LevelClockDB = "broken"
   ns = relog(wow)
-  eq(LevelClockDB.version, 3)
+  eq(LevelClockDB.version, 4)
 end)
 
 test("history: newest first, at most ten sessions", function(wow)
@@ -697,7 +700,7 @@ test("window: 1.1 settings stay, the new options start as before", function(wow)
   } }
   local ns = boot(wow)
   local s = LevelClockDB.settings
-  eq(LevelClockDB.version, 3)
+  eq(LevelClockDB.version, 4)
   eq(s.point[1], "TOP")
   eq(s.point[4], -50)
   eq(s.locked, false)
@@ -848,4 +851,226 @@ test("window commands before login do nothing", function(wow)
   eq(#wow.chat, 0)
   eq(LevelClockDB, nil)
   eq(LevelClockFrame, nil)
+end)
+
+-- 1.3: level history ---------------------------------------------------------------------------------
+
+local PREFIX = "|cffffd100Level Clock:|r "
+
+-- The game reports a level-up: the bar wraps and PLAYER_LEVEL_UP names the new level.
+local function levelUp(wow, level)
+  player.level = level
+  wow.fire("PLAYER_LEVEL_UP", level, 0, 0, 0, 0)
+end
+
+-- Time passes in the game.
+local function wait(wow, seconds)
+  wow.clock = wow.clock + seconds
+  wow.now = wow.now + seconds
+end
+
+test("levels: a level-up is noted once, at most LEVELS per character", function(wow)
+  local ns = boot(wow)
+  local list = {}
+  eq(ns.AddLevel(list, 11, 5000).level, 11)
+  eq(ns.AddLevel(list, 11, 5010), nil, "the same level again is not noted twice")
+  eq(ns.AddLevel(list, 12, 6000, 7200.6, 900.2).played, 7200)
+  eq(list[2].took, 900)
+  eq(ns.AddLevel(list, 13, 7000, nil, -5).took, nil)
+  eq(ns.AddLevel(list, nil, 7000), nil)
+  eq(ns.AddLevel(list, 14, nil), nil)
+  eq(ns.AddLevel(list, 0 / 0, 1), nil)
+  eq(#list, 3)
+  for level = 14, 14 + ns.LEVELS do ns.AddLevel(list, level, level * 10) end
+  eq(#list, ns.LEVELS)
+  eq(list[#list].level, 14 + ns.LEVELS, "the newest stay")
+  eq(ns.LEVELS_SHOWN, 10)
+end)
+
+test("levels: played time from what the game told, carried over each level-up", function(wow)
+  local ns = boot(wow)
+  local anchor = ns.PlayedAnchor(5000, 600, 1000, 20)
+  eq(ns.PlayedNow(anchor, 1100), 5100)
+  eq(ns.PlayedNow(anchor, 900), nil, "a time before the anchor")
+  local played, took, nextAnchor = ns.LevelUpPlayed(anchor, 21, 1100)
+  eq(played, 5100)
+  eq(took, 700, "600 seconds in the level when told, 100 since")
+  eq(nextAnchor.level, 21)
+  eq(nextAnchor.thisLevel, 0)
+  played, took = ns.LevelUpPlayed(nextAnchor, 22, 2900)
+  eq(played, 6900)
+  eq(took, 1800)
+  played, took, nextAnchor = ns.LevelUpPlayed(anchor, 23, 1100)
+  eq(played, 5100)
+  eq(took, nil, "the anchor is from another level")
+  eq(ns.LevelUpPlayed(nil, 21, 1100), nil)
+  eq(ns.PlayedAnchor(500, 600, 1000, 20), nil, "more time in the level than in total")
+  eq(ns.PlayedAnchor(nil, 0, 1000, 20), nil)
+  eq(ns.PlayedAnchor(5000, 0, 1000, nil), nil)
+  local list = { { level = 20, at = 1 } }
+  ns.FillPlayed(list, anchor)
+  eq(list[1].played, 4400, "reached at the total minus the time in the level")
+  list[1].played = 1
+  ns.FillPlayed(list, anchor)
+  eq(list[1].played, 1, "a known value stays")
+  list = { { level = 19, at = 1 } }
+  ns.FillPlayed(list, anchor)
+  eq(list[1].played, nil, "another level")
+  ns.FillPlayed({}, anchor)
+end)
+
+test("levels: how long a level took, in played time or real time", function(wow)
+  local ns = boot(wow)
+  local list = {
+    { level = 30, at = 1000 },
+    { level = 31, at = 4600 },
+    { level = 32, at = 90000, played = 50000 },
+    { level = 33, at = 99000, played = 53000 },
+    { level = 34, at = 100000, took = 1500 },
+    { level = 36, at = 200000 },
+  }
+  eq(ns.LevelTook(list, 1), nil, "the first one noted")
+  local seconds, kind = ns.LevelTook(list, 2)
+  eq(seconds, 3600)
+  eq(kind, "real")
+  seconds, kind = ns.LevelTook(list, 3)
+  eq(seconds, 85400)
+  eq(kind, "real", "only one side has the played time")
+  seconds, kind = ns.LevelTook(list, 4)
+  eq(seconds, 3000)
+  eq(kind, "played")
+  seconds, kind = ns.LevelTook(list, 5)
+  eq(seconds, 1500)
+  eq(kind, "played")
+  eq(ns.LevelTook(list, 6), nil, "a level in between is missing")
+  eq(ns.LevelTook(list, 7), nil)
+  eq(ns.LevelText(list, 1), "Level 30 on " .. when(1000))
+  eq(ns.LevelText(list, 2), "Level 31 on " .. when(4600) .. ", took 1h 00m real time")
+  eq(ns.LevelText(list, 4), "Level 33 on " .. when(99000) .. ", took 50m played (/played 14h 43m)")
+  eq(ns.LevelText(list, 5), "Level 34 on " .. when(100000) .. ", took 25m played")
+end)
+
+test("levels: level-ups in the game, with the date only while the played time is unknown", function(wow)
+  local ns = boot(wow, { level = 10 })
+  wait(wow, 1200)
+  levelUp(wow, 11)
+  local first = wow.now
+  wait(wow, 1800)
+  levelUp(wow, 12)
+  wow.fire("PLAYER_LEVEL_UP", 12) -- sent again
+  local levels = LevelClockDB.chars["Yubi-Silvermoon"].levels
+  eq(#levels, 2)
+  eq(levels[1].level, 11)
+  eq(levels[1].at, first)
+  eq(levels[1].played, nil)
+  wow.slash("/lc levels")
+  eq(wow.chat[1], PREFIX .. "Your last levels on this character, newest first:")
+  eq(wow.chat[2], "  Level 12 on " .. when(first + 1800) .. ", took 30m real time")
+  eq(wow.chat[3], "  Level 11 on " .. when(first))
+  eq(#wow.chat, 3)
+end)
+
+test("levels: with /played known, each level gets its played time", function(wow)
+  local ns = boot(wow, { level = 40 })
+  wow.fire("TIME_PLAYED_MSG", 360000, 1200) -- the player typed /played
+  wait(wow, 600)
+  levelUp(wow, 41)
+  wait(wow, 2400)
+  levelUp(wow, 42)
+  local levels = ns.char.levels
+  eq(levels[1].played, 360600)
+  eq(levels[1].took, 1800, "1200 seconds before /played and 600 after")
+  eq(levels[2].played, 363000)
+  eq(levels[2].took, 2400)
+  wow.slash("/lc levels")
+  eq(wow.chat[2], "  Level 42 on " .. when(wow.now) .. ", took 40m played (/played 4d 4h)")
+end)
+
+test("levels: /played typed after a level-up fills in when that level was reached", function(wow)
+  local ns = boot(wow, { level = 50 })
+  levelUp(wow, 51)
+  wait(wow, 300)
+  wow.fire("TIME_PLAYED_MSG", 800300, 300)
+  eq(ns.char.levels[1].played, 800000)
+  wait(wow, 900)
+  levelUp(wow, 52)
+  eq(ns.char.levels[2].took, 1200)
+  eq(ns.char.levels[2].played, 801200)
+end)
+
+test("levels: kept across a relog, the played time is told again in each session", function(wow)
+  local ns = boot(wow, { level = 20 })
+  wow.fire("TIME_PLAYED_MSG", 100000, 0)
+  levelUp(wow, 21)
+  ns = relog(wow, 3600)
+  eq(#ns.char.levels, 1)
+  eq(ns.played, nil)
+  wait(wow, 600)
+  levelUp(wow, 22)
+  local seconds, kind = ns.LevelTook(ns.char.levels, 2)
+  eq(kind, "real", "after the relog only the real time is known")
+  eq(seconds, 4200)
+  eq(ns.char.levels[2].played, nil)
+end)
+
+test("levels: /lc levels shows the newest ten", function(wow)
+  local ns = boot(wow, { level = 1 })
+  wow.slash("/lc levels")
+  eq(wow.chat[1], PREFIX .. "No level-ups noted yet. Level Clock notes every level from now on.")
+  for level = 2, 14 do
+    wait(wow, 60)
+    levelUp(wow, level)
+  end
+  wow.chat = {}
+  wow.slash("/lc LEVELS ")
+  eq(#wow.chat, 11)
+  eq(wow.chat[2]:match("^  Level 14 on ") ~= nil, true)
+  eq(wow.chat[11]:match("^  Level 5 on ") ~= nil, true)
+  wow.slash("/lc help")
+  eq(wow.chat[12]:match("/lc levels lists your last levels") ~= nil, true)
+end)
+
+test("levels: secret or broken values are not noted, nothing before login", function(wow)
+  client()
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LEVEL_UP", 11)
+  wow.fire("TIME_PLAYED_MSG", 100, 10)
+  wow.slash("/lc levels")
+  eq(#wow.chat, 0)
+  eq(LevelClockDB, nil)
+  local ns = boot(wow, { level = 10 })
+  local secret = { secret = true }
+  wow.fire("PLAYER_LEVEL_UP", secret)
+  wow.fire("PLAYER_LEVEL_UP", nil)
+  wow.fire("TIME_PLAYED_MSG", secret, 10)
+  wow.fire("TIME_PLAYED_MSG", 100, secret)
+  eq(ns.played, nil)
+  eq(#ns.char.levels, 0)
+  player.level = secret
+  wow.fire("TIME_PLAYED_MSG", 5000, 10)
+  eq(ns.played.level, 10, "the level from the last readable bar")
+  levelUp(wow, 11)
+  eq(#ns.char.levels, 1)
+end)
+
+test("levels: 1.2 saved data stays, the level list starts empty and broken rows are dropped", function(wow)
+  LevelClockDB = { version = 3, settings = { point = { "TOP", "TOP", 0, -50 }, locked = true, scale = 1.2, hideAtMax = true, shown = false },
+    chars = { ["Yubi-Silvermoon"] = { history = { { xp = 500, seconds = 600, levels = 1, from = 100, at = 700 } }, last = { xp = 500, seconds = 600 } } } }
+  local ns = boot(wow)
+  eq(LevelClockDB.version, 4)
+  eq(LevelClockDB.settings.locked, true)
+  eq(LevelClockDB.settings.scale, 1.2)
+  eq(#ns.char.history, 1)
+  eq(type(ns.char.levels), "table")
+  eq(#ns.char.levels, 0)
+  eq(ns.char, LevelClockDB.chars["Yubi-Silvermoon"])
+  LevelClockDB = { version = 4, chars = { ["Yubi-Silvermoon"] = { levels = {
+    { level = 5, at = 100 }, "broken", { level = "6", at = 200 }, { level = 7 }, { level = 8, at = 300, played = "x" }, { level = 9, at = 400, took = 60 },
+  } } } }
+  ns = relog(wow)
+  eq(#ns.char.levels, 2)
+  eq(ns.char.levels[2].level, 9)
+  LevelClockDB = { chars = { ["Yubi-Silvermoon"] = { levels = "broken" } } }
+  ns = relog(wow)
+  eq(#ns.char.levels, 0)
 end)

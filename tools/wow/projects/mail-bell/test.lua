@@ -10,7 +10,7 @@ local function world(wow)
   GetInboxHeaderInfo = function(i)
     local m = w.letters[i] or {}
     -- packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, hasItem, wasRead, ...
-    return nil, "Interface\\Icons\\INV_Misc_Note_01", "Someone", "Hello", m.money or 0, m.cod or 0, m.days or 30, m.items, false
+    return nil, "Interface\\Icons\\INV_Misc_Note_01", m.sender or "Someone", m.subject or "Hello", m.money or 0, m.cod or 0, m.days or 30, m.items, false
   end
   SOUNDKIT = { ALARM_CLOCK_WARNING_3 = 12889, TELL_MESSAGE = 3081, MAP_PING = 3175, READY_CHECK = 8960, RAID_WARNING = 8959 }
   PlaySound = function(id, channel) w.sounds[#w.sounds + 1] = { id = id, channel = channel } end
@@ -73,6 +73,8 @@ test("addon defines only its own globals", function(wow)
   wow.slash("/mailbell sound off")
   wow.slash("/mb forget Nobody-Nowhere")
   wow.slash("/mb sound chime")
+  w.openMailbox(1, { { money = 5, days = 1 } })
+  wow.slash("/mb letters")
   local allowed = { MailBellDB = true, SLASH_MAILBELL1 = true, SLASH_MAILBELL2 = true }
   for k in pairs(_G) do
     if not mine[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -179,7 +181,7 @@ end)
 test("core: settings, switches and names", function(wow)
   local ns = boot(wow, world(wow))
   local db = ns.PrepareDB(nil)
-  eq(db.version, 3)
+  eq(db.version, 4)
   eq(db.settings.sound, true)
   eq(db.settings.login, true)
   eq(type(db.chars), "table")
@@ -355,22 +357,23 @@ test("slash commands: list, settings and help", function(wow)
   eq(wow.chat[3]:match("/mb forget Name%-Realm removes a character") ~= nil, true)
   eq(wow.chat[4], PREFIX .. "/mb expire followed by 1 to 30 days, or off, sets the warning for mail with items or gold that runs out soon.")
   eq(wow.chat[5], PREFIX .. "/mb sound followed by bell, chime, horn, warning or whisper picks the bell and plays it once.")
+  eq(wow.chat[6], PREFIX .. "/mb letters lists the letters with items or gold on all your characters, as of each one's last mailbox visit.")
   wow.slash("/mb sound off")
-  eq(wow.chat[6], PREFIX .. "Sound is off.")
+  eq(wow.chat[7], PREFIX .. "Sound is off.")
   eq(MailBellDB.settings.sound, false)
   wow.slash("/mailbell  SOUND  On ")
-  eq(wow.chat[7], PREFIX .. "Sound is on: bell.")
+  eq(wow.chat[8], PREFIX .. "Sound is on: bell.")
   eq(MailBellDB.settings.sound, true)
   wow.slash("/mb login off")
-  eq(wow.chat[8], PREFIX .. "Login list is off.")
+  eq(wow.chat[9], PREFIX .. "Login list is off.")
   wow.slash("/mb login loud")
-  eq(wow.chat[9]:match("^" .. PREFIX:gsub("|", "%%|") .. "/mb sound on/off") ~= nil, true, "a bad word shows the help")
+  eq(wow.chat[10]:match("^" .. PREFIX:gsub("|", "%%|") .. "/mb sound on/off") ~= nil, true, "a bad word shows the help")
   eq(MailBellDB.settings.login, false)
   MailBellDB.chars["Brakk-Argent Dawn"].mail = false
   wow.slash("/mb whatever")
-  eq(wow.chat[12], PREFIX .. "No mail waiting on your other characters.")
-  eq(wow.chat[13], PREFIX .. "Sound is on: bell. Login list is off. Expiry warning: mail with items or gold that runs out within 3 days.")
-  eq(#wow.chat, 16)
+  eq(wow.chat[14], PREFIX .. "No mail waiting on your other characters.")
+  eq(wow.chat[15], PREFIX .. "Sound is on: bell. Login list is off. Expiry warning: mail with items or gold that runs out within 3 days.")
+  eq(#wow.chat, 19)
 end)
 
 test("/mb forget removes a character, not the one you play", function(wow)
@@ -548,7 +551,7 @@ test("core: saved data of 1.0 gets the expiry setting, a saved choice is kept", 
   local ns = boot(wow, world(wow))
   local old = { version = 1, settings = { sound = false, login = true }, chars = { ["A-B"] = { mail = true, since = 9 } } }
   local db = ns.PrepareDB(old)
-  eq(db.version, 3)
+  eq(db.version, 4)
   eq(db.settings.expire, 3)
   eq(db.settings.sound, false)
   eq(db.chars["A-B"].since, 9)
@@ -562,12 +565,12 @@ test("open mailbox: one warning per session for items or gold running out soon",
   local w = world(wow)
   boot(wow, w)
   w.openMailbox(3, {
-    { money = 25000, days = 1.5 },
-    { items = 1, days = 2.2 },
+    { money = 25000, days = 1.5, sender = "Auction House", subject = "Auction successful: Linen Cloth" },
+    { items = 1, days = 2.2, sender = "Brakk", subject = "Herbs" },
     { items = 1, days = 20 },
   })
   eq(#wow.chat, 1)
-  eq(wow.chat[1], PREFIX .. "2 letters with items or gold run out within 3 days, the first in 1 day. Take them out before they are returned or deleted.")
+  eq(wow.chat[1], PREFIX .. "2 letters with items or gold run out within 3 days, the first in 1 day: Auction House \"Auction successful: Linen Cloth\", Brakk \"Herbs\". Take them out before they are returned or deleted.")
   eq(MailBellDB.chars["Yubi-Silvermoon"].expires, wow.now + 1.5 * DAY)
   wow.fire("MAIL_INBOX_UPDATE")
   w.closeMailbox()
@@ -589,7 +592,7 @@ test("open mailbox: nothing runs out soon, so no line, but the date is kept for 
   eq(MailBellDB.chars["Yubi-Silvermoon"].expires, nil)
   w.letters = { { money = 10, days = 0.5 } }
   wow.fire("MAIL_INBOX_UPDATE")
-  eq(wow.chat[1], PREFIX .. "A letter with items or gold runs out in less than a day. Take it out before it is returned or deleted.")
+  eq(wow.chat[1], PREFIX .. "A letter with items or gold runs out in less than a day: Someone \"Hello\". Take it out before it is returned or deleted.")
   w.inbox = 0
   wow.fire("MAIL_INBOX_UPDATE")
   eq(MailBellDB.chars["Yubi-Silvermoon"].expires, nil, "an empty mailbox has nothing to run out")
@@ -605,11 +608,12 @@ test("the login list names characters whose mail runs out soon, the current one 
   } }
   boot(wow, w)
   w.run()
-  eq(#wow.chat, 2)
+  eq(#wow.chat, 3)
   eq(wow.chat[1], PREFIX .. "Mail waiting on: Brakk")
-  eq(wow.chat[2], PREFIX .. "Mail with items or gold runs out soon on: Yubi in less than a day, Brakk in 2 days")
+  eq(wow.chat[2], PREFIX .. "Mail with items or gold runs out soon on: Brakk in 2 days")
+  eq(wow.chat[3], PREFIX .. "From your last mailbox visit: mail with items or gold on this character runs out in less than a day. Open a mailbox to take it out.", "1.3: the current one gets its own line")
   wow.slash("/mb")
-  eq(wow.chat[4], PREFIX .. "Mail with items or gold runs out soon on: Yubi in less than a day, Brakk in 2 days", "/mb shows it too")
+  eq(wow.chat[5], PREFIX .. "Mail with items or gold runs out soon on: Yubi in less than a day, Brakk in 2 days", "/mb shows it too")
 
   wow.slash("/mb login off")
   local before = #wow.chat
@@ -632,17 +636,17 @@ test("/mb expire sets the days or switches the warning off", function(wow)
   eq(wow.chat[4]:match("/mb sound on/off") ~= nil, true, "too many days shows the help")
   eq(MailBellDB.settings.expire, 1)
   wow.slash("/mb EXPIRE off")
-  eq(wow.chat[7], PREFIX .. "Expiry warning is off.")
+  eq(wow.chat[8], PREFIX .. "Expiry warning is off.")
   eq(MailBellDB.settings.expire, 0)
   w.openMailbox(1, { { money = 100, days = 0.5 } })
-  eq(#wow.chat, 7, "no warning when it is off")
+  eq(#wow.chat, 8, "no warning when it is off")
   eq(MailBellDB.chars["Yubi-Silvermoon"].expires, wow.now + 0.5 * DAY, "but the date is still noted")
   wow.fire("PLAYER_LOGIN")
   w.run()
-  eq(#wow.chat, 7, "and the login list stays quiet about it")
+  eq(#wow.chat, 8, "and the login list stays quiet about it")
   wow.slash("/mb expire 3")
   w.openMailbox(1)
-  eq(wow.chat[9], PREFIX .. "A letter with items or gold runs out in less than a day. Take it out before it is returned or deleted.")
+  eq(wow.chat[10], PREFIX .. "A letter with items or gold runs out in less than a day: Someone \"Hello\". Take it out before it is returned or deleted.")
 end)
 
 test("expiry: secret or missing inbox details are no error and give no warning", function(wow)
@@ -697,7 +701,7 @@ test("core: saved data of 1.1 gets the bell it always played, a saved choice is 
   local ns = boot(wow, world(wow))
   local old = { version = 2, settings = { sound = false, login = false, expire = 7 }, chars = { ["A-B"] = { mail = true, since = 9, expires = 99 } } }
   local db = ns.PrepareDB(old)
-  eq(db.version, 3)
+  eq(db.version, 4)
   eq(db.settings.bell, "bell")
   eq(db.settings.sound, false)
   eq(db.settings.login, false)
@@ -753,7 +757,7 @@ test("/mb sound with an unknown word shows the help and changes nothing", functi
   local w = world(wow)
   boot(wow, w)
   wow.slash("/mb sound trumpet")
-  eq(#wow.chat, 3)
+  eq(#wow.chat, 4)
   eq(wow.chat[3], PREFIX .. "/mb sound followed by bell, chime, horn, warning or whisper picks the bell and plays it once.")
   eq(select(2, wow.chat[3]:gsub("|", "")), 2, "no escape code in the help but the prefix colour")
   eq(MailBellDB.settings.bell, "bell")
@@ -777,4 +781,211 @@ test("a chosen bell this client does not know rings the bell of 1.0", function(w
   w.mail(false, 1)
   w.mail(true, 60)
   eq(wow.chat[3], PREFIX .. "You have new mail.", "a failing sound call does not stop the chat line")
+end)
+
+
+-- Mail Bell 1.3: letters named by sender and subject, remembered per character.
+
+local function letter(days, sender, subject, extra)
+  local m = { money = 0, cod = 0, daysLeft = days, hasItem = 1, sender = sender, subject = subject }
+  for k, v in pairs(extra or {}) do m[k] = v end
+  return m
+end
+
+test("core 1.3: the letters that count, soonest first, with sender and subject", function(wow)
+  local ns = boot(wow, world(wow))
+  local secret = { secret = true }
+  local list = ns.CountedLetters({
+    letter(5, "Kel", "Ore"),
+    letter(1.5, "Brakk", "Herbs"),
+    letter(0.5, "Plain", "Hi", { hasItem = 0 }),       -- no items, no gold
+    letter(0.2, "Cod", "Pay me", { cod = 500 }),      -- cash on delivery
+    letter(1.5, secret, secret),                       -- the same day as Brakk: listed after him
+    letter(2, "", "Gold", { money = 100, hasItem = 0 }),
+  })
+  eq(#list, 4)
+  eq(list[1].sender, "Brakk")
+  eq(list[1].subject, "Herbs")
+  eq(list[2].sender, nil, "a secret sender is left out")
+  eq(list[2].subject, nil)
+  eq(list[3].sender, nil, "an empty sender")
+  eq(list[3].subject, "Gold")
+  eq(list[4].days, 5)
+  local soonest, count = ns.ScanExpiry({ letter(5, "Kel", "Ore"), letter(1.5, "Brakk", "Herbs") }, 3)
+  eq(soonest, 1.5)
+  eq(count, 1)
+  eq(ns.Within(3.9, 3), true)
+  eq(ns.Within(4, 3), false)
+  eq(ns.Within(1, 0), false, "the warning is off")
+end)
+
+test("core 1.3: how letters are named in chat", function(wow)
+  local ns = boot(wow, world(wow))
+  eq(ns.LetterLabel("Brakk", "Herbs"), 'Brakk "Herbs"')
+  eq(ns.LetterLabel("Brakk", nil), "Brakk")
+  eq(ns.LetterLabel(nil, "Herbs"), '"Herbs"')
+  eq(ns.LetterLabel("", ""), "a letter")
+  eq(ns.LetterLabel(nil, nil), "a letter")
+  eq(ns.LetterLabel("Brakk", "|cffff0000|Hitem:1|h[Gold]|h|r"), 'Brakk "||cffff0000||Hitem:1||h[Gold]||h||r"', "no links or colours from other players")
+  eq(ns.LetterLabel("A|rB", nil), "A||rB")
+  eq(ns.LetterLabel("Brakk", "Auction successful: Linen Cloth and more"), 'Brakk "Auction successful: Linen Clo..."')
+  eq(ns.LetterLabel(nil, string.rep("a", 28) .. "\195\164\195\164\195\164"), '"' .. string.rep("a", 28) .. '..."', "a letter of two bytes is never cut in half")
+  eq(ns.LetterLabel(nil, string.rep("b", 32)), '"' .. string.rep("b", 32) .. '"', "32 characters fit")
+  eq(ns.NameList({ "A", "B" }), "A, B")
+  eq(ns.NameList({ "A", "B", "C", "D", "E" }), "A, B, C and 2 more")
+  eq(ns.NameList({}), "")
+  eq(ns.ExpiryWarning(1, 0.5, 3, { 'Brakk "Herbs"' }), 'A letter with items or gold runs out in less than a day: Brakk "Herbs". Take it out before it is returned or deleted.')
+  eq(ns.ExpiryWarning(2, 1.2, 3, { "A", "B" }), "2 letters with items or gold run out within 3 days, the first in 1 day: A, B. Take them out before they are returned or deleted.")
+  eq(ns.ExpiryWarning(2, 1.2, 3, {}), "2 letters with items or gold run out within 3 days, the first in 1 day. Take them out before they are returned or deleted.", "no names: the line of 1.1")
+end)
+
+test("core 1.3: letters remembered per character", function(wow)
+  local ns = boot(wow, world(wow))
+  local now = 1000000
+  local chars = { ["Yubi-Silvermoon"] = { mail = true, since = 3 } }
+  local counted = ns.CountedLetters({
+    letter(1, "A", "1"), letter(2, "B", "2"), letter(3, "C", "3"), letter(4, "D", "4"), letter(5, "E", "5"), letter(6, "F", "6"),
+  })
+  ns.NoteLetters(chars, "Yubi-Silvermoon", counted, now)
+  local saved = chars["Yubi-Silvermoon"].letters
+  eq(#saved, ns.LETTERS)
+  eq(saved[1].sender, "A")
+  eq(saved[1].expires, now + DAY)
+  eq(saved[5].subject, "5")
+  eq(chars["Yubi-Silvermoon"].mail, true, "the mail note is kept")
+  ns.NoteLetters(chars, "Yubi-Silvermoon", {}, now)
+  eq(chars["Yubi-Silvermoon"].letters, nil, "nothing left to run out")
+  ns.NoteLetters(chars, "New-Silvermoon", counted, now)
+  eq(#chars["New-Silvermoon"].letters, 5)
+  eq(ns.CleanLetters({ { expires = 5, sender = "A", subject = 4 }, "x", { sender = "B" }, { expires = 0 / 0 } })[1].subject, nil)
+  eq(#ns.CleanLetters({ { expires = 5 }, "x", { sender = "B" } }), 1)
+  eq(ns.CleanLetters({ "x" }), nil)
+  eq(ns.CleanLetters("broken"), nil)
+end)
+
+test("core 1.3: the login line of the character being played", function(wow)
+  local ns = boot(wow, world(wow))
+  local now = 2000000
+  local c = { letters = {
+    { sender = "Gone", subject = "Old", expires = now - 10 },
+    { sender = "Brakk", subject = "Herbs", expires = now + 1.5 * DAY },
+    { sender = "Auction House", expires = now + 2.5 * DAY },
+    { sender = "Kel", subject = "Ore", expires = now + 9 * DAY },
+  } }
+  eq(ns.OwnExpiryText(c, now, 3), 'From your last mailbox visit: 2 letters with items or gold on this character run out within 3 days, the first in 1 day: Brakk "Herbs", Auction House. Open a mailbox to take them out.')
+  eq(ns.OwnExpiryText(c, now, 1), 'From your last mailbox visit: a letter with items or gold on this character runs out in 1 day: Brakk "Herbs". Open a mailbox to take it out.')
+  eq(ns.OwnExpiryText(c, now, 0), nil, "the warning is off")
+  eq(ns.OwnExpiryText(c, now + 20 * DAY, 3), nil, "all gone by now")
+  eq(ns.OwnExpiryText({ expires = now + DAY / 2 }, now, 3), "From your last mailbox visit: mail with items or gold on this character runs out in less than a day. Open a mailbox to take it out.", "saved by 1.2: only the date")
+  eq(ns.OwnExpiryText({ expires = now + 5 * DAY }, now, 3), nil)
+  eq(ns.OwnExpiryText(nil, now, 3), nil)
+  eq(ns.OwnExpiryText({}, now, 3), nil)
+end)
+
+test("core 1.3: the lines of /mb letters", function(wow)
+  local ns = boot(wow, world(wow))
+  local now = 3000000
+  local chars = {
+    ["Yubi-Silvermoon"] = { letters = { { sender = "Brakk", subject = "Herbs", expires = now + 2.5 * DAY }, { expires = now + 20 * DAY } } },
+    ["Kel-Argent Dawn"] = { letters = { { sender = "Auction House", subject = "Sold", expires = now + DAY / 2 } } },
+    ["Old-Silvermoon"] = { expires = now + 4 * DAY }, -- saved by 1.2
+    ["Gone-Silvermoon"] = { letters = { { sender = "X", expires = now - 1 } } },
+    ["Empty-Silvermoon"] = { mail = false },
+    Odd = "broken",
+  }
+  local lines = ns.LetterLines(chars, now, "Silvermoon")
+  eq(#lines, 3)
+  eq(lines[1], 'Kel (Argent Dawn): Auction House "Sold" in less than a day')
+  eq(lines[2], 'Yubi: Brakk "Herbs" in 2 days, a letter in 20 days')
+  eq(lines[3], "Old: the first in 4 days")
+  eq(#ns.LetterLines({}, now, "Silvermoon"), 0)
+end)
+
+test("open mailbox 1.3: more than three letters, the rest are counted", function(wow)
+  local w = world(wow)
+  boot(wow, w)
+  w.openMailbox(5, {
+    { items = 1, days = 2, sender = "C" }, { items = 1, days = 0.5, sender = "A" }, { items = 1, days = 1, sender = "B", subject = "Bee" },
+    { money = 9, days = 3, sender = "D" }, { money = 9, days = 3.5, sender = "E" },
+  })
+  eq(wow.chat[1], PREFIX .. '5 letters with items or gold run out within 3 days, the first in less than a day: A "Hello", B "Bee", C "Hello" and 2 more. Take them out before they are returned or deleted.')
+  local saved = MailBellDB.chars["Yubi-Silvermoon"].letters
+  eq(#saved, 5)
+  eq(saved[1].sender, "A")
+  eq(saved[1].expires, wow.now + DAY / 2)
+end)
+
+test("the next login names this character's letters from the last visit", function(wow)
+  local w = world(wow)
+  boot(wow, w)
+  w.run() -- this login's list, nothing to say yet
+  w.openMailbox(2, { { items = 1, days = 2.5, sender = "Brakk", subject = "Herbs" }, { items = 1, days = 12, sender = "Kel" } })
+  w.closeMailbox()
+  wow.now = wow.now + DAY -- a day later
+  wow.chat = {}
+  wow.frames[1].events = {}
+  boot(wow, w)
+  w.run()
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. 'From your last mailbox visit: a letter with items or gold on this character runs out in 1 day: Brakk "Herbs". Open a mailbox to take it out.')
+  wow.slash("/mb login off")
+  wow.fire("PLAYER_LOGIN")
+  w.run()
+  eq(#wow.chat, 2, "with the login list off it stays quiet")
+  wow.slash("/mb login on")
+  wow.slash("/mb expire off")
+  wow.fire("PLAYER_LOGIN")
+  w.run()
+  eq(#wow.chat, 4, "and with the warning off")
+end)
+
+test("/mb letters lists the letters on every character", function(wow)
+  local w = world(wow)
+  boot(wow, w)
+  wow.slash("/mb letters")
+  eq(wow.chat[1], PREFIX .. "No letters with items or gold noted. Mail Bell notes them when you open a mailbox.")
+  MailBellDB.chars["Brakk-Argent Dawn"] = { mail = true, letters = { { sender = "Auction House", subject = "Sold", expires = wow.now + 4 * DAY } } }
+  w.openMailbox(1, { { money = 50, days = 1.2, sender = "Kel", subject = "Loan" } })
+  wow.chat = {}
+  wow.slash("/mb LETTERS ")
+  eq(#wow.chat, 3)
+  eq(wow.chat[1], PREFIX .. "Letters with items or gold, as of each character's last mailbox visit:")
+  eq(wow.chat[2], '  Yubi: Kel "Loan" in 1 day')
+  eq(wow.chat[3], '  Brakk (Argent Dawn): Auction House "Sold" in 4 days')
+  wow.slash("/mb letters please")
+  eq(wow.chat[4]:match("Mail waiting on: Brakk") ~= nil, true, "another word after it shows the overview")
+end)
+
+test("1.3: secret or odd senders and subjects are no error", function(wow)
+  local w = world(wow)
+  local secret = { secret = true }
+  boot(wow, w)
+  w.openMailbox(2, { { items = 1, days = 1, sender = secret, subject = secret }, { items = 1, days = 2, sender = 42, subject = "x|r|cff00ff00" } })
+  eq(wow.chat[1], PREFIX .. '2 letters with items or gold run out within 3 days, the first in 1 day: a letter, "x||r||cff00ff00". Take them out before they are returned or deleted.')
+  local saved = MailBellDB.chars["Yubi-Silvermoon"].letters
+  eq(saved[1].sender, nil)
+  eq(saved[2].subject, "x|r|cff00ff00", "kept as the game told it, made safe when shown")
+end)
+
+test("1.2 saved data is kept, letters come with the next mailbox visit, broken ones are dropped", function(wow)
+  local w = world(wow)
+  MailBellDB = { version = 3, settings = { sound = false, login = true, expire = 5, bell = "horn" }, chars = {
+    ["Yubi-Silvermoon"] = { mail = false, expires = wow.now + 2 * DAY },
+    ["Brakk-Silvermoon"] = { mail = true, since = 7, letters = { { expires = 9, sender = "A" }, "broken", { sender = "B" } } },
+    ["Kel-Silvermoon"] = { letters = "broken" },
+  } }
+  local saved = MailBellDB
+  boot(wow, w)
+  eq(MailBellDB, saved)
+  eq(saved.version, 4)
+  eq(saved.settings.sound, false)
+  eq(saved.settings.expire, 5)
+  eq(saved.settings.bell, "horn")
+  eq(saved.chars["Yubi-Silvermoon"].expires, wow.now + 2 * DAY)
+  eq(saved.chars["Yubi-Silvermoon"].letters, nil)
+  eq(#saved.chars["Brakk-Silvermoon"].letters, 1)
+  eq(saved.chars["Brakk-Silvermoon"].since, 7)
+  eq(saved.chars["Kel-Silvermoon"].letters, nil)
+  w.run()
+  eq(wow.chat[2], PREFIX .. "From your last mailbox visit: mail with items or gold on this character runs out in 2 days. Open a mailbox to take it out.")
 end)

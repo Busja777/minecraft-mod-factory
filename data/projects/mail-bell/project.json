@@ -31,6 +31,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.3",
+      "file": "MailBell-1.3.zip",
+      "changelog": "## Mail Bell 1.3\n\n- The **expiry warning names the letters** now: when you open a mailbox, the line about items or gold running out soon tells who sent them and the subject, for example `2 letters with items or gold run out within 3 days, the first in 1 day: Auction House \"Auction successful\", Brakk \"Herbs\"`. Up to three are named, the rest are counted.\n- Mail Bell remembers the five letters with items or gold that run out first on every character.\n- At login, your current character gets its own line when one of its letters runs out soon. The game cannot read the mailbox at login, so the line says that it is based on your last mailbox visit. The list of your other characters works as before.\n- New command `/mb letters`: lists these letters on all your characters with the days left, as of each one's last mailbox visit.\n- Your characters and settings from 1.2 are kept. Senders and subjects are known after a character's next visit to a mailbox; until then, the date alone is shown.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

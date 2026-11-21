@@ -7,6 +7,8 @@ ns.MIN_SECONDS = 60 -- a rate from less playing time than this jumps around too 
 ns.HISTORY = 10     -- finished sessions kept per character
 ns.MERGE_GAP = 300  -- seconds between logout and login that still count as one session (a reload, a quick relog)
 ns.SCALE_MIN, ns.SCALE_MAX = 0.8, 1.5 -- window size (1.2)
+ns.LEVELS = 100     -- level-ups kept per character (1.3)
+ns.LEVELS_SHOWN = 10 -- level-ups /lc levels prints
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
@@ -152,6 +154,7 @@ function ns.MigrateChar(char)
     if ns.ValidEntry(e) and #clean < ns.HISTORY then clean[#clean + 1] = e end
   end
   char.history = clean
+  char.levels = ns.CleanLevels(char.levels) -- 1.3: new, empty for data of 1.2 and before
 end
 
 -- One history entry as texts: when it started, how long, XP, XP per hour, levels gained.
@@ -234,4 +237,109 @@ end
 -- the screen (offsets are counted in the window's own, scaled units).
 function ns.ScaledOffsets(x, y, old, new)
   return x * old / new, y * old / new
+end
+
+-- 1.3: level history ------------------------------------------------------------------------------
+-- char.levels lists the level-ups seen from 1.3 on, oldest first:
+--   { level, at = clock time (time()) it was reached, played = /played seconds at that moment,
+--     took = /played seconds the level before it took }
+-- played and took are only known when the game told the played time in this session
+-- (TIME_PLAYED_MSG, sent when the player types /played or another addon asks for it).
+
+local function number(v)
+  return type(v) == "number" and v == v
+end
+
+-- A saved level-up that can be shown.
+function ns.ValidLevel(e)
+  return type(e) == "table" and number(e.level) and e.level >= 1 and number(e.at)
+    and (e.played == nil or number(e.played)) and (e.took == nil or (number(e.took) and e.took >= 0))
+end
+
+-- Keeps the good entries of a saved list, the newest ns.LEVELS.
+function ns.CleanLevels(list)
+  local clean = {}
+  if type(list) ~= "table" then return clean end
+  for _, e in ipairs(list) do
+    if ns.ValidLevel(e) then clean[#clean + 1] = e end
+  end
+  while #clean > ns.LEVELS do table.remove(clean, 1) end
+  return clean
+end
+
+-- The played time from what the game told: total and time in the current level at moment at
+-- (GetTime()). level is the level then.
+function ns.PlayedAnchor(total, thisLevel, at, level)
+  if not (number(total) and number(thisLevel) and number(at) and number(level)) then return nil end
+  if total < 0 or thisLevel < 0 or thisLevel > total then return nil end
+  return { total = total, thisLevel = thisLevel, at = at, level = level }
+end
+
+-- The played time now, worked out from the anchor and the time since.
+function ns.PlayedNow(anchor, now)
+  if not anchor or not number(now) or now < anchor.at then return nil end
+  return anchor.total + (now - anchor.at)
+end
+
+-- A level-up to newLevel at now (GetTime()). → played time now, the played time the level before
+-- took (nil when the anchor is from another level), and the anchor for the new level.
+function ns.LevelUpPlayed(anchor, newLevel, now)
+  local played = ns.PlayedNow(anchor, now)
+  if not played then return nil, nil, nil end
+  local took
+  if anchor.level == newLevel - 1 then took = anchor.thisLevel + (now - anchor.at) end
+  return played, took, { total = played, thisLevel = 0, at = now, level = newLevel }
+end
+
+-- Notes a level-up. The same level twice in a row (an event sent again) is noted once.
+-- Returns the entry, or nil when nothing was added.
+function ns.AddLevel(list, level, at, played, took)
+  if not number(level) or level < 1 or not number(at) then return nil end
+  local last = list[#list]
+  if last and last.level == level then return nil end
+  local e = { level = level, at = at, played = number(played) and math.floor(played) or nil,
+    took = number(took) and took >= 0 and math.floor(took) or nil }
+  list[#list + 1] = e
+  while #list > ns.LEVELS do table.remove(list, 1) end
+  return e
+end
+
+-- The played time told later fills in the entry of the level the character is at, when it lacks it:
+-- the level was reached at total minus the time spent in it so far.
+function ns.FillPlayed(list, anchor)
+  local last = list[#list]
+  if not anchor or not last or last.level ~= anchor.level or last.played ~= nil then return end
+  last.played = anchor.total - anchor.thisLevel
+end
+
+-- How long the level before entry i took: in played time when it is known, otherwise the real
+-- time between two level-ups in a row (which includes the time spent offline).
+-- → seconds, "played" or "real"; nil when it cannot be told.
+function ns.LevelTook(list, i)
+  local e = list[i]
+  if not e then return nil end
+  if number(e.took) then return e.took, "played" end
+  local prev = list[i - 1]
+  if not prev or prev.level ~= e.level - 1 then return nil end
+  if number(e.played) and number(prev.played) and e.played >= prev.played then return e.played - prev.played, "played" end
+  if e.at >= prev.at then return e.at - prev.at, "real" end
+  return nil
+end
+
+-- One level-up as a chat line.
+function ns.LevelText(list, i)
+  local L = ns.L
+  local e = list[i]
+  local when = date and date(L["%b %d %H:%M"], e.at) or "-"
+  local text = string.format(L["Level %d on %s"], e.level, when)
+  local seconds, kind = ns.LevelTook(list, i)
+  if kind == "played" then
+    text = text .. string.format(L[", took %s played"], ns.FormatDuration(seconds))
+  elseif kind == "real" then
+    text = text .. string.format(L[", took %s real time"], ns.FormatDuration(seconds))
+  end
+  if number(e.played) then
+    text = text .. string.format(L[" (/played %s)"], ns.FormatDuration(e.played))
+  end
+  return text
 end

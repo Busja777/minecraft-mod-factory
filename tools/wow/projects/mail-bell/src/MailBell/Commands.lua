@@ -21,6 +21,18 @@ local function help()
   ns.Print(L["/mb sound on/off plays the bell or not, /mb login on/off names your characters with mail at login, /mb forget Name-Realm removes a character."])
   ns.Print(L["/mb expire followed by 1 to 30 days, or off, sets the warning for mail with items or gold that runs out soon."])
   ns.Print(string.format(L["/mb sound followed by %s picks the bell and plays it once."], ns.OrList(ns.SOUND_NAMES)))
+  ns.Print(L["/mb letters lists the letters with items or gold on all your characters, as of each one's last mailbox visit."])
+end
+
+-- 1.3: /mb letters
+local function letters()
+  local lines = ns.LetterLines(ns.db.chars, time(), ns.MyRealm())
+  if #lines == 0 then
+    ns.Print(L["No letters with items or gold noted. Mail Bell notes them when you open a mailbox."])
+    return
+  end
+  ns.Print(L["Letters with items or gold, as of each character's last mailbox visit:"])
+  for _, line in ipairs(lines) do DEFAULT_CHAT_FRAME:AddMessage("  " .. line) end
 end
 
 local function show()
@@ -78,6 +90,8 @@ SlashCmdList.MAILBELL = function(msg)
     end
   elseif cmd == "expire" then
     expire(rest)
+  elseif cmd == "letters" and rest == "" then
+    letters()
   elseif cmd == "forget" and rest ~= "" then
     forget(rest)
   else
