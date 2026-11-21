@@ -5,7 +5,7 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 ## Auf einen Blick (21.11.)
 
 **Fertig gebaut:**
-- auf `main`: Java 11 (eines wartet auf 26.4), Stardew 5, WoW 12;
+- auf `main`: Java 12 (davon 11 im Vorrat; Ice Cave Advancements wartet auf 26.4), Stardew 5, WoW 12;
 - in offenen PRs: Bedrock 7 (#29), Stardew 6 (#33, #39).
 
 **Online ist noch nichts:** Der Engpass ist das Anlegen, nicht das Bauen.
