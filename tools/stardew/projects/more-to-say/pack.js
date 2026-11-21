@@ -1,4 +1,5 @@
-// More to Say: new dialogue lines for Linus and Willy, one per season for each of three moods (a
+// More to Say: new dialogue lines for Linus and Willy (since 1.0) and Pam and Gus (since 1.2), one per
+// season for each of three moods (a
 // greeting once you have met, a rain or snow day from 2 hearts, a closer word from 6 hearts). Every
 // line is said once, by the villager it belongs to, and no vanilla dialogue key is touched.
 //
@@ -10,7 +11,8 @@
 //   https://stardewvalleywiki.com/Modding:Dialogue#Characters.5CDialogue.5C.7B.7Bt.7CNPC.7D.7D.xnb
 // - A key that is not one of the game's own formats is only spoken when it is a conversation topic:
 //   "A conversation topic is a temporary flag which … can trigger one-time NPC dialogue (if they have
-//   a matching dialogue key)". Only Linus and Willy have these keys, so no one else reacts.
+//   a matching dialogue key)". Each topic ID names its villager and only that villager has the key,
+//   so no one else reacts.
 //   https://stardewvalleywiki.com/Modding:Dialogue#Conversation_topics
 // - Each topic is started by one Data/TriggerActions entry: Trigger "DayStarted", Action
 //   "AddConversationTopic <topic ID> <days>" (the trigger actions page shows the same pattern with
@@ -25,7 +27,8 @@
 // - Topic IDs avoid "_memory_" (the game derives its topic-memory keys from that text) and contain no
 //   spaces (trigger action arguments are space-delimited).
 // - Text: dialogue format with #$b# (next box), $h / $s / $u portraits (Linus: happy, concerned,
-//   surprised; Willy: happy, concerned, smoking — both villager pages, "Portraits"), @ = player name,
+//   surprised; Willy: happy, concerned, smoking — both villager pages, "Portraits"; Pam's and Gus's
+//   third portrait is a second neutral face, so their lines use only $h and $s), @ = player name,
 //   ${male^female}$ gender switch. https://stardewvalleywiki.com/Modding:Dialogue#Format
 // - The text comes from i18n (Content Patcher translations.md); {{ModId}} keeps IDs unique (tokens.md).
 //
@@ -36,6 +39,18 @@
 // 6-heart line does not assume that any event was seen. Fish facts follow the wiki's fish pages
 // (catfish: river, spring/fall rain; pufferfish: ocean, summer sun, midday; red snapper: ocean, summer
 // rain; salmon: river, fall; walleye and eel: fall rain; squid: ocean, winter nights).
+// Pam (since 1.2, wiki page "Pam"): only her regular 0-heart dialogue is used (trailer by the river,
+// Penny and her old books, parsnips, stiff legs, a messy yard, regular at the
+// Saloon). Nothing from her 9-heart event or the trailer upgrade, nothing from heart events she
+// appears in. The bus is only her old job ("Back in the day I drove …"), true whether or not the bus
+// runs again, and no line says Penny still lives at home. Drinking stays out of her lines; the Saloon
+// is mentioned once, as a warm place. Gus (since 1.2, wiki page "Gus"): Saloon owner and cook (first
+// meeting), different dishes every week, Emily's help, cleans glasses from 12:00 (schedule), Saloon
+// open 12:00–24:00, cooks for the town festivals (Desert Festival and Festival of Ice lines), fish taco
+// as his loved gift with its recipe (Tuna, Tortilla, Red Cabbage, Mayonnaise). Nothing from his 4-heart
+// (Pam's tab) or 5-heart (sauce, jukebox) events, no mention of Pam, no prices. Crops named are the
+// wiki's season crops (summer: tomato, blueberry, hot pepper; fall: pumpkin, yam, cranberries).
+// Timed words avoid festival dates that can fall inside a topic's 7 days.
 
 import { LINES_DE } from './de.js';
 
@@ -92,6 +107,52 @@ export const LINES = {
       met: "Cold water slows the fish down, but the squid come up at night.#$b#Winter's got its own rewards.",
       weather: "Snow fallin' on the water... prettiest sight on the whole coast.#$b#Cold enough to freeze your whiskers, mind.",
       friend: "Winters used to be long and quiet in the shop. Now there's you, comin' round and askin' about bait and weather.#$b#Makes an old sailor feel useful.$h"
+    }
+  },
+  // since 1.2
+  Pam: {
+    spring: {
+      met: "Spring means parsnips. Bet you've got a whole field of 'em started already, huh?#$b#Just sayin'. A gal could use some decent grub now and then.",
+      weather: "Rain on the trailer roof all night, like somebody playin' the drums. Can't sleep a wink through it.#$b#Stayin' dry, kid? Don't go catchin' a cold out there.",
+      friend: "Penny's always got her nose in some old book. She's a heck of a lot smarter than I ever was.#$b#Don't tell her I said this, but... I'm real proud of that girl.$h"
+    },
+    summer: {
+      met: "Hot one today, kid. Hot enough to fry an egg on the road.#$b#Drink some water and keep your hat on.",
+      weather: "Storm's rollin' in. Back in the day I drove through weather like this, wipers goin' full tilt, radio up loud.#$b#You learn to respect a wet road, kid.",
+      friend: "You know what I like about you, kid? You don't look at me like I'm some old wreck.#$b#Most folks walk right past the trailer. You stop and talk.$h"
+    },
+    fall: {
+      met: "Leaves are fallin' all over my yard again. Somebody's gonna complain, I just know it.#$b#Let 'em. I ain't rakin' today.",
+      weather: "Cold rain gets right into these stiff old legs. Takes me twice as long just to get across town.#$b#Don't you laugh, kid. You'll creak too someday.$h",
+      friend: "You keep showin' up, kid. Rain or shine, busy or not.#$b#Folks don't do that much anymore. Guess I'm doin' alright, havin' a friend like you.$h"
+    },
+    winter: {
+      met: "Cold enough to freeze the whiskers off a cat. My skin's gone dry as old paper.#$b#The Saloon's warm, though. Gus always keeps a stool at the bar for me.",
+      weather: "Snow day, huh? Penny's gonna be bundled up like a sack of potatoes. Got that from me.#$b#Keep your boots dry, kid. Wet feet'll put you in bed for a week.",
+      friend: "Penny says I've been in a better mood lately. Can't imagine why.#$b#Don't let it go to your head, kid. ...But I reckon you've got somethin' to do with it.$h"
+    }
+  },
+  // since 1.2
+  Gus: {
+    spring: {
+      met: 'Welcome to spring, @! The first fresh greens are coming in, and my kitchen has never been happier.#$b#Stop by the Saloon sometime. There\'s always something new on the menu.',
+      weather: "Rainy days are quiet at the Saloon. I polish glasses and dream up new recipes.#$b#Come by after noon and dry off, @. The kettle's on and the kitchen's warm.$h",
+      friend: "I've cooked for this town for a lot of years, @. Birthdays, festivals, quiet weeknights...#$b#It's nice to have someone stop by just to see how the cook is doing.$h"
+    },
+    summer: {
+      met: "Summer's here! Tomatoes, blueberries, hot peppers... a cook could weep with joy.#$b#If you grow any of those, I'd love to see them sometime.",
+      weather: 'Hear that thunder? Folks come in from the storm dripping wet, and the whole Saloon smells of rain and something good from the oven.#$b#That\'s my favorite kind of evening, @.$h',
+      friend: "Between you and me, @, nothing beats a good fish taco. Fresh tuna, crisp red cabbage, a dab of mayo...#$b#Bring me one sometime and I'll tell you if it passes the Gus test.$h"
+    },
+    fall: {
+      met: "Fall is the cook's season, @. Pumpkins, yams, cranberries... I hardly know where to start.#$b#The Saloon's open from noon till midnight if you need warming up.",
+      weather: "Cold rain and a hot bowl of pumpkin soup. If that isn't happiness, I don't know what is.#$b#Don't stay out in the wet too long, @. Even farmers need a warm meal.",
+      friend: "Some nights after closing, I sit in the empty Saloon with a cup of tea and think about who came in that day.#$b#Lately, yours is one of the faces I'm gladdest to remember.$h"
+    },
+    winter: {
+      met: "Brr! Winter's here. Good thing a kitchen is the warmest room in any house.#$b#Come in out of the cold sometime, @. The coffee's always hot.",
+      weather: 'Snow piling up outside, and inside everyone squeezes a little closer to the bar.#$b#I keep a big pot of stew going and a mop by the door. Snowy boots, you know.$h',
+      friend: "The Feast of the Winter Star is the busiest time of year in my kitchen. I plan the menu weeks ahead.#$b#Some years I wonder why I bother. Then I see the whole town eating together, and I remember.$h"
     }
   }
 };
@@ -150,7 +211,7 @@ export default async function ({ npcs }) {
     }
     changes.push({ LogName: `${npc}'s new lines`, Action: 'EditData', Target: `Characters/Dialogue/${npc}`, Entries: entries });
   }
-  // the triggers in KINDS order across both villagers
+  // the triggers in KINDS order across all villagers
   const ordered = {};
   for (const kind of Object.keys(KINDS)) for (const [id, t] of Object.entries(triggers)) if (id.endsWith(cap(kind))) ordered[id] = t;
   changes.push({ LogName: 'Start the topics', Action: 'EditData', Target: 'Data/TriggerActions', Entries: ordered });
