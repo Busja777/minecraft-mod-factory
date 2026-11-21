@@ -1,5 +1,6 @@
-// Machine Tempo: kegs and preserves jars finish their goods faster. The player picks the factor in
-// the Content Patcher config (1.0 = vanilla, 1.25, 1.5 = default, 2.0).
+// Machine Tempo: kegs, preserves jars, cheese presses (since 1.1) and looms (since 1.1) finish their
+// goods faster. The player picks the factor in the Content Patcher config (1.0 = vanilla, 1.25,
+// 1.5 = default, 2.0); one factor for all four machines.
 //
 // How the speed-up works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/Machines is keyed by the qualified ID of the machine. Each machine has OutputRules with
@@ -13,21 +14,25 @@
 //   So one modifier "Divide <factor>" per machine expresses the factor exactly, for every output
 //   rule at once, without copying or touching the rules themselves (inputs, outputs, prices and
 //   the minutes per rule stay vanilla, and rules other mods add are sped up too).
-// - The patch sets the ReadyTimeModifiers field of the two machines with EditData "Fields"
+// - The patch sets the ReadyTimeModifiers field of the machines with EditData "Fields"
 //   (Content Patcher docs, action-editdata.md "Fields"); nothing else in Data/Machines changes.
-//   Assumption: vanilla 1.6 has no ReadyTimeModifiers of its own on these two machines (the wiki
+//   Assumption: vanilla 1.6 has no ReadyTimeModifiers of its own on these machines (the wiki
 //   does not list the raw Data/Machines entries); if it had, this patch would replace them.
 // - The factor is a config option (author-guide/config.md: ConfigSchema with AllowValues/Default)
 //   and selects one patch through "When" (author-guide.md#conditions). At 1.0 no patch applies, so
 //   the game data stays exactly vanilla. {{ModId}} keeps the modifier ID unique (tokens.md#ModId).
 //
-// Machine IDs: Keg = (BC)12, Preserves Jar = (BC)15 (big craftables, Data/BigCraftables). The wiki
-// does not publish a big craftable ID list (Modding:Big craftables only describes the format);
-// these two IDs are the long-standing vanilla ones and an assumption of this pack.
+// Machine IDs (big craftables, Data/BigCraftables): Keg = (BC)12, Preserves Jar = (BC)15,
+// Cheese Press = (BC)16, Loom = (BC)17. Source: the raw Data/CraftingRecipes "as of 1.6.15" on
+// https://stardewvalleywiki.com/Modding:Recipe_data (revision 193377). Each machine's recipe yields
+// its own ID with the "big craftable" field true: "Keg": ".../Home/12/true/...", "Preserves Jar":
+// ".../Home/15/true/...", "Cheese Press": ".../Home/16/true/...", "Loom": ".../Home/17/true/...".
 //
 // Vanilla processing minutes per output (only for the page and the changelog, the pack itself
-// does not depend on them): https://stardewvalleywiki.com/Keg#Products and
-// https://stardewvalleywiki.com/Preserves_Jar (product tables, revision 195253 / 195389).
+// does not depend on them): https://stardewvalleywiki.com/Keg#Products,
+// https://stardewvalleywiki.com/Preserves_Jar, https://stardewvalleywiki.com/Cheese_Press#Products
+// and https://stardewvalleywiki.com/Loom#Products (product tables, revisions 195253, 195389,
+// 183811, 190254; the loom's "4 Hours" = 240 minutes).
 
 export const MACHINES = {
   '(BC)12': {
@@ -37,6 +42,16 @@ export const MACHINES = {
   '(BC)15': {
     name: 'Preserves Jar',
     minutes: { Pickles: 4000, Jelly: 4000, Caviar: 6000, 'Aged Roe': 4000 }
+  },
+  '(BC)16': {
+    name: 'Cheese Press',
+    since: '1.1',
+    minutes: { Cheese: 200, 'Goat Cheese': 200 }
+  },
+  '(BC)17': {
+    name: 'Loom',
+    since: '1.1',
+    minutes: { Cloth: 240 }
   }
 };
 
@@ -50,6 +65,9 @@ export const readyMinutes = (minutes, factor) => Math.floor(minutes / factor);
 
 export default async function () {
   if (!(DEFAULT in FACTORS)) throw new Error(`default ${DEFAULT} is not an allowed value`);
+  for (const [id, { name }] of Object.entries(MACHINES)) {
+    if (!/^\(BC\)\d+$/.test(id)) throw new Error(`${name}: ${id} is not a qualified big craftable ID`);
+  }
   for (const [value, factor] of Object.entries(FACTORS)) {
     if (!(factor >= 1 && factor <= 2)) throw new Error(`factor ${value} is outside 1 to 2 (fair values)`);
   }
@@ -63,7 +81,7 @@ export default async function () {
       };
     }
     changes.push({
-      LogName: `Kegs and preserves jars ${value}x faster`,
+      LogName: `Kegs, preserves jars, cheese presses and looms ${value}x faster`,
       Action: 'EditData',
       Target: 'Data/Machines',
       Fields: fields,
@@ -77,7 +95,7 @@ export default async function () {
         Speed: {
           AllowValues: Object.keys(FACTORS).join(', '),
           Default: DEFAULT,
-          Description: 'How much faster kegs and preserves jars work. 1.0 is the normal speed, 2.0 halves the time.'
+          Description: 'How much faster kegs, preserves jars, cheese presses and looms work. 1.0 is the normal speed, 2.0 halves the time.'
         }
       },
       Changes: changes
