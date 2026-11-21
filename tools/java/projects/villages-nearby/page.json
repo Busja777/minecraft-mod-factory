@@ -24,7 +24,7 @@
     "Pick the zip under Data Packs when you create a new world, or put it into the `datapacks` folder of an existing world and open the world again. Then explore.",
     "",
     "## Good to know",
-    "- Made for Minecraft: Java Edition 1.21 and 1.21.1.",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3.",
     "- Works on new and existing worlds, but only land generated after the pack is added gets the extra villages. Chunks you have already visited do not change.",
     "- Works in singleplayer and on servers. Because it changes world generation, Minecraft may show its \"experimental settings\" notice when you open the world.",
     "- New features arrive with updates, see each file's changelog.",

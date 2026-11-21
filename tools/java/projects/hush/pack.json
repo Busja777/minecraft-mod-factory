@@ -3,5 +3,6 @@
   "name": "Hush",
   "description": "Quieter villagers, animals, rain and more",
   "mc": "1.21.1",
-  "gameVersions": ["1.21", "1.21.1"]
+  "also": ["26.3"],
+  "gameVersions": ["1.21", "1.21.1", "26.3"]
 }

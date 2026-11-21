@@ -3,5 +3,6 @@
   "name": "Villages Nearby",
   "description": "More villages in new land",
   "mc": "1.21.1",
-  "gameVersions": ["1.21", "1.21.1"]
+  "also": ["26.3"],
+  "gameVersions": ["1.21", "1.21.1", "26.3"]
 }
