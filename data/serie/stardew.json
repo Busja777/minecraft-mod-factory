@@ -188,9 +188,9 @@
       "art": "CP",
       "was": "Mehr Angebot bei Willy",
       "updates": [
-        "Krobus: Leerenlachs-Preis über dem Wert als Räucherfisch mit Artisan (heute 300g Einkauf gegen 420g: kleine Gelddruck-Schleife, gefunden am 21.11.)",
         "Stufen für die Tageslimits",
-        "Deutsch (Einstellungstexte, nach PR #75). Sandy gestrichen: Fisch ließe sich mit Räucherofen + Artisan mit Gewinn verkaufen, Samen gehören zu Pierre's Year-Round Seeds"
+        "Deutsch (Einstellungstexte, nach PR #75)",
+        "Feinschliff nach Kommentaren (Sandy gestrichen: gekaufter Fisch ließe sich mit Räucherofen und Berufen mit Gewinn verkaufen; Samen gehören zu Pierre's Year-Round Seeds)"
       ],
       "banner": {
         "from": "chatgpt",

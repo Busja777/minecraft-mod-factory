@@ -42,6 +42,12 @@
 //   costs 100, Solar Essence 40 → 80, Bat Wing 15 → 30, Slime 5 → 10; sell prices from each item's
 //   wiki page). At twice the price nothing can be resold at a profit, not even a fish with the
 //   Angler profession (+50 %).
+// - Fish only on Wednesdays (since 1.2), like Krobus' own fish (5 a week, Krobus#Shop: Wednesday,
+//   5, 200g each). A fish smoker doubles a fish's price, and the Fisher, Angler and Artisan
+//   professions all count (https://stardewvalleywiki.com/Smoked_Fish, revision 191902): Void Salmon
+//   (150) can become smoked fish worth up to 150 × 1.5 × 2 × 1.4 = 630g. Krobus' own Wednesday fish
+//   allow the same (Sturgeon, sell 200, bought for 200, up to 840g smoked), so 5 Void Salmon on a
+//   Wednesday stay within what the game itself gives; 5 every day (1.1) did not.
 // - Conditions: each good appears once the player could get it on their own.
 //   Void Salmon (sell 150, https://stardewvalleywiki.com/Void_Salmon): after catching one,
 //   PLAYER_HAS_CAUGHT_FISH Current (O)795 ("have caught any of the specified fish qualified IDs").
@@ -74,13 +80,15 @@ const QUERY = /^PLAYER_HAS_(CRAFTING|COOKING)_RECIPE Current [A-Z][A-Za-z' ]+$/;
 
 // Krobus (1.1): name → [sell price from the item's wiki page, stock per day, condition]
 export const KROBUS = {
-  'Void Salmon': [150, 5, 'PLAYER_HAS_CAUGHT_FISH Current (O)795'],
+  'Void Salmon': [150, 5, 'PLAYER_HAS_CAUGHT_FISH Current (O)795, DAY_OF_WEEK Wednesday'],
   'Squid Ink': [110, 5, 'PLAYER_HAS_CAUGHT_FISH Current (O)151 (O)798'],
   'Bug Steak': [50, 5, 'PLAYER_HAS_CRAFTING_RECIPE Current Bug Steak']
 };
 export const KROBUS_MARKUP = 2; // Void Essence 50 → 100, Solar Essence 40 → 80, Bat Wing 15 → 30
 export const KROBUS_NEVER = ['Void Mayonnaise', 'Monster Musk', 'Bug Meat', 'Stardrop', 'Void Egg', 'Void Ghost Pendant'];
-const KROBUS_QUERY = /^(PLAYER_HAS_CAUGHT_FISH Current( \(O\)\d+)+|PLAYER_HAS_CRAFTING_RECIPE Current [A-Z][A-Za-z' ]+)$/;
+const KROBUS_QUERY = /^(PLAYER_HAS_CAUGHT_FISH Current( \(O\)\d+)+(, DAY_OF_WEEK Wednesday)?|PLAYER_HAS_CRAFTING_RECIPE Current [A-Z][A-Za-z' ]+)$/;
+// Goods that are fish themselves (a fish smoker takes them): only on Krobus' fish day.
+export const KROBUS_FISH = ['Void Salmon'];
 const FISH = { '(O)795': 'Void Salmon', '(O)151': 'Squid', '(O)798': 'Midnight Squid' };
 
 export default async function ({ items }) {
@@ -105,6 +113,7 @@ export default async function ({ items }) {
     if (!(Number.isInteger(stock) && stock >= 1 && stock <= 10)) throw new Error(`${name}: stock ${stock} (Krobus sells 5 to 10 a day)`);
     if (!KROBUS_QUERY.test(condition)) throw new Error(`${name}: condition "${condition}"`);
     for (const id of condition.match(/\(O\)\d+/g) || []) if (items.items[id] !== FISH[id]) throw new Error(`${name}: ${id} is not the fish ${FISH[id]}`);
+    if (KROBUS_FISH.includes(name) !== condition.endsWith(', DAY_OF_WEEK Wednesday')) throw new Error(`${name}: fish (and only fish) are sold on Wednesdays only`);
     if (condition.startsWith('PLAYER_HAS_CRAFTING') && !condition.endsWith(` ${name}`)) throw new Error(`${name}: recipe condition is for another item`);
     const price = sell * KROBUS_MARKUP;
     if (!(price <= 1000)) throw new Error(`${name}: price ${price}`);
