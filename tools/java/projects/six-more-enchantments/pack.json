@@ -1,7 +1,7 @@
 {
   "kind": "data",
-  "name": "Six More Enchantments",
-  "description": "Reach, Stepping, Leaping, Vitality, Swiftness, Steadfast",
+  "name": "Enchanting Extras",
+  "description": "Reach, Stepping, Leaping, Vitality, Swiftness, Steadfast, Quickstrike, Outreach, Tempered",
   "mc": "1.21.1",
   "also": ["26.3"],
   "gameVersions": ["1.21", "1.21.1", "26.3"]

@@ -1,7 +1,7 @@
 {
   "kind": "data",
   "name": "Actionbar Coords",
-  "description": "Block coordinates and the time of day above the hotbar",
+  "description": "Block coordinates, facing direction and the time of day above the hotbar",
   "mc": "1.21.1",
   "also": ["26.3"],
   "gameVersions": ["1.21", "1.21.1", "26.3"]

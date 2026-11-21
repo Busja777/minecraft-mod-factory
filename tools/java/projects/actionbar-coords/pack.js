@@ -1,5 +1,6 @@
-// Actionbar Coords: shows each player's block coordinates and the time of day above the hotbar
-// ("X 120  Y 64  Z -33 · 14:05"), on by default, /trigger coords switches it off and on per player.
+// Actionbar Coords: shows each player's block coordinates, the direction they face and the time of
+// day above the hotbar ("X 120  Y 64  Z -33 · NE · 14:05"), on by default, /trigger coords switches
+// it off and on per player.
 // Plain functions and scoreboards. 1.21.1 and 26.3 get the same files except one line: the time
 // query (1.21.1: `time query daytime`; 26.x replaced it with world clocks and timelines:
 // `time of minecraft:overworld query minecraft:day`, which returns the same 0..23999).
@@ -7,14 +8,22 @@
 // How it works
 // - load: creates the trigger objective "coords" (what players type) and the pack's own dummy
 //   objectives ac.hide (1 = this player switched the display off) and ac.tmp (scratch values and
-//   the constants #6, #24, #60, #1000), then starts the update loop.
+//   the constants #6, #10, #24, #60, #1000), then starts the update loop.
 // - update (every UPDATE_TICKS ticks through `schedule`, nothing runs in the ticks between):
-//   handles /trigger coords, turns the time of day into hours and minutes once for everyone, then
+//   handles /trigger coords, turns the time of day into the four digits of hh:mm once for everyone
+//   (a digit as a score, so 05:07 needs no extra variants of the line), then
 //   runs "show" as every player who has not switched the display off. It schedules itself again
 //   with "replace", so /reload never starts a second loop.
 // - show (as the player): copies Pos into storage once (one entity read per player), floors the
-//   three values into scores and sends one actionbar line. Four variants of the line pad hours
-//   and minutes below 10 with a leading zero.
+//   three values into scores, finds the direction (V1.1) and sends one actionbar line.
+// - Direction: the player's yaw through the selector option y_rotation (no NBT read; the game
+//   wraps the yaw to -180..180 and a range like 157.5..-157.5 wraps across ±180). Eight sectors of
+//   45°, yaw 0 = south (+Z), 90 = west, ±180 = north, -90 = east, as on the F3 screen. Each sector
+//   sets #dir (a yaw exactly on a border matches two, the later one wins, so exactly one line is
+//   sent), then one of eight lines is shown.
+// - The biome is not shown: no command returns the biome as a value in either version. The only
+//   way is one `execute if biome ~ ~ ~ <id>` per biome (64 in 1.21.1, more in 26.3, none for biomes
+//   of other data packs) for every player four times a second, which is not cheap.
 // - toggle: flips ac.hide, clears the actionbar when switching off and says how to switch back.
 // Text components are written so that the JSON reader of 1.21.1 and the SNBT reader of 26.x both
 // accept them: quoted keys, strings only, lists that hold only compounds. Every command line is
@@ -29,7 +38,13 @@ export const UPDATE_TICKS = 5; // four updates per second; the actionbar itself 
 export const TRIGGER = 'coords';
 export const OBJ = { hide: 'ac.hide', tmp: 'ac.tmp' };
 const STORAGE = `${NS}:pos`;
-const CONSTANTS = [6, 24, 60, 1000];
+const CONSTANTS = [6, 10, 24, 60, 1000];
+
+// The eight directions: name and yaw range (degrees, inclusive, min > max wraps across ±180).
+export const DIRECTIONS = [
+  ['S', '-22.5..22.5'], ['SW', '22.5..67.5'], ['W', '67.5..112.5'], ['NW', '112.5..157.5'],
+  ['N', '157.5..-157.5'], ['NE', '-157.5..-112.5'], ['E', '-112.5..-67.5'], ['SE', '-67.5..-22.5']
+];
 
 // The command that returns the time of day in ticks (0 = 6:00, 6000 = noon, 18000 = midnight).
 export function timeQuery(commands) {
@@ -48,17 +63,15 @@ const score = (name, color) => ({ score: { name, objective: OBJ.tmp }, color });
 const json = parts => JSON.stringify([t(''), ...parts]);
 const tell = (color, text) => `tellraw @s ${JSON.stringify(t(text, color))}`;
 
-// One actionbar line; padHour/padMin put a 0 in front of a one-digit hour or minute.
-export function line(padHour, padMin) {
+// One actionbar line for one direction; the time is four one-digit scores (hh:mm).
+export function line(dir) {
   const label = s => t(s, 'gray');
   return json([
     label('X '), score('#x', 'white'),
     label('  Y '), score('#y', 'white'),
     label('  Z '), score('#z', 'white'),
-    t(' · ', 'dark_gray'),
-    ...(padHour ? [t('0', 'yellow')] : []), score('#hour', 'yellow'),
-    t(':', 'yellow'),
-    ...(padMin ? [t('0', 'yellow')] : []), score('#min', 'yellow')
+    t(' · ', 'dark_gray'), t(dir, 'aqua'), t(' · ', 'dark_gray'),
+    score('#h10', 'yellow'), score('#h1', 'yellow'), t(':', 'yellow'), score('#m10', 'yellow'), score('#m1', 'yellow')
   ]);
 }
 
@@ -81,16 +94,20 @@ export function functions(query) {
     // hour = (ticks / 1000 + 6) mod 24, minute = (ticks mod 1000) * 60 / 1000
     op('hour', '=', 'time'), op('hour', '/=', '1000'), op('hour', '+=', '6'), op('hour', '%=', '24'),
     op('min', '=', 'time'), op('min', '%=', '1000'), op('min', '*=', '60'), op('min', '/=', '1000'),
+    // the digits: tens = value / 10, ones = value mod 10 (both 0..9, the values are never negative)
+    ...['hour', 'min'].flatMap(v => {
+      const d = v === 'hour' ? 'h' : 'm';
+      return [op(`${d}10`, '=', v), op(`${d}10`, '/=', '10'), op(`${d}1`, '=', v), op(`${d}1`, '%=', '10')];
+    }),
     `execute as @a unless score @s ${OBJ.hide} matches 1 run function ${fn('show')}`,
     `schedule function ${fn('update')} ${UPDATE_TICKS}t replace`
   ];
-  const h = (pad, then) => `execute if score #hour ${OBJ.tmp} matches ${pad ? '..9' : '10..'} ${then}`;
-  const m = (pad, then) => `if score #min ${OBJ.tmp} matches ${pad ? '..9' : '10..'} ${then}`;
   f.show = [
     `data modify storage ${STORAGE} p set from entity @s Pos`,
     // data get floors a double, so -32.3 becomes -33, the block the player stands in (as on F3)
     ...['x', 'y', 'z'].map((axis, i) => `execute store result score #${axis} ${OBJ.tmp} run data get storage ${STORAGE} p[${i}]`),
-    ...[false, true].flatMap(padHour => [false, true].map(padMin => h(padHour, m(padMin, `run title @s actionbar ${line(padHour, padMin)}`))))
+    ...DIRECTIONS.map(([, range], i) => `execute if entity @s[y_rotation=${range}] run scoreboard players set #dir ${OBJ.tmp} ${i}`),
+    ...DIRECTIONS.map(([name], i) => `execute if score #dir ${OBJ.tmp} matches ${i} run title @s actionbar ${line(name)}`)
   ];
   f.toggle = [
     `scoreboard players set @s ${TRIGGER} 0`,

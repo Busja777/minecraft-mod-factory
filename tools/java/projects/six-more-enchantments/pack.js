@@ -1,39 +1,59 @@
-// Six More Enchantments: six new enchantments in the data-driven enchantment format of 1.21+.
-// Each one only changes attributes of the player while the enchanted item is worn or held
-// ("minecraft:attributes", the effect vanilla uses for Swift Sneak and Respiration), so nothing is
-// scripted and nothing runs every tick. No new items, no functions.
+// Enchanting Extras (formerly Six More Enchantments): new enchantments in the data-driven enchantment format of 1.21+ (six in
+// V1.0, three more in V1.1). Each one only changes attributes of the player while the enchanted
+// item is worn or held ("minecraft:attributes", the effect vanilla uses for Swift Sneak and
+// Respiration), so nothing is scripted and nothing runs every tick. No new items, no functions.
 //
-//   Reach      pickaxe, axe, shovel, hoe, shears (main hand)  block reach +0.5 / +1.0 (vanilla 4.5)
-//   Stepping   boots                                          step height +0.5 (0.6 → 1.1: walk up full blocks)
-//   Leaping    boots                                          jump strength +0.04 / +0.08 (vanilla 0.42) and
-//                                                              safe fall distance +1 / +2 (as Jump Boost does)
-//   Vitality   chestplate                                     max health +2 / +4 (one / two hearts)
-//   Swiftness  leggings                                       walking speed +5 % / +10 % of the base speed
-//   Steadfast  leggings                                       knockback resistance +10 % / +20 %
+//   Reach       pickaxe, axe, shovel, hoe, shears (main hand)  block reach +0.5 / +1.0 (vanilla 4.5)
+//   Stepping    boots                                          step height +0.5 (0.6 → 1.1: walk up full blocks)
+//   Leaping     boots                                          jump strength +0.04 / +0.08 (vanilla 0.42) and
+//                                                               safe fall distance +1 / +2 (as Jump Boost does)
+//   Vitality    chestplate                                     max health +2 / +4 (one / two hearts)
+//   Swiftness   leggings                                       walking speed +5 % / +10 % of the base speed
+//   Steadfast   leggings                                       knockback resistance +10 % / +20 %
+// V1.1:
+//   Quickstrike sword, axe (26.3: also spear) (main hand)      attack speed +10 % / +20 % of the weapon's own speed
+//                                                               (sword 1.6 → 1.76 / 1.92, axe 1.0 → 1.1 / 1.2)
+//   Outreach    sword, axe (26.3: also spear) (main hand)      attack reach +0.5 (entity interaction range, vanilla 3)
+//   Tempered    helmet                                         armour toughness +1 / +2 (diamond helmet has 2)
 //
 // Jump heights (simulated with the game's jump physics, gravity 0.08, drag 0.98 per tick):
 //   0.42 → 1.25 blocks (vanilla), 0.46 → 1.48 (Leaping I, a fence of 1.5 still stops you),
 //   0.50 → 1.71 (Leaping II, clears fences and walls like Jump Boost I).
+// Tempered, worked through the damage formula (reduction = clamp(armour − 4·damage / (toughness + 8),
+// armour / 5, 20) / 25): a 20-damage hit on full iron armour (15 points, toughness 0) is reduced
+// by 20 % without and 28 % with Tempered II; on full diamond 60 % → 62 %. Small hits do not change.
 //
 // Fairness: every enchantment has a small effect, at most two levels, rare weight (2) and the anvil
-// cost vanilla gives rare enchantments (4); Steadfast is the weakest and therefore uncommon
-// (weight 5, anvil cost 2). Choices instead of stacking:
-//   Stepping ↔ Leaping   (own set exclusive_set/boots)
-//   Swiftness ↔ Steadfast (own set exclusive_set/legs)
+// cost vanilla gives rare enchantments (4); Steadfast and Tempered are the weakest and therefore
+// uncommon (weight 5, anvil cost 2). Choices instead of stacking:
+//   Stepping    ↔ Leaping    (own set exclusive_set/boots)
+//   Swiftness   ↔ Steadfast  (own set exclusive_set/legs)
+//   Quickstrike ↔ Outreach   (own set exclusive_set/weapon)
 //   Vitality  ↔ Protection, Fire/Blast/Projectile Protection (vanilla #minecraft:exclusive_set/armor),
 //               so the extra hearts cost the chestplate's protection enchantment.
+// Tempered stacks with Protection on purpose: it only helps against big hits and is weaker than any
+// protection enchantment, so excluding them would leave it without a use.
+// Not built, because vanilla already has an enchantment for the same attribute or effect:
+// mining_efficiency / block_break_speed (Efficiency), submerged_mining_speed (Aqua Affinity),
+// oxygen_bonus (Respiration), sneaking_speed (Swift Sneak), safe_fall_distance and
+// fall_damage_multiplier (Feather Falling, and Leaping already uses it), luck (only fishing reads it:
+// Luck of the Sea), movement_efficiency (Soul Speed, Depth Strider), water_movement_efficiency
+// (Depth Strider), attack_damage (Sharpness), attack_knockback (Knockback),
+// explosion_knockback_resistance (Blast Protection), burning_time (Fire Protection),
+// sweeping_damage_ratio (Sweeping Edge).
 // Where they appear: only in the enchanting table (and so on books from the table, and through the
 // anvil). They are added to #minecraft:in_enchanting_table directly, not to #minecraft:non_treasure,
 // because vanilla's on_random_loot, tradeable, on_traded_equipment and on_mob_spawn_equipment all
-// include non_treasure: V1.0 keeps them out of chest loot, librarian trades and mob gear (planned
-// for a later update, after the values have been played with).
+// include non_treasure: they stay out of chest loot, librarian trades and mob gear.
 //
-// The game reads two spellings: the attribute ids are "minecraft:generic.step_height" /
+// The game reads two spellings: the attribute ids are e.g. "minecraft:generic.step_height" /
 // "minecraft:player.block_interaction_range" in 1.21.1 and "minecraft:step_height" /
 // "minecraft:block_interaction_range" in 26.3. The id is never guessed: it is taken from the
 // version's attribute registry and checked against what the version's own vanilla enchantments
-// (Respiration, Swift Sneak, Fire Protection) write. Everything else is the same in both versions,
-// and the build stops if a vanilla enchantment is shaped differently than this file expects.
+// (Respiration, Swift Sneak, Fire Protection) write. Item tags are the ones both versions have
+// (enchantable/sharp_weapon: swords and axes, in 26.3 also spears; 26.3 has no enchantable/sword).
+// Everything else is the same in both versions, and the build stops if a vanilla enchantment is
+// shaped differently than this file expects.
 import fs from 'fs';
 import path from 'path';
 
@@ -67,6 +87,7 @@ export const ENCHANTMENTS = [
   },
   {
     name: 'swiftness', title: 'Swiftness', items: 'leg_armor', slot: 'legs',
+    sharesVanilla: 'movement_speed', // Soul Speed: only on soul sand and soul soil
     maxLevel: 2, weight: 2, anvilCost: 4, minCost: [10, 10], maxCost: [40, 10], exclusive: 'legs',
     attributes: [{ attribute: 'movement_speed', operation: 'add_multiplied_base', base: 0.05, perLevel: 0.05 }]
   },
@@ -74,6 +95,22 @@ export const ENCHANTMENTS = [
     name: 'steadfast', title: 'Steadfast', items: 'leg_armor', slot: 'legs',
     maxLevel: 2, weight: 5, anvilCost: 2, minCost: [5, 8], maxCost: [35, 8], exclusive: 'legs',
     attributes: [{ attribute: 'knockback_resistance', operation: 'add_value', base: 0.1, perLevel: 0.1 }]
+  },
+  // V1.1
+  {
+    name: 'quickstrike', title: 'Quickstrike', items: 'sharp_weapon', slot: 'mainhand',
+    maxLevel: 2, weight: 2, anvilCost: 4, minCost: [10, 10], maxCost: [40, 10], exclusive: 'weapon',
+    attributes: [{ attribute: 'attack_speed', operation: 'add_multiplied_total', base: 0.1, perLevel: 0.1 }]
+  },
+  {
+    name: 'outreach', title: 'Outreach', items: 'sharp_weapon', slot: 'mainhand',
+    maxLevel: 1, weight: 2, anvilCost: 4, minCost: [15, 0], maxCost: [45, 0], exclusive: 'weapon',
+    attributes: [{ attribute: 'entity_interaction_range', operation: 'add_value', base: 0.5, perLevel: 0 }]
+  },
+  {
+    name: 'tempered', title: 'Tempered', items: 'head_armor', slot: 'head',
+    maxLevel: 2, weight: 5, anvilCost: 2, minCost: [5, 8], maxCost: [35, 8],
+    attributes: [{ attribute: 'armor_toughness', operation: 'add_value', base: 1, perLevel: 1 }]
   }
 ];
 
@@ -116,6 +153,24 @@ function checkVanilla(vanilla, attributes) {
   }
   const table = readJson(path.join(vanilla.data, 'minecraft', 'tags', 'enchantment', 'in_enchanting_table.json'));
   if (!Array.isArray(table.values)) fail('vanilla in_enchanting_table is not a plain tag');
+  // No enchantment of this pack changes an attribute a vanilla enchantment of this version already
+  // changes (anywhere in its effects, also inside location_changed), except where the vanilla one
+  // only works in a special place (sharesVanilla).
+  const used = new Set();
+  const collect = node => {
+    if (Array.isArray(node)) node.forEach(collect);
+    else if (node && typeof node === 'object') {
+      if (typeof node.attribute === 'string') used.add(node.attribute);
+      Object.values(node).forEach(collect);
+    }
+  };
+  for (const file of fs.readdirSync(dir)) collect(readJson(path.join(dir, file)).effects);
+  if (used.size < 5) fail(`only ${used.size} attributes found in vanilla enchantments`);
+  for (const e of ENCHANTMENTS) {
+    for (const a of e.attributes) {
+      if (used.has(attributeId(attributes, a.attribute)) && e.sharesVanilla !== a.attribute) fail(`${e.name}: a vanilla enchantment already changes ${a.attribute}`);
+    }
+  }
 }
 
 // Values and their combinations, independent of the version.

@@ -1,7 +1,7 @@
 {
   "slug": "six-more-enchantments",
   "game": "java",
-  "name": "Six More Enchantments",
+  "name": "Enchanting Extras",
   "cfProjectId": null,
   "lastGameVersions": [],
   "versions": [
@@ -9,6 +9,17 @@
       "version": "1.0",
       "file": "SixMoreEnchantments-1.0.zip",
       "changelog": "## Six More Enchantments 1.0\n\nFirst release.\n\n- Six new enchantments from the enchanting table, for Minecraft 1.21, 1.21.1 and 26.3.\n- Reach I–II for pickaxes, axes, shovels and hoes: half a block more reach per level.\n- Stepping for boots: walk up full blocks. Leaping I–II for boots: higher jumps and one block more safe fall per level. The two exclude each other.\n- Vitality I–II for chestplates: one extra heart per level, instead of a protection enchantment.\n- Swiftness I–II (5% faster walking per level) or Steadfast I–II (10% less knockback per level) for leggings.\n- Not in chest loot, villager trades or mob gear.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "EnchantingExtras-1.1.zip",
+      "changelog": "## Enchanting Extras 1.1\n\nThree more enchantments.\n\n- Quickstrike I–II for swords and axes: your attacks recharge 10% faster per level.\n- Outreach for swords and axes: hit mobs and players from half a block further away. Quickstrike and Outreach exclude each other.\n- Tempered I–II for helmets: one point of armour toughness per level, so big hits hurt a little less. Works together with any protection enchantment.\n- Like the first six, they only come from the enchanting table, not from loot, villagers or mobs.\n- On Minecraft 26.3, Quickstrike and Outreach also go on spears.\n- Everything from 1.0 stays as it was. Works on Minecraft 1.21, 1.21.1 and 26.3.",
       "status": "due",
       "gameVersions": [
         "1.21",

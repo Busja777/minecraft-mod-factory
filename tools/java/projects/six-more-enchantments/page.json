@@ -1,11 +1,11 @@
 {
-  "name": "Six More Enchantments",
+  "name": "Enchanting Extras",
   "summary": "New enchantments for longer reach, step assist, higher jumps, extra hearts, faster walking and steady footing, straight from the enchanting table.",
   "class": "Data Packs",
   "category": "Magic",
   "logoPrompt": "A single open enchanted book glowing with purple light, with a few small floating rune particles above its pages, centred, in blocky voxel style",
   "cover": {
-    "tagline": "Six fair enchantments from the table.",
+    "tagline": "Fair new enchantments from the table.",
     "bullets": [
       "Reach, Stepping, Leaping",
       "Vitality for extra hearts",
@@ -13,7 +13,7 @@
     ]
   },
   "description": [
-    "**Six More Enchantments adds six new enchantments to the enchanting table, each a small, fair boost.**",
+    "**Enchanting Extras adds six new enchantments to the enchanting table, each a small, fair boost.**",
     "",
     "## Features",
     "- Reach I–II (pickaxe, axe, shovel, hoe): half a block more reach per level.",
@@ -33,6 +33,6 @@
     "",
     "Found a bug or have an idea? Leave a comment.",
     "",
-    "*(The logo and banner are AI-generated.)*"
+    "*(The logo is AI-generated.)*"
   ]
 }
