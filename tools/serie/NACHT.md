@@ -22,7 +22,9 @@ a workflow by hand.
 
 1. `npm ci`, then `npm test`. If main is red, stop and open the issue above.
 2. `npm run serie -- stand`. A row with fewer than 5 built projects ahead comes first.
-3. **Fixes before features:** read the newest files in `data/radar/` (versions, comments, trends).
+3. **Fixes before features:** read the newest files in `data/radar/` (versions, comments, trends;
+   `trends.json` ranks the fastest new projects per row and class: use it for reserve ideas and
+   update ideas, never to copy someone else's project).
    A project that a new game version breaks gets its fix first. `data/radar/java.json` lists
    every Java pack against the newest Minecraft release and test version with the game's own
    error messages. To make a pack serve a new release as well: let `pack.js` write each file the
