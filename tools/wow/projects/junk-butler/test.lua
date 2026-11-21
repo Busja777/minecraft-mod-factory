@@ -9,12 +9,15 @@ local function world(wow, bags)
   NUM_REAGENTBAG_SLOTS = 1
   NUM_TOTAL_EQUIPPED_BAG_SLOTS = 5
 
+  -- The link the game gives a bag slot (1.3 logs it), and the item lookup by link or ID.
+  function w.link(id) return "|cff9d9d9d|Hitem:" .. id .. "::::::::80:::::|h[Item " .. id .. "]|h|r" end
   local function itemInfo(link)
     w.lookups = w.lookups + 1
+    local id = type(link) == "number" and link or tonumber(tostring(link):match("item:(%d+)") or "")
     for _, bag in pairs(w.bags) do
       for _, it in pairs(bag) do
-        if link == "item:" .. it.id or link == it.id then
-          return "Item " .. it.id, link, it.quality, 1, 1, "Junk", "Junk", 20, "", 134400, it.price
+        if id == it.id then
+          return "Item " .. it.id, w.link(it.id), it.quality, 1, 1, "Junk", "Junk", 20, "", 134400, it.price
         end
       end
     end
@@ -26,7 +29,7 @@ local function world(wow, bags)
     GetContainerItemInfo = function(bag, slot)
       local it = w.bags[bag] and w.bags[bag][slot]
       if not it then return nil end
-      return { itemID = it.id, quality = it.quality, stackCount = it.count or 1, isLocked = it.locked or false, hasNoValue = it.noValue or false, hyperlink = "item:" .. it.id }
+      return { itemID = it.id, quality = it.quality, stackCount = it.count or 1, isLocked = it.locked or false, hasNoValue = it.noValue or false, hyperlink = not it.noLink and w.link(it.id) or nil }
     end,
     UseContainerItem = function(bag, slot)
       local it = w.bags[bag] and w.bags[bag][slot]
@@ -38,6 +41,12 @@ local function world(wow, bags)
   }
 
   C_Timer = { After = function(seconds, fn) w.timers[#w.timers + 1] = { seconds = seconds, fn = fn } end }
+  -- 1.3: the vendor's name for the sale log.
+  w.vendor = "Grumbold"
+  UnitName = function(unit)
+    if unit == "npc" then return w.vendor end
+    return wow.player or "Yubi"
+  end
   IsShiftKeyDown = function() return w.shift end
   CanMerchantRepair = function() return w.canRepair end
   GetRepairAllCost = function() return w.repairCost, w.repairCost > 0 end
@@ -113,6 +122,9 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/jb keep")
   wow.slash("/jb unkeep 101")
   wow.slash("/jb guild on")
+  wow.slash("/jb log")
+  wow.slash("/jb log 1")
+  wow.slash("/jb log clear")
   w.guildRepair, w.withdraw, w.guildMoney, w.repairCost = true, -1, 100000, 50
   w.visit()
   w.run()
@@ -412,13 +424,14 @@ test("slash commands show the state and switch each half", function(wow)
   eq(wow.chat[8]:match("/jb sell and /jb repair switch each half") ~= nil, true)
   eq(wow.chat[9]:match("/jb unkeep takes it off again") ~= nil, true)
   eq(wow.chat[10], PREFIX .. "/jb guild on/off lets the guild bank pay your repairs first when your guild rank allows it.")
-  eq(#wow.chat, 10)
+  eq(wow.chat[11]:match("/jb log lists your last vendor visits") ~= nil, true)
+  eq(#wow.chat, 11)
 end)
 
 test("settings survive: saved values are kept, new ones start switched on", function(wow)
   local w = world(wow, { [0] = greys(2, 10) })
   boot(wow, 0)
-  eq(JunkButlerDB.version, 3)
+  eq(JunkButlerDB.version, 4)
   eq(JunkButlerDB.settings.sell, true)
   eq(JunkButlerDB.settings.repair, true)
 
@@ -639,14 +652,14 @@ test("the keep list is shared by all characters of the account", function(wow)
   w.visit()
   w.run()
   eq(table.concat(w.sold, " "), "0:2")
-  eq(JunkButlerDB.keep[2211], true)
+  eq(JunkButlerDB.keep[2211], w.link(2211), "stored with the link the game knows")
 end)
 
 test("1.0 data moves over: settings stay, the keep list starts empty", function(wow)
   local w = world(wow, { [0] = greys(2, 10) })
   JunkButlerDB = { version = 1, settings = { sell = true, repair = false } }
   boot(wow, 0)
-  eq(JunkButlerDB.version, 3)
+  eq(JunkButlerDB.version, 4)
   eq(JunkButlerDB.settings.repair, false)
   eq(type(JunkButlerDB.keep), "table")
   eq(next(JunkButlerDB.keep), nil)
@@ -903,7 +916,7 @@ test("1.1 data moves over: settings and keep list stay, guild repairs start off"
   guildBank(w, -1, 1000000)
   JunkButlerDB = { version = 2, settings = { sell = false, repair = true }, keep = { [2211] = true } }
   boot(wow, 1000)
-  eq(JunkButlerDB.version, 3)
+  eq(JunkButlerDB.version, 4)
   eq(JunkButlerDB.settings.sell, false)
   eq(JunkButlerDB.settings.guild, false)
   eq(JunkButlerDB.keep[2211], true)
@@ -923,6 +936,312 @@ test("a guild command before login does nothing", function(wow)
   world(wow)
   wow.load(ADDON_DIR, ADDON_NAME)
   wow.slash("/jb guild on")
+  eq(#wow.chat, 0)
+  eq(JunkButlerDB, nil)
+end)
+
+-- 1.3: sale log -----------------------------------------------------------------------------------
+
+local function sale(id, count, earned, link) return { id = id, count = count, earned = earned, link = link } end
+
+test("core: sold stacks of one item are added up, the log keeps the newest 20 visits", function(wow)
+  local ns = boot(wow)
+  local items = {}
+  ns.AddSale(items, 7, nil, 2, 20)
+  ns.AddSale(items, 8, TORN, 1, 5)
+  ns.AddSale(items, 7, FANG, 3, 30)
+  eq(#items, 2)
+  eq(items[1].count, 5)
+  eq(items[1].earned, 50)
+  eq(items[1].link, FANG, "a link learned later is kept")
+  eq(items[2].link, TORN)
+  ns.AddSale(items, 9, nil, 1, 2, "Cracked Bone")
+  eq(items[3].name, "Cracked Bone", "no link: the name is kept")
+  ns.AddSale(items, 9, FANG, 1, 2, "Cracked Bone")
+  eq(items[3].link, FANG)
+  eq(items[3].name, nil, "a link makes the name unneeded")
+  eq(items[3].count, 2)
+  local log = {}
+  for i = 1, 23 do ns.AddVisit(log, { count = i, earned = i, items = {} }) end
+  eq(#log, 20)
+  eq(log[1].count, 23, "newest first")
+  eq(log[20].count, 4, "the oldest fell off")
+  eq(ns.LOG_KEEP, 20)
+  local count, earned = ns.LogTotals({ { count = 3, earned = 100 }, { count = 2, earned = 5 } })
+  eq(count, 5)
+  eq(earned, 105)
+  eq(ns.LogTotals({}), 0)
+end)
+
+test("core: recent sales and the lines of /jb log", function(wow)
+  local ns = boot(wow)
+  local now = wow.now
+  eq(ns.RecentMinutes(now, now), 0)
+  eq(ns.RecentMinutes(now - 59, now), 0)
+  eq(ns.RecentMinutes(now - 8 * 60 - 30, now), 8)
+  eq(ns.RecentMinutes(now - 15 * 60 + 1, now), 14)
+  eq(ns.RecentMinutes(now - 15 * 60, now), nil, "15 minutes is no longer recent")
+  eq(ns.RecentMinutes(now + 60, now), nil, "a clock that went back")
+  eq(ns.RecentMinutes(nil, now), nil)
+  eq(ns.RecentMinutes(now, nil), nil)
+  local v = { at = now - 8 * 60, vendor = "Grumbold", count = 12, earned = 12000, items = {} }
+  eq(ns.VisitLine(2, v, now), "2. Nov 20 17:52, Grumbold: 12 items for 1g 20s 00c (8 min ago)")
+  v.at, v.vendor, v.count = now - 3600, nil, 1
+  eq(ns.VisitLine(1, v, now), "1. Nov 20 17:00: 1 item for 1g 20s 00c")
+  v.at = now - 10
+  eq(ns.VisitLine(1, v, now), "1. Nov 20 17:59: 1 item for 1g 20s 00c (less than a minute ago)")
+  v.at = nil
+  eq(ns.VisitLine(3, v, now), "3. ?: 1 item for 1g 20s 00c", "a visit without a time")
+  eq(ns.SaleLine(sale(2211, 5, 50, TORN)), TORN .. " x5: 50c")
+  eq(ns.SaleLine(sale(777, 1, 3)), "item 777 x1: 3c")
+  eq(ns.AnyRecent({ { at = now - 3600 }, { at = now - 60 } }, now), true)
+  eq(ns.AnyRecent({ { at = now - 3600 } }, now), false)
+  eq(ns.AnyRecent({}, now), false)
+end)
+
+test("core: saved logs are cleaned", function(wow)
+  local ns = boot(wow)
+  local long = {}
+  for i = 1, 25 do long[i] = { at = i, count = 1, earned = 1, items = {} } end
+  local logs = ns.CleanLogs({
+    ["Yubi-Silvermoon"] = {
+      { at = 5, vendor = "Grumbold", count = 3, earned = 30, items = { sale(1, 3, 30, TORN), { id = "x", count = 1, earned = 1 }, "junk" } },
+      { count = -1, earned = 5 }, -- broken
+      "broken",
+      { at = "soon", vendor = 7, count = 1, earned = 2 }, -- no items, odd time and vendor
+    },
+    ["Brakk-Silvermoon"] = long,
+    [42] = {},
+    ["Odd-Realm"] = "broken",
+  })
+  local yubi = logs["Yubi-Silvermoon"]
+  eq(#yubi, 2)
+  eq(yubi[1].vendor, "Grumbold")
+  eq(#yubi[1].items, 1)
+  eq(yubi[1].items[1].link, TORN)
+  eq(yubi[2].at, nil)
+  eq(yubi[2].vendor, nil)
+  eq(#yubi[2].items, 0)
+  eq(#logs["Brakk-Silvermoon"], 20)
+  eq(logs["Brakk-Silvermoon"][1].at, 1, "the order is kept")
+  eq(logs[42], nil)
+  eq(logs["Odd-Realm"], nil)
+  eq(next(ns.CleanLogs(nil)), nil)
+end)
+
+test("a vendor visit that sells goes into the log, with vendor, time and items", function(wow)
+  local w = world(wow, { [0] = { [1] = grey(2211, 10), [2] = grey(300, 5, 4), [3] = grey(2211, 10, 2), [4] = { id = 9, quality = 2, price = 500 } } })
+  boot(wow, 0)
+  w.visit()
+  w.run()
+  w.leave()
+  local log = JunkButlerDB.log["Yubi-Silvermoon"]
+  eq(#log, 1)
+  local v = log[1]
+  eq(v.at, wow.now)
+  eq(v.vendor, "Grumbold")
+  eq(v.count, 7)
+  eq(v.earned, 50)
+  eq(#v.items, 2, "both stacks of 2211 are one line")
+  eq(v.items[1].id, 2211)
+  eq(v.items[1].count, 3)
+  eq(v.items[1].earned, 30)
+  eq(v.items[1].link, w.link(2211))
+  eq(v.items[2].id, 300)
+  eq(v.items[2].earned, 20)
+
+  w.repairCost = 500 -- a visit that only repairs is not a sale
+  wow.money = 1000
+  w.visit()
+  w.run()
+  w.leave()
+  w.bags[0][5] = grey(301, 10)
+  w.shift = true -- a skipped visit neither
+  w.visit()
+  w.run()
+  w.leave()
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 1)
+end)
+
+test("the log is kept per character", function(wow)
+  local w = world(wow, { [0] = greys(2, 10) })
+  boot(wow, 0)
+  w.visit()
+  w.run()
+  w.leave()
+  wow.player = "Brakk"
+  relog(wow)
+  wow.slash("/jb log")
+  eq(wow.chat[#wow.chat], PREFIX .. "No sales logged yet on this character. Every vendor visit that sells something is noted here.")
+  w.bags[0] = greys(3, 10)
+  w.visit()
+  w.run()
+  w.leave()
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 1)
+  eq(JunkButlerDB.log["Yubi-Silvermoon"][1].count, 2)
+  eq(#JunkButlerDB.log["Brakk-Silvermoon"], 1)
+  eq(JunkButlerDB.log["Brakk-Silvermoon"][1].count, 3)
+  wow.slash("/jb log clear")
+  eq(#JunkButlerDB.log["Brakk-Silvermoon"], 0)
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 1, "clearing only touches this character")
+end)
+
+test("/jb log lists the visits newest first with totals and marks recent ones", function(wow)
+  local w = world(wow, { [0] = greys(2, 10) })
+  boot(wow, 0)
+  wow.now = wow.now - 3600 -- an hour ago
+  w.visit()
+  w.run()
+  w.leave()
+  wow.now = wow.now + 3600 - 5 * 60 -- five minutes ago
+  w.vendor = "Tilda"
+  w.bags[0] = { [1] = grey(400, 125, 4) }
+  w.visit()
+  w.run()
+  w.leave()
+  wow.now = wow.now + 5 * 60
+  wow.chat = {}
+  wow.slash("/jb log")
+  eq(#wow.chat, 5)
+  eq(wow.chat[1], PREFIX .. "Your last 2 vendor visits with sales, newest first:")
+  eq(wow.chat[2], "  1. Nov 20 17:55, Tilda: 4 items for 5s 00c (5 min ago)")
+  eq(wow.chat[3], "  2. Nov 20 17:00, Grumbold: 2 items for 20c")
+  eq(wow.chat[4], PREFIX .. "Together: 6 items for 5s 20c. /jb log followed by a number shows the items of that visit.")
+  eq(wow.chat[5], PREFIX .. "Sales from the last 15 minutes are marked. The vendor's Buyback tab may still have them, but it keeps only your latest sold items and empties when you log out.")
+
+  wow.now = wow.now + 20 * 60 -- nothing recent any more: no mark, no word about the Buyback tab
+  wow.chat = {}
+  wow.slash("/jb LOG")
+  eq(#wow.chat, 4)
+  eq(wow.chat[2], "  1. Nov 20 17:55, Tilda: 4 items for 5s 00c")
+  for _, line in ipairs(wow.chat) do
+    eq(line:find("Buyback", 1, true), nil)
+  end
+end)
+
+test("/jb log <n> shows the items of one visit, /jb log clear empties the log", function(wow)
+  local w = world(wow, { [0] = { [1] = grey(2211, 10, 5), [2] = { id = 777, quality = 0, price = 3, noLink = true }, [3] = { id = 778, quality = 0, price = 1, noLink = true } } })
+  -- 777 comes without a link but with its name, 778 without either: named by its ID.
+  C_Item.GetItemInfo = function(item)
+    local id = type(item) == "number" and item or tonumber(tostring(item):match("item:(%d+)") or "")
+    if id == 2211 then return "Torn Wristband", TORN, 0, 1, 1, "Junk", "Junk", 20, "", 134400, 10 end
+    if id == 777 then return "Late Loader", nil, 0, 1, 1, "Junk", "Junk", 20, "", 134400, 3 end
+    if id == 778 then return nil, nil, 0, 1, 1, "Junk", "Junk", 20, "", 134400, 1 end
+  end
+  boot(wow, 0)
+  w.visit()
+  w.run()
+  w.leave()
+  wow.chat = {}
+  wow.slash("/jb log 1")
+  eq(#wow.chat, 4)
+  eq(wow.chat[1], PREFIX .. "1. Nov 20 18:00, Grumbold: 7 items for 54c (less than a minute ago)")
+  eq(wow.chat[2], "  " .. w.link(2211) .. " x5: 50c", "the link from the bag")
+  eq(wow.chat[3], "  Late Loader x1: 3c", "no link: the name")
+  eq(wow.chat[4], "  item 778 x1: 1c", "neither: the item ID")
+  wow.slash("/jb log 2")
+  eq(wow.chat[5], PREFIX .. "There is no visit 2. /jb log lists visits 1 to 1.")
+  wow.slash("/jb log soon")
+  eq(wow.chat[6], PREFIX .. "/jb log lists your last vendor visits, /jb log followed by a number shows what was sold in that visit, /jb log clear empties the log of this character.")
+  wow.slash("/jb log 0")
+  eq(wow.chat[7], wow.chat[6])
+  wow.slash("/jb log Clear")
+  eq(wow.chat[8], PREFIX .. "The sale log of this character is empty now.")
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 0)
+  wow.slash("/jb log 1")
+  eq(wow.chat[9], PREFIX .. "No sales logged yet on this character. Every vendor visit that sells something is noted here.")
+  for _, line in ipairs(wow.chat) do
+    local text = line:sub(1, #PREFIX) == PREFIX and line:sub(#PREFIX + 1) or line
+    eq((text:gsub("|c%x+|H.-|h|r", "")):find("|", 1, true), nil, "no | in the text apart from item links")
+  end
+end)
+
+test("a visit cut short by closing the vendor logs what was sold", function(wow)
+  local w = world(wow, { [0] = greys(14, 10) })
+  boot(wow, 0)
+  w.visit()
+  w.leave()
+  w.run()
+  local log = JunkButlerDB.log["Yubi-Silvermoon"]
+  eq(#log, 1)
+  eq(log[1].count, 6)
+  eq(#log[1].items, 6)
+end)
+
+test("the log keeps the last 20 visits across logins", function(wow)
+  local w = world(wow)
+  boot(wow, 0)
+  for i = 1, 22 do
+    w.bags[0] = { [1] = grey(1000 + i, i) }
+    w.visit()
+    w.run()
+    w.leave()
+    if i == 10 then relog(wow) end
+  end
+  local log = JunkButlerDB.log["Yubi-Silvermoon"]
+  eq(#log, 20)
+  eq(log[1].items[1].id, 1022)
+  eq(log[20].items[1].id, 1003)
+end)
+
+test("a secret vendor name, a secret link or no clock still log the sale", function(wow)
+  local w = world(wow, { [0] = greys(2, 10) })
+  local secret = { secret = true }
+  w.vendor = secret
+  local container = C_Container.GetContainerItemInfo
+  C_Container.GetContainerItemInfo = function(bag, slot)
+    local info = container(bag, slot)
+    if info then info.hyperlink = secret end
+    return info
+  end
+  boot(wow, 0)
+  time = function() return secret end
+  w.visit()
+  w.run()
+  w.leave()
+  local v = JunkButlerDB.log["Yubi-Silvermoon"][1]
+  eq(v.vendor, nil)
+  eq(v.at, nil)
+  eq(v.count, 2)
+  eq(v.items[1].link, w.link(101), "the link the game knows by ID")
+  wow.chat = {}
+  wow.slash("/jb log")
+  eq(wow.chat[2], "  1. ?: 2 items for 20c")
+  time = nil
+  UnitName = nil
+  w.visit()
+  w.run()
+  w.leave()
+  wow.slash("/jb log")
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 1, "nothing left to sell")
+end)
+
+test("1.2 data moves over: settings, keep list and guild choice stay, the log starts empty", function(wow)
+  local w = world(wow, { [0] = greys(2, 10) })
+  JunkButlerDB = { version = 3, settings = { sell = true, repair = false, guild = true }, keep = { [2211] = TORN, [101] = true } }
+  boot(wow, 0)
+  eq(JunkButlerDB.version, 4)
+  eq(JunkButlerDB.settings.repair, false)
+  eq(JunkButlerDB.settings.guild, true)
+  eq(JunkButlerDB.keep[2211], TORN)
+  eq(type(JunkButlerDB.log), "table")
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 0)
+  w.visit()
+  w.run()
+  w.leave()
+  eq(table.concat(w.sold, " "), "0:2", "the kept item stays")
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 1)
+  JunkButlerDB.log = "broken"
+  relog(wow)
+  eq(#JunkButlerDB.log["Yubi-Silvermoon"], 0)
+end)
+
+test("a log command before login does nothing", function(wow)
+  world(wow)
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.slash("/jb log")
+  wow.slash("/jb log 1")
+  wow.slash("/jb log clear")
   eq(#wow.chat, 0)
   eq(JunkButlerDB, nil)
 end)

@@ -37,6 +37,14 @@ function ns.ItemLink(id)
   return type(link) == "string" and link or nil
 end
 
+-- The item's name as the game knows it; nil while the game has not loaded the item yet.
+function ns.ItemName(id)
+  local getInfo = infoFunction()
+  if not getInfo then return nil end
+  local name = plain((getInfo(id)))
+  return type(name) == "string" and name ~= "" and name or nil
+end
+
 -- One bag slot as the plain record Core.lua works with; nil for an empty or unreadable slot.
 function ns.ReadSlot(bag, slot)
   local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -44,9 +52,11 @@ function ns.ReadSlot(bag, slot)
   local id, quality, count = info.itemID, info.quality, info.stackCount
   local locked, noValue = info.isLocked, info.hasNoValue
   if ns.IsSecret(id) or ns.IsSecret(quality) or ns.IsSecret(count) or ns.IsSecret(locked) or ns.IsSecret(noValue) then return nil end
+  local link = plain(info.hyperlink)
+  if type(link) ~= "string" then link = nil end
   local price = 0
-  if quality == ns.POOR and not noValue then price = vendorPrice(plain(info.hyperlink) or id) or 0 end
-  return { bag = bag, slot = slot, id = id, quality = quality, count = count or 1, locked = locked and true or false, price = price }
+  if quality == ns.POOR and not noValue then price = vendorPrice(link or id) or 0 end
+  return { bag = bag, slot = slot, id = id, quality = quality, count = count or 1, locked = locked and true or false, price = price, link = link }
 end
 
 function ns.ScanBags()
@@ -101,8 +111,23 @@ local function repair(v)
   end
 end
 
+-- 1.3: what this character's name is in the sale log.
+local function characterKey()
+  local name = UnitName and plain(UnitName("player"))
+  local realm = GetRealmName and plain(GetRealmName())
+  return (type(name) == "string" and name or "?") .. "-" .. (type(realm) == "string" and realm or "?")
+end
+
+-- 1.3: a visit that sold something goes to the top of this character's sale log.
+local function logVisit(v)
+  if not ns.log or v.items <= 0 then return end
+  local now = time and plain(time())
+  ns.AddVisit(ns.log, { at = type(now) == "number" and now or nil, vendor = v.vendor, count = v.items, earned = v.earned, items = v.sales })
+end
+
 local function finish(v, closed)
   visit = nil
+  logVisit(v)
   if not closed and v.guild and stillDamaged() then
     -- The guild bank did not pay after all (less gold or a smaller daily limit than the game
     -- told before): the player's own gold pays, as without the guild setting.
@@ -133,9 +158,12 @@ local function sellStep(v)
     if item and item.id == planned.id and ns.Sellable(item) and ns.IsKept(ns.db.keep, item.id) then
       v.kept = v.kept + item.count -- put on the keep list during the visit
     elseif item and item.id == planned.id and ns.Sellable(item) then
+      local link = item.link or ns.ItemLink(item.id) -- read before the item leaves the bags
+      local name = not link and ns.ItemName(item.id) or nil
       C_Container.UseContainerItem(planned.bag, planned.slot)
       v.items = v.items + item.count
       v.earned = v.earned + item.price * item.count
+      ns.AddSale(v.sales, item.id, link, item.count, item.price * item.count, name)
     end
   end
   v.index = nextIndex
@@ -146,7 +174,9 @@ end
 local function onMerchantShow()
   if visit or not ns.settings then return end
   if IsShiftKeyDown and IsShiftKeyDown() then return end
-  local v = { items = 0, earned = 0, kept = 0, index = 1, plan = {} }
+  local v = { items = 0, earned = 0, kept = 0, index = 1, plan = {}, sales = {} }
+  local vendor = UnitName and plain(UnitName("npc"))
+  if type(vendor) == "string" and vendor ~= "" then v.vendor = vendor end
   visit = v
   repair(v)
   if ns.settings.sell and C_Container and C_Container.UseContainerItem then v.plan, v.kept = ns.SellPlan(ns.ScanBags(), ns.db.keep) end
@@ -160,14 +190,20 @@ end
 local function onLogin()
   if type(JunkButlerDB) ~= "table" then JunkButlerDB = {} end
   local db = JunkButlerDB
-  db.version = 3 -- 3 (1.2): the guild bank setting, off until the player switches it on
+  -- 3 (1.2): the guild bank setting, off until the player switches it on;
+  -- 4 (1.3): db.log, the sale log of each character
+  db.version = 4
   if type(db.settings) ~= "table" then db.settings = {} end
   db.keep = ns.CleanKeepList(db.keep) -- new in 1.1; 1.0 data has none and starts with an empty list
   if db.settings.sell == nil then db.settings.sell = true end
   if db.settings.repair == nil then db.settings.repair = true end
   if type(db.settings.guild) ~= "boolean" then db.settings.guild = false end
+  db.log = ns.CleanLogs(db.log)
+  local key = characterKey()
+  db.log[key] = db.log[key] or {}
   ns.db = db
   ns.settings = db.settings
+  ns.log = db.log[key]
 end
 
 local frame = CreateFrame("Frame")

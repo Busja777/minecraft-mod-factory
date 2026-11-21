@@ -112,6 +112,8 @@ local function land(now)
   ns.flight = nil
   if ns.PlaysAtLanding(soundWhen()) then ns.PlayArrivalSound() end
   local seconds = now - flight.start
+  -- 1.3: every flight counts for the totals, also one stopped early: it was time in the air.
+  if ns.session and ns.AddFlight(ns.session, seconds) and ns.allTime then ns.AddFlight(ns.allTime, seconds) end
   if flight.early or not ns.Plausible(seconds) then return end
   local route, isNew = ns.Learn(ns.routes, flight.key, seconds)
   if isNew then
@@ -147,15 +149,63 @@ function ns.Check()
   if ns.Refresh then ns.Refresh() end
 end
 
+local function plain(value)
+  if value == nil or ns.IsSecret(value) then return nil end
+  return value
+end
+
+local function characterKey()
+  local name = UnitName and plain(UnitName("player"))
+  local realm = GetRealmName and plain(GetRealmName())
+  return (type(name) == "string" and name or "?") .. "-" .. (type(realm) == "string" and realm or "?")
+end
+
+-- 1.3: the totals of this character. The session starts at login; after a /reload the session
+-- before it goes on (see PLAYER_ENTERING_WORLD), so only logging in starts a new one.
+local lastSession -- the session saved before this login or reload
+local entered = false
+
+local function loadTotals(db)
+  local chars = {}
+  for key, t in pairs(type(db.chars) == "table" and db.chars or {}) do
+    if type(key) == "string" and type(t) == "table" then
+      local clean = ns.CleanTotals(t)
+      clean.session = ns.CleanTotals(t.session)
+      chars[key] = clean
+    end
+  end
+  db.chars = chars
+  local key = characterKey()
+  local char = chars[key] or ns.CleanTotals(nil)
+  chars[key] = char
+  lastSession = char.session or ns.NewTotals()
+  char.session = ns.NewTotals()
+  ns.allTime = char
+  ns.session = char.session
+  entered = false
+end
+
+local function onEnteringWorld(isReload)
+  if entered then return end
+  entered = true
+  if isReload == true and lastSession and ns.allTime and ns.session.flights == 0 then
+    ns.allTime.session = lastSession
+    ns.session = lastSession
+  end
+  lastSession = nil
+end
+
 local function onLogin()
   FlightMinutesDB = FlightMinutesDB or {}
   local db = FlightMinutesDB
-  db.version = 2 -- 2 since 1.2: settings.soundWhen and settings.soundName
+  -- 2 since 1.2: settings.soundWhen and settings.soundName; 3 since 1.3: chars (flight totals)
+  db.version = 3
   db.factions = db.factions or {}
   db.settings = db.settings or {}
   local s = db.settings
   s.soundWhen = ns.ValidWhen(s.soundWhen) or "off"
   s.soundName = ns.ValidSound(s.soundName) or ns.DEFAULT_SOUND
+  loadTotals(db)
   ns.db = db
 
   -- Alliance and Horde use different flight masters, so each faction has its own routes.
@@ -169,9 +219,11 @@ local function onLogin()
   ns.routes = db.factions[faction]
 end
 
-frame:SetScript("OnEvent", function(_, event)
+frame:SetScript("OnEvent", function(_, event, ...)
   if event == "PLAYER_LOGIN" then
     onLogin()
+  elseif event == "PLAYER_ENTERING_WORLD" then
+    onEnteringWorld(plain((select(2, ...))))
   elseif event == "TAXIMAP_OPENED" then
     readMap()
   elseif event == "TAXIMAP_CLOSED" then
@@ -186,6 +238,7 @@ local function listen(event)
 end
 
 listen("PLAYER_LOGIN")
+listen("PLAYER_ENTERING_WORLD")
 listen("TAXIMAP_OPENED")
 listen("TAXIMAP_CLOSED")
 listen("PLAYER_CONTROL_LOST")

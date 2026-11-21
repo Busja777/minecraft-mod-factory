@@ -10,6 +10,17 @@ local function savePosition(f)
   ns.db.settings.point = { point, relativePoint, x, y }
 end
 
+-- 1.3: hovering the flight frame shows the flight totals.
+local function showTooltip(self)
+  if not GameTooltip then return end
+  GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+  GameTooltip:AddLine(L["Flight Minutes"])
+  GameTooltip:AddLine(ns.SessionText(ns.session), 1, 1, 1)
+  GameTooltip:AddLine(ns.AllTimeText(ns.allTime), 1, 1, 1)
+  GameTooltip:AddLine(L["Drag to move it."], 0.6, 0.6, 0.6)
+  GameTooltip:Show()
+end
+
 local function create()
   local f = CreateFrame("Frame", "FlightMinutesFrame", UIParent)
   f:SetSize(220, 44)
@@ -23,6 +34,8 @@ local function create()
     self:StopMovingOrSizing()
     savePosition(self)
   end)
+  f:SetScript("OnEnter", showTooltip)
+  f:SetScript("OnLeave", function() if GameTooltip then GameTooltip:Hide() end end)
   local p = ns.db.settings.point
   if type(p) == "table" and p[1] then
     f:SetPoint(p[1], UIParent, p[2] or p[1], p[3] or 0, p[4] or 0)
@@ -112,6 +125,20 @@ local function sound(word)
   end
 end
 
+-- 1.3: /fm stats prints the totals, /fm stats reset clears the all-time total of this character.
+local function stats(word)
+  if word == "reset" then
+    ns.allTime.flights, ns.allTime.seconds = 0, 0
+    ns.Print(L["The all-time flight total of this character is cleared. Your routes and this session's total stay."])
+    return
+  elseif word ~= "" then
+    ns.Print(L["/fm stats shows your flight totals, /fm stats reset clears the all-time total of this character."])
+    return
+  end
+  ns.Print(ns.SessionText(ns.session))
+  ns.Print(ns.AllTimeText(ns.allTime))
+end
+
 SLASH_FLIGHTMINUTES1 = "/flightminutes"
 SLASH_FLIGHTMINUTES2 = "/fm"
 SlashCmdList.FLIGHTMINUTES = function(msg)
@@ -125,14 +152,18 @@ SlashCmdList.FLIGHTMINUTES = function(msg)
     else
       ns.Print(string.format(L["Routes known for %s: %d. /fm list shows them, /fm forget clears all."], ns.factionName, count))
     end
+    ns.Print(ns.SessionText(ns.session) .. " " .. ns.AllTimeText(ns.allTime))
   elseif cmd == "list" then
     listRoutes()
   elseif cmd == "forget" then
     forgetRoutes()
   elseif word == "sound" then
     sound(arg)
+  elseif word == "stats" then
+    stats(arg)
   else
     ns.Print(L["/fm shows how many routes are known, /fm list shows them with their times, /fm forget clears all routes."])
     soundHelp()
+    ns.Print(L["/fm stats shows your flight totals, /fm stats reset clears the all-time total of this character."])
   end
 end

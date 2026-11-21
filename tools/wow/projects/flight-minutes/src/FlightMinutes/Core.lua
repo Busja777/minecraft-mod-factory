@@ -179,3 +179,51 @@ function ns.ChooseSound(settings, word)
   end
   return nil
 end
+
+-- 1.3: total flight time. totals = { flights = count, seconds = time in the air }, kept for the
+-- session and for all time per character.
+function ns.NewTotals()
+  return { flights = 0, seconds = 0 }
+end
+
+-- Saved totals in their current shape; anything broken counts as nothing flown.
+function ns.CleanTotals(t)
+  local clean = ns.NewTotals()
+  if type(t) ~= "table" then return clean end
+  if type(t.flights) == "number" and t.flights >= 0 and t.flights == math.floor(t.flights) then clean.flights = t.flights end
+  if type(t.seconds) == "number" and t.seconds >= 0 and t.seconds < math.huge then clean.seconds = t.seconds end
+  return clean
+end
+
+-- Adds one flight. Only plausible times count (see ns.Plausible).
+function ns.AddFlight(totals, seconds)
+  if not ns.Plausible(seconds) then return false end
+  totals.flights = totals.flights + 1
+  totals.seconds = totals.seconds + seconds
+  return true
+end
+
+-- "45s", "12m 05s", "3h 07m": for totals that can run into hours.
+function ns.FormatTotal(seconds)
+  local s = math.floor((seconds or 0) + 0.5)
+  if s < 60 then return string.format(L["%ds"], s) end
+  if s < 3600 then return string.format(L["%dm %02ds"], math.floor(s / 60), s % 60) end
+  return string.format(L["%dh %02dm"], math.floor(s / 3600), math.floor(s / 60) % 60)
+end
+
+local function totalsText(t)
+  local text = t.flights == 1 and L["%d flight, %s in the air"] or L["%d flights, %s in the air"]
+  return string.format(text, t.flights, ns.FormatTotal(t.seconds))
+end
+
+-- "This session: 3 flights, 7m 12s in the air." or "This session: no flights yet."
+function ns.SessionText(t)
+  if not t or t.flights == 0 then return L["This session: no flights yet."] end
+  return string.format(L["This session: %s."], totalsText(t))
+end
+
+-- "All time on this character: 42 flights, 3h 05m in the air."
+function ns.AllTimeText(t)
+  if not t or t.flights == 0 then return L["All time on this character: no flights yet."] end
+  return string.format(L["All time on this character: %s."], totalsText(t))
+end

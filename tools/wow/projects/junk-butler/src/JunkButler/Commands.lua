@@ -4,6 +4,7 @@ local L = ns.L
 -- /jb shows the settings, /jb sell and /jb repair switch each half on or off.
 -- /jb guild on and /jb guild off let the guild bank pay repairs first (1.2), /jb guild switches it.
 -- /jb keep <item> puts grey items on the keep list, /jb unkeep <item> takes them off, /jb keep lists them.
+-- /jb log lists the last vendor visits of this character, /jb log <n> the items of one, /jb log clear (1.3).
 
 local function sellText()
   return ns.settings.sell and L["Selling junk is on."] or L["Selling junk is off."]
@@ -79,6 +80,60 @@ local function unkeep(args)
   end
 end
 
+-- 1.3: the sale log -----------------------------------------------------------------------------
+
+local function now()
+  local t = time and time()
+  if ns.IsSecret(t) or type(t) ~= "number" then return nil end
+  return t
+end
+
+local function logHelp()
+  ns.Print(L["/jb log lists your last vendor visits, /jb log followed by a number shows what was sold in that visit, /jb log clear empties the log of this character."])
+end
+
+local function listVisits()
+  local log = ns.log
+  if #log == 0 then
+    return ns.Print(L["No sales logged yet on this character. Every vendor visit that sells something is noted here."])
+  end
+  local t = now()
+  ns.Print(string.format(L["Your last %d vendor visits with sales, newest first:"], #log))
+  for i, v in ipairs(log) do
+    DEFAULT_CHAT_FRAME:AddMessage("  " .. ns.VisitLine(i, v, t))
+  end
+  local count, earned = ns.LogTotals(log)
+  ns.Print(string.format(L["Together: %d items for %s. /jb log followed by a number shows the items of that visit."], count, ns.FormatMoney(earned)))
+  if ns.AnyRecent(log, t) then
+    ns.Print(L["Sales from the last 15 minutes are marked. The vendor's Buyback tab may still have them, but it keeps only your latest sold items and empties when you log out."])
+  end
+end
+
+local function showVisit(n)
+  local v = ns.log[n]
+  if not v then
+    if #ns.log == 0 then return listVisits() end
+    return ns.Print(string.format(L["There is no visit %d. /jb log lists visits 1 to %d."], n, #ns.log))
+  end
+  ns.Print(ns.VisitLine(n, v, now()))
+  for _, it in ipairs(v.items) do
+    DEFAULT_CHAT_FRAME:AddMessage("  " .. ns.SaleLine(it))
+  end
+end
+
+-- /jb log, /jb log <n>, /jb log clear
+local function log(args)
+  args = args:lower()
+  if args == "" then return listVisits() end
+  if args == "clear" then
+    for i = #ns.log, 1, -1 do ns.log[i] = nil end
+    return ns.Print(L["The sale log of this character is empty now."])
+  end
+  local n = args:match("^%d+$") and tonumber(args)
+  if n and n >= 1 then return showVisit(n) end
+  logHelp()
+end
+
 SLASH_JUNKBUTLER1 = "/junkbutler"
 SLASH_JUNKBUTLER2 = "/jb"
 SlashCmdList.JUNKBUTLER = function(msg)
@@ -102,9 +157,12 @@ SlashCmdList.JUNKBUTLER = function(msg)
     keep(args)
   elseif word == "unkeep" then
     unkeep(args)
+  elseif word == "log" then
+    log(args)
   else
     ns.Print(L["/jb shows the settings, /jb sell and /jb repair switch each half on or off. Hold Shift while you open a vendor to skip one visit."])
     ns.Print(L["/jb keep followed by an item link or ID never sells that item, /jb unkeep takes it off again, /jb keep alone lists your keep list."])
     ns.Print(L["/jb guild on/off lets the guild bank pay your repairs first when your guild rank allows it."])
+    logHelp()
   end
 end

@@ -78,6 +78,7 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/bl sound chime")
   wow.slash("/bl warn once")
   w.loot(0)
+  wow.slash("/bl cheap")
   local allowed = { BagLookoutDB = true, BagLookoutFrame = true, SLASH_BAGLOOKOUT1 = true, SLASH_BAGLOOKOUT2 = true }
   for k in pairs(_G) do
     if not before[k] and not installed[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -365,7 +366,7 @@ test("/bl shows the state and the commands", function(wow)
   wow.slash("/bl")
   eq(#wow.chat, 2)
   eq(wow.chat[1], PREFIX .. "12 of 92 bag slots free. Warning at 5 free slots or fewer. Sound is on: warning. Warns every time the bags fill up again. The counter is unlocked. View: total.")
-  eq(wow.chat[2], PREFIX .. "Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off, /bl sound followed by a sound name or none, /bl warn once or always.")
+  eq(wow.chat[2], PREFIX .. "Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off, /bl sound followed by a sound name or none, /bl warn once or always, /bl cheap lists the items worth the least.")
   wow.slash("/baglookout help")
   eq(#wow.chat, 4)
   eq(wow.chat[3], wow.chat[1])
@@ -816,4 +817,241 @@ test("a failing sound call does not stop the warning", function(wow)
   eq(#w.errors, 1)
   wow.slash("/bl sound bell")
   eq(wow.chat[1], PREFIX .. "Sound is on: bell.")
+end)
+
+-- 1.3: the cheapest items ---------------------------------------------------------------------------
+
+-- Items in the bags: stock[bag][slot] = { id, quality, count, price (one piece), class, questSlot,
+-- noValue, notLoaded }. GetContainerItemInfo and the item lookup work from this table.
+local function link(id, quality)
+  local colour = ({ [0] = "ff9d9d9d", [1] = "ffffffff", [2] = "ff1eff00", [3] = "ff0070dd" })[quality or 1] or "ffffffff"
+  return "|c" .. colour .. "|Hitem:" .. id .. "::::::::80:::::|h[Item " .. id .. "]|h|r"
+end
+
+local function stock(w, items)
+  w.items = items
+  w.lookups = 0
+  local function find(id)
+    for _, bag in pairs(w.items) do
+      for _, it in pairs(bag) do
+        if it.id == id then return it end
+      end
+    end
+  end
+  C_Container.GetContainerItemInfo = function(bag, slot)
+    local it = w.items[bag] and w.items[bag][slot]
+    if not it then return nil end
+    return { itemID = it.id, quality = it.quality, stackCount = it.count or 1, hasNoValue = it.noValue or false, hyperlink = link(it.id, it.quality) }
+  end
+  C_Container.GetContainerItemQuestInfo = function(bag, slot)
+    local it = w.items[bag] and w.items[bag][slot]
+    return { isQuestItem = it and it.questSlot or false, questID = it and it.questID or nil, isActive = false }
+  end
+  C_Item = {
+    GetItemInfo = function(item)
+      w.lookups = w.lookups + 1
+      local id = type(item) == "number" and item or tonumber(tostring(item):match("item:(%d+)") or "")
+      local it = find(id)
+      if not it or it.notLoaded then return nil end
+      return "Item " .. id, link(id, it.quality), it.quality, 10, 1, "Junk", "Junk", 20, "", 134400, it.price or 0, it.class or 15, 0
+    end,
+  }
+end
+
+local function item(id, quality, price, count) return { id = id, quality = quality, price = price, count = count or 1 } end
+
+test("core: which items may be suggested", function(wow)
+  local ns = boot(wow)
+  eq(ns.CheapCandidate(item(1, 0, 5)), true)
+  eq(ns.CheapCandidate(item(1, 1, 5)), true)
+  eq(ns.CheapCandidate(item(1, 2, 5)), true)
+  eq(ns.CheapCandidate(item(1, 3, 5)), false, "blue items are worth keeping")
+  eq(ns.CheapCandidate(item(1, 4, 5)), false)
+  eq(ns.CheapCandidate(item(1, nil, 5)), false, "quality unknown")
+  eq(ns.CheapCandidate(item(1, 1, 0)), false, "no vendor price")
+  eq(ns.CheapCandidate(item(1, 1, nil)), false)
+  eq(ns.CheapCandidate(item(1, 1, 5, 0)), false)
+  local q = item(1, 1, 5)
+  q.quest = true
+  eq(ns.CheapCandidate(q), false, "quest items stay")
+  local n = item(1, 1, 5)
+  n.noValue = true
+  eq(ns.CheapCandidate(n), false)
+  eq(ns.CheapCandidate(nil), false)
+end)
+
+test("core: lowest stack value first, ties in bag order, money and lines", function(wow)
+  local ns = boot(wow)
+  local items = {
+    item(1, 1, 10, 20), -- 200
+    item(2, 0, 3, 4),   -- 12
+    item(3, 3, 1, 1),   -- blue: left out
+    item(4, 2, 12, 1),  -- 12, after item 2
+    item(5, 1, 0, 1),   -- no price
+    item(6, 1, 50, 1),  -- 50
+    item(7, 0, 1, 1),   -- 1
+    item(8, 1, 999, 1), -- 999
+  }
+  local list = ns.Cheapest(items, 5)
+  eq(#list, 5)
+  eq(list[1].id, 7)
+  eq(list[2].id, 2)
+  eq(list[3].id, 4)
+  eq(list[4].id, 6)
+  eq(list[5].id, 1)
+  eq(#ns.Cheapest(items), 5, "five by default")
+  eq(#ns.Cheapest(items, 1), 1)
+  eq(#ns.Cheapest({}, 5), 0)
+  eq(ns.CHEAP_COUNT, 5)
+  eq(ns.PlainMoney(0), "0c")
+  eq(ns.PlainMoney(12), "12c")
+  eq(ns.PlainMoney(305), "3s 05c")
+  eq(ns.PlainMoney(12340007), "1,234g 00s 07c")
+  local stack = item(2, 0, 3, 4)
+  stack.link = link(2, 0)
+  eq(ns.CheapLine(1, stack), "1. " .. link(2, 0) .. " x4: 12c")
+  eq(ns.CheapLine(2, item(9, 1, 7)), "2. item 9: 7c", "named by its ID without a link")
+  eq(ns.CheapWarning(stack), "Cheapest: " .. link(2, 0) .. " (12c)")
+end)
+
+test("/bl cheap lists the five items worth the least per slot", function(wow)
+  local w = world(wow)
+  w.bags[3].family = 32 -- a herb bag: throwing out herbs does not free a normal slot
+  stock(w, {
+    [0] = {
+      [1] = item(101, 1, 10, 20),  -- 200
+      [2] = item(102, 0, 3, 4),    -- 12
+      [3] = item(103, 3, 1),       -- blue
+      [4] = item(104, 4, 1),       -- epic
+      [5] = item(105, 1, 0),       -- no vendor price
+      [6] = { id = 106, quality = 1, price = 1, class = 12 },        -- quest item by class
+      [7] = { id = 107, quality = 1, price = 1, questSlot = true },  -- the game marks it as a quest item
+      [8] = { id = 108, quality = 1, price = 1, questID = 4711 },    -- starts a quest
+      [9] = { id = 109, quality = 1, price = 1, notLoaded = true },  -- details not loaded yet
+    },
+    [1] = { [1] = item(201, 2, 30), [2] = item(202, 1, 2, 3), [3] = item(203, 0, 5000, 1) },
+    [3] = { [1] = item(301, 1, 1) },  -- herb bag
+    [5] = { [1] = item(501, 1, 1) },  -- reagent bag
+  })
+  boot(wow)
+  wow.chat = {}
+  wow.slash("/bl cheap")
+  eq(#wow.chat, 7)
+  eq(wow.chat[1], PREFIX .. "Lowest vendor value per slot (grey, white and green items, whole stack):")
+  eq(wow.chat[2], "  1. " .. link(202, 1) .. " x3: 6c")
+  eq(wow.chat[3], "  2. " .. link(102, 0) .. " x4: 12c")
+  eq(wow.chat[4], "  3. " .. link(201, 2) .. ": 30c")
+  eq(wow.chat[5], "  4. " .. link(101, 1) .. " x20: 2s 00c")
+  eq(wow.chat[6], "  5. " .. link(203, 0) .. ": 50s 00c")
+  eq(wow.chat[7], PREFIX .. "1 item is not loaded by the game yet and was skipped. Try again in a moment.")
+  for _, line in ipairs(wow.chat) do
+    local text = line:sub(1, #PREFIX) == PREFIX and line:sub(#PREFIX + 1) or line
+    eq((text:gsub("|c%x+|H.-|h|r", "")):find("|", 1, true), nil, "no | in the text apart from item links")
+  end
+end)
+
+test("/bl cheap with nothing to suggest", function(wow)
+  local w = world(wow)
+  stock(w, { [0] = { [1] = item(1, 3, 100), [2] = item(2, 1, 0) } })
+  boot(wow)
+  wow.slash("/bl CHEAP")
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "No grey, white or green item with a vendor price in your bags.")
+  w.items[0][3] = { id = 3, quality = 1, price = 5, notLoaded = true }
+  w.items[0][4] = { id = 4, quality = 1, price = 5, notLoaded = true }
+  wow.slash("/bl cheap")
+  eq(wow.chat[2], wow.chat[1])
+  eq(wow.chat[3], PREFIX .. "2 items are not loaded by the game yet and were skipped. Try again in a moment.")
+end)
+
+test("the bags full warning names the cheapest item, the almost full warning does not", function(wow)
+  local w = world(wow)
+  stock(w, { [0] = { [1] = item(101, 1, 10, 20), [2] = item(102, 0, 3, 4) } })
+  w.free(10)
+  boot(wow)
+  w.loot(4)
+  eq(#w.errors, 1, "almost full: just the warning")
+  w.lookups = 0
+  w.loot(0)
+  eq(#w.errors, 3)
+  eq(w.errors[2].msg, "Your bags are full!")
+  eq(w.errors[3].msg, "Cheapest: " .. link(102, 0) .. " (12c)")
+  eq(w.errors[3].r, 1)
+  eq(w.errors[3].g, 0.13, "in the colour of the warning")
+  w.loot(0) -- no repeat of the warning, no scan of the bags
+  eq(#w.errors, 3)
+  eq(w.lookups, 2, "the bags were looked through once")
+
+  w.items = { [0] = { [1] = item(103, 3, 1) } } -- only items worth keeping
+  w.loot(10)
+  w.loot(0)
+  eq(#w.errors, 4)
+  eq(w.errors[4].msg, "Your bags are full!")
+end)
+
+test("the cheapest item scan skips secret values and survives a missing or failing lookup", function(wow)
+  local w = world(wow)
+  local secret = { secret = true }
+  stock(w, { [0] = { [1] = item(101, 1, 10), [2] = item(102, 1, 2), [3] = item(103, 1, 3) } })
+  local read = C_Container.GetContainerItemInfo
+  C_Container.GetContainerItemInfo = function(bag, slot)
+    local info = read(bag, slot)
+    if info and info.itemID == 102 then info.itemID = secret end
+    if info and info.itemID == 103 then info.stackCount = secret end
+    return info
+  end
+  local ns = boot(wow)
+  wow.slash("/bl cheap")
+  eq(wow.chat[2], "  1. " .. link(103, 1) .. ": 3c", "a secret count counts as one piece")
+  eq(wow.chat[3], "  2. " .. link(101, 1) .. ": 10c")
+  eq(#wow.chat, 3, "the item with a secret ID is left out")
+
+  C_Container.GetContainerItemQuestInfo = nil
+  local lookup = C_Item.GetItemInfo
+  C_Item = nil
+  GetItemInfo = lookup -- the older name of the same function
+  local items = ns.ScanItems()
+  eq(#items, 2)
+  GetItemInfo = function() error("broken") end
+  local none, skipped = ns.ScanItems()
+  eq(#none, 0)
+  eq(skipped, 2, "the item with a secret ID is not even an item")
+  GetItemInfo = nil
+  none, skipped = ns.ScanItems()
+  eq(#none, 0)
+  C_Container.GetContainerItemInfo = nil
+  none, skipped = ns.ScanItems()
+  eq(#none, 0)
+  eq(skipped, 0)
+  wow.chat = {}
+  wow.slash("/bl cheap")
+  eq(wow.chat[1], PREFIX .. "No grey, white or green item with a vendor price in your bags.")
+  w.loot(0)
+  eq(w.errors[#w.errors].msg, "Your bags are full!", "the warning comes without the extra line")
+end)
+
+test("1.2 settings stay as they are with /bl cheap", function(wow)
+  local w = world(wow)
+  stock(w, { [0] = { [1] = item(101, 1, 10) } })
+  BagLookoutDB = { version = 3, settings = { threshold = 8, sound = false, soundName = "horn", repeatWarn = "once", view = "split", locked = true } }
+  boot(wow)
+  eq(BagLookoutDB.version, 3, "nothing new to save")
+  local s = BagLookoutDB.settings
+  eq(s.threshold, 8)
+  eq(s.sound, false)
+  eq(s.soundName, "horn")
+  eq(s.repeatWarn, "once")
+  eq(s.view, "split")
+  eq(s.locked, true)
+  wow.slash("/bl cheap")
+  eq(wow.chat[2], "  1. " .. link(101, 1) .. ": 10c")
+end)
+
+test("a cheap command before login does nothing", function(wow)
+  local w = world(wow)
+  stock(w, { [0] = { [1] = item(101, 1, 10) } })
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.slash("/bl cheap")
+  eq(#wow.chat, 0)
+  eq(w.lookups, 0)
 end)

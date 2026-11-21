@@ -61,9 +61,9 @@
       "art": "RF",
       "was": "Verkauft Graues, repariert, zeigt die Summe",
       "updates": [
-        "Verkaufsprotokoll",
         "Ausnahmen per Rechtsklick",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Verkaufswert-Schwelle (nur Grau unter X Gold)"
       ]
     },
     {
@@ -73,9 +73,9 @@
       "art": "RF",
       "was": "Lernt Flugzeiten, zeigt Countdown",
       "updates": [
-        "Gesamtflugzeit der Sitzung",
         "Routenliste im Fenster",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Ankunftszeit als Uhrzeit"
       ]
     },
     {
@@ -97,9 +97,9 @@
       "art": "RF",
       "was": "Freie Taschenplätze, Warnung bei vollen Taschen",
       "updates": [
-        "Liste der wertlosesten Gegenstände",
         "Bank-Plätze",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Warnung auch für Reagenzientasche wählbar"
       ]
     },
     {

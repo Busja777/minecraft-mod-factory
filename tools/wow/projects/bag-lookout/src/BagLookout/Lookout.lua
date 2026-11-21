@@ -54,6 +54,72 @@ function ns.Count()
   return counts
 end
 
+-- 1.3: the items of the normal bags, for /bl cheap and the "bags full" warning.
+local QUEST_CLASS = 12 -- the item class of quest items (Enum.ItemClass.Questitem)
+
+local function itemInfo()
+  return C_Item and C_Item.GetItemInfo or GetItemInfo
+end
+
+local function questClass()
+  local class = Enum and Enum.ItemClass and Enum.ItemClass.Questitem
+  return type(class) == "number" and class or QUEST_CLASS
+end
+
+-- Whether the game marks the item in this slot as a quest item or one that starts a quest.
+local function isQuestSlot(bag, slot)
+  if not (C_Container and C_Container.GetContainerItemQuestInfo) then return false end
+  local ok, q = pcall(C_Container.GetContainerItemQuestInfo, bag, slot)
+  if not ok or type(q) ~= "table" then return false end
+  return plain(q.isQuestItem) == true or type(plain(q.questID)) == "number"
+end
+
+-- One bag slot as the plain record Core.lua works with. Returns nil for an empty or unreadable
+-- slot, and nil, true for an item whose details the game has not loaded yet.
+function ns.ReadItem(bag, slot)
+  local info = C_Container.GetContainerItemInfo(bag, slot)
+  if type(info) ~= "table" then return nil end
+  local id, count, quality = plain(info.itemID), plain(info.stackCount), plain(info.quality)
+  local link, noValue = plain(info.hyperlink), plain(info.hasNoValue)
+  if type(id) ~= "number" then return nil end
+  if type(link) ~= "string" then link = nil end
+  local getInfo = itemInfo()
+  if not getInfo then return nil, true end
+  local ok, _, _, infoQuality, _, _, _, _, _, _, _, price, class = pcall(getInfo, link or id)
+  if not ok then return nil, true end
+  price, class, infoQuality = plain(price), plain(class), plain(infoQuality)
+  if type(price) ~= "number" then return nil, true end -- not loaded yet
+  if type(quality) ~= "number" then quality = infoQuality end
+  return {
+    bag = bag, slot = slot, id = id, link = link, quality = quality,
+    count = type(count) == "number" and count or 1, price = price,
+    noValue = noValue == true, quest = class == questClass() or isQuestSlot(bag, slot),
+  }
+end
+
+-- Every item of the normal bags (no reagent or profession bags: the warnings follow the normal
+-- bags only), and how many items were skipped because the game has not loaded them yet.
+function ns.ScanItems()
+  local items, skipped = {}, 0
+  if not (C_Container and C_Container.GetContainerNumSlots and C_Container.GetContainerItemInfo) then return items, skipped end
+  local first, last = ns.BagIndexes()
+  for bag = first, last do
+    local family
+    if C_Container.GetContainerNumFreeSlots then family = plain(select(2, C_Container.GetContainerNumFreeSlots(bag))) end
+    if not (type(family) == "number" and family ~= 0) then
+      for slot = 1, plain(C_Container.GetContainerNumSlots(bag)) or 0 do
+        local item, notLoaded = ns.ReadItem(bag, slot)
+        if item then
+          items[#items + 1] = item
+        elseif notLoaded then
+          skipped = skipped + 1
+        end
+      end
+    end
+  end
+  return items, skipped
+end
+
 -- Plays the chosen warning sound once (also the preview of /bl sound <name>).
 function ns.PlayWarningSound()
   if not PlaySound then return end
@@ -65,6 +131,9 @@ local function alert(kind, free)
   local rgb = ns.RGB[kind]
   if UIErrorsFrame and UIErrorsFrame.AddMessage then
     UIErrorsFrame:AddMessage(ns.WarningText(kind, free), rgb[1], rgb[2], rgb[3])
+    -- 1.3: what to throw out first
+    local cheapest = kind == "full" and ns.Cheapest((ns.ScanItems()), 1)[1]
+    if cheapest then UIErrorsFrame:AddMessage(ns.CheapWarning(cheapest), rgb[1], rgb[2], rgb[3]) end
   end
   if ns.settings.sound then ns.PlayWarningSound() end
 end
