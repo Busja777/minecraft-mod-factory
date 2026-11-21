@@ -71,6 +71,10 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/bl")
   wow.slash("/bl threshold 8")
   wow.slash("/baglookout lock")
+  w.bags[4].family = 32
+  wow.slash("/bl view split")
+  wow.fire("BAG_UPDATE_DELAYED")
+  wow.slash("/bl view")
   local allowed = { BagLookoutDB = true, BagLookoutFrame = true, SLASH_BAGLOOKOUT1 = true, SLASH_BAGLOOKOUT2 = true }
   for k in pairs(_G) do
     if not before[k] and not installed[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -253,7 +257,7 @@ test("warnings: one message and one sound on the way down, one more at 0, re-arm
   eq(#w.sounds, 3)
 end)
 
-test("the reagent bag is counted on its own and shown by a click", function(wow)
+test("the reagent bag is counted on its own and shown in the split view by a click", function(wow)
   local w = world(wow)
   w.bags[5].free = 2
   w.free(50)
@@ -261,7 +265,7 @@ test("the reagent bag is counted on its own and shown by a click", function(wow)
   eq(ns.counts.free, 50, "reagent slots are not in the main count")
   eq(ns.counts.total, 92)
   BagLookoutFrame:Click()
-  eq(BagLookoutDB.settings.details, true)
+  eq(BagLookoutDB.settings.view, "split")
   eq(BagLookoutFrame.detail:IsShown(), true)
   eq(detail(), YELLOW .. "Reagents 2/36|r")
   w.bags[5].free = 0
@@ -273,7 +277,7 @@ test("the reagent bag is counted on its own and shown by a click", function(wow)
   eq(ns.counts.reagentTotal, nil)
   eq(detail(), GREY .. "No reagent bag|r")
   BagLookoutFrame:Click()
-  eq(BagLookoutDB.settings.details, false)
+  eq(BagLookoutDB.settings.view, "total")
   eq(BagLookoutFrame.detail:IsShown(), false)
 end)
 
@@ -342,7 +346,7 @@ test("the tooltip explains the click and the drag", function(wow)
   eq(wow.tooltip.owner, f)
   eq(wow.tooltip.shown, true)
   eq(wow.tooltip.lines[1], "Bag Lookout")
-  eq(wow.tooltip.lines[2], "Click to show or hide the reagent bag.")
+  eq(wow.tooltip.lines[2], "Click to switch between the total and one line per bag type.")
   eq(wow.tooltip.lines[3], "Drag to move it.")
   f.scripts.OnLeave(f)
   eq(wow.tooltip.shown, false)
@@ -357,8 +361,8 @@ test("/bl shows the state and the commands", function(wow)
   boot(wow)
   wow.slash("/bl")
   eq(#wow.chat, 2)
-  eq(wow.chat[1], PREFIX .. "12 of 92 bag slots free. Warning at 5 free slots or fewer. Sound is on. The counter is unlocked.")
-  eq(wow.chat[2], PREFIX .. "Commands: /bl threshold <0-50>, /bl lock, /bl hide, /bl show, /bl sound on or off.")
+  eq(wow.chat[1], PREFIX .. "12 of 92 bag slots free. Warning at 5 free slots or fewer. Sound is on. The counter is unlocked. View: total.")
+  eq(wow.chat[2], PREFIX .. "Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off.")
   wow.slash("/baglookout help")
   eq(#wow.chat, 4)
   eq(wow.chat[3], wow.chat[1])
@@ -411,7 +415,7 @@ test("/bl lock, /bl hide and /bl show", function(wow)
   eq(BagLookoutFrame:IsShown(), false, "a recount does not bring it back")
   eq(#w.errors, 1, "warnings stay on while hidden")
   wow.slash("/bl")
-  eq(wow.chat[4], PREFIX .. "4 of 92 bag slots free. Warning at 5 free slots or fewer. Sound is on. The counter is hidden.")
+  eq(wow.chat[4], PREFIX .. "4 of 92 bag slots free. Warning at 5 free slots or fewer. Sound is on. The counter is hidden. View: total.")
   wow.slash("/bl show")
   eq(wow.chat[6], PREFIX .. "The counter is shown.")
   eq(BagLookoutFrame:IsShown(), true)
@@ -439,12 +443,13 @@ test("settings survive: saved values are kept, broken ones get the defaults", fu
   local w = world(wow)
   boot(wow)
   local s = BagLookoutDB.settings
-  eq(BagLookoutDB.version, 1)
+  eq(BagLookoutDB.version, 2)
   eq(s.threshold, 5)
   eq(s.sound, true)
   eq(s.locked, false)
   eq(s.hidden, false)
-  eq(s.details, false)
+  eq(s.view, "total")
+  eq(s.details, nil)
 
   -- as the game loads it at the next login
   BagLookoutDB = { settings = { threshold = 12, sound = false, locked = true, hidden = true, details = true }, later = "kept" }
@@ -520,7 +525,7 @@ test("missing parts of the game are no error", function(wow)
   eq(ns.counts, nil)
   eq(counter(), GREY .. "Bags ...|r")
   wow.slash("/bl")
-  eq(wow.chat[1], PREFIX .. "Bags not counted yet. Warning at 5 free slots or fewer. Sound is on. The counter is unlocked.")
+  eq(wow.chat[1], PREFIX .. "Bags not counted yet. Warning at 5 free slots or fewer. Sound is on. The counter is unlocked. View: total.")
 end)
 
 test("nothing happens before login", function(wow)
@@ -533,4 +538,131 @@ test("nothing happens before login", function(wow)
   eq(BagLookoutDB, nil)
   eq(BagLookoutFrame, nil)
   eq(w.reads, 0)
+end)
+
+-- 1.1: the split view by bag type.
+
+test("core: profession bags are added up per kind, named, and sorted", function(wow)
+  local ns = boot(wow)
+  local list = ns.Professions({
+    { free = 4, total = 20, family = 0 },     -- a normal bag: not here
+    { free = 10, total = 24, family = 1024 }, -- mining
+    { free = 30, total = 36, family = 32 },   -- herbs
+    { free = 40, total = 28, family = 32 },   -- herbs again, never more free than slots
+    { free = 5, total = 20, family = 4096 },  -- a kind without a name
+    { free = 2, total = 16, family = 96 },    -- herbs and enchanting in one bag: no single name
+    { free = nil, total = 20, family = 64 },  -- could not be read
+    { free = 3, total = 20, family = { secret = true } },
+    { free = 0, total = 0, family = 8 },      -- no slots
+    { free = 6, total = 12 },                 -- family unknown: a normal bag
+  })
+  local parts = {}
+  for _, g in ipairs(list) do parts[#parts + 1] = g.label .. " " .. g.free .. "/" .. g.total end
+  eq(table.concat(parts, ", "), "Herbs 58/64, Mining 10/24, Profession 7/36")
+  eq(#ns.Professions({}), 0)
+  eq(ns.FamilyLabel(65536), "Cooking")
+  eq(ns.FamilyLabel(32768), "Fishing")
+  eq(ns.FamilyLabel(3), "Profession")
+end)
+
+test("core: the lines of the split view and the view setting", function(wow)
+  local ns = boot(wow)
+  eq(ns.ValidView("split"), "split")
+  eq(ns.ValidView("total"), "total")
+  eq(ns.ValidView("details"), nil)
+  eq(ns.ValidView(true), nil)
+  eq(ns.ProfessionText("Herbs", 12, 36, 5), WHITE .. "Herbs 12/36|r")
+  eq(ns.ProfessionText("Mining", 3, 24, 5), YELLOW .. "Mining 3/24|r")
+  eq(ns.ProfessionText("Profession", 0, 20, 5), RED .. "Profession 0/20|r")
+  local lines = ns.SplitLines({ reagentFree = 30, reagentTotal = 36, professions = {
+    { label = "Herbs", free = 12, total = 36 }, { label = "Mining", free = 0, total = 24 } } }, 5)
+  eq(table.concat(lines, " | "), WHITE .. "Reagents 30/36|r | " .. WHITE .. "Herbs 12/36|r | " .. RED .. "Mining 0/24|r")
+  lines = ns.SplitLines({}, 5)
+  eq(#lines, 1)
+  eq(lines[1], GREY .. "No reagent bag|r", "the reagent line is always there, as in 1.0")
+  eq(#ns.SplitLines(nil, 5), 1)
+end)
+
+test("split view: one line per bag type, the warning still follows only the normal bags", function(wow)
+  local w = world(wow)
+  w.bags[3] = { total = 36, free = 36, family = 32 }   -- a herb bag
+  w.bags[4] = { total = 24, free = 24, family = 1024 } -- a mining bag
+  w.free(10)
+  w.bags[3].free, w.bags[4].free = 12, 24 -- free() fills bags 3 and 4 too; set them back
+  w.bags[5].free = 30
+  local ns = boot(wow)
+  eq(ns.counts.total, 56, "backpack and two normal bags")
+  eq(counter(), WHITE .. "Bags 10/56|r")
+  eq(BagLookoutFrame.detail:IsShown(), false, "1.0 view by default")
+  BagLookoutFrame:Click()
+  eq(BagLookoutDB.settings.view, "split")
+  eq(BagLookoutFrame.detail:IsShown(), true)
+  eq(counter(), WHITE .. "Bags 10/56|r", "the first line stays the same")
+  eq(detail(), WHITE .. "Reagents 30/36|r\n" .. WHITE .. "Herbs 12/36|r\n" .. WHITE .. "Mining 24/24|r")
+  w.bags[3].free = 0 -- the herb bag is full
+  wow.fire("BAG_UPDATE_DELAYED")
+  eq(detail(), WHITE .. "Reagents 30/36|r\n" .. RED .. "Herbs 0/36|r\n" .. WHITE .. "Mining 24/24|r")
+  eq(#w.errors, 0, "a full profession bag does not warn")
+  w.bags[0].free, w.bags[1].free, w.bags[2].free = 0, 3, 0
+  wow.fire("BAG_UPDATE_DELAYED")
+  eq(#w.errors, 1, "the normal bags warn as before")
+  eq(w.errors[1].msg, "Bags almost full: 3 free slots left.")
+  w.bags[4] = { total = 18, free = 18, family = 0 } -- the mining bag swapped for a normal one
+  wow.fire("BAG_UPDATE_DELAYED")
+  eq(ns.counts.total, 74)
+  eq(detail(), WHITE .. "Reagents 30/36|r\n" .. RED .. "Herbs 0/36|r")
+  BagLookoutFrame:Click()
+  eq(BagLookoutDB.settings.view, "total")
+  eq(BagLookoutFrame.detail:IsShown(), false)
+end)
+
+test("/bl view switches between the total and the split view", function(wow)
+  local w = world(wow)
+  w.bags[2].family = 64 -- an enchanting bag
+  boot(wow)
+  wow.slash("/bl view")
+  eq(wow.chat[1], PREFIX .. "View: total.", "without an argument it only tells")
+  wow.slash("/bl VIEW Split")
+  eq(wow.chat[2], PREFIX .. "View: one line per bag type.")
+  eq(BagLookoutDB.settings.view, "split")
+  eq(detail(), WHITE .. "Reagents 36/36|r\n" .. WHITE .. "Enchanting 18/18|r")
+  wow.slash("/bl view sideways")
+  eq(wow.chat[3], PREFIX .. "Use /bl view total or /bl view split.")
+  eq(BagLookoutDB.settings.view, "split")
+  wow.slash("/bl")
+  eq(wow.chat[4], PREFIX .. "74 of 74 bag slots free. Warning at 5 free slots or fewer. Sound is on. The counter is unlocked. View: one line per bag type.")
+  wow.slash("/bl view total")
+  eq(wow.chat[#wow.chat], PREFIX .. "View: total.")
+  eq(BagLookoutFrame.detail:IsShown(), false)
+  wow.slash("/bl hide")
+  wow.slash("/bl view split")
+  eq(BagLookoutFrame:IsShown(), false, "changing the view does not show a hidden counter")
+end)
+
+test("1.0 settings move on to 1.1: the reagent click becomes the split view", function(wow)
+  world(wow)
+  -- As 1.0 saved it: the reagent bag was shown.
+  BagLookoutDB = { version = 1, settings = { threshold = 8, sound = false, locked = true, hidden = false, details = true, point = { "TOP", "TOP", 0, -100 } } }
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  local s = BagLookoutDB.settings
+  eq(BagLookoutDB.version, 2)
+  eq(s.view, "split")
+  eq(s.details, nil, "the old key is gone")
+  eq(s.threshold, 8)
+  eq(s.sound, false)
+  eq(s.locked, true)
+  eq(s.point[1], "TOP")
+  eq(BagLookoutFrame.detail:IsShown(), true)
+  eq(detail(), WHITE .. "Reagents 36/36|r")
+
+  BagLookoutDB = { version = 1, settings = { details = false } }
+  wow.fire("PLAYER_LOGIN")
+  eq(BagLookoutDB.settings.view, "total")
+  BagLookoutDB = { settings = { view = "split", details = false } }
+  wow.fire("PLAYER_LOGIN")
+  eq(BagLookoutDB.settings.view, "split", "a 1.1 setting wins")
+  BagLookoutDB = { settings = { view = "sideways" } }
+  wow.fire("PLAYER_LOGIN")
+  eq(BagLookoutDB.settings.view, "total")
 end)

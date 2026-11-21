@@ -3,6 +3,11 @@ local L = ns.L
 
 -- /bl shows the state and the commands; the rest changes one setting each.
 
+local function viewText()
+  if ns.settings.view == "split" then return L["View: one line per bag type."] end
+  return L["View: total."]
+end
+
 local function stateText()
   local s, c = ns.settings, ns.counts or {}
   local parts = {}
@@ -18,6 +23,7 @@ local function stateText()
   else
     parts[#parts + 1] = s.locked and L["The counter is locked."] or L["The counter is unlocked."]
   end
+  parts[#parts + 1] = viewText()
   return table.concat(parts, " ")
 end
 
@@ -31,6 +37,17 @@ local function setThreshold(arg)
   ns.ResetWarner(ns.warner) -- a new threshold does not warn about the bags as they are now
   ns.Recount()
   ns.Print(string.format(L["Warning at %d free slots or fewer."], n))
+end
+
+local function setView(arg)
+  if arg == "split" or arg == "total" then
+    ns.settings.view = arg
+    ns.Render()
+  elseif arg ~= "" then
+    ns.Print(L["Use /bl view total or /bl view split."])
+    return
+  end
+  ns.Print(viewText())
 end
 
 local function setSound(arg)
@@ -62,8 +79,10 @@ SlashCmdList.BAGLOOKOUT = function(msg)
     ns.Print(L["The counter is shown."])
   elseif cmd == "sound" then
     setSound(arg)
+  elseif cmd == "view" then
+    setView(arg)
   else
     ns.Print(stateText())
-    ns.Print(L["Commands: /bl threshold <0-50>, /bl lock, /bl hide, /bl show, /bl sound on or off."])
+    ns.Print(L["Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off."])
   end
 end
