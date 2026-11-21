@@ -407,7 +407,11 @@
         "weitere Feste",
         "Regler",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "claude",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 30,

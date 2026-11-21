@@ -1,0 +1,19 @@
+{
+  "slug": "festival-stalls-plus",
+  "game": "stardewvalley",
+  "name": "Festival Stalls Plus",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FestivalStallsPlus-1.0.zip",
+      "changelog": "## Festival Stalls Plus 1.0\n\nFirst release.\n\n- Egg Festival: Egg (80g), Potato Seeds (50g) and Cauliflower Seeds (80g).\n- Flower Dance: Tulip (50g) and Blue Jazz (80g).\n- Luau: Melon Seeds (80g), Blueberry Seeds (80g) and Pepper Seeds (40g).\n- Dance of the Moonlight Jellies: Pumpkin Seeds (100g), Cranberry Seeds (240g) and Eggplant Seeds (20g), ready for fall 1.\n- Spirit's Eve: Pumpkin (480g), Pumpkin Pie (580g) and Cranberry Candy (270g).\n- Festival of Ice: Chowder (210g), Fish Stew (270g) and Winter Seeds (50g).\n- Feast of the Winter Star: Plum Pudding (390g), Cookie (210g) and Holly (120g).\n- Seeds cost what Pierre asks in his shop, the other goods 1.5 times their sell price, up to 10 per day.\n- Every booth keeps its own stock. The Stardew Valley Fair is not changed.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

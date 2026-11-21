@@ -1,0 +1,37 @@
+{
+  "name": "Festival Stalls Plus",
+  "summary": "Seven festival booths stock a few more seasonal goods, from seeds for the rest of the season to warm winter dishes.",
+  "class": "Mods",
+  "category": "Items",
+  "logoPrompt": "A small striped festival market stall with bunting along its roof, its counter holding a basket of eggs, a pumpkin, a pie and a few seed packets",
+  "cover": {
+    "tagline": "More to buy at every festival.",
+    "bullets": [
+      "Seven booths, new goods",
+      "Seeds at Pierre's prices",
+      "Vanilla stock untouched"
+    ]
+  },
+  "description": [
+    "**Festival Stalls Plus gives seven festival booths a few more seasonal goods to buy, right next to their usual stock.**",
+    "",
+    "## Features",
+    "- Seeds for the rest of the season at the Egg Festival and the Luau, at Pierre's own prices, since his shop is closed that day.",
+    "- Tulips and Blue Jazz at the Flower Dance, fall seeds at the Dance of the Moonlight Jellies for planting on fall 1.",
+    "- Pumpkins, Pumpkin Pie and Cranberry Candy at Spirit's Eve, warm soups and Winter Seeds at the Festival of Ice.",
+    "- Plum Pudding, Cookies and Holly at the Feast of the Winter Star.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Visit the booth at the next festival.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Goods cost 1.5 times their sell price, up to 10 per day. Seeds only appear if they still ripen this season. The Stardew Valley Fair is not changed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
