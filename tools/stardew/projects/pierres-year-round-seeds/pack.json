@@ -1,6 +1,6 @@
 {
   "name": "Pierre's Year-Round Seeds",
-  "description": "Pierre sells the seeds of every season all year, at a surcharge you choose in the config.",
+  "description": "Pierre and Sandy sell the seeds of every season all year, at a surcharge you choose in the config.",
   "uniqueId": "SevEvolution.PierresYearRoundSeeds",
   "minimumApiVersion": "4.4.0",
   "contentPatcher": "2.9.0",
