@@ -1,0 +1,39 @@
+name: Trend radar
+
+# Once a week: which new projects grow fastest per game and class (CurseForge read-only API).
+# Writes data/radar/trends.json for the nightly build session. No upload, no AI.
+on:
+  schedule:
+    - cron: '0 4 * * 1'   # Mondays, 05:00 in Berlin (winter)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  trends:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Read the trends
+        env:
+          CF_CORE_API_KEY: ${{ secrets.CF_CORE_API_KEY }}
+        run: node scripts/trends.js
+      - name: Commit the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/radar/trends.json
+          if git diff --staged --quiet; then echo "Nothing new."; exit 0; fi
+          git commit -m "radar: weekly trends [skip ci]"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi
+            sleep 5
+          done
+          exit 1
