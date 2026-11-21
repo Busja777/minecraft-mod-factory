@@ -109,9 +109,9 @@
       "art": "RF",
       "was": "Haltbarkeit in Prozent, Warnung, Reparaturkosten",
       "updates": [
-        "pro Rüstungsteil",
-        "Warnung vor Instanzen",
-        "Kostenverlauf"
+        "Kostenverlauf",
+        "Warnung auch in Tiefen (Delves)",
+        "Reparatur-Erinnerung beim Händler"
       ]
     },
     {
@@ -121,9 +121,9 @@
       "art": "RF",
       "was": "Alle Charaktere: Level, Gold, Ort, Erholung",
       "updates": [
-        "Spielzeit",
         "Sortieren und Filtern",
-        "Berufe"
+        "Berufe",
+        "Gesamtgold-Verlauf"
       ]
     },
     {

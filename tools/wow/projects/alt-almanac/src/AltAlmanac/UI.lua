@@ -3,6 +3,7 @@ local L = ns.L
 
 local GREY, BLUE = "|cff9d9d9d", "|cff4da6ff"
 local UNKNOWN = GREY .. "?|r"
+local NOT_YET = GREY .. "\226\128\148|r" -- an em dash: played time not read yet
 
 -- Columns of the window: field, x offset, width, alignment.
 local COLUMNS = {
@@ -11,9 +12,10 @@ local COLUMNS = {
   { "gold", 190, 130, "RIGHT" },
   { "zone", 334, 190, "LEFT" },
   { "rested", 528, 50, "RIGHT" },
-  { "seen", 582, 40, "RIGHT" },
+  { "played", 582, 76, "RIGHT" },
+  { "seen", 662, 40, "RIGHT" },
 }
-local HEADINGS = { name = "Character", level = "Level", gold = "Gold", zone = "Zone", rested = "Rested", seen = "Seen" }
+local HEADINGS = { name = "Character", level = "Level", gold = "Gold", zone = "Zone", rested = "Rested", played = "Played", seen = "Seen" }
 
 local ui
 
@@ -43,7 +45,7 @@ end
 local function create()
   local ok, f = pcall(CreateFrame, "Frame", "AltAlmanacFrame", UIParent, "BasicFrameTemplateWithInset")
   if not ok then f = CreateFrame("Frame", "AltAlmanacFrame", UIParent) end
-  f:SetSize(640, 346)
+  f:SetSize(720, 346)
   f:SetFrameStrata("DIALOG")
   f:SetClampedToScreen(true)
   f:SetMovable(true)
@@ -73,10 +75,13 @@ local function create()
 
   f.totalLabel = text(f, "GameFontNormal")
   f.totalLabel:SetPoint("TOPLEFT", 16, -318)
-  f.totalLabel:SetText(L["Total gold"])
+  f.totalLabel:SetText(L["Total"])
   f.total = text(f, "GameFontHighlight", "RIGHT")
   f.total:SetPoint("TOPLEFT", 190, -318)
   f.total:SetWidth(130)
+  f.totalPlayed = text(f, "GameFontHighlight", "RIGHT")
+  f.totalPlayed:SetPoint("TOPLEFT", 582, -318)
+  f.totalPlayed:SetWidth(76)
 
   f:SetScript("OnShow", function() ns.Refresh() end)
   return f
@@ -101,13 +106,14 @@ function ns.RowTexts(row, currentRealm)
     gold = row.money and ns.FormatMoney(row.money) or UNKNOWN,
     zone = row.place or UNKNOWN,
     rested = rested,
+    played = ns.PlayedText(row.played) or NOT_YET,
     seen = row.current and L["now"] or ns.RelativeTime(row.ago),
   }
 end
 
 function ns.Refresh()
   if not ui or not ui:IsShown() or not ns.db then return end
-  local rows, total = ns.BuildRows(ns.db.chars, ns.CharKey(), time())
+  local rows, total, played = ns.BuildRows(ns.db.chars, ns.CharKey(), time())
   local shown, more = ns.Visible(rows, #ui.rows)
   local realm = GetRealmName()
   for i, cells in ipairs(ui.rows) do
@@ -122,6 +128,7 @@ function ns.Refresh()
     for _, col in ipairs(COLUMNS) do cells[col[1]]:SetText(values[col[1]] or "") end
   end
   ui.total:SetText(ns.FormatMoney(total))
+  ui.totalPlayed:SetText(ns.PlayedText(played) or NOT_YET)
 end
 
 function ns.Toggle()

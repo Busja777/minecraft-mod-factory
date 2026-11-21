@@ -2,9 +2,11 @@ local _, ns = ...
 local L = ns.L
 
 -- Reads the durability of the equipped gear, warns when an item is about to break and
--- tells the repair cost at a vendor. It never repairs by itself.
+-- tells the repair cost at a vendor. It never repairs by itself. On the way into a dungeon or
+-- raid it tells you to repair first when the gear is worn.
 
 ns.warning = { armed = true }
+ns.instanceState = { warnedFor = nil }
 ns.condition = ns.Condition({})
 
 function ns.Print(msg)
@@ -47,12 +49,64 @@ local function warn(cond)
   ns.Print(string.format(L["%s is at %d%% durability. Time to repair."], ns.ItemText(cond.lowestSlot), cond.lowest))
 end
 
+-- The level of the check before instances, nil when it is switched off.
+function ns.InstanceLevel()
+  local s = ns.settings
+  if not s or not s.instanceWarn then return nil end
+  return s.instanceLevel
+end
+
 function ns.Recount()
   if not ns.settings then return end
   local cond = ns.Condition(ns.ReadGear())
   ns.condition = cond
   if ns.Warning(ns.warning, cond.lowest, ns.settings.warn) then warn(cond) end
+  ns.InstanceRearm(ns.instanceState, cond.lowest, ns.InstanceLevel())
   if ns.Refresh then ns.Refresh() end
+end
+
+-- The dungeon or raid you are in as { kind, name, key }, nil outside an instance or when the
+-- game does not tell. The key tells instances apart: the instance ID, else the name.
+function ns.ReadPlace()
+  if not IsInInstance then return nil end
+  local inside, kind = IsInInstance()
+  if ns.IsSecret(inside) or ns.IsSecret(kind) or not inside or type(kind) ~= "string" then return nil end
+  local place = { kind = kind }
+  if GetInstanceInfo then
+    local name, _, _, _, _, _, _, id = GetInstanceInfo()
+    name, id = plain(name), plain(id)
+    if type(name) == "string" and name ~= "" then place.name = name end
+    if type(id) == "number" and id > 0 then place.key = id end
+  end
+  place.key = place.key or place.name or kind
+  return place
+end
+
+local function warnInstance(place, cond)
+  local name = L[ns.SLOT_LABEL[cond.lowestSlot] or "Other"]
+  if UIErrorsFrame and UIErrorsFrame.AddMessage then
+    UIErrorsFrame:AddMessage(string.format(L["Repair first: %s is at %d%% durability"], name, cond.lowest), 1, 0.25, 0.25)
+  end
+  local item = ns.ItemText(cond.lowestSlot)
+  local text
+  if place.name then
+    text = string.format(L["You are entering %s with %s at %d%% durability. Repair first."], place.name, item, cond.lowest)
+  elseif place.kind == "raid" then
+    text = string.format(L["You are entering a raid with %s at %d%% durability. Repair first."], item, cond.lowest)
+  else
+    text = string.format(L["You are entering a dungeon with %s at %d%% durability. Repair first."], item, cond.lowest)
+  end
+  ns.Print(text)
+end
+
+-- After a loading screen or a new zone: one warning when this is a dungeon or raid and the gear
+-- is worn. After /reload inside an instance you have been told already, so it only takes note.
+function ns.CheckInstance(reloading)
+  if not ns.settings then return end
+  local place = ns.ReadPlace()
+  if ns.InstanceWarning(ns.instanceState, place, ns.condition.lowest, ns.InstanceLevel()) and not reloading then
+    warnInstance(place, ns.condition)
+  end
 end
 
 -- One line with the price of a full repair, only when something is damaged.
@@ -70,12 +124,14 @@ end
 local function onLogin()
   if type(DurabilityWatchDB) ~= "table" then DurabilityWatchDB = {} end
   local db = DurabilityWatchDB
-  db.version = 1
+  db.version = 2 -- 2: the check before instances (1.1); settings of 1.0 are kept as they are
   if type(db.settings) ~= "table" then db.settings = {} end
   local s = db.settings
   s.warn = ns.ValidWarn(s.warn) or ns.DEFAULT_WARN
   s.locked = s.locked == true
   s.hidden = s.hidden == true
+  s.instanceWarn = s.instanceWarn ~= false -- on unless switched off
+  s.instanceLevel = ns.ValidWarn(s.instanceLevel) or ns.DEFAULT_INSTANCE
   ns.db = db
   ns.settings = s
   if ns.CreateDisplay then ns.CreateDisplay() end
@@ -85,11 +141,17 @@ end
 local frame = CreateFrame("Frame")
 ns.eventFrame = frame
 
-frame:SetScript("OnEvent", function(_, event)
+frame:SetScript("OnEvent", function(_, event, ...)
   if event == "PLAYER_LOGIN" then
     onLogin()
   elseif event == "MERCHANT_SHOW" then
     onMerchantShow()
+  elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
+    if not ns.settings then return end
+    local reloading = false
+    if event == "PLAYER_ENTERING_WORLD" then reloading = select(2, ...) == true end
+    ns.Recount()
+    ns.CheckInstance(reloading)
   else
     ns.Recount()
   end
@@ -104,3 +166,5 @@ listen("PLAYER_LOGIN")
 listen("UPDATE_INVENTORY_DURABILITY")
 listen("PLAYER_EQUIPMENT_CHANGED")
 listen("MERCHANT_SHOW")
+listen("PLAYER_ENTERING_WORLD")
+listen("ZONE_CHANGED_NEW_AREA")
