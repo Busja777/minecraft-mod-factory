@@ -1,0 +1,37 @@
+{
+  "name": "Craft It Sooner",
+  "summary": "Learn to build sprinklers and a few soil helpers at a lower Farming level, with the amount picked in the config.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small copper lawn sprinkler spraying a fan of water droplets over a tidy patch of tilled soil with green sprouts, beside a rolled-up paper blueprint",
+  "cover": {
+    "tagline": "Water your crops without the long wait.",
+    "bullets": [
+      "Sprinklers at lower levels",
+      "Three levels in the config",
+      "Same ingredients as before"
+    ]
+  },
+  "description": [
+    "**Craft It Sooner lets you craft sprinklers and a few farming helpers at a lower Farming level, so watering gets easier earlier in the year.**",
+    "",
+    "## Features",
+    "- At Medium (default), the Sprinkler unlocks at Farming 1 instead of 2 and the Quality Sprinkler at 4 instead of 6.",
+    "- Basic Retaining Soil, Quality Retaining Soil and Speed-Gro come earlier too: 2 instead of 4, 5 instead of 7, 1 instead of 3.",
+    "- Three levels in the config: Light stays close to the original levels, Strong goes lower still.",
+    "- Ingredients and results stay exactly the same. The Iridium Sprinkler keeps its usual level.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the level in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- If your Farming level is already high enough, the game adds the missing recipes when the save loads.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

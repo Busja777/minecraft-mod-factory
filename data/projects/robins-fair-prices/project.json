@@ -1,0 +1,19 @@
+{
+  "slug": "robins-fair-prices",
+  "game": "stardewvalley",
+  "name": "Robin's Fair Prices",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "RobinsFairPrices-1.0.zip",
+      "changelog": "## Robin's Fair Prices 1.0\n\nFirst release.\n\n- The farm buildings from the carpenter cost less gold and fewer materials: coops, barns, sheds and their upgrades, fish pond, mill, silo, slime hutch, stable, well, shipping bin and pet bowl.\n- Choose the share of the normal cost in the config: 75 %, 50 % (default) or 25 %. At 50 %, a barn costs 3,000g, 175 wood and 75 stone instead of 6,000g, 350 wood and 150 stone.\n- Construction is faster too: buildings that took two days are done the next day at 50 % and 25 %, a new barn or coop takes two days instead of three (one day at 25 %). Instant buildings stay instant.\n- Magical buildings and house upgrades are unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

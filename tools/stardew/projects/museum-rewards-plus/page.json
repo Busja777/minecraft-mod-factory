@@ -1,0 +1,37 @@
+{
+  "name": "Museum Rewards Plus",
+  "summary": "Every few donations to the town museum now earn a little thank-you gift, from geodes to seeds, alongside the rewards you already know.",
+  "class": "Mods",
+  "category": "Items",
+  "logoPrompt": "An open antique wooden display case holding a cracked geode with purple crystals and an old clay pot, with a small ribbon-tied gift box in front",
+  "cover": {
+    "tagline": "More thank-yous for a growing collection.",
+    "bullets": [
+      "Ten new donation rewards",
+      "Geodes, seeds and resources",
+      "Original rewards unchanged"
+    ]
+  },
+  "description": [
+    "**Museum Rewards Plus adds ten new rewards for donating minerals and artifacts, so the gaps between the original milestones feel rewarding too.**",
+    "",
+    "## Features",
+    "- Minerals: 6, 16, 26, 36 and 46 donated earn geodes, frozen geodes, magma geodes, omni geodes and gold bars.",
+    "- Artifacts: 6, 10, 25 and 35 donated earn clay, mixed seeds, a rare seed and an artifact trove.",
+    "- 10 minerals plus 10 artifacts earn nine blueberry seeds.",
+    "- Every reward is small and can be collected once, just like the original ones.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Talk to the curator at his desk to collect the new rewards.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Original rewards and milestones stay exactly as they are.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

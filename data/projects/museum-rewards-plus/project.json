@@ -1,0 +1,19 @@
+{
+  "slug": "museum-rewards-plus",
+  "game": "stardewvalley",
+  "name": "Museum Rewards Plus",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MuseumRewardsPlus-1.0.zip",
+      "changelog": "## Museum Rewards Plus 1.0\n\nFirst release.\n\n- Ten new rewards from Gunther for donating to the museum, at milestones the game does not reward yet.\n- Minerals: 6, 16, 26, 36 and 46 donated give geodes, frozen geodes, magma geodes, omni geodes and gold bars.\n- Artifacts: 6, 10, 25 and 35 donated give clay, mixed seeds, a rare seed and an artifact trove.\n- 10 minerals and 10 artifacts together give nine blueberry seeds.\n- All original museum rewards stay exactly as they are.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

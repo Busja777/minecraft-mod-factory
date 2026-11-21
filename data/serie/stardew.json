@@ -323,7 +323,11 @@
         "+10",
         "Briefe von Gunther",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 24,
@@ -342,7 +346,7 @@
       "slug": "trash-treasures",
       "name": "Trash Treasures",
       "art": "CP",
-      "was": "Bessere Funde in Mülltonnen",
+      "was": "Bessere Funde in Mülltonnen. ZURÜCKGESTELLT (21.11.): eine V1.0, die nur die Grundchance (eine Zahl) ändert, ist zu dünn für ein eigenes Projekt (Fair Play „low effort“). Erst bauen, wenn je Tonne eigene, belegte Funde möglich sind (die Original-Einträge der Tonnen sind nicht veröffentlicht).",
       "updates": [
         "je Tonne",
         "seltene Funde",
@@ -356,10 +360,14 @@
       "art": "CP",
       "was": "Gebäude günstiger und schneller gebaut",
       "updates": [
-        "Regler",
-        "Ausbauten",
+        "Zauberer-Gebäude optional",
+        "Insel-Gebäude",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 27,
@@ -383,7 +391,11 @@
         "Regler",
         "mehr Rezepte",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 29,
