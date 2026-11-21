@@ -40,6 +40,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "BagLookout-1.4.zip",
+      "changelog": "## Bag Lookout 1.4\n\n- Bag Lookout now speaks **German**: the counter, the warnings, the tooltip and every chat line. On clients in other languages it stays in English.\n- The split view names each kind of bag exactly as the game does, in your client's language, for example \"Herb Bag 12/36\" or \"Reagent Bag 30/36\". A kind the game has no name for still shows as \"Profession Bag\".\n- Amounts in `/bl cheap` and under the \"bags full\" warning now use the game's own coin display.\n- The commands stay the same in every language, for example `/bl view split` or `/bl warn once`. The sound names `warning`, `bell`, `chime`, `horn` and `whisper` stay as they are, too.\n- All settings from 1.3 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

@@ -40,6 +40,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "MailBell-1.4.zip",
+      "changelog": "## Mail Bell 1.4\n\n- Mail Bell now speaks **German**: the new mail line, the expiry warning, the login lines and `/mb letters`. On clients in other languages it stays in English.\n- Senders, subjects and character names keep coming from the game, so they show exactly as in your mailbox.\n- The commands stay the same in every language, for example `/mb letters` or `/mb expire off`. The bell names `bell`, `chime`, `horn`, `warning` and `whisper` stay as they are, too.\n- Your characters, letters and settings from 1.3 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

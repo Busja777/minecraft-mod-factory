@@ -4,7 +4,7 @@ local L = ns.L
 -- The small counter: "Bags 12/98", movable unless locked. A click switches to the split view:
 -- one more line for the reagent bag and one for each kind of profession bag.
 
-local WIDTH, SPLIT_WIDTH = 120, 140
+local WIDTH, SPLIT_WIDTH = 120, 170 -- 1.4: room for the game's bag names ("Leatherworking Bag 24/24")
 local SHORT, LINE = 24, 16 -- the counter alone, and every line below it
 
 local ui

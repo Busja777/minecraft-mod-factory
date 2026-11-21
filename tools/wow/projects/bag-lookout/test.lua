@@ -121,8 +121,8 @@ test("core: state and colour of the counter", function(wow)
   eq(ns.CounterText(5, 92, 5), YELLOW .. "Bags 5/92|r")
   eq(ns.CounterText(0, 92, 5), RED .. "Bags 0/92|r")
   eq(ns.CounterText(nil, nil, 5), GREY .. "Bags ...|r")
-  eq(ns.ReagentText(30, 36, 5), WHITE .. "Reagents 30/36|r")
-  eq(ns.ReagentText(0, 36, 5), RED .. "Reagents 0/36|r")
+  eq(ns.ReagentText(30, 36, 5), WHITE .. "Reagent Bag 30/36|r")
+  eq(ns.ReagentText(0, 36, 5), RED .. "Reagent Bag 0/36|r")
   eq(ns.ReagentText(nil, nil, 5), GREY .. "No reagent bag|r")
 end)
 
@@ -271,10 +271,10 @@ test("the reagent bag is counted on its own and shown in the split view by a cli
   BagLookoutFrame:Click()
   eq(BagLookoutDB.settings.view, "split")
   eq(BagLookoutFrame.detail:IsShown(), true)
-  eq(detail(), YELLOW .. "Reagents 2/36|r")
+  eq(detail(), YELLOW .. "Reagent Bag 2/36|r")
   w.bags[5].free = 0
   wow.fire("BAG_UPDATE_DELAYED")
-  eq(detail(), RED .. "Reagents 0/36|r")
+  eq(detail(), RED .. "Reagent Bag 0/36|r")
   eq(#w.errors, 0, "a full reagent bag does not warn")
   w.bags[5] = nil -- the reagent bag was taken off
   wow.fire("BAG_UPDATE_DELAYED")
@@ -563,11 +563,11 @@ test("core: profession bags are added up per kind, named, and sorted", function(
   })
   local parts = {}
   for _, g in ipairs(list) do parts[#parts + 1] = g.label .. " " .. g.free .. "/" .. g.total end
-  eq(table.concat(parts, ", "), "Herbs 58/64, Mining 10/24, Profession 7/36")
+  eq(table.concat(parts, ", "), "Herb Bag 58/64, Mining Bag 10/24, Profession Bag 7/36")
   eq(#ns.Professions({}), 0)
-  eq(ns.FamilyLabel(65536), "Cooking")
-  eq(ns.FamilyLabel(32768), "Fishing")
-  eq(ns.FamilyLabel(3), "Profession")
+  eq(ns.FamilyLabel(65536), "Cooking Bag")
+  eq(ns.FamilyLabel(32768), "Tackle Box")
+  eq(ns.FamilyLabel(3), "Profession Bag")
 end)
 
 test("core: the lines of the split view and the view setting", function(wow)
@@ -576,12 +576,12 @@ test("core: the lines of the split view and the view setting", function(wow)
   eq(ns.ValidView("total"), "total")
   eq(ns.ValidView("details"), nil)
   eq(ns.ValidView(true), nil)
-  eq(ns.ProfessionText("Herbs", 12, 36, 5), WHITE .. "Herbs 12/36|r")
-  eq(ns.ProfessionText("Mining", 3, 24, 5), YELLOW .. "Mining 3/24|r")
-  eq(ns.ProfessionText("Profession", 0, 20, 5), RED .. "Profession 0/20|r")
+  eq(ns.ProfessionText("Herb Bag", 12, 36, 5), WHITE .. "Herb Bag 12/36|r")
+  eq(ns.ProfessionText("Mining Bag", 3, 24, 5), YELLOW .. "Mining Bag 3/24|r")
+  eq(ns.ProfessionText("Profession Bag", 0, 20, 5), RED .. "Profession Bag 0/20|r")
   local lines = ns.SplitLines({ reagentFree = 30, reagentTotal = 36, professions = {
-    { label = "Herbs", free = 12, total = 36 }, { label = "Mining", free = 0, total = 24 } } }, 5)
-  eq(table.concat(lines, " | "), WHITE .. "Reagents 30/36|r | " .. WHITE .. "Herbs 12/36|r | " .. RED .. "Mining 0/24|r")
+    { label = "Herb Bag", free = 12, total = 36 }, { label = "Mining Bag", free = 0, total = 24 } } }, 5)
+  eq(table.concat(lines, " | "), WHITE .. "Reagent Bag 30/36|r | " .. WHITE .. "Herb Bag 12/36|r | " .. RED .. "Mining Bag 0/24|r")
   lines = ns.SplitLines({}, 5)
   eq(#lines, 1)
   eq(lines[1], GREY .. "No reagent bag|r", "the reagent line is always there, as in 1.0")
@@ -603,10 +603,10 @@ test("split view: one line per bag type, the warning still follows only the norm
   eq(BagLookoutDB.settings.view, "split")
   eq(BagLookoutFrame.detail:IsShown(), true)
   eq(counter(), WHITE .. "Bags 10/56|r", "the first line stays the same")
-  eq(detail(), WHITE .. "Reagents 30/36|r\n" .. WHITE .. "Herbs 12/36|r\n" .. WHITE .. "Mining 24/24|r")
+  eq(detail(), WHITE .. "Reagent Bag 30/36|r\n" .. WHITE .. "Herb Bag 12/36|r\n" .. WHITE .. "Mining Bag 24/24|r")
   w.bags[3].free = 0 -- the herb bag is full
   wow.fire("BAG_UPDATE_DELAYED")
-  eq(detail(), WHITE .. "Reagents 30/36|r\n" .. RED .. "Herbs 0/36|r\n" .. WHITE .. "Mining 24/24|r")
+  eq(detail(), WHITE .. "Reagent Bag 30/36|r\n" .. RED .. "Herb Bag 0/36|r\n" .. WHITE .. "Mining Bag 24/24|r")
   eq(#w.errors, 0, "a full profession bag does not warn")
   w.bags[0].free, w.bags[1].free, w.bags[2].free = 0, 3, 0
   wow.fire("BAG_UPDATE_DELAYED")
@@ -615,7 +615,7 @@ test("split view: one line per bag type, the warning still follows only the norm
   w.bags[4] = { total = 18, free = 18, family = 0 } -- the mining bag swapped for a normal one
   wow.fire("BAG_UPDATE_DELAYED")
   eq(ns.counts.total, 74)
-  eq(detail(), WHITE .. "Reagents 30/36|r\n" .. RED .. "Herbs 0/36|r")
+  eq(detail(), WHITE .. "Reagent Bag 30/36|r\n" .. RED .. "Herb Bag 0/36|r")
   BagLookoutFrame:Click()
   eq(BagLookoutDB.settings.view, "total")
   eq(BagLookoutFrame.detail:IsShown(), false)
@@ -630,7 +630,7 @@ test("/bl view switches between the total and the split view", function(wow)
   wow.slash("/bl VIEW Split")
   eq(wow.chat[2], PREFIX .. "View: one line per bag type.")
   eq(BagLookoutDB.settings.view, "split")
-  eq(detail(), WHITE .. "Reagents 36/36|r\n" .. WHITE .. "Enchanting 18/18|r")
+  eq(detail(), WHITE .. "Reagent Bag 36/36|r\n" .. WHITE .. "Enchanting Bag 18/18|r")
   wow.slash("/bl view sideways")
   eq(wow.chat[3], PREFIX .. "Use /bl view total or /bl view split.")
   eq(BagLookoutDB.settings.view, "split")
@@ -659,7 +659,7 @@ test("1.0 settings move on to 1.1: the reagent click becomes the split view", fu
   eq(s.locked, true)
   eq(s.point[1], "TOP")
   eq(BagLookoutFrame.detail:IsShown(), true)
-  eq(detail(), WHITE .. "Reagents 36/36|r")
+  eq(detail(), WHITE .. "Reagent Bag 36/36|r")
 
   BagLookoutDB = { version = 1, settings = { details = false } }
   wow.fire("PLAYER_LOGIN")
@@ -1054,4 +1054,186 @@ test("a cheap command before login does nothing", function(wow)
   wow.slash("/bl cheap")
   eq(#wow.chat, 0)
   eq(w.lookups, 0)
+end)
+
+-- 1.4: German ---------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language, the names it has for kinds of bag (the item subclasses of
+-- containers; this one lacks the engineering bag) and its coin display. Called after stock(),
+-- which replaces C_Item.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  local names = { [2] = "Kräutertasche", [6] = "Bergbautasche", [11] = "Reagenzientasche" }
+  C_Item = C_Item or {}
+  C_Item.GetItemSubClassInfo = function(class, subclass)
+    if class ~= 1 then return nil end
+    return names[subclass], false
+  end
+  GetMoneyString = function(copper) return "<" .. copper .. ">" end
+end
+
+test("German client: counter, split view, warnings, tooltip and state in German, bag names from the game", function(wow)
+  local w = world(wow)
+  germanClient(wow)
+  w.free(10)
+  w.bags[1] = { total = 16, free = 16, family = 4096 } -- a kind without a name
+  w.bags[2] = { total = 20, free = 20, family = 128 }  -- engineering: this client has no name for it
+  w.bags[3] = { total = 36, free = 36, family = 32 }   -- herbs
+  w.bags[4] = { total = 24, free = 24, family = 1024 } -- mining
+  boot(wow)
+  eq(counter(), WHITE .. "Taschen 10/20|r")
+  BagLookoutFrame:Click()
+  eq(detail(), WHITE .. "Reagenzientasche 36/36|r\n" .. WHITE .. "Kräutertasche 36/36|r\n" .. WHITE .. "Engineering Bag 20/20|r\n"
+    .. WHITE .. "Bergbautasche 24/24|r\n" .. WHITE .. "Berufstasche 16/16|r")
+  local f = BagLookoutFrame
+  f.scripts.OnEnter(f)
+  eq(wow.tooltip.lines[1], "Bag Lookout")
+  eq(wow.tooltip.lines[2], "Klicken, um zwischen der Summe und einer Zeile pro Taschenart zu wechseln.")
+  eq(wow.tooltip.lines[3], "Zum Verschieben ziehen.")
+  w.loot(3)
+  eq(w.errors[1].msg, "Taschen fast voll: noch 3 freie Plätze.")
+  w.loot(0)
+  eq(w.errors[2].msg, "Deine Taschen sind voll!")
+  eq(counter(), RED .. "Taschen 0/20|r")
+  w.loot(10)
+  w.loot(1)
+  eq(w.errors[3].msg, "Taschen fast voll: noch 1 freier Platz.")
+  wow.slash("/bl")
+  eq(#wow.chat, 2)
+  eq(wow.chat[1], PREFIX .. "1 von 20 Taschenplätzen frei. Warnung bei 5 freien Plätzen oder weniger. Der Warnton ist an: warning. Warnt jedes Mal, wenn sich die Taschen wieder füllen. Der Zähler ist entsperrt. Ansicht: eine Zeile pro Taschenart.")
+  eq(wow.chat[2], PREFIX .. "Befehle: /bl threshold <0-50>, /bl view total oder split, /bl lock, /bl hide, /bl show, /bl sound on oder off, /bl sound mit einem Tonnamen oder none, /bl warn once oder always, /bl cheap zeigt die Gegenstände mit dem geringsten Wert.")
+  w.bags[5] = nil -- the reagent bag taken off
+  wow.fire("BAG_UPDATE_DELAYED")
+  eq(detail():sub(1, #GREY + 22), GREY .. "Keine Reagenzientasche")
+end)
+
+test("German client: every command answers in German, the command words stay English", function(wow)
+  local w = world(wow)
+  germanClient(wow)
+  boot(wow)
+  wow.slash("/bl threshold 99")
+  eq(wow.chat[1], PREFIX .. "Die Schwelle muss eine ganze Zahl von 0 bis 50 sein.")
+  wow.slash("/bl threshold 8")
+  eq(wow.chat[2], PREFIX .. "Warnung bei 8 freien Plätzen oder weniger.")
+  wow.slash("/bl lock")
+  eq(wow.chat[3], PREFIX .. "Der Zähler ist gesperrt.")
+  BagLookoutFrame.scripts.OnEnter(BagLookoutFrame)
+  eq(wow.tooltip.lines[3], "Gesperrt. Gib /bl lock ein, um ihn zu verschieben.")
+  wow.slash("/bl lock")
+  eq(wow.chat[4], PREFIX .. "Der Zähler ist entsperrt.")
+  wow.slash("/bl hide")
+  eq(wow.chat[5], PREFIX .. "Der Zähler ist ausgeblendet. Die Warnungen bleiben an. /bl show holt ihn zurück.")
+  wow.slash("/bl")
+  eq(wow.chat[6]:match("Der Zähler ist ausgeblendet%. Ansicht: Summe%.$") ~= nil, true)
+  wow.slash("/bl show")
+  eq(wow.chat[8], PREFIX .. "Der Zähler ist eingeblendet.")
+  wow.slash("/bl view sideways")
+  eq(wow.chat[9], PREFIX .. "Nutze /bl view total oder /bl view split.")
+  wow.slash("/bl view split")
+  eq(wow.chat[10], PREFIX .. "Ansicht: eine Zeile pro Taschenart.")
+  wow.slash("/bl view total")
+  eq(wow.chat[11], PREFIX .. "Ansicht: Summe.")
+  wow.slash("/bl sound")
+  eq(wow.chat[12], PREFIX .. "Der Warnton ist an: warning.")
+  eq(wow.chat[13], PREFIX .. "Töne: warning, bell, chime, horn oder whisper. /bl sound mit einem Namen wählt ihn und spielt ihn einmal ab, /bl sound none ist stumm.")
+  wow.slash("/bl sound chime")
+  eq(wow.chat[14], PREFIX .. "Der Warnton ist an: chime.")
+  eq(#w.sounds, 1, "the preview")
+  wow.slash("/bl sound none")
+  eq(wow.chat[15], PREFIX .. "Der Warnton ist aus.")
+  wow.slash("/bl warn sometimes")
+  eq(wow.chat[16], PREFIX .. "Nutze /bl warn once oder /bl warn always.")
+  wow.slash("/bl warn once")
+  eq(wow.chat[17], PREFIX .. "Warnt einmal pro Sitzung.")
+  eq(BagLookoutDB.settings.repeatWarn, "once")
+end)
+
+test("German client: /bl cheap and the bags full warning in German, amounts in the game's coins", function(wow)
+  local w = world(wow)
+  stock(w, { [0] = {
+    [1] = item(101, 1, 10, 20), [2] = item(102, 0, 3, 4),
+    [3] = { id = 103, quality = 1, price = 5, notLoaded = true },
+  } })
+  germanClient(wow)
+  w.free(10)
+  local ns = boot(wow)
+  wow.slash("/bl cheap")
+  eq(#wow.chat, 4)
+  eq(wow.chat[1], PREFIX .. "Geringster Händlerwert pro Platz (graue, weiße und grüne Gegenstände, ganzer Stapel):")
+  eq(wow.chat[2], "  1. " .. link(102, 0) .. " x4: <12>")
+  eq(wow.chat[3], "  2. " .. link(101, 1) .. " x20: <200>")
+  eq(wow.chat[4], PREFIX .. "1 Gegenstand ist vom Spiel noch nicht geladen und wurde übersprungen. Versuch es gleich noch einmal.")
+  w.loot(0)
+  eq(w.errors[1].msg, "Deine Taschen sind voll!")
+  eq(w.errors[2].msg, "Am wenigsten wert: " .. link(102, 0) .. " (<12>)")
+  eq(ns.CheapLine(2, item(9, 1, 7)), "2. Gegenstand 9: <7>", "named by its ID without a link")
+  w.items = { [0] = { [1] = item(1, 3, 100), [2] = { id = 3, quality = 1, price = 5, notLoaded = true }, [3] = { id = 4, quality = 1, price = 5, notLoaded = true } } }
+  wow.slash("/bl cheap")
+  eq(wow.chat[5], PREFIX .. "Kein grauer, weißer oder grüner Gegenstand mit Händlerpreis in deinen Taschen.")
+  eq(wow.chat[6], PREFIX .. "2 Gegenstände sind vom Spiel noch nicht geladen und wurden übersprungen. Versuch es gleich noch einmal.")
+end)
+
+test("bag names and amounts come from the game, with the English name or plain coins as fallback", function(wow)
+  world(wow)
+  local ns = boot(wow)
+  eq(ns.FamilyLabel(32), "Herb Bag", "a client without the names")
+  local asked = {}
+  C_Item = { GetItemSubClassInfo = function(class, subclass)
+    asked[#asked + 1] = class .. ":" .. subclass
+    return ({ [2] = "Herb Bag", [9] = "Tackle Box", [11] = "Reagent Bag" })[subclass]
+  end }
+  eq(ns.FamilyLabel(32), "Herb Bag")
+  eq(ns.FamilyLabel(32768), "Tackle Box")
+  eq(ns.FamilyLabel(1024), "Mining Bag", "a name the client lacks stays English")
+  eq(ns.FamilyLabel(8), "Leatherworking Bag")
+  eq(ns.ReagentText(30, 36, 5), WHITE .. "Reagent Bag 30/36|r")
+  eq(asked[1], "1:2", "class 1 (containers), subclass 2 (herb bag)")
+  eq(asked[#asked], "1:11")
+  Enum.ItemClass = { Container = 1 }
+  eq(ns.FamilyLabel(512), "Gem Bag")
+  eq(asked[#asked], "1:5")
+  C_Item.GetItemSubClassInfo = function() return { secret = true } end
+  eq(ns.FamilyLabel(64), "Enchanting Bag", "a secret name is not used")
+  C_Item.GetItemSubClassInfo = function() return "" end
+  eq(ns.FamilyLabel(128), "Engineering Bag")
+  C_Item.GetItemSubClassInfo = function() error("not ready") end
+  eq(ns.FamilyLabel(16), "Inscription Bag")
+  C_Item = nil
+  GetItemSubClassInfo = function(_, subclass) return subclass == 10 and "Cooking Bag (old name)" or nil end
+  eq(ns.FamilyLabel(65536), "Cooking Bag (old name)", "the older function of the same name")
+  eq(ns.FamilyLabel(3), "Profession Bag")
+  eq(ns.Money(305), "3s 05c")
+  GetMoneyString = function(copper, separate) return copper .. (separate and " coins" or "") end
+  eq(ns.Money(305), "305 coins")
+  GetMoneyString = function() error("busy") end
+  eq(ns.Money(305), "3s 05c")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  world(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 38, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  local w = world(wow)
+  wow.locale = "enUS"
+  w.free(12)
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  eq(counter(), WHITE .. "Bags 12/92|r")
+  eq(ns.WarningText("low", 3), "Bags almost full: 3 free slots left.")
 end)
