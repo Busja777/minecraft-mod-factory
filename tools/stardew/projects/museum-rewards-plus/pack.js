@@ -44,11 +44,17 @@
 //   - Why not MUSEUM_DONATIONS (the donation count query on the same page): the pack check in
 //     tools/stardew/lib.js does not list it yet. The reward flag marks the same milestone, only
 //     tied to the moment the reward is collected, which also suits a thank-you letter.
+// - 1.2, German: the ten letters and their titles are translated in de.js (i18n/de.json, Content
+//   Patcher translations.md: a missing key falls back to default.json, but every key has a German
+//   text here). Same rules as the English letters: greeting with the player's name, no mail commands,
+//   same signature, no title twice.
 //
 // Vanilla milestones (https://stardewvalleywiki.com/Museum, "Donation Rewards", revision 190472):
 // total donations 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95; minerals 11, 21, 31, 41,
 // 50; artifacts 15, 20, and 3, 5 or 11 artifacts together with specific artifacts. 53 minerals and
 // 42 artifacts can be donated. The new milestones below avoid every one of these counts.
+
+import { DE, SIGN } from './de.js';
 
 export const TAGS = { minerals: 'item_type_minerals', artifacts: 'item_type_arch' };
 export const TOTALS = { minerals: 53, artifacts: 42 };
@@ -127,8 +133,11 @@ export default async function ({ items }) {
   const mail = {};
   const triggers = {};
   const i18n = {};
+  const de = {};
   const titles = new Set();
+  const deTitles = new Set();
   for (const suffix of Object.keys(LETTERS)) if (!REWARDS[suffix]) throw new Error(`letter ${suffix}: no reward with that ID`);
+  for (const suffix of Object.keys(DE)) if (!REWARDS[suffix]) throw new Error(`German letter ${suffix}: no reward with that ID`);
   for (const suffix of Object.keys(REWARDS)) {
     const [title, text] = LETTERS[suffix] || [];
     if (!title || !text) throw new Error(`${suffix}: Gunther's letter is missing`);
@@ -141,6 +150,15 @@ export default async function ({ items }) {
     if (id === flag || entries[id]) throw new Error(`${suffix}: the letter ID must differ from the reward ID`);
     i18n[`letter.${suffix}`] = text + SIGNATURE;
     i18n[`title.${suffix}`] = title;
+    // German (since 1.2): every letter has its translation, same rules and signature as the English one.
+    const [deTitle, deText] = DE[suffix] || [];
+    if (!deTitle || !deText) throw new Error(`${suffix}: German text missing in de.js`);
+    if (/[%[\]¦{}#$]/.test(deText + deTitle)) throw new Error(`${suffix}: mail command characters in the German letter`);
+    if (!deText.startsWith('Hallo @,^^')) throw new Error(`${suffix}: German letters greet the player by name`);
+    if (deTitles.has(deTitle)) throw new Error(`${suffix}: German title "${deTitle}" is used twice`);
+    deTitles.add(deTitle);
+    de[`letter.${suffix}`] = deText + SIGN;
+    de[`title.${suffix}`] = deTitle;
     mail[id] = `{{i18n:letter.${suffix}}}[#]{{i18n:title.${suffix}}}`;
     triggers[id] = {
       Id: id,
@@ -163,6 +181,7 @@ export default async function ({ items }) {
         { LogName: 'Send a thank-you letter the morning after a reward', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers }
       ]
     },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

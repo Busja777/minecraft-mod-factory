@@ -32,9 +32,9 @@
       "art": "CP",
       "was": "Neue Dialogzeilen für Linus und Willy (Jahreszeit, Wetter, Herzen)",
       "updates": [
-        "Marnie und Robin",
         "Evelyn, George, Zauberer",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "weitere Bewohner nach Wunsch in den Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -322,7 +322,7 @@
       "updates": [
         "+10 Belohnungen (Möbel, sobald die Prüfung (F)-IDs kennt)",
         "Briefe schon beim Erreichen der Zahl (sobald MUSEUM_DONATIONS in der Prüfung steht)",
-        "Deutsch"
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
