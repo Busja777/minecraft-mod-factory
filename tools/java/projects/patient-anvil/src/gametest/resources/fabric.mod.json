@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "patientanvil-gametest",
+  "version": "1.0.0",
+  "name": "Patient Anvil game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.patientanvil.gametest.PatientAnvilGameTest"]
+  },
+  "depends": {
+    "patientanvil": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}
