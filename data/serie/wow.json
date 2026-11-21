@@ -49,9 +49,9 @@
       "art": "RF",
       "was": "Nimmt Quests an und gibt sie ab, Umschalttaste pausiert",
       "updates": [
-        "Ausnahmen (Dailys)",
         "einzige Gesprächsoption wählen",
-        "Belohnungs-Hinweis"
+        "Belohnungs-Hinweis",
+        "Ausnahmen per Rechtsklick im Questlog"
       ]
     },
     {
@@ -73,9 +73,9 @@
       "art": "RF",
       "was": "Lernt Flugzeiten, zeigt Countdown",
       "updates": [
-        "Zeiten für alle Charaktere",
-        "Dauer im Flugkarten-Tooltip",
-        "Ankunfts-Ton"
+        "Ankunfts-Ton",
+        "Gesamtflugzeit der Sitzung",
+        "Routenliste im Fenster"
       ]
     },
     {

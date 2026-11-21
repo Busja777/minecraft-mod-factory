@@ -86,3 +86,9 @@ function ns.CountdownText(known, elapsed)
   if left <= 0 then return L["Landing any moment ..."] end
   return string.format(L["Landing in %s"], ns.FormatTime(math.ceil(left)))
 end
+
+-- The line in the flight map tooltip (1.1). known = learned duration of the route, nil while unknown.
+function ns.TooltipText(known)
+  if not known then return L["Flight time: not timed yet"] end
+  return string.format(L["Flight time: %s"], ns.FormatTime(known))
+end

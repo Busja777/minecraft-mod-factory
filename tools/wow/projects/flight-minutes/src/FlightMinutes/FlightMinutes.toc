@@ -8,3 +8,4 @@ Locale.lua
 Core.lua
 Tracker.lua
 UI.lua
+Tooltip.lua

@@ -6,6 +6,8 @@ local function game()
   local g = {
     calls = {}, shift = false, completable = true, choices = 0, money = 0, autoAccept = false,
     gossipActive = {}, gossipAvailable = {}, greetingActive = {}, greetingAvailable = 0,
+    -- 1.1: the quest of the open quest window, quest log entries by ID, greeting window details
+    quest = {}, log = {}, titles = {}, greetingIDs = {}, greetingTitles = {}, greetingFrequency = {},
   }
   local function call(name)
     return function(arg) g.calls[#g.calls + 1] = arg ~= nil and (name .. " " .. tostring(arg)) or name end
@@ -29,7 +31,20 @@ local function game()
   GetActiveTitle = function(i) return g.greetingActive[i].title, g.greetingActive[i].complete end
   SelectActiveQuest = call("SelectActiveQuest")
   GetNumAvailableQuests = function() return g.greetingAvailable end
-  GetAvailableQuestInfo = function(i) return false, 0, g.greetingRepeatable and g.greetingRepeatable[i] == true end
+  GetAvailableQuestInfo = function(i)
+    return false, g.greetingFrequency[i] or 0, g.greetingRepeatable and g.greetingRepeatable[i] == true, false, g.greetingIDs[i] or 0
+  end
+  GetAvailableTitle = function(i) return g.greetingTitles[i] or ("Offer " .. i) end
+  GetActiveQuestID = function(i) return g.greetingActive[i].id or 0 end
+  GetQuestID = function() return g.quest.id or 0 end
+  GetTitleText = function() return g.quest.title or "" end
+  QuestIsDaily = function() return g.quest.daily == true end
+  QuestIsWeekly = function() return g.quest.weekly == true end
+  C_QuestLog = {
+    GetLogIndexForQuestID = function(id) if g.log[id] then return 7 + id end end,
+    GetInfo = function(index) for id, info in pairs(g.log) do if 7 + id == index then return info end end end,
+    GetTitleForQuestID = function(id) return g.titles[id] end,
+  }
   SelectAvailableQuest = call("SelectAvailableQuest")
   g.done = function() return table.concat(g.calls, ", ") end
   return g
@@ -258,9 +273,9 @@ end)
 test("/qa prints the state, on and off switch everything", function(wow)
   local ns, g = boot(wow)
   wow.slash("/qa")
-  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Autopilot is on. Accepting quests: on. Handing in quests: on.")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Autopilot is on. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Kept manual: 0.")
   wow.slash("/questautopilot OFF ")
-  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Autopilot is off. Accepting quests: on. Handing in quests: on.")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Autopilot is off. Accepting quests: on. Handing in quests: on. Daily and weekly quests: automatic. Kept manual: 0.")
   eq(QuestAutopilotDB.settings.enabled, false)
   g.gossipActive = { { questID = 1, isComplete = true } }
   g.gossipAvailable = { { questID = 2 } }
@@ -275,8 +290,12 @@ test("/qa prints the state, on and off switch everything", function(wow)
   wow.fire("QUEST_DETAIL")
   eq(g.done(), "AcceptQuest")
   wow.slash("/qa what")
-  eq(#wow.chat, 4)
+  eq(#wow.chat, 6, "three help lines")
   eq(wow.chat[4]:match("/qa accept and /qa turnin switch one half") ~= nil, true)
+  eq(wow.chat[5]:match("/qa manual keeps the quest you just saw manual") ~= nil, true)
+  eq(wow.chat[6]:match("/qa dailies leaves all daily and weekly quests to you") ~= nil, true)
+  wow.slash("/qa on now")
+  eq(#wow.chat, 9, "a known word with something after it is not a switch")
 end)
 
 test("/qa accept and /qa turnin switch one half each", function(wow)
@@ -314,7 +333,7 @@ test("settings survive a restart, missing ones get their default", function(wow)
   eq(saved.settings.turnin, false)
   eq(saved.settings.accept, true)
   eq(saved.settings.enabled, true)
-  eq(saved.version, 1)
+  eq(saved.version, 2)
   wow.fire("QUEST_PROGRESS")
   eq(g.done(), "")
   wow.slash("/qa turnin")
@@ -418,3 +437,305 @@ test("repeatable quests at a quest giver: handed in once, never taken again by t
   eq(g.done(), "Gossip.SelectActiveQuest 50, SelectAvailableQuest 2", "greeting window: the repeatable first quest is skipped")
 end)
 
+
+-- 1.1: quests kept manual and the switch for daily and weekly quests
+
+test("decision: a quest kept manual is never accepted, continued or rewarded", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  eq(ns.OnDetail({ enabled = true, manual = true }), nil)
+  eq(ns.OnDetail({ enabled = true, manual = false }), "accept")
+  eq(ns.OnProgress({ enabled = true, manual = true, completable = true, moneyNeeded = 0 }), nil)
+  eq(ns.OnComplete({ enabled = true, manual = true, choices = 0, moneyNeeded = 0 }), nil)
+  eq(ns.OnComplete({ enabled = true, manual = true, choices = 3, moneyNeeded = 0 }), nil, "no chat line for a manual quest")
+end)
+
+test("decision: a quest giver's manual quests are passed over, the others still run", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  local active = { { id = 1, complete = true, manual = true }, { id = 2, complete = true } }
+  local available = { { id = 3, manual = true }, { id = 4 } }
+  local kind, id = ns.Pick({ accept = true, turnin = true, active = active, available = available })
+  eq(kind, "active")
+  eq(id, 2)
+  kind, id = ns.Pick({ accept = true, turnin = true, active = { active[1] }, available = available })
+  eq(kind, "available")
+  eq(id, 4)
+  eq(ns.Pick({ accept = true, turnin = true, active = { active[1] }, available = { available[1] } }), nil)
+end)
+
+test("reading what the player typed: ID, name or quest link", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  local id, title = ns.ParseQuest("12345")
+  eq(id, 12345)
+  eq(title, nil)
+  id, title = ns.ParseQuest(" #777 ")
+  eq(id, 777)
+  id, title = ns.ParseQuest("  Feed the Gryphons ")
+  eq(id, nil)
+  eq(title, "Feed the Gryphons")
+  id, title = ns.ParseQuest("|cffffff00|Hquest:83432:80|h[Into the Deep]|h|r")
+  eq(id, 83432)
+  eq(title, "Into the Deep")
+  eq(ns.ParseQuest(""), nil)
+  eq(ns.ParseQuest("   "), nil)
+  eq(ns.ParseQuest(nil), nil)
+end)
+
+test("the list: add, find, remove, labels", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  local list = ns.ManualList({})
+  local settings = ns.Settings({})
+  local label, isNew = ns.AddManual(list, 100, "Feed the Gryphons")
+  eq(label, "Feed the Gryphons (100)")
+  eq(isNew, true)
+  label, isNew = ns.AddManual(list, 100, nil)
+  eq(label, "Feed the Gryphons (100)", "a known title is kept")
+  eq(isNew, false)
+  eq(select(1, ns.AddManual(list, 200, nil)), "Quest 200")
+  eq(select(1, ns.AddManual(list, nil, " Sweep the Deck ")), "Sweep the Deck")
+  eq(select(2, ns.AddManual(list, nil, "SWEEP THE DECK")), false, "names ignore upper and lower case")
+  eq(ns.AddManual(list, nil, "  "), nil)
+  eq(ns.ManualCount(list), 3)
+  eq(table.concat(ns.ManualLabels(list), "|"), "Feed the Gryphons (100)|Quest 200|Sweep the Deck")
+
+  eq(ns.IsManual(list, settings, { id = 100 }), true)
+  eq(ns.IsManual(list, settings, { id = 101, title = "Feed the Gryphons" }), false, "kept by ID, not by title")
+  eq(ns.IsManual(list, settings, { id = 300, title = "sweep the deck" }), true, "kept by name")
+  eq(ns.IsManual(list, settings, { title = "Other" }), false)
+  eq(ns.IsManual(list, settings, {}), false)
+
+  eq(ns.RemoveManual(list, 200), "Quest 200")
+  eq(ns.RemoveManual(list, 200), nil)
+  eq(ns.RemoveManual(list, nil, "feed the gryphons"), "Feed the Gryphons (100)", "a name also removes a quest kept by ID")
+  eq(ns.RemoveManual(list, nil, "Sweep the Deck"), "Sweep the Deck")
+  eq(ns.ManualCount(list), 0)
+end)
+
+test("decision: the daily switch is off by default and catches only daily and weekly quests", function(wow)
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  local list = ns.ManualList({})
+  local settings = ns.Settings({})
+  eq(settings.manualDailies, false)
+  eq(ns.IsManual(list, settings, { id = 1, periodic = true }), false, "1.0 behaviour by default")
+  eq(ns.Apply(settings, "dailies"), true)
+  eq(ns.IsManual(list, settings, { id = 1, periodic = true }), true)
+  eq(ns.IsManual(list, settings, { id = 1, periodic = false }), false)
+  eq(ns.IsManual(list, settings, { id = 1 }), false)
+  ns.Apply(settings, "dailies")
+  eq(settings.manualDailies, false)
+end)
+
+test("/qa manual <ID>: that quest is left to the player, others still run", function(wow)
+  local ns, g = boot(wow)
+  g.titles[4242] = "Feed the Gryphons"
+  wow.slash("/qa manual 4242")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Feed the Gryphons (4242) stays manual from now on.")
+  eq(QuestAutopilotDB.manual.ids[4242], "Feed the Gryphons", "saved")
+  g.quest = { id = 4242, title = "Feed the Gryphons" }
+  wow.fire("QUEST_DETAIL")
+  wow.fire("QUEST_PROGRESS")
+  g.choices = 3
+  wow.fire("QUEST_COMPLETE")
+  eq(g.done(), "")
+  eq(#wow.chat, 1, "no line about rewards for a manual quest")
+  g.quest, g.choices = { id = 5000, title = "Other" }, 0
+  wow.fire("QUEST_DETAIL")
+  wow.fire("QUEST_PROGRESS")
+  wow.fire("QUEST_COMPLETE")
+  eq(g.done(), "AcceptQuest, CompleteQuest, GetQuestReward 1")
+  wow.slash("/qa manual 4242")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Feed the Gryphons (4242) is already kept manual.")
+end)
+
+test("/qa manual without a quest: the quest of the window, or the one the autopilot just took", function(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa manual")
+  eq(wow.chat[1]:match("No quest seen yet%.") ~= nil, true)
+  eq(ns.ManualCount(ns.manual), 0)
+  g.quest = { id = 900, title = "Daily Delivery" }
+  wow.fire("QUEST_DETAIL") -- the autopilot accepts it and the window closes
+  leave(wow)
+  eq(g.done(), "AcceptQuest")
+  wow.slash("/qa manual")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Daily Delivery (900) stays manual from now on.")
+  wow.fire("QUEST_PROGRESS")
+  eq(g.done(), "AcceptQuest", "handing it in is left to the player too")
+  wow.slash("/qa")
+  eq(wow.chat[3]:match("Kept manual: 1%.$") ~= nil, true)
+end)
+
+test("a quest kept by name is skipped in both quest giver lists", function(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa manual   sweep the deck")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r sweep the deck stays manual from now on.")
+  g.gossipActive = { { questID = 31, isComplete = true, title = "Sweep the Deck" }, { questID = 32, isComplete = true, title = "Other" } }
+  g.gossipAvailable = { { questID = 41, title = "Sweep the Deck" }, { questID = 42, title = "Fresh" } }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectActiveQuest 32")
+  g.gossipActive = { g.gossipActive[1] }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectActiveQuest 32, Gossip.SelectAvailableQuest 42")
+  g.calls = {}
+  g.greetingActive = { { title = "Sweep the Deck", complete = true }, { title = "Other", complete = true } }
+  g.greetingAvailable = 2
+  g.greetingTitles = { "Sweep the Deck", "Fresh" }
+  wow.fire("QUEST_GREETING")
+  eq(g.done(), "SelectActiveQuest 2")
+  g.greetingActive = { g.greetingActive[1] }
+  wow.fire("QUEST_GREETING")
+  eq(g.done(), "SelectActiveQuest 2, SelectAvailableQuest 2")
+  g.quest = { id = 77, title = "Sweep The Deck" }
+  wow.fire("QUEST_DETAIL")
+  eq(g.done(), "SelectActiveQuest 2, SelectAvailableQuest 2", "the quest window too")
+end)
+
+test("a quest kept by ID is found in the greeting window by its ID", function(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa manual 61")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Quest 61 stays manual from now on.", "no title known yet")
+  g.greetingActive = { { title = "A", complete = true, id = 61 }, { title = "B", complete = true, id = 62 } }
+  g.greetingAvailable = 2
+  g.greetingIDs = { 61, 63 }
+  wow.fire("QUEST_GREETING")
+  eq(g.done(), "SelectActiveQuest 2")
+  g.greetingActive = { g.greetingActive[1] }
+  wow.fire("QUEST_GREETING")
+  eq(g.done(), "SelectActiveQuest 2, SelectAvailableQuest 2")
+end)
+
+test("a quest link works for adding and handing back", function(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa manual |cffffff00|Hquest:83432:80|h[Into the Deep]|h|r")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r Into the Deep (83432) stays manual from now on.")
+  wow.slash("/qa auto |cffffff00|Hquest:83432:80|h[Into the Deep]|h|r")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Into the Deep (83432) is handled by the autopilot again.")
+  eq(ns.ManualCount(ns.manual), 0)
+end)
+
+test("/qa auto and /qa list", function(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa list")
+  eq(wow.chat[1], "|cffffd100Quest Autopilot:|r You keep no quests manual. /qa manual adds the quest you just saw.")
+  wow.slash("/qa manual 5")
+  wow.slash("/qa manual Zebra Hunt")
+  wow.slash("/qa manual apple picking")
+  wow.slash("/qa LIST")
+  eq(wow.chat[5], "|cffffd100Quest Autopilot:|r Quests you keep manual: 3")
+  eq(wow.chat[6], "|cffffd100Quest Autopilot:|r   apple picking")
+  eq(wow.chat[7], "|cffffd100Quest Autopilot:|r   Quest 5")
+  eq(wow.chat[8], "|cffffd100Quest Autopilot:|r   Zebra Hunt")
+  wow.slash("/qa auto zebra hunt")
+  eq(wow.chat[9], "|cffffd100Quest Autopilot:|r Zebra Hunt is handled by the autopilot again.")
+  wow.slash("/qa auto 6")
+  eq(wow.chat[10], "|cffffd100Quest Autopilot:|r Quest 6 is not on your list. /qa list shows it.")
+  wow.slash("/qa auto")
+  eq(#wow.chat, 13, "nothing named: the help")
+  eq(QuestAutopilotDB.manual.ids[5], "")
+  eq(QuestAutopilotDB.manual.names["zebra hunt"], nil)
+  g.quest = { id = 5 }
+  wow.fire("QUEST_DETAIL")
+  eq(g.done(), "")
+  wow.slash("/qa auto 5")
+  wow.fire("QUEST_DETAIL")
+  eq(g.done(), "AcceptQuest")
+end)
+
+test("/qa dailies leaves daily and weekly quests to the player everywhere", function(wow)
+  local ns, g = boot(wow)
+  g.quest = { id = 10, title = "Daily", daily = true }
+  wow.fire("QUEST_DETAIL")
+  eq(g.done(), "AcceptQuest", "off by default: 1.0 behaviour")
+  wow.slash("/qa dailies")
+  eq(wow.chat[1]:match("Daily and weekly quests: manual%.") ~= nil, true)
+  eq(QuestAutopilotDB.settings.manualDailies, true)
+  g.calls = {}
+  wow.fire("QUEST_DETAIL")
+  g.quest = { id = 11, title = "Weekly", weekly = true }
+  wow.fire("QUEST_DETAIL")
+  -- handing in: the quest window may not say it, the quest log does
+  g.quest = { id = 12, title = "Logged daily" }
+  g.log[12] = { frequency = 1 }
+  wow.fire("QUEST_PROGRESS")
+  wow.fire("QUEST_COMPLETE")
+  g.gossipActive = { { questID = 12, isComplete = true, frequency = 1 } }
+  g.gossipAvailable = { { questID = 13, frequency = 2 } }
+  wow.fire("GOSSIP_SHOW")
+  g.greetingActive = { { title = "Logged daily", complete = true, id = 12 } }
+  g.greetingAvailable = 1
+  g.greetingFrequency = { 1 }
+  wow.fire("QUEST_GREETING")
+  eq(g.done(), "")
+  g.quest = { id = 14, title = "Normal" }
+  g.log[14] = { frequency = 0 }
+  wow.fire("QUEST_DETAIL")
+  wow.fire("QUEST_PROGRESS")
+  g.gossipAvailable = { { questID = 13, frequency = 2 }, { questID = 15, frequency = 0 } }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "AcceptQuest, CompleteQuest, Gossip.SelectAvailableQuest 15", "normal quests still run")
+  wow.slash("/qa dailies")
+  eq(QuestAutopilotDB.settings.manualDailies, false)
+end)
+
+test("1.0 saved data is taken over: settings stay, the list starts empty", function(wow)
+  QuestAutopilotDB = { version = 1, settings = { enabled = true, accept = false, turnin = true } }
+  local saved = QuestAutopilotDB
+  local ns, g = boot(wow)
+  eq(QuestAutopilotDB, saved)
+  eq(saved.version, 2)
+  eq(saved.settings.accept, false)
+  eq(saved.settings.manualDailies, false)
+  eq(type(saved.manual), "table")
+  eq(ns.ManualCount(ns.manual), 0)
+  eq(ns.manual, saved.manual, "commands write into the saved table")
+  wow.slash("/qa manual 9")
+  eq(saved.manual.ids[9], "")
+end)
+
+test("a broken list is repaired, good entries stay", function(wow)
+  QuestAutopilotDB = { version = 2, manual = { ids = { [5] = "Five", [6] = true, x = "bad" }, names = { ["sweep"] = "Sweep", ["wrong"] = "Other", [3] = "x" } } }
+  local ns, g = boot(wow)
+  local list = QuestAutopilotDB.manual
+  eq(list.ids[5], "Five")
+  eq(list.ids[6], "")
+  eq(list.ids.x, nil)
+  eq(list.names.sweep, "Sweep")
+  eq(list.names.wrong, nil)
+  eq(list.names[3], nil)
+  QuestAutopilotDB = { manual = "broken" }
+  ns = boot(wow)
+  eq(type(QuestAutopilotDB.manual.ids), "table")
+end)
+
+test("secret quest IDs, titles or frequencies never break it", function(wow)
+  local ns, g = boot(wow)
+  for _, name in ipairs({ "OnDetail", "OnProgress", "OnComplete", "Pick" }) do noSecrets(ns, name) end
+  local secret = { secret = true }
+  wow.slash("/qa manual 20")
+  g.quest = { id = secret, title = secret }
+  wow.fire("QUEST_DETAIL")
+  eq(g.done(), "AcceptQuest", "an unknown quest is a normal quest")
+  wow.slash("/qa manual")
+  eq(wow.chat[2]:match("No quest seen yet") ~= nil, true, "nothing usable to remember")
+  wow.slash("/qa dailies")
+  g.calls = {}
+  g.gossipAvailable = { { questID = 21, frequency = secret, title = secret } }
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "", "with the daily switch on, an unclear frequency is left to the player")
+  wow.slash("/qa dailies")
+  wow.fire("GOSSIP_SHOW")
+  eq(g.done(), "Gossip.SelectAvailableQuest 21")
+end)
+
+test("a client without the quest log or quest window details still works", function(wow)
+  local ns, g = boot(wow)
+  C_QuestLog, GetQuestID, GetTitleText, QuestIsDaily, QuestIsWeekly = nil, nil, nil, nil, nil
+  GetActiveQuestID, GetAvailableTitle = nil, nil
+  wow.slash("/qa dailies")
+  wow.slash("/qa manual 30")
+  eq(wow.chat[2], "|cffffd100Quest Autopilot:|r Quest 30 stays manual from now on.")
+  wow.fire("QUEST_DETAIL")
+  wow.fire("QUEST_PROGRESS")
+  g.greetingActive = { { title = "Done", complete = true } }
+  g.greetingAvailable = 1
+  wow.fire("QUEST_GREETING")
+  eq(g.done(), "AcceptQuest, CompleteQuest, SelectActiveQuest 1")
+end)
