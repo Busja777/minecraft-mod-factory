@@ -3,11 +3,14 @@ package com.factory.ownersafepets.gametest;
 import com.factory.ownersafepets.OwnerConfig;
 import com.factory.ownersafepets.OwnerSafePets;
 import java.util.List;
+import net.minecraft.component.type.PotionContentsComponent;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
@@ -15,12 +18,18 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.thrown.PotionEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.Potions;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
@@ -74,7 +83,11 @@ public class OwnerSafePetsGameTest implements FabricGameTest {
     }
 
     private static void shoot(TestContext ctx, ServerPlayerEntity shooter, Vec3d from) {
-        ArrowEntity arrow = new ArrowEntity(ctx.getWorld(), shooter, new ItemStack(Items.ARROW), null);
+        shoot(ctx, shooter, from, new ItemStack(Items.ARROW));
+    }
+
+    private static void shoot(TestContext ctx, ServerPlayerEntity shooter, Vec3d from, ItemStack ammo) {
+        ArrowEntity arrow = new ArrowEntity(ctx.getWorld(), shooter, ammo, null);
         Vec3d abs = ctx.getAbsolute(from);
         arrow.refreshPositionAndAngles(abs.x, abs.y, abs.z, 0, 0);
         arrow.setVelocity(0, 0, 1.2); // towards +z, into the pet
@@ -307,5 +320,140 @@ public class OwnerSafePetsGameTest implements FabricGameTest {
         ctx.assertTrue(!unhurt(wild), "the sweep reaches the wild wolf next to it: " + hp(wild));
         ctx.assertTrue(unhurt(pet), "the sweep does no damage to the owner's wolf: " + hp(pet));
         ctx.complete();
+    }
+
+    // --- Potions (1.2) ---------------------------------------------------------------------------
+    // The potions are thrown and land within the test's own call (the potion entity is ticked by
+    // hand, it is never added to the world), so a test that changes the settings changes them only
+    // for its own throw. Each potion test runs in a batch of its own: a splash reaches four blocks,
+    // no other test's animals stand next to it.
+
+    /** Throws a splash or lingering potion of {@code thrower} straight down onto {@code at}; it lands before this returns. */
+    private static void splash(TestContext ctx, ServerPlayerEntity thrower, Item kind, RegistryEntry<Potion> potion, Vec3d at) {
+        PotionEntity entity = new PotionEntity(ctx.getWorld(), thrower);
+        entity.setItem(PotionContentsComponent.createStack(kind, potion));
+        Vec3d abs = ctx.getAbsolute(at.add(0, 1.2, 0));
+        entity.refreshPositionAndAngles(abs.x, abs.y, abs.z, 0, 0);
+        entity.setVelocity(0, -0.8, 0);
+        for (int i = 0; i < 10 && !entity.isRemoved(); i++) entity.tick();
+        ctx.assertTrue(entity.isRemoved(), "the potion landed");
+    }
+
+    /** Back to full health without effects, and without the half second after a hit in which smaller hits do nothing. */
+    private static void heal(LivingEntity pet) {
+        pet.clearStatusEffects();
+        pet.setHealth(pet.getMaxHealth());
+        pet.timeUntilRegen = 0;
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, batchId = "ownersafepets_splash")
+    public void theOwnersSplashPotionsDoNoHarm(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        ServerPlayerEntity stranger = player(ctx);
+        WolfEntity wolf = wolf(ctx, PET, owner);
+
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.HARMING, PET);
+        ctx.assertTrue(unhurt(wolf), "the owner's harming potion does no damage: " + hp(wolf));
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.POISON, PET);
+        ctx.assertFalse(wolf.hasStatusEffect(StatusEffects.POISON), "the owner's poison does not poison the wolf");
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.WEAKNESS, PET);
+        ctx.assertFalse(wolf.hasStatusEffect(StatusEffects.WEAKNESS), "the owner's weakness potion does not weaken the wolf");
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.SLOWNESS, PET);
+        ctx.assertFalse(wolf.hasStatusEffect(StatusEffects.SLOWNESS), "the owner's slowness potion does not slow the wolf");
+        ctx.assertTrue(wolf.getStatusEffects().isEmpty(), "no effect at all: " + wolf.getStatusEffects());
+        ctx.assertTrue(owner.hasStatusEffect(StatusEffects.POISON), "the splash itself worked: the owner next to it is poisoned");
+
+        // helpful effects still apply
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.REGENERATION, PET);
+        ctx.assertTrue(wolf.hasStatusEffect(StatusEffects.REGENERATION), "the owner's regeneration potion works");
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.TURTLE_MASTER, PET);
+        ctx.assertTrue(wolf.hasStatusEffect(StatusEffects.RESISTANCE), "turtle master: resistance applies");
+        ctx.assertFalse(wolf.hasStatusEffect(StatusEffects.SLOWNESS), "turtle master: its slowness does not");
+
+        // someone else's potions are unchanged
+        heal(wolf);
+        splash(ctx, stranger, Items.SPLASH_POTION, Potions.POISON, PET);
+        ctx.assertTrue(wolf.hasStatusEffect(StatusEffects.POISON), "another player's poison poisons the wolf");
+        splash(ctx, stranger, Items.SPLASH_POTION, Potions.HARMING, PET);
+        ctx.assertTrue(!unhurt(wolf), "another player's harming potion does damage: " + hp(wolf));
+        float hurt = wolf.getHealth();
+        splash(ctx, owner, Items.SPLASH_POTION, Potions.HEALING, PET);
+        ctx.assertTrue(wolf.getHealth() > hurt, "the owner's healing potion heals: " + hurt + " -> " + hp(wolf));
+
+        // with protectFromOwnerPotions off the owner's potions work as in vanilla
+        heal(wolf);
+        with(new OwnerConfig(false, true, false), () -> {
+            splash(ctx, owner, Items.SPLASH_POTION, Potions.POISON, PET);
+            splash(ctx, owner, Items.SPLASH_POTION, Potions.HARMING, PET);
+        });
+        ctx.assertTrue(wolf.hasStatusEffect(StatusEffects.POISON), "without the guard the owner's poison poisons the wolf");
+        ctx.assertTrue(!unhurt(wolf), "without the guard the owner's harming potion does damage: " + hp(wolf));
+        ctx.complete();
+    }
+
+    /** The lingering cloud the potion leaves (it is in the world), moved onto {@code at} and ticked once by hand at its first dose. */
+    private static AreaEffectCloudEntity cloud(TestContext ctx, Vec3d at) {
+        Vec3d abs = ctx.getAbsolute(at);
+        List<AreaEffectCloudEntity> clouds = ctx.getWorld().getEntitiesByClass(AreaEffectCloudEntity.class, new Box(abs, abs).expand(5), c -> true);
+        ctx.assertTrue(clouds.size() == 1, "one cloud: " + clouds.size());
+        AreaEffectCloudEntity cloud = clouds.get(0);
+        cloud.setPosition(abs.x, abs.y, abs.z);
+        cloud.age = cloud.getWaitTime(); // its wait time (10 ticks) is over and it is a dose tick (every 5)
+        return cloud;
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, batchId = "ownersafepets_lingering")
+    public void theOwnersLingeringCloudDoesNoHarm(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        ServerPlayerEntity stranger = player(ctx);
+        Vec3d at = new Vec3d(5.5, 2, 5.5); // more than three blocks from the players, so only the wolf is in the cloud
+        WolfEntity wolf = wolf(ctx, at, owner);
+
+        splash(ctx, owner, Items.LINGERING_POTION, Potions.POISON, at);
+        AreaEffectCloudEntity mine = cloud(ctx, at);
+        ctx.assertTrue(mine.getOwner() == owner, "the cloud belongs to the owner: " + mine.getOwner());
+        float radius = mine.getRadius();
+        mine.tick();
+        mine.discard();
+        ctx.assertFalse(wolf.hasStatusEffect(StatusEffects.POISON), "the owner's poison cloud does not poison the wolf");
+        ctx.assertTrue(mine.getRadius() > radius - 0.25f, "the wolf does not use the cloud up: " + radius + " -> " + mine.getRadius());
+
+        splash(ctx, stranger, Items.LINGERING_POTION, Potions.POISON, at);
+        AreaEffectCloudEntity theirs = cloud(ctx, at);
+        radius = theirs.getRadius();
+        theirs.tick();
+        theirs.discard();
+        ctx.assertTrue(wolf.hasStatusEffect(StatusEffects.POISON), "another player's poison cloud poisons the wolf");
+        ctx.assertTrue(theirs.getRadius() < radius - 0.25f, "and the cloud gets smaller as usual: " + radius + " -> " + theirs.getRadius());
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = 40)
+    public void theOwnersTippedArrowGivesNoEffect(TestContext ctx) {
+        // tipped arrows needed nothing new: their effect only lands together with the arrow's damage
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        WolfEntity wolf = wolf(ctx, new Vec3d(2.5, 2, 4.5), owner);
+        shoot(ctx, owner, new Vec3d(2.5, 2.4, 1.5), PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.POISON));
+        ctx.waitAndRun(20, () -> {
+            ctx.assertTrue(unhurt(wolf), "the owner's tipped arrow does no damage: " + hp(wolf));
+            ctx.assertFalse(wolf.hasStatusEffect(StatusEffects.POISON), "and does not poison the wolf");
+            ctx.complete();
+        });
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = 40)
+    public void anotherPlayersTippedArrowPoisons(TestContext ctx) {
+        floor(ctx);
+        ServerPlayerEntity owner = player(ctx);
+        ServerPlayerEntity stranger = player(ctx);
+        WolfEntity wolf = wolf(ctx, new Vec3d(2.5, 2, 4.5), owner);
+        shoot(ctx, stranger, new Vec3d(2.5, 2.4, 1.5), PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.POISON));
+        ctx.waitAndRun(20, () -> {
+            ctx.assertTrue(wolf.hasStatusEffect(StatusEffects.POISON), "another player's tipped arrow poisons the wolf");
+            ctx.complete();
+        });
     }
 }

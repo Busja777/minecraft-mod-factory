@@ -146,9 +146,9 @@
       "art": "M",
       "was": "Gezähmte Tiere nehmen keinen Schaden von ihrem Besitzer, auch nicht durch Pfeile oder Schwung-Treffer",
       "updates": [
-        "Schutz vor eigenen Tränken (Wurftränke)",
-        "NeoForge",
-        "Hinweis beim ersten geschützten Treffer"
+        "Hinweis beim ersten geschützten Treffer",
+        "NeoForge (braucht einen eigenen Bau, gibt es noch nicht)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "claude",
@@ -219,8 +219,8 @@
       "was": "Markiert abwesende Spieler in der Liste",
       "updates": [
         "Kick nach langer Abwesenheit (aus per Standard)",
-        "NeoForge",
-        "AFK-Zeit in der Spielerliste"
+        "NeoForge (braucht einen eigenen Bau, gibt es noch nicht)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",

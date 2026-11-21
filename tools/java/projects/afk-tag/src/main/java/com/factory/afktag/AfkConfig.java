@@ -19,12 +19,15 @@ import java.util.function.Consumer;
  * @param minutes           idle minutes before a player gets the AFK tag (1 to 1440)
  * @param ignoreAfkForSleep AFK players count as neither sleeping nor required when the server
  *                          decides whether enough players sleep to skip the night (since 1.1)
+ * @param showAfkTime       the player list shows how long a player has been idle, "[AFK 12m]"
+ *                          instead of "[AFK]" (since 1.2)
  */
-public record AfkConfig(int minutes, boolean ignoreAfkForSleep) {
+public record AfkConfig(int minutes, boolean ignoreAfkForSleep, boolean showAfkTime) {
     public static final int DEFAULT_MINUTES = 5;
     public static final int MIN_MINUTES = 1;
     public static final int MAX_MINUTES = 1440;
     public static final boolean DEFAULT_IGNORE_AFK_FOR_SLEEP = true;
+    public static final boolean DEFAULT_SHOW_AFK_TIME = true;
     public static final String FILE_NAME = "afktag.json";
 
     /** Only the idle time; everything else at its default. */
@@ -32,8 +35,13 @@ public record AfkConfig(int minutes, boolean ignoreAfkForSleep) {
         this(minutes, DEFAULT_IGNORE_AFK_FOR_SLEEP);
     }
 
+    /** The settings of 1.1; the AFK time at its default. */
+    public AfkConfig(int minutes, boolean ignoreAfkForSleep) {
+        this(minutes, ignoreAfkForSleep, DEFAULT_SHOW_AFK_TIME);
+    }
+
     public static AfkConfig defaults() {
-        return new AfkConfig(DEFAULT_MINUTES, DEFAULT_IGNORE_AFK_FOR_SLEEP);
+        return new AfkConfig(DEFAULT_MINUTES, DEFAULT_IGNORE_AFK_FOR_SLEEP, DEFAULT_SHOW_AFK_TIME);
     }
 
     /** Idle ticks before the tag (20 ticks per second). */
@@ -42,7 +50,8 @@ public record AfkConfig(int minutes, boolean ignoreAfkForSleep) {
     }
 
     public String toJson() {
-        return "{\n  \"minutes\": " + minutes + ",\n  \"ignoreAfkForSleep\": " + ignoreAfkForSleep + "\n}\n";
+        return "{\n  \"minutes\": " + minutes + ",\n  \"ignoreAfkForSleep\": " + ignoreAfkForSleep
+            + ",\n  \"showAfkTime\": " + showAfkTime + "\n}\n";
     }
 
     /** Reads the settings from the file's text; problems go to {@code warn} and use the default. */
@@ -58,7 +67,8 @@ public record AfkConfig(int minutes, boolean ignoreAfkForSleep) {
             warn.accept("config/" + FILE_NAME + " is not a JSON object, using the defaults");
             return defaults();
         }
-        return new AfkConfig(minutes(obj, warn), ignoreAfkForSleep(obj, warn));
+        return new AfkConfig(minutes(obj, warn), flag(obj, "ignoreAfkForSleep", DEFAULT_IGNORE_AFK_FOR_SLEEP, warn),
+            flag(obj, "showAfkTime", DEFAULT_SHOW_AFK_TIME, warn));
     }
 
     private static int minutes(JsonObject obj, Consumer<String> warn) {
@@ -79,13 +89,16 @@ public record AfkConfig(int minutes, boolean ignoreAfkForSleep) {
         return (int) minutes;
     }
 
-    /** A missing key is not a problem: config files of 1.0 do not have it. */
-    private static boolean ignoreAfkForSleep(JsonObject obj, Consumer<String> warn) {
-        if (!obj.has("ignoreAfkForSleep")) return DEFAULT_IGNORE_AFK_FOR_SLEEP;
-        JsonElement value = obj.get("ignoreAfkForSleep");
+    /**
+     * A switch. A missing key is not a problem: config files of 1.0 have neither switch, those of
+     * 1.1 have no "showAfkTime".
+     */
+    private static boolean flag(JsonObject obj, String key, boolean fallback, Consumer<String> warn) {
+        if (!obj.has(key)) return fallback;
+        JsonElement value = obj.get(key);
         if (!(value instanceof JsonPrimitive p) || !p.isBoolean()) {
-            warn.accept("config/" + FILE_NAME + ": \"ignoreAfkForSleep\" must be true or false, using " + DEFAULT_IGNORE_AFK_FOR_SLEEP);
-            return DEFAULT_IGNORE_AFK_FOR_SLEEP;
+            warn.accept("config/" + FILE_NAME + ": \"" + key + "\" must be true or false, using " + fallback);
+            return fallback;
         }
         return p.getAsBoolean();
     }

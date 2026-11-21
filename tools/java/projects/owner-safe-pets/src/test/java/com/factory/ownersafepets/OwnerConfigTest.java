@@ -82,4 +82,40 @@ class OwnerConfigTest {
         assertEquals(new OwnerConfig(true, true), OwnerConfig.load(config, warnings::add));
         assertTrue(warnings.isEmpty(), warnings.toString());
     }
+
+    @Test
+    void thePotionGuardIsOnByDefault() {
+        assertTrue(OwnerConfig.defaults().protectFromOwnerPotions());
+        assertTrue(OwnerConfig.defaults().toJson().contains("\"protectFromOwnerPotions\": true"), "a new file shows the setting");
+        assertTrue(new OwnerConfig(true, false).protectFromOwnerPotions(), "the 1.1 settings keep the guard");
+    }
+
+    @Test
+    void aConfigFileOfVersion11KeepsWorkingWithoutAWarning() {
+        // exactly what 1.1 wrote, with both values changed
+        OwnerConfig old = parse("{\n  \"sneakToHit\": true,\n  \"protectFromOwnerExplosions\": false\n}\n");
+        assertEquals(new OwnerConfig(true, false, true), old);
+        assertTrue(warnings.isEmpty(), warnings.toString());
+    }
+
+    @Test
+    void readsThePotionGuard() {
+        assertEquals(new OwnerConfig(false, true, false), parse("{\"protectFromOwnerPotions\": false}"));
+        assertEquals(new OwnerConfig(true, false, false), parse("{\"sneakToHit\": true, \"protectFromOwnerExplosions\": false, \"protectFromOwnerPotions\": false}"));
+        assertTrue(warnings.isEmpty(), warnings.toString());
+        for (String bad : List.of("1", "\"false\"", "null", "[]")) {
+            warnings.clear();
+            assertEquals(new OwnerConfig(true, false, true), parse("{\"sneakToHit\": true, \"protectFromOwnerExplosions\": false, \"protectFromOwnerPotions\": " + bad + "}"), bad);
+            assertEquals(1, warnings.size(), bad);
+        }
+    }
+
+    @Test
+    void everyCombinationReadsBack() {
+        for (boolean a : new boolean[] {false, true}) for (boolean b : new boolean[] {false, true}) for (boolean c : new boolean[] {false, true}) {
+            OwnerConfig config = new OwnerConfig(a, b, c);
+            assertEquals(config, parse(config.toJson()));
+        }
+        assertTrue(warnings.isEmpty(), warnings.toString());
+    }
 }

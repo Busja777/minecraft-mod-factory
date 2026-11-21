@@ -1,8 +1,14 @@
 package com.factory.afktag.gametest;
 
+import com.factory.afktag.AfkLabel;
 import com.factory.afktag.AfkTag;
+import io.netty.channel.Channel;
+import io.netty.channel.embedded.EmbeddedChannel;
+import java.lang.reflect.Field;
+import java.util.UUID;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import java.util.List;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -46,8 +52,9 @@ public class AfkTagGameTest implements FabricGameTest {
         ctx.assertTrue(listName(player) == null, "a fresh player has the plain list name");
         ctx.waitAndRun(TIMEOUT + 10, () -> {
             ctx.assertTrue(AfkTag.isAfk(player.getUuid()), "the player is AFK after the timeout");
-            ctx.assertTrue(("[AFK] " + name).equals(listName(player)), "list name: " + listName(player));
-            ctx.assertTrue(("[AFK] " + name).equals(packetName(player)), "packet name: " + packetName(player));
+            // with the shortened test timeout the player has been idle for less than a minute
+            ctx.assertTrue(("[AFK 0m] " + name).equals(listName(player)), "list name: " + listName(player));
+            ctx.assertTrue(("[AFK 0m] " + name).equals(packetName(player)), "packet name: " + packetName(player));
             player.setYaw(player.getYaw() + 30f); // looking around, as a rotation packet would set it
             ctx.waitAndRun(2, () -> {
                 ctx.assertTrue(!AfkTag.isAfk(player.getUuid()), "turning the view clears AFK");
@@ -123,6 +130,84 @@ public class AfkTagGameTest implements FabricGameTest {
                 sleeper.clearSleepingPosition(); // leave nobody in bed in the shared test world
             }
             ctx.complete();
+        });
+    }
+
+    // --- AFK time in the player list (1.2) -------------------------------------------------------
+
+    /** The first field of {@code owner} (or its superclasses) holding a {@code type}. */
+    private static <T> T field(Object owner, Class<T> type) {
+        for (Class<?> c = owner.getClass(); c != null; c = c.getSuperclass()) {
+            for (Field f : c.getDeclaredFields()) {
+                if (!type.isAssignableFrom(f.getType())) continue;
+                try {
+                    f.setAccessible(true);
+                    return type.cast(f.get(owner));
+                } catch (ReflectiveOperationException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+        throw new IllegalStateException("no " + type.getSimpleName() + " in " + owner.getClass());
+    }
+
+    /**
+     * How many player list updates of {@code about}'s display name the server has sent to
+     * {@code receiver} since the last call. A mock player's connection is a Netty EmbeddedChannel:
+     * every packet the server sends waits in its outbound queue, which this empties.
+     */
+    private static int nameUpdates(ServerPlayerEntity receiver, UUID about) {
+        EmbeddedChannel channel = (EmbeddedChannel) field(field(receiver.networkHandler, ClientConnection.class), Channel.class);
+        int count = 0;
+        for (Object packet; (packet = channel.readOutbound()) != null; ) {
+            if (packet instanceof PlayerListS2CPacket list && list.getActions().contains(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME)
+                && list.getEntries().stream().anyMatch(e -> e.profileId().equals(about))) count++;
+        }
+        return count;
+    }
+
+    /** Lets the player's idle clock stand one tick before {@code ticks}. */
+    private static void idleUntilJustBefore(ServerPlayerEntity player, long ticks) {
+        AfkTag.addIdleTicks(player.getUuid(), ticks - 1 - AfkTag.idleTicks(player.getUuid()));
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = 300)
+    public void theListShowsTheAfkTimeAndSendsItOncePerMinute(TestContext ctx) {
+        ServerPlayerEntity player = player(ctx);
+        UUID id = player.getUuid();
+        String name = player.getName().getString();
+        ctx.waitAndRun(TIMEOUT + 10, () -> {
+            ctx.assertTrue(AfkTag.isAfk(id), "the player is AFK after the timeout");
+            ctx.assertTrue(("[AFK 0m] " + name).equals(listName(player)), "list name: " + listName(player));
+            AfkTag.setShowAfkTime(false);
+            try {
+                ctx.assertTrue(("[AFK] " + name).equals(listName(player)), "with showAfkTime off the tag of 1.1: " + listName(player));
+            } finally {
+                AfkTag.setShowAfkTime(true);
+            }
+            idleUntilJustBefore(player, AfkLabel.TICKS_PER_MINUTE);
+            nameUpdates(player, id);
+            ctx.waitAndRun(3, () -> {
+                ctx.assertTrue(("[AFK 1m] " + name).equals(listName(player)), "one idle minute: " + listName(player));
+                ctx.assertTrue(nameUpdates(player, id) == 1, "the full minute sends the entry once");
+                ctx.waitAndRun(60, () -> {
+                    ctx.assertTrue(nameUpdates(player, id) == 0, "no update between two minutes");
+                    ctx.assertTrue(("[AFK 1m] " + name).equals(listName(player)), "still one minute: " + listName(player));
+                    idleUntilJustBefore(player, 65 * AfkLabel.TICKS_PER_MINUTE);
+                    ctx.waitAndRun(3, () -> {
+                        ctx.assertTrue(("[AFK 1h 5m] " + name).equals(listName(player)), "65 idle minutes: " + listName(player));
+                        ctx.assertTrue(("[AFK 1h 5m] " + name).equals(packetName(player)), "packet name: " + packetName(player));
+                        ctx.assertTrue(nameUpdates(player, id) == 1, "sent once");
+                        player.setYaw(player.getYaw() + 30f);
+                        ctx.waitAndRun(2, () -> {
+                            ctx.assertTrue(!AfkTag.isAfk(id), "turning the view clears AFK");
+                            ctx.assertTrue(listName(player) == null, "the plain name is back: " + listName(player));
+                            ctx.assertTrue(nameUpdates(player, id) == 1, "coming back sends the plain name once");
+                            ctx.complete();
+                        });
+                    });
+                });
+            });
         });
     }
 }

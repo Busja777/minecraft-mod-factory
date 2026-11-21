@@ -67,6 +67,11 @@ public final class AfkRules {
             return idleTicks;
         }
 
+        /** For the game tests: as if the player had been idle {@code ticks} more ticks (the next tick still decides). */
+        public void addIdleTicks(long ticks) {
+            idleTicks = Math.max(0, idleTicks + ticks);
+        }
+
         /**
          * Takes this tick's sample.
          *
