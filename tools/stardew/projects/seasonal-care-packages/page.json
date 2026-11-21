@@ -1,0 +1,37 @@
+{
+  "name": "Seasonal Care Packages",
+  "summary": "Friendly neighbors remember you each season and mail a little parcel of seasonal goodies to your farm.",
+  "class": "Mods",
+  "category": "Events",
+  "logoPrompt": "A small brown paper parcel tied with twine, with a sprig of spring blossom, a summer berry, an autumn leaf and a snowflake charm tucked under the string",
+  "cover": {
+    "tagline": "A little parcel from town, every season.",
+    "bullets": [
+      "One letter per season",
+      "Small seasonal surprises",
+      "Fair gifts, no money"
+    ]
+  },
+  "description": [
+    "**Seasonal Care Packages brings a warm letter and a small parcel from a friendly neighbor once every season.**",
+    "",
+    "## Features",
+    "- Four letters a year, each on day 10 of its season: Evelyn in spring, Gus in summer, Caroline in fall and Marnie in winter.",
+    "- Every parcel holds one of three small seasonal surprises, like seeds, forage or a cold treat.",
+    "- Fair gifts: no money, and never more than a few hundred gold in value.",
+    "- A letter only comes once you have met its sender.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Check your mailbox on day 10 of each season.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. It only adds letters: no new items, no changes to villagers.",
+    "- Each letter arrives once per save.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

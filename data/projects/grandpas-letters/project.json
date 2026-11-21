@@ -1,0 +1,19 @@
+{
+  "slug": "grandpas-letters",
+  "game": "stardewvalley",
+  "name": "Grandpa's Letters",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "GrandpasLetters-1.0.zip",
+      "changelog": "## Grandpa's Letters 1.0\n\nFirst release.\n\n- Five short letters from Grandpa during the first year: early spring, the first day of summer, fall and winter, and the last day of the year.\n- Each letter has a gentle tip for the season ahead.\n- The seasonal letters hold a small keepsake: an acorn, a sunflower seed, a maple seed and a pine cone.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
