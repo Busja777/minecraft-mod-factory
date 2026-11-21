@@ -86,6 +86,25 @@ local function setRepeat(arg)
   ns.Print(ns.RepeatText(ns.settings.repeatWarn))
 end
 
+-- 1.3: /bl cheap lists the items with the lowest vendor value per slot.
+local function listCheap()
+  local items, skipped = ns.ScanItems()
+  local list = ns.Cheapest(items, ns.CHEAP_COUNT)
+  if #list == 0 then
+    ns.Print(L["No grey, white or green item with a vendor price in your bags."])
+  else
+    ns.Print(L["Lowest vendor value per slot (grey, white and green items, whole stack):"])
+    for i, item in ipairs(list) do
+      DEFAULT_CHAT_FRAME:AddMessage("  " .. ns.CheapLine(i, item))
+    end
+  end
+  if skipped == 1 then
+    ns.Print(L["1 item is not loaded by the game yet and was skipped. Try again in a moment."])
+  elseif skipped > 1 then
+    ns.Print(string.format(L["%d items are not loaded by the game yet and were skipped. Try again in a moment."], skipped))
+  end
+end
+
 SLASH_BAGLOOKOUT1 = "/baglookout"
 SLASH_BAGLOOKOUT2 = "/bl"
 SlashCmdList.BAGLOOKOUT = function(msg)
@@ -110,8 +129,10 @@ SlashCmdList.BAGLOOKOUT = function(msg)
     setView(arg)
   elseif cmd == "warn" then
     setRepeat(arg)
+  elseif cmd == "cheap" then
+    listCheap()
   else
     ns.Print(stateText())
-    ns.Print(L["Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off, /bl sound followed by a sound name or none, /bl warn once or always."])
+    ns.Print(L["Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off, /bl sound followed by a sound name or none, /bl warn once or always, /bl cheap lists the items worth the least."])
   end
 end

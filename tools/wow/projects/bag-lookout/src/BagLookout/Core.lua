@@ -235,3 +235,69 @@ function ns.RepeatText(mode)
   if mode == "once" then return ns.L["Warns once per session."] end
   return ns.L["Warns every time the bags fill up again."]
 end
+
+-- 1.3: the cheapest items, to know what to throw out when the bags are full.
+-- item = { bag, slot, id, link, quality, count, price (vendor price of one piece), quest, noValue }
+ns.CHEAP_COUNT = 5   -- items /bl cheap lists
+ns.CHEAP_QUALITY = 2 -- grey, white and green only: better items are worth keeping
+
+-- Whether an item may be suggested: a known vendor price, not a quest item, at most green.
+function ns.CheapCandidate(item)
+  if type(item) ~= "table" or item.quest or item.noValue then return false end
+  if type(item.quality) ~= "number" or item.quality < 0 or item.quality > ns.CHEAP_QUALITY then return false end
+  if type(item.price) ~= "number" or item.price <= 0 then return false end
+  return type(item.count) == "number" and item.count > 0
+end
+
+-- The value of the whole stack in the slot.
+function ns.SlotValue(item)
+  return item.price * item.count
+end
+
+-- The n candidates with the lowest slot value, lowest first; equal values keep their bag order.
+function ns.Cheapest(items, n)
+  local list = {}
+  for i, item in ipairs(items) do
+    if ns.CheapCandidate(item) then list[#list + 1] = { item = item, value = ns.SlotValue(item), order = i } end
+  end
+  table.sort(list, function(a, b)
+    if a.value ~= b.value then return a.value < b.value end
+    return a.order < b.order
+  end)
+  local out = {}
+  for i = 1, math.min(n or ns.CHEAP_COUNT, #list) do out[i] = list[i].item end
+  return out
+end
+
+local function thousands(n)
+  local s = tostring(n)
+  local out = s:reverse():gsub("(%d%d%d)", "%1,"):reverse()
+  return (out:gsub("^,", ""))
+end
+
+-- "12c", "3s 05c", "1,234g 00s 07c"
+function ns.PlainMoney(copper)
+  copper = math.floor(copper)
+  local g = math.floor(copper / 10000)
+  local s = math.floor(copper / 100) % 100
+  local c = copper % 100
+  if g > 0 then return string.format("%sg %02ds %02dc", thousands(g), s, c) end
+  if s > 0 then return string.format("%ds %02dc", s, c) end
+  return string.format("%dc", c)
+end
+
+local function itemName(item)
+  return item.link or string.format(ns.L["item %d"], item.id or 0)
+end
+
+-- "2. [Linen Cloth] x3: 12c" for /bl cheap.
+function ns.CheapLine(n, item)
+  local name = itemName(item)
+  if item.count > 1 then name = name .. " x" .. item.count end
+  return string.format("%d. %s: %s", n, name, ns.PlainMoney(ns.SlotValue(item)))
+end
+
+-- "Cheapest: [Linen Cloth] (12c)" under the "bags full" warning.
+function ns.CheapWarning(item)
+  return string.format(ns.L["Cheapest: %s (%s)"], itemName(item), ns.PlainMoney(ns.SlotValue(item)))
+end

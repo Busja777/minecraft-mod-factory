@@ -163,3 +163,127 @@ function ns.Summary(result)
   end
   return table.concat(parts, " ")
 end
+
+-- 1.3: the sale log. Each character keeps its last LOG_KEEP vendor visits that sold something,
+-- newest first: visit = { at = time(), vendor = name or nil, count = pieces, earned = copper,
+-- items = { { id, link = link or nil, name = name or nil (only without a link), count, earned } } }.
+ns.LOG_KEEP = 20
+ns.RECENT = 15 * 60 -- seconds a sale counts as recent in /jb log
+
+-- Adds one sold stack to a visit's item list; stacks of the same item are added up.
+function ns.AddSale(items, id, link, count, earned, name)
+  for _, it in ipairs(items) do
+    if it.id == id then
+      it.count = it.count + count
+      it.earned = it.earned + earned
+      it.link = it.link or link
+      if it.link then it.name = nil else it.name = it.name or name end
+      return it
+    end
+  end
+  local it = { id = id, link = link, name = not link and name or nil, count = count, earned = earned }
+  items[#items + 1] = it
+  return it
+end
+
+-- Puts a visit at the top of the log; the oldest beyond LOG_KEEP fall off.
+function ns.AddVisit(log, visit)
+  table.insert(log, 1, visit)
+  while #log > ns.LOG_KEEP do table.remove(log) end
+end
+
+local function whole(value)
+  return type(value) == "number" and value >= 0 and value == math.floor(value)
+end
+
+local function cleanVisit(v)
+  if type(v) ~= "table" or not whole(v.count) or not whole(v.earned) then return nil end
+  local items = {}
+  for _, it in ipairs(type(v.items) == "table" and v.items or {}) do
+    if type(it) == "table" and whole(it.id) and whole(it.count) and whole(it.earned) then
+      items[#items + 1] = {
+        id = it.id, count = it.count, earned = it.earned,
+        link = type(it.link) == "string" and it.link or nil,
+        name = type(it.name) == "string" and it.name or nil,
+      }
+    end
+  end
+  return {
+    at = type(v.at) == "number" and v.at or nil,
+    vendor = type(v.vendor) == "string" and v.vendor or nil,
+    count = v.count, earned = v.earned, items = items,
+  }
+end
+
+-- Brings the saved logs to their current shape: { ["Name-Realm"] = { visit, ... } }, at most
+-- LOG_KEEP visits each, broken entries dropped. 1.2 data has no log and starts with an empty one.
+function ns.CleanLogs(logs)
+  local clean = {}
+  if type(logs) ~= "table" then return clean end
+  for key, list in pairs(logs) do
+    if type(key) == "string" and type(list) == "table" then
+      local visits = {}
+      for _, v in ipairs(list) do
+        local c = cleanVisit(v)
+        if c and #visits < ns.LOG_KEEP then visits[#visits + 1] = c end
+      end
+      clean[key] = visits
+    end
+  end
+  return clean
+end
+
+-- Whole minutes since a sale while it is less than RECENT seconds old; nil otherwise.
+function ns.RecentMinutes(at, now)
+  if type(at) ~= "number" or type(now) ~= "number" then return nil end
+  local age = now - at
+  if age < 0 or age >= ns.RECENT then return nil end
+  return math.floor(age / 60)
+end
+
+local function when(at)
+  if type(at) ~= "number" or not date then return "?" end
+  return date(ns.L["%b %d %H:%M"], at)
+end
+
+-- "2. Nov 20 18:04, Grumbold: 12 items for 1g 20s 00c (8 min ago)". The mark for recent sales
+-- only says how old they are; whether the vendor still offers them back is up to the game.
+function ns.VisitLine(n, v, now)
+  local L = ns.L
+  local text = v.count == 1 and L["%d item for %s"] or L["%d items for %s"]
+  local line = string.format("%d. %s", n, when(v.at))
+  if v.vendor then line = line .. ", " .. v.vendor end
+  line = line .. ": " .. string.format(text, v.count, ns.FormatMoney(v.earned))
+  local minutes = ns.RecentMinutes(v.at, now)
+  if minutes == 0 then
+    line = line .. " " .. L["(less than a minute ago)"]
+  elseif minutes then
+    line = line .. " " .. string.format(L["(%d min ago)"], minutes)
+  end
+  return line
+end
+
+-- "[Torn Wristband] x5: 50c"; without a link the item's name, and an item the game had not
+-- loaded at the sale is named by its ID.
+function ns.SaleLine(it)
+  local name = it.link or it.name or string.format(ns.L["item %d"], it.id)
+  return string.format("%s x%d: %s", name, it.count, ns.FormatMoney(it.earned))
+end
+
+-- Pieces and copper of all visits in the log.
+function ns.LogTotals(log)
+  local count, earned = 0, 0
+  for _, v in ipairs(log) do
+    count = count + v.count
+    earned = earned + v.earned
+  end
+  return count, earned
+end
+
+-- Whether any visit of the log is recent.
+function ns.AnyRecent(log, now)
+  for _, v in ipairs(log) do
+    if ns.RecentMinutes(v.at, now) then return true end
+  end
+  return false
+end
