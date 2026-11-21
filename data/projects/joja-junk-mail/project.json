@@ -24,6 +24,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "JojaJunkMail-1.2.zip",
+      "changelog": "## Joja Junk Mail 1.2\n\nFestival letters.\n\n- JojaMart now writes before every festival too: eleven new letters a year, one shortly before each festival, from the Egg Festival to the Feast of the Winter Star, including the Trout Derby, SquidFest and the Night Market. In English and German.\n- A festival letter arrives the day before the festival, or two days before when that day is a Wednesday, so there is never more than one Joja letter on the same morning.\n- The Wednesday letters stay as they are, and all letters still stop once the Community Center is restored or the Joja community development form is completed.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

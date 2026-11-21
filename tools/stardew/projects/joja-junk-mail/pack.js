@@ -1,5 +1,6 @@
 // Joja Junk Mail: JojaMart advertising letters in the mailbox, one a week (on Wednesday), sixteen
-// different ones per year, every year, until JojaMart's story in the valley is over.
+// different ones per year, plus (since 1.2) one the day before each festival, every year, until
+// JojaMart's story in the valley is over.
 //
 // How the letters are sent (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - The letters are Data/mail entries ("<text>[#]<letter name>", @ = player name, ^ = line break).
@@ -24,6 +25,19 @@
 //   queries. The mail data page warns that the "ccIsComplete" mail flag is not set reliably, which
 //   is why the queries are used and not the flag.
 //   https://stardewvalleywiki.com/Modding:Game_state_queries#World
+// - Festival letters (since 1.2): "SEASON <season>, DAY_OF_MONTH <day>" plus the same two stop
+//   queries, one letter the day before each festival. Festival dates from
+//   https://stardewvalleywiki.com/Festivals (1.6): Egg Festival spring 13, Flower Dance spring 24,
+//   Luau summer 11, Trout Derby summer 20-21, Dance of the Moonlight Jellies summer 28, Stardew
+//   Valley Fair fall 16, Spirit's Eve fall 27, Festival of Ice winter 8, SquidFest winter 12-13,
+//   Night Market winter 15-17, Feast of the Winter Star winter 25. The Desert Festival (spring
+//   15-17) is left out: it can only be reached once the bus is repaired
+//   (https://stardewvalleywiki.com/Desert_Festival), so it is not open to every player.
+//   Every season has 28 days and starts on a Monday (https://stardewvalleywiki.com/Days_of_the_Week),
+//   so the Wednesday letters always fall on days 3, 10, 17 and 24. A festival letter whose day
+//   before is a Wednesday goes out two days before instead (Luau, Feast of the Winter Star).
+// - Never two letters on one day: checkDates() reads the conditions of all triggers back (season,
+//   days, weekday, year) and fails the build if two letters can arrive on the same date.
 // - Content Patcher only applies the EditData patches; {{ModId}} keeps the IDs unique (tokens.md)
 //   and all text comes from i18n (translations.md).
 
@@ -82,6 +96,74 @@ export const LETTERS = {
   ]
 };
 
+// One letter before each festival: [season, first festival day, letter]. The letter goes out the day
+// before, or two days before if that day is a Wednesday (the weekly letter's day).
+export const FESTIVALS = [
+  ['spring', 13, ['EggFestival', 'Joja Pre-Found Eggs',
+    'Dear @,^^The Egg Festival is almost here, and with it the big egg hunt around the town square.^^Why run around looking for eggs when JojaMart has already found them for you? Joja Pre-Found Eggs come twelve to a carton, every one painted the same cheerful shade of Joja blue.^^Please do not hide them again. That would void the carton warranty.']],
+  ['spring', 24, ['FlowerDance', 'Joja Meadow Mist',
+    'Dear @,^^The Flower Dance is coming, out in the meadow in the forest where the whole town dances among the spring flowers.^^Get in the mood with Joja Meadow Mist: the smell of fresh flowers, in a can!^^Spray it generously before the dance. Surrounded by all those real flowers, nobody will ever notice the difference.^^Contains no flowers. Dance partner not included.']],
+  ['summer', 11, ['Luau', 'Joja Potluck Powder',
+    'Hello @,^^Soon the whole town meets at the beach for the Luau, where everyone adds something to one big pot of soup for the Governor.^^Make your contribution unforgettable with Joja Potluck Powder! One spoonful turns any soup into Joja-flavored soup.^^What does Joja flavor taste like? Our lawyers have asked us not to say.']],
+  ['summer', 20, ['TroutDerby', 'Joja Gold-Colored Tags',
+    'Dear @,^^The Trout Derby is coming to the river in the forest. Catch a rainbow trout, and you might find a Golden Tag to trade for prizes.^^Why wait for luck? Joja Gold-Colored Tags come in packs of twenty, already shiny, no fish required.^^Not accepted at the derby booth. Or anywhere else.']],
+  ['summer', 28, ['MoonlightJellies', 'Joja Jelly Viewing Deck',
+    'Dear @,^^Every summer the town gathers on the docks at night to watch the Moonlight Jellies drift past, drawn by a single light on the water.^^This year, enjoy the view from the new Joja Jelly Viewing Deck! Comfortable seats, a vending machine and three hundred Joja floodlights.^^Our engineers say the jellies may like our lights so much that they never leave. We consider this a success.']],
+  ['fall', 16, ['Fair', 'Joja Display-in-a-Box',
+    'Hello @,^^The Stardew Valley Fair is almost here! Games, Star Tokens and the grange display contest, where judges look for quality and variety.^^Save yourself the work with the Joja Display-in-a-Box: nine wax vegetables in nine slightly different shades of beige.^^That is variety. Our marketing department checked.']],
+  ['fall', 27, ['SpiritsEve', 'Joja Maze Map',
+    'Dear @,^^Spirit\'s Eve is coming, and with it the spooky hedge maze in town.^^Never get lost again with the Joja Maze Map! It has one big, clear arrow, and it always points to the nearest JojaMart.^^Still lost? That is the spirit of the season. Happy haunting!']],
+  ['winter', 8, ['FestivalOfIce', 'Joja Ice Fishing Kit',
+    'Hello @,^^The Festival of Ice is almost here, with ice sculptures, igloos and the big ice fishing contest.^^Be ready with the Joja Ice Fishing Kit: one bucket, one bag of JojaFresh Ice Cubes and one pre-caught Joja Ocean Stick, frozen for authenticity.^^Drop the stick into the bucket and pull it out again. Congratulations, you are an ice fisher!']],
+  ['winter', 12, ['SquidFest', 'The Joja Squid Tier',
+    'Dear @,^^SquidFest is coming to the beach, with copper, iron, gold and iridium prizes for the best squid catchers.^^JojaMart proudly presents its own unofficial fifth tier: the Joja Tier! Catch one squid and win a coupon for 5 percent off Joja Ocean Sticks.^^Catch no squid at all and win the same coupon. At Joja, everyone is a winner.']],
+  ['winter', 15, ['NightMarket', 'Joja Submarine Experience',
+    'Dear @,^^The Night Market is opening at the beach, with boats full of goods, a mermaid show and a submarine ride down to the deep-sea fish.^^Why get seasick? Try the Joja Submarine Experience instead: sit in our dark storage room while a staff member slowly holds up a picture of a fish.^^Open during regular business hours. Floor may be damp.']],
+  ['winter', 25, ['WinterStar', 'Joja Gift Wrap',
+    'Hello @,^^The Feast of the Winter Star is almost here, and somebody in town is counting on your secret gift.^^Whatever you picked, make it shine with Joja Gift Wrap! It is so bright and so blue that nobody will look at what is inside.^^Works especially well on Joja Gift Cards.']]
+];
+
+export const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+// Day 1 of every season is a Monday.
+export const weekday = day => WEEKDAYS[(day - 1) % 7];
+
+// The day a festival letter goes out: the day before, or two days before if that is a Wednesday.
+export const festivalLetterDay = festivalDay => {
+  const day = weekday(festivalDay - 1) === 'Wednesday' ? festivalDay - 2 : festivalDay - 1;
+  if (day < 1) throw new Error(`festival on day ${festivalDay}: the letter would fall into the previous season`);
+  return day;
+};
+
+export const festivalWhen = (season, day) =>
+  [`SEASON ${season}`, `DAY_OF_MONTH ${day}`, '!IS_COMMUNITY_CENTER_COMPLETE', '!IS_JOJA_MART_COMPLETE'].join(', ');
+
+// Reads back which dates a condition can match: { season, days, years: [min, max] }. Only the
+// queries this pack writes are understood, anything else about the date fails the build.
+export const sendDates = condition => {
+  const q = {};
+  for (const part of condition.split(', ')) {
+    const [name, ...args] = part.split(' ');
+    if (q[name]) throw new Error(`${condition}: ${name} twice`);
+    q[name] = args;
+  }
+  if (q.SEASON?.length !== 1 || !q.DAY_OF_MONTH?.length) throw new Error(`${condition}: every letter needs one SEASON and DAY_OF_MONTH`);
+  for (const name of Object.keys(q)) if (!['SEASON', 'DAY_OF_MONTH', 'DAY_OF_WEEK', 'YEAR', '!IS_COMMUNITY_CENTER_COMPLETE', '!IS_JOJA_MART_COMPLETE'].includes(name)) throw new Error(`${condition}: unexpected query ${name}`);
+  const days = q.DAY_OF_MONTH.map(Number).filter(d => !q.DAY_OF_WEEK || q.DAY_OF_WEEK.includes(weekday(d)));
+  if (!days.length || days.some(d => !(d >= 1 && d <= 28))) throw new Error(`${condition}: no valid day`);
+  const [min = 1, max = Infinity] = (q.YEAR || []).map(Number);
+  return { season: q.SEASON[0], days, years: [min, max] };
+};
+
+// Fails if two letters can arrive on the same date (same season and day, overlapping years).
+export const checkDates = triggers => {
+  const all = Object.values(triggers).map(t => ({ id: t.Id, ...sendDates(t.Condition) }));
+  all.forEach((a, i) => all.slice(i + 1).forEach(b => {
+    if (a.season !== b.season || a.years[1] < b.years[0] || b.years[1] < a.years[0]) return;
+    const day = a.days.find(d => b.days.includes(d));
+    if (day) throw new Error(`${a.id} and ${b.id} can both arrive on ${a.season} ${day}`);
+  }));
+};
+
 const weekDays = week => Array.from({ length: 7 }, (_, i) => 7 * (week - 1) + i + 1).join(' ');
 
 // The condition for the letter of week <week> (1 to 4) of <season>.
@@ -91,10 +173,11 @@ export const when = (season, week, year = null) =>
 export default async function () {
   const mail = {};
   const triggers = {};
+  const festivalTriggers = {};
   const i18n = {};
   const de = {};
   const titles = new Set();
-  const add = ([key, title, text], condition) => {
+  const add = ([key, title, text], condition, target = triggers) => {
     if (/[%[\]¦{}#$]/.test(text)) throw new Error(`${key}: mail command characters in the text`);
     if (!/^(Dear|Hello|Dear Valued Future Customer) @,\^\^/.test(text)) throw new Error(`${key}: letters greet the player by name`);
     if (titles.has(title)) throw new Error(`${key}: title "${title}" is used twice`);
@@ -110,7 +193,7 @@ export default async function () {
     de[`letter.${key}`] = /-Morris\^/.test(deText) ? deText : `${deText}${SIGN}`;
     de[`title.${key}`] = deTitle;
     mail[id] = `{{i18n:letter.${key}}}[letterbg 4][#]{{i18n:title.${key}}}`;
-    triggers[id] = {
+    target[id] = {
       Id: id,
       Trigger: 'DayStarted',
       Condition: condition,
@@ -128,13 +211,17 @@ export default async function () {
       add(later, when(season, i + 1, 'YEAR 2'));
     });
   }
+  for (const [season, day, letter] of FESTIVALS) add(letter, festivalWhen(season, festivalLetterDay(day)), festivalTriggers);
+  if (Object.keys(festivalTriggers).length !== FESTIVALS.length) throw new Error('one letter per festival');
   if (Object.keys(mail).length < 12) throw new Error('at least 12 letters');
+  checkDates({ ...triggers, ...festivalTriggers });
   return {
     'content.json': {
       Format: '2.9.0',
       Changes: [
         { LogName: 'Joja advertising letters', Action: 'EditData', Target: 'Data/mail', Entries: mail },
-        { LogName: 'Send one letter every Wednesday', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers }
+        { LogName: 'Send one letter every Wednesday', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers },
+        { LogName: 'Send one letter before each festival', Action: 'EditData', Target: 'Data/TriggerActions', Entries: festivalTriggers }
       ]
     },
     'i18n/default.json': i18n,
