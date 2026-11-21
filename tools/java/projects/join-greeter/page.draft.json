@@ -1,0 +1,37 @@
+{
+  "name": "Join Greeter",
+  "summary": "Welcome every player by name when they join, show newcomers your server rules and hand them a starter kit you choose.",
+  "class": "Mods",
+  "category": "Server Utility",
+  "logoPrompt": "A wooden door standing open with warm golden light pouring out of the doorway, set in a small stone frame, in blocky voxel style, no text",
+  "cover": {
+    "tagline": "A warm welcome for every player.",
+    "bullets": [
+      "Welcome and welcome-back lines",
+      "Rules and a starter kit",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Join Greeter welcomes players by name when they join your server, shows newcomers the rules and can hand them a starter kit.**",
+    "",
+    "## Features",
+    "- One message for first-time players and another one for everyone who comes back.",
+    "- Optional rule lines under the welcome, for newcomers only or on every join.",
+    "- Optional starter kit for first-time players, set by item id and count; it is empty until you fill it.",
+    "- Colours with `&` codes such as `&6` or `&l`, and the placeholders `{player}` and `{online}`.",
+    "",
+    "## How to use",
+    "Put the jar into the server's `mods` folder next to Fabric API and start the server once. Then edit `config/joingreeter.json` (the file explains every code) and restart.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 dedicated servers and needs Fabric API.",
+    "- Only the server needs it; players can join without installing anything.",
+    "- A first-time player is someone without statistics in this world, so players from before the install count as returning.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

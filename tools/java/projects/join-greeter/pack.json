@@ -1,0 +1,8 @@
+{
+  "kind": "mod",
+  "name": "Join Greeter",
+  "description": "Greets players on join, shows the rules and gives newcomers a starter kit",
+  "mc": "1.21.1",
+  "modId": "joingreeter",
+  "gameVersions": ["1.21.1", "Fabric", "Java 21", "Server"]
+}

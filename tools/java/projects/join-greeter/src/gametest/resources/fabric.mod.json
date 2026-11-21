@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "joingreeter-gametest",
+  "version": "1.0.0",
+  "name": "Join Greeter game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.joingreeter.gametest.JoinGreeterGameTest"]
+  },
+  "depends": {
+    "joingreeter": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}
