@@ -1,0 +1,37 @@
+{
+  "name": "Joja Junk Mail",
+  "summary": "JojaMart starts sending you cheerful, slightly ridiculous advertising letters every Wednesday morning.",
+  "class": "Mods",
+  "category": "Events",
+  "logoPrompt": "A bright blue envelope stuffed with colourful advertising flyers and coupons, a red price tag hanging from its corner",
+  "cover": {
+    "tagline": "Advertising nobody asked for.",
+    "bullets": [
+      "A Joja ad every Wednesday",
+      "Sixteen letters per year",
+      "Stops when Joja's story ends"
+    ]
+  },
+  "description": [
+    "**Joja Junk Mail fills your mailbox with JojaMart advertising: one cheerful, slightly ridiculous offer every Wednesday morning.**",
+    "",
+    "## Features",
+    "- One advertising letter a week, on Wednesday, the day a certain small general store takes a break.",
+    "- Sixteen different offers per year, four per season, from canned snow to pumpkin spice cola.",
+    "- Written on the JojaMart letter paper, in the company's very sincere tone.",
+    "- No items, no money and no changes to the game, just something to read with your morning coffee.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Check your mailbox on the next Wednesday.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- The letters stop once the Community Center is restored or the Joja community development form is completed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

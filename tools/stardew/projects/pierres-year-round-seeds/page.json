@@ -1,0 +1,37 @@
+{
+  "name": "Pierre's Year-Round Seeds",
+  "summary": "Buy spring, summer and fall seeds at Pierre's in any season, for a little extra that you set yourself.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small burlap seed sack with four tiny seed packets fanned out in front of it, each packet a different seasonal colour: green, yellow, orange and white",
+  "cover": {
+    "tagline": "Every seed, every season, for a price.",
+    "bullets": [
+      "Seeds of all seasons all year",
+      "Surcharge set in the config",
+      "Crops keep their seasons"
+    ]
+  },
+  "description": [
+    "**Pierre's Year-Round Seeds lets you buy the seeds of every season at Pierre's shop, all year long, for a small surcharge.**",
+    "",
+    "## Features",
+    "- Spring, summer and fall seeds from Pierre's shop stay on his shelves in every season, winter included.",
+    "- Out-of-season seeds cost extra: choose +25 %, +50 % (default) or +100 % in the config.",
+    "- Seeds he sells in the current season keep their normal price and never appear twice.",
+    "- Seeds Pierre only sells from year 2 on still wait for year 2.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Visit Pierre and plan next season's field ahead.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Crops still only grow in their own season. Buying early lets you plant on day one, it does not change the seasons.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

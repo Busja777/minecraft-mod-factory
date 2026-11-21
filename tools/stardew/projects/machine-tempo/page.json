@@ -1,0 +1,37 @@
+{
+  "name": "Machine Tempo",
+  "summary": "Your kegs and preserves jars work faster, and you decide how much faster in the config.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small wooden keg with a brass tap, wrapped in a ribbon shaped like a speeding arrow, next to a sealed glass jar of golden jam",
+  "cover": {
+    "tagline": "Artisan goods without the long wait.",
+    "bullets": [
+      "Faster kegs and preserves jars",
+      "Speed factor in the config",
+      "Outputs and prices unchanged"
+    ]
+  },
+  "description": [
+    "**Machine Tempo makes kegs and preserves jars finish their goods sooner, at a speed you pick yourself.**",
+    "",
+    "## Features",
+    "- Kegs brew wine, juice, beer, pale ale, mead, coffee, green tea and vinegar faster.",
+    "- Preserves jars turn out jelly, pickles, caviar and aged roe faster.",
+    "- Four speeds in the config: 1.0 (normal), 1.25, 1.5 (default) and 2.0. At 1.5, wine takes about four days instead of six.",
+    "- Only the processing time changes: inputs, outputs, quality and prices stay as they are.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Change the speed in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- Goods already in a machine keep their old timer; the new speed counts from the next item you put in.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
