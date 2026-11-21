@@ -132,9 +132,9 @@
       "art": "CP",
       "was": "Bessere Geoden-Inhalte, drei Stufen",
       "updates": [
-        "Artefakt-Truhen, falls deren Inhalt belegt ist",
         "Omni-Geode erst, wenn die Freischaltregel des Prismasplitters belegt ist (nicht raten)",
-        "Stufen-Feinschliff"
+        "Artefaktkiste NICHT: sie hat keine Rohstoff-Hälfte, der 1.0-Mechanismus würde sie verschlechtern",
+        "Stufen-Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -360,9 +360,9 @@
       "art": "CP",
       "was": "Gebäude günstiger und schneller gebaut",
       "updates": [
-        "Zauberer-Gebäude optional",
-        "Insel-Gebäude",
-        "Deutsch"
+        "Junimo-Hütte optional ZUSAMMEN mit einer Änderung, die alle Spieler spüren (allein wäre es mit Standard „aus“ Füllmaterial; Obelisken haben keine belegten IDs)",
+        "Insel-Gebäude, falls belegbar",
+        "Deutsch (Einstellungstexte)"
       ],
       "banner": {
         "from": "chatgpt",
