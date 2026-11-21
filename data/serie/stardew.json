@@ -160,8 +160,8 @@
       "art": "CP",
       "was": "Bessere Teich-Erträge",
       "updates": [
-        "mehr Fischarten",
-        "Regler",
+        "Flunder und Mitternachtskarpfen (sobald die Quallen-IDs in der Datenliste stehen)",
+        "Stufen wählbar",
         "legendäre Fische"
       ],
       "banner": {
@@ -244,9 +244,9 @@
       "art": "CP",
       "was": "Fische leichter zu fangen, drei Stufen",
       "updates": [
-        "je Jahreszeit",
-        "legendäre Fische",
-        "Regler"
+        "Krebskorb-Tiere unverändert lassen, aber Algen und Quallen leichter",
+        "Deutsch (Einstellungstexte)",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
