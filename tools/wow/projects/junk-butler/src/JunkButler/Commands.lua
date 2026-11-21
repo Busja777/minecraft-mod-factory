@@ -105,7 +105,9 @@ local function listVisits()
   local count, earned = ns.LogTotals(log)
   ns.Print(string.format(L["Together: %d items for %s. /jb log followed by a number shows the items of that visit."], count, ns.FormatMoney(earned)))
   if ns.AnyRecent(log, t) then
-    ns.Print(L["Sales from the last 15 minutes are marked. The vendor's Buyback tab may still have them, but it keeps only your latest sold items and empties when you log out."])
+    -- 1.4: the tab's name as the vendor window itself shows it, in the player's language.
+    local tab = type(BUYBACK) == "string" and BUYBACK ~= "" and BUYBACK or "Buyback"
+    ns.Print(string.format(L["Sales from the last 15 minutes are marked. The vendor's %s tab may still have them, but it keeps only your latest sold items and empties when you log out."], tab))
   end
 end
 

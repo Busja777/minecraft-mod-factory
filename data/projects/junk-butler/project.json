@@ -40,6 +40,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "JunkButler-1.4.zip",
+      "changelog": "## Junk Butler 1.4\n\n- Junk Butler now speaks **German**. On clients in other languages it stays in English.\n- The hint in `/jb log` names the vendor's Buyback tab exactly as your vendor window does, in your client's language.\n- Dates in `/jb log` follow your client's language.\n- The commands stay the same in every language, for example `/jb keep` or `/jb guild on`.\n- Your settings, keep list, guild bank choice and sale log from 1.3 stay as they are.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

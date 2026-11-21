@@ -964,3 +964,109 @@ test("saved data of 1.1 is kept and gets an empty history, broken history is cle
   wow.fire("PLAYER_LOGIN")
   eq(type(DurabilityWatchDB.history), "table")
 end)
+
+-- 1.3: German
+
+-- A German client: its language and the slot names it has (GlobalStrings). The stand-in client has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  HEADSLOT, SHOULDERSLOT, MAINHANDSLOT, SECONDARYHANDSLOT = "Kopf", "Schulter", "Waffenhand", "Schildhand"
+  FINGER0SLOT, FINGER1SLOT, TRINKET0SLOT, TRINKET1SLOT = "Finger", "Finger", "Schmuck", "Schmuck"
+end
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("slot names come from the game, English when the client has none", function(wow)
+  local ns = boot(wow, set())
+  eq(ns.SlotName(3), "Shoulders")
+  eq(ns.SlotName(11), "Ring 1")
+  eq(ns.SlotName(14), "Trinket 2")
+  eq(ns.SlotName(16), "Main Hand")
+  eq(ns.SlotName(4), "Other", "the shirt is never read")
+  germanClient(wow)
+  eq(ns.SlotName(3), "Schulter")
+  eq(ns.SlotName(11), "Finger 1")
+  eq(ns.SlotName(12), "Finger 2")
+  eq(ns.SlotName(14), "Schmuck 2")
+  eq(ns.SlotName(16), "Waffenhand")
+  eq(ns.SlotName(15), "Back", "a slot name the client lacks stays English")
+  SHOULDERSLOT = ""
+  eq(ns.SlotName(3), "Shoulders", "an empty one too")
+end)
+
+test("German client: display, warning, tooltip and state in German with the game's slot names", function(wow)
+  germanClient(wow)
+  local ns, w = boot(wow, set())
+  eq(DurabilityWatchFrame.gear:GetText(), "Ausrüstung " .. GREEN .. "87%|r")
+  eq(DurabilityWatchFrame.lowest:GetText(), "Waffenhand " .. YELLOW .. "40%|r")
+  wow.slash("/dw")
+  eq(#wow.chat, 4)
+  eq(wow.chat[1], PREFIX .. "Ausrüstung 87%, am stärksten abgenutzt: Waffenhand 40%. Warnung bei 25%. Warnung vor Dungeons und Schlachtzügen bei 50%. Die Anzeige lässt sich verschieben.")
+  eq(wow.chat[2], PREFIX .. "/dw warn <Prozent> legt die Warnschwelle fest (5 bis 90), /dw lock sperrt oder entsperrt die Anzeige, /dw hide und /dw show blenden sie aus oder ein.")
+  eq(wow.chat[4], PREFIX .. "/dw history zeigt die Reparaturkosten deiner letzten 20 Händlerbesuche, /dw history clear leert die Liste.")
+  local f = DurabilityWatchFrame
+  f.scripts.OnEnter(f)
+  eq(wow.tooltip.lines[1], "Durability Watch")
+  eq(wow.tooltip.lines[2], "Waffenhand: [Blade] = " .. YELLOW .. "40%|r")
+  eq(wow.tooltip.lines[3], "Schildhand = " .. YELLOW .. "50%|r")
+  eq(wow.tooltip.lines[4], "Warnung bei 25%.")
+  eq(wow.tooltip.lines[5], "Zum Verschieben ziehen. /dw lock sperrt die Anzeige.")
+  wow.chat = {}
+  wear(wow, w, 16, 25)
+  eq(w.errors[1], "Waffenhand hat nur noch 25% Haltbarkeit")
+  eq(wow.chat[1], PREFIX .. "Waffenhand: [Blade] hat nur noch 25% Haltbarkeit. Zeit für eine Reparatur.")
+  wow.slash("/dw warn 95")
+  eq(wow.chat[2], PREFIX .. "Nutze eine ganze Zahl von 5 bis 90, zum Beispiel /dw warn 30.")
+  wow.slash("/dw hide")
+  eq(wow.chat[3], PREFIX .. "Die Anzeige ist ausgeblendet. /dw show holt sie zurück.")
+end)
+
+test("German client: instance warning, repair costs and history in German", function(wow)
+  germanClient(wow)
+  local ns, w = boot(wow, set())
+  enter(wow, w, STONEVAULT)
+  eq(w.errors[1], "Erst reparieren: Waffenhand hat nur noch 40% Haltbarkeit")
+  eq(wow.chat[1], PREFIX .. "Du betrittst The Stonevault, aber Waffenhand: [Blade] hat nur noch 40% Haltbarkeit. Repariere vorher.")
+  enter(wow, w, nil)
+  wow.chat = {}
+  visit(wow, w, 30000, function() repairAll(wow, w, true) end)
+  eq(wow.chat[1], PREFIX .. "Deine ganze Ausrüstung hier zu reparieren kostet 3g 00s 00c.")
+  wear(wow, w, 16, 40)
+  wow.now = wow.now + HOUR
+  visit(wow, w, 20000)
+  wow.chat = {}
+  wow.slash("/dw history")
+  eq(#wow.chat, 4)
+  eq(wow.chat[1], PREFIX .. "Reparaturkosten deiner letzten 2 Händlerbesuche, neueste zuerst:")
+  eq(wow.chat[2], PREFIX .. "20.11. 19:00: 2g 00s 00c, nicht repariert.")
+  eq(wow.chat[3], PREFIX .. "20.11. 18:00: 3g 00s 00c, mit Gold aus der Gildenbank repariert.")
+  eq(wow.chat[4], PREFIX .. "Reparaturen in den letzten 7 Tagen: 3g 00s 00c (davon 3g 00s 00c von der Gilde).")
+  wow.slash("/dw history clear")
+  eq(wow.chat[5], PREFIX .. "Der Reparaturverlauf dieses Charakters ist jetzt leer.")
+  wow.slash("/dw instance off")
+  eq(wow.chat[6], PREFIX .. "Keine Warnung vor Dungeons und Schlachtzügen.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow, set())
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    if not key:find("%H", 1, true) then eq(placeholders(text), placeholders(key), key) end
+  end
+  eq(n, 44, "every text on screen has its German one")
+  eq(ns.L["%b %d %H:%M"], "%d.%m. %H:%M", "dates the German way")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enGB"
+  local ns = boot(wow, set())
+  eq(next(ns.L), nil)
+  eq(DurabilityWatchFrame.gear:GetText(), "Gear " .. GREEN .. "87%|r")
+end)

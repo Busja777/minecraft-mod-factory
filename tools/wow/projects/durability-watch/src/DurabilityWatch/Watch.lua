@@ -36,14 +36,14 @@ end
 
 -- The slot name, followed by the item link when the game gives one.
 function ns.ItemText(slot)
-  local name = L[ns.SLOT_LABEL[slot] or "Other"]
+  local name = ns.SlotName(slot)
   local link = GetInventoryItemLink and plain(GetInventoryItemLink("player", slot))
   if type(link) == "string" and link ~= "" then return name .. ": " .. link end
   return name
 end
 
 local function warn(cond)
-  local name = L[ns.SLOT_LABEL[cond.lowestSlot] or "Other"]
+  local name = ns.SlotName(cond.lowestSlot)
   if UIErrorsFrame and UIErrorsFrame.AddMessage then
     UIErrorsFrame:AddMessage(string.format(L["%s is at %d%% durability"], name, cond.lowest), 1, 0.25, 0.25)
   end
@@ -101,7 +101,7 @@ function ns.ReadPlace()
 end
 
 local function warnInstance(place, cond)
-  local name = L[ns.SLOT_LABEL[cond.lowestSlot] or "Other"]
+  local name = ns.SlotName(cond.lowestSlot)
   if UIErrorsFrame and UIErrorsFrame.AddMessage then
     UIErrorsFrame:AddMessage(string.format(L["Repair first: %s is at %d%% durability"], name, cond.lowest), 1, 0.25, 0.25)
   end

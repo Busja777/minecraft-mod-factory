@@ -1442,3 +1442,105 @@ test("bank: closing the bank before the count reports at once, and only once", f
   w.run()
   eq(#wow.chat, 1, "the waiting count says nothing more")
 end)
+
+-- 1.3: German
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("German client: a vendor visit and the short line in German, item names from the game", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow, { { id = WATER, name = "Wasser", price = 100 }, { id = BREAD, name = "Brot", price = 100 } }, {})
+  boot(wow, 1500, { [WATER] = 10, [BREAD] = 10 })
+  w.visit()
+  w.run()
+  eq(#wow.chat, 2)
+  eq(wow.chat[1], PREFIX .. "Gekauft: 10 Wasser, 5 Brot für 15s 00c.")
+  eq(wow.chat[2], PREFIX .. "Nicht genug Gold für alles, es fehlen noch: 5 Brot.")
+end)
+
+test("German client: slash commands answer in German, the commands stay English", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow, {}, { [WATER] = 20 })
+  w.names[WATER] = "Wasser"
+  boot(wow, 0)
+  wow.slash("/vr list")
+  eq(wow.chat[1], PREFIX .. "Deine Liste ist leer. Füge einen Gegenstand mit /vr add <Gegenstand> <Anzahl> hinzu.")
+  wow.slash("/vr add 159 20")
+  eq(wow.chat[2], PREFIX .. "Wasser: 20 Stück bleiben in deinen Taschen vorrätig.")
+  wow.slash("/vr add 159 0")
+  eq(wow.chat[3], PREFIX .. "Die Anzahl muss eine ganze Zahl von 1 bis 1000 sein.")
+  wow.slash("/vr add Wasser")
+  eq(wow.chat[4], PREFIX .. "Nutze /vr add <Gegenstandslink oder Gegenstands-ID> <Anzahl>.")
+  wow.slash("/vr list")
+  eq(wow.chat[5], PREFIX .. "Deine Liste:")
+  eq(wow.chat[6], PREFIX .. "  Wasser: 20")
+  wow.slash("/vr remove 4540")
+  eq(wow.chat[7], PREFIX .. "Gegenstand 4540 steht nicht auf deiner Liste.")
+  wow.slash("/vr")
+  eq(wow.chat[8], PREFIX .. "Auffüllen ist an. 1 Gegenstand steht auf deiner Liste. Auffüllen aus der Bank ist an. Warnung bei knappem Vorrat unter 25% deiner Anzahl.")
+  eq(wow.chat[9]:match("^.-/vr add <Gegenstand> <Anzahl> hält einen Gegenstand vorrätig, .- Halte Shift gedrückt, während du einen Händler oder die Bank öffnest, um diesen Besuch auszulassen%.$") ~= nil, true)
+  wow.slash("/vr warn 95")
+  eq(wow.chat[10], PREFIX .. "Die Warnung muss eine ganze Prozentzahl von 1 bis 90 sein, oder off.")
+  wow.slash("/vr warn off")
+  eq(wow.chat[11], PREFIX .. "Die Warnung bei knappem Vorrat ist aus.")
+  wow.slash("/vr bank vielleicht")
+  eq(wow.chat[12], PREFIX .. "Nutze /vr bank on oder /vr bank off.")
+  wow.slash("/vr bank off")
+  eq(wow.chat[13], PREFIX .. "Auffüllen aus der Bank ist aus.")
+  wow.slash("/vr remove 159")
+  eq(wow.chat[14], PREFIX .. "Wasser ist nicht mehr auf deiner Liste.")
+  wow.slash("/vr off")
+  eq(wow.chat[15], PREFIX .. "Auffüllen ist aus.")
+  wow.slash("/vr")
+  eq(wow.chat[16], PREFIX .. "Auffüllen ist aus. Deine Liste ist leer. Auffüllen aus der Bank ist aus. Die Warnung bei knappem Vorrat ist aus.")
+end)
+
+test("German client: low stock warning in German", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow, {}, { [WATER] = 20 })
+  w.names[WATER] = "Wasser"
+  boot(wow, 0, { [WATER] = 20 })
+  w.bags[WATER] = 4
+  bagsChanged(wow)
+  eq(wow.chat[1], PREFIX .. "Wasser wird knapp: noch 4 von 20.")
+end)
+
+test("German client: taking items from the bank in German", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow)
+  local b = bankWorld(wow, w)
+  w.names[WATER] = "Wasser"
+  b.bag(0, 1)
+  b.bag(BANK1, 2, { [1] = { WATER, 20 }, [2] = { BREAD, 20 } })
+  boot(wow, 0, { [WATER] = 5, [BREAD] = 5 })
+  b.open()
+  w.run()
+  b.close()
+  eq(wow.chat[1], PREFIX .. "Aus der Bank genommen: Wasser x5.")
+  eq(wow.chat[2], PREFIX .. "Deine Taschen sind voll, der Rest bleibt in der Bank.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  world(wow)
+  local ns = boot(wow, 0)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 28, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  world(wow)
+  local ns = boot(wow, 0)
+  eq(next(ns.L), nil)
+  eq(ns.ShortLine({ { itemID = WATER, name = "Water", count = 5 } }), "Not enough gold for everything, still missing: 5 Water.")
+end)
