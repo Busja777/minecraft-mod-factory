@@ -15,6 +15,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "MobDropsPlus-1.1.zip",
+      "changelog": "## Mob Drops Plus 1.1\n\nTen more mobs, now twenty in all.\n\n- Piglin: 0–2 arrows, like the pillager. Still no gold: bartering stays the way to get it.\n- Hoglin: 0–1 crimson fungus. Strider: 0–1 warped fungus (what each is bred with).\n- Polar bear: 0–1 leather. Glow squid: 0–1 glow lichen. Breeze: 0–1 wind charge.\n- Spider: a cobweb, like the cave spider. Witch: a nether wart. Frog: a slime ball. Evoker: a book. Each only when a player kills the mob, 5% of the time (up to 11% with Looting III).\n- Looting adds up to one more per level to every amount above. The ten mobs of 1.0 and all vanilla drops stay as they were.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

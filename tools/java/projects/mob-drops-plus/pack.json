@@ -1,7 +1,7 @@
 {
   "kind": "data",
   "name": "Mob Drops Plus",
-  "description": "Small, sensible extra drops for ten mobs",
+  "description": "Small, sensible extra drops for twenty mobs",
   "mc": "1.21.1",
   "also": ["26.3"],
   "gameVersions": ["1.21", "1.21.1", "26.3"]

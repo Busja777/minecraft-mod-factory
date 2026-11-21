@@ -3,13 +3,16 @@
 // (open water for treasure, the jungle-only bamboo, Luck of the Sea through the "quality" values).
 // The build stops if a vanilla table is not shaped as this file expects.
 //
-// Only the tables that change are overridden: gameplay/fishing (junk/treasure/fish weights) and
-// gameplay/fishing/treasure (two extra catches). fish.json and junk.json stay vanilla; they are
-// still read and checked, because the main table points to them.
+// Only the tables that change are overridden: gameplay/fishing (junk/treasure/fish weights),
+// gameplay/fishing/treasure (two extra catches) and, since 1.2, gameplay/fishing/fish (biome
+// catches). junk.json stays vanilla; it is still read and checked, because the main table points
+// to it and its jungle bamboo is the model for the biome rule.
 //
 // Chances per cast in open water without Luck of the Sea (weight / sum of weights):
 //   vanilla  junk 10/100 = 10 %,  treasure 5/100 = 5 %,  fish 85/100 = 85 %
 //   pack     junk  5/98  ≈ 5.1 %, treasure 8/98  ≈ 8.2 %, fish 85/98  ≈ 86.7 %
+// The biome catches only change which fish the fish share brings (BIOME_FISH below); the three
+// shares above stay the same everywhere.
 // Luck of the Sea adds quality × level to each weight (never below 0): at level III junk is 5 - 6
 // → 0, so a fully enchanted rod catches no junk at all (vanilla: 4 of 97).
 // Inside the treasure table every vanilla item keeps weight 1 of now 10 instead of 6, so each old
@@ -31,10 +34,25 @@ export const EXTRA_TREASURE = [
   { item: 'experience_bottle', weight: 3, count: [1, 3] }
 ];
 
+// Biome catches (1.2): an extra entry of the fish table that only counts where the hook is in one of
+// the biomes, written as vanilla writes the jungle-only bamboo of the junk table (location_check).
+// The vanilla fish weights stay (cod 60, salmon 25, tropical fish 2, pufferfish 13 = 100); in such a
+// biome the extra weight is added, so the fish table there sums to 125:
+//   warm oceans, jungles, mangrove swamp   tropical fish  2 → 25 of 125 = 20 %  (vanilla 2 %)
+//   frozen rivers and oceans, taigas       salmon        25 → 50 of 125 = 40 %  (vanilla 25 %)
+//   cold oceans                            cod           60 → 85 of 125 = 68 %  (vanilla 60 %)
+// The other fish keep their weight, so they become a little rarer there (each × 100/125).
+export const BIOME_FISH = [
+  { item: 'tropical_fish', weight: 23, biomes: ['warm_ocean', 'lukewarm_ocean', 'deep_lukewarm_ocean', 'jungle', 'sparse_jungle', 'bamboo_jungle', 'mangrove_swamp'] },
+  { item: 'salmon', weight: 25, biomes: ['frozen_river', 'frozen_ocean', 'deep_frozen_ocean', 'taiga', 'snowy_taiga', 'old_growth_pine_taiga', 'old_growth_spruce_taiga'] },
+  { item: 'cod', weight: 25, biomes: ['cold_ocean', 'deep_cold_ocean'] }
+];
+
 // The two ways a loot table is written, each copied from that version's own vanilla tables.
 //   condition / modifier  the key under which a table, pool or entry carries its conditions / item functions
 //   openWater             what the treasure entry of gameplay/fishing must carry, exactly
 //   setCount              "from … to of the item", as vanilla writes it (chests/pillager_outpost)
+//   inBiomes              "only where the hook is in these biomes", as the bamboo of fishing/junk writes it
 // The game ignores keys it does not know: a table in the wrong spelling loads without an error and
 // loses its conditions (treasure everywhere), so the spelling is never guessed.
 export const SPELLINGS = {
@@ -43,7 +61,8 @@ export const SPELLINGS = {
     condition: 'conditions',
     modifier: 'functions',
     openWater: [{ condition: 'minecraft:entity_properties', entity: 'this', predicate: { type_specific: { type: 'minecraft:fishing_hook', in_open_water: true } } }],
-    setCount: (min, max) => [{ add: false, count: { type: 'minecraft:uniform', max, min }, function: 'minecraft:set_count' }]
+    setCount: (min, max) => [{ add: false, count: { type: 'minecraft:uniform', max, min }, function: 'minecraft:set_count' }],
+    inBiomes: biomes => [{ condition: 'minecraft:location_check', predicate: { biomes: biomes.map(b => `minecraft:${b}`) } }]
   },
   // Minecraft 26.3 (data pack format 121): one "condition" and one "modifier", each names itself under
   // "type"; the hook check is its own predicate key. set_count without "add" sets the count (default false).
@@ -51,7 +70,8 @@ export const SPELLINGS = {
     condition: 'condition',
     modifier: 'modifier',
     openWater: { type: 'minecraft:entity_properties', entity: 'this', predicate: { 'minecraft:type_specific/fishing_hook': { in_open_water: true } } },
-    setCount: (min, max) => ({ type: 'minecraft:set_count', count: { type: 'minecraft:uniform', max, min } })
+    setCount: (min, max) => ({ type: 'minecraft:set_count', count: { type: 'minecraft:uniform', max, min } }),
+    inBiomes: biomes => ({ type: 'minecraft:location_check', predicate: { biomes: biomes.map(b => `minecraft:${b}`) } })
   }
 };
 
@@ -63,6 +83,8 @@ const EXPECTED_MAIN = {
 };
 const EXPECTED_TREASURE = ['name_tag', 'saddle', 'bow', 'fishing_rod', 'book', 'nautilus_shell'];
 const EXPECTED_FISH = ['cod', 'salmon', 'tropical_fish', 'pufferfish'];
+const EXPECTED_FISH_WEIGHTS = { cod: 60, salmon: 25, tropical_fish: 2, pufferfish: 13 };
+const JUNGLES = ['jungle', 'sparse_jungle', 'bamboo_jungle'];
 const EXPECTED_JUNK = ['lily_pad', 'leather_boots', 'leather', 'bone', 'potion', 'string', 'fishing_rod', 'bowl', 'stick', 'ink_sac', 'tripwire_hook', 'rotten_flesh', 'bamboo'];
 
 const TABLES = 'data/minecraft/loot_table/gameplay';
@@ -154,6 +176,30 @@ export function buildTreasure(table, spelling = spellingOf({ table })) {
   return out;
 }
 
+// The biome rule must be written exactly as this version's vanilla junk table limits bamboo to jungles.
+export function checkBiomeRule(junk, spelling) {
+  const bamboo = onePool(junk, 'fishing/junk.json').entries.find(e => e.name === 'minecraft:bamboo');
+  if (!bamboo || !same(bamboo[spelling.condition], spelling.inBiomes(JUNGLES))) fail(`fishing/junk.json: the jungle rule of bamboo is not written as expected (${JSON.stringify(bamboo?.[spelling.condition])})`);
+}
+
+// The vanilla fish stay as they are; each biome catch is one more entry, only valid in its biomes.
+export function buildFish(table, spelling = spellingOf({ table })) {
+  itemNames(table, 'fishing/fish.json', EXPECTED_FISH);
+  const out = structuredClone(table);
+  const pool = out.pools[0];
+  for (const e of pool.entries) {
+    const item = e.name.replace(/^minecraft:/, '');
+    if (e.weight !== EXPECTED_FISH_WEIGHTS[item]) fail(`fishing/fish.json: ${e.name} has weight ${e.weight}, expected ${EXPECTED_FISH_WEIGHTS[item]}`);
+    // No condition, no quality, no function: the fish are the same everywhere in vanilla.
+    onlyKeys(e, ['type', 'name', 'weight'], `fishing/fish.json: ${e.name}`);
+  }
+  for (const { item, weight, biomes } of BIOME_FISH) {
+    if (!EXPECTED_FISH.includes(item)) fail(`fishing/fish.json: ${item} is not a vanilla fish catch`);
+    pool.entries.push({ type: 'minecraft:item', [spelling.condition]: spelling.inBiomes(biomes), name: `minecraft:${item}`, weight });
+  }
+  return out;
+}
+
 // Every key of a JSON value, at any depth, with the type of its value.
 function keysIn(value, found = []) {
   if (Array.isArray(value)) value.forEach(v => keysIn(v, found));
@@ -168,17 +214,27 @@ const FOREIGN = new Map([
 
 export default async function ({ vanilla, registry }) {
   const items = registry('item');
-  for (const [rel, expected] of [['fishing/fish.json', EXPECTED_FISH], ['fishing/junk.json', EXPECTED_JUNK]]) itemNames(read(vanilla, rel), rel, expected);
+  const junk = read(vanilla, 'fishing/junk.json');
+  itemNames(junk, 'fishing/junk.json', EXPECTED_JUNK);
   const main = read(vanilla, 'fishing.json');
   const treasure = read(vanilla, 'fishing/treasure.json');
-  const spelling = spellingOf({ main, treasure });
+  const fish = read(vanilla, 'fishing/fish.json');
+  const spelling = spellingOf({ main, treasure, junk });
+  checkBiomeRule(junk, spelling);
+  // Biomes are not in the registry report; every biome of the game has its own file in vanilla's data.
+  for (const b of new Set(BIOME_FISH.flatMap(f => f.biomes))) {
+    if (!fs.existsSync(path.join(vanilla.data, 'minecraft', 'worldgen', 'biome', `${b}.json`))) throw new Error(`anglers-loot: unknown biome minecraft:${b}`);
+  }
   const files = {
     [`${TABLES}/fishing.json`]: buildMain(main, spelling),
-    [`${TABLES}/fishing/treasure.json`]: buildTreasure(treasure, spelling)
+    [`${TABLES}/fishing/treasure.json`]: buildTreasure(treasure, spelling),
+    [`${TABLES}/fishing/fish.json`]: buildFish(fish, spelling)
   };
   // Loot entries name their item under "name", which the shared check does not look at.
-  for (const e of files[`${TABLES}/fishing/treasure.json`].pools[0].entries) {
-    if (!items.has(e.name.replace(/^minecraft:/, ''))) throw new Error(`anglers-loot: unknown item ${e.name}`);
+  for (const rel of ['fishing/treasure.json', 'fishing/fish.json']) {
+    for (const e of files[`${TABLES}/${rel}`].pools[0].entries) {
+      if (!items.has(e.name.replace(/^minecraft:/, ''))) throw new Error(`anglers-loot: unknown item ${e.name}`);
+    }
   }
   for (const [file, table] of Object.entries(files)) {
     const wrong = keysIn(table).filter(k => FOREIGN.get(spelling).includes(k));
