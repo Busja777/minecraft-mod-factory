@@ -16,9 +16,22 @@ import fs from 'fs';
 export const GROUPS = [
   { group: 'villagers', factor: 0.35, events: [
     'entity.villager.ambient', 'entity.villager.yes', 'entity.villager.no', 'entity.villager.trade',
-    'entity.wandering_trader.ambient', 'entity.wandering_trader.yes', 'entity.wandering_trader.no', 'entity.wandering_trader.trade'
+    'entity.wandering_trader.ambient', 'entity.wandering_trader.yes', 'entity.wandering_trader.no', 'entity.wandering_trader.trade',
+    // V1.2: the workstation sounds of every profession (the librarian's is vanilla volume 2).
+    ...['armorer', 'butcher', 'cartographer', 'cleric', 'farmer', 'fisherman', 'fletcher', 'leatherworker',
+      'librarian', 'mason', 'shepherd', 'toolsmith', 'weaponsmith'].map(p => `entity.villager.work_${p}`)
   ] },
-  { group: 'farm animals', factor: 0.35, events: ['entity.cow.ambient', 'entity.sheep.ambient', 'entity.chicken.ambient', 'entity.pig.ambient'] },
+  { group: 'farm animals', factor: 0.35, events: [
+    'entity.cow.ambient', 'entity.sheep.ambient', 'entity.chicken.ambient', 'entity.pig.ambient',
+    // V1.2
+    'entity.chicken.egg', 'entity.goat.ambient', 'entity.goat.screaming.ambient'
+  ] },
+  // V1.2. The game already plays bats at 0.1 (Bat.getSoundVolume, 26.3 client jar); this scales that.
+  { group: 'bats', factor: 0.35, events: ['entity.bat.ambient', 'entity.bat.takeoff'] },
+  // V1.2. The angry buzz (entity.bee.loop_aggressive) stays: it warns the player.
+  { group: 'bees', factor: 0.4, events: ['entity.bee.loop', 'block.beehive.work'] },
+  // V1.2. Played at volume 1 by the blocks themselves (26.3 client jar).
+  { group: 'furnaces', factor: 0.4, events: ['block.furnace.fire_crackle', 'block.smoker.smoke', 'block.blastfurnace.fire_crackle'] },
   { group: 'nether portal', factor: 0.25, events: ['block.portal.ambient', 'block.portal.travel', 'block.portal.trigger'] },
   { group: 'rain', factor: 0.45, events: ['weather.rain', 'weather.rain.above'] },
   { group: 'minecart', factor: 0.35, events: ['entity.minecart.riding', 'entity.minecart.inside', 'entity.minecart.inside.underwater'] },

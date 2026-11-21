@@ -25,6 +25,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "Hush-1.2.zip",
+      "changelog": "## Hush 1.2\n\nMore everyday sounds are quieter.\n\n- Villager workstation sounds (all 13 professions, including the loud librarian lectern) play at 35 %.\n- Goats (bleating and screaming goats) and chickens laying eggs play at 35 %, like the other farm animals.\n- Bat squeaks and the bat take-off flutter play at 35 %.\n- Bee buzzing and busy beehives play at 40 %; angry bees keep their full warning buzz.\n- Furnace, smoker and blast furnace crackling play at 40 %.\n- Everything from 1.1 stays as it was. No sound is muted and every sound keeps its subtitle.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
