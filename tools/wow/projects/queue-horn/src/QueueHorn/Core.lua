@@ -19,16 +19,70 @@ ns.KIND_LABEL = {
   lfg = "Group finder", ready = "Ready check", pvp = "Battleground and arena", pet = "Pet battle",
 }
 
+-- The sounds a player can pick per alert: the word typed in /qh sound, and the game's SOUNDKIT
+-- name behind it. "horn" is the ready check sound every alert played in 1.0.
+ns.SOUND_NAMES = { "horn", "warning", "alarm", "invite", "whisper" }
+ns.SOUND_KIT = {
+  horn = "READY_CHECK",
+  warning = "RAID_WARNING",
+  alarm = "ALARM_CLOCK_WARNING_3",
+  invite = "IG_PLAYER_INVITE",
+  whisper = "TELL_MESSAGE",
+}
+ns.DEFAULT_SOUND = "horn"
+
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
 
--- Fills in what is missing and keeps what the player chose.
+-- Fills in what is missing and keeps what the player chose. Settings of 1.0 have no sounds yet:
+-- every alert starts with the horn, as before.
 function ns.Settings(settings)
   for key, value in pairs(ns.DEFAULTS) do
     if type(settings[key]) ~= "boolean" then settings[key] = value end
   end
+  if type(settings.sounds) ~= "table" then settings.sounds = {} end
+  for _, kind in ipairs(ns.KINDS) do
+    if not ns.SOUND_KIT[settings.sounds[kind]] then settings.sounds[kind] = ns.DEFAULT_SOUND end
+  end
   return settings
+end
+
+-- The sound name an alert plays. kind = nil (the plain test) plays the horn.
+function ns.SoundFor(settings, kind)
+  local sounds = type(settings) == "table" and settings.sounds
+  local name = type(sounds) == "table" and kind and sounds[kind]
+  if ns.SOUND_KIT[name] then return name end
+  return ns.DEFAULT_SOUND
+end
+
+-- The sound id for a name from the game's SOUNDKIT table. A sound this client does not know falls
+-- back to the horn; nil when not even that is there.
+function ns.SoundId(kit, name)
+  if type(kit) ~= "table" then return nil end
+  local id = kit[ns.SOUND_KIT[name] or ""]
+  if type(id) == "number" then return id end
+  id = kit[ns.SOUND_KIT[ns.DEFAULT_SOUND]]
+  if type(id) == "number" then return id end
+  return nil
+end
+
+-- Picks a sound for one alert. Returns true, or nil when the alert or the sound is not known.
+function ns.ChooseSound(settings, kind, name)
+  if not ns.KIND_LABEL[kind] or not ns.SOUND_KIT[name] then return nil end
+  if type(settings.sounds) ~= "table" then settings.sounds = {} end
+  settings.sounds[kind] = name
+  return true
+end
+
+-- "Sounds: Group finder horn, ... Choices: horn, warning, alarm, invite, whisper."
+function ns.SoundText(settings)
+  local L = ns.L
+  local parts = {}
+  for _, kind in ipairs(ns.KINDS) do
+    parts[#parts + 1] = L[ns.KIND_LABEL[kind]] .. " " .. ns.SoundFor(settings, kind)
+  end
+  return string.format(L["Sounds: %s. Choices: %s."], table.concat(parts, ", "), table.concat(ns.SOUND_NAMES, ", "))
 end
 
 -- The text in the middle of the screen for one kind of alert.

@@ -2,12 +2,14 @@ local _, ns = ...
 local L = ns.L
 
 -- Listens for mail: rings on new mail, keeps track of which characters have mail waiting and
--- names them after login.
+-- names them after login. While the mailbox is open it looks for letters with items or gold that
+-- run out soon, warns once per session and remembers it for the login list.
 
 ns.ring = ns.NewRingState()
 
 local entered = false     -- the first PLAYER_ENTERING_WORLD of this UI session has been seen
 local mailboxOpen = false -- between MAIL_SHOW and MAIL_CLOSED
+local expiryWarned = false -- the expiry warning has been printed in this UI session
 
 function ns.Print(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cffffd100" .. L["Mail Bell"] .. ":|r " .. msg)
@@ -55,10 +57,16 @@ local function check()
   if ns.ShouldRing(ns.ring, hasNew, GetTime()) then ring() end
 end
 
+function ns.ExpiringLine()
+  return ns.ExpiringText(ns.db.chars, time(), ns.settings.expire, ns.MyRealm())
+end
+
 local function loginList()
   if not ns.settings.login then return end
   local text = ns.WaitingText(ns.db.chars, ns.me, ns.MyRealm())
   if text then ns.Print(text) end
+  local expiring = ns.ExpiringLine()
+  if expiring then ns.Print(expiring) end
 end
 
 local function onLogin()
@@ -83,11 +91,38 @@ local function onEnteringWorld()
   check()
 end
 
+-- The letters of the inbox as ScanExpiry wants them. GetInboxHeaderInfo(index) returns
+-- packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, hasItem, ...
+local function readLetters(count)
+  local letters = {}
+  if not GetInboxHeaderInfo then return letters end
+  for i = 1, count do
+    local ok, _, _, _, _, money, cod, daysLeft, hasItem = pcall(GetInboxHeaderInfo, i)
+    if ok then letters[#letters + 1] = { money = money, cod = cod, daysLeft = daysLeft, hasItem = hasItem } end
+  end
+  return letters
+end
+
+local function checkExpiry(count)
+  if not GetInboxHeaderInfo then return end
+  local soonest, expiring = ns.ScanExpiry(readLetters(count), ns.settings.expire)
+  ns.NoteExpiry(ns.db.chars, ns.me, soonest, time())
+  if expiryWarned or ns.settings.expire == 0 then return end
+  local firstSoon = nil
+  if expiring > 0 then firstSoon = soonest end
+  local text = ns.ExpiryWarning(expiring, firstSoon, ns.settings.expire)
+  if text then
+    expiryWarned = true
+    ns.Print(text)
+  end
+end
+
 local function onInboxUpdate()
   if not mailboxOpen or not GetInboxNumItems then return end
   local count = GetInboxNumItems()
-  if ns.IsSecret(count) then return end
+  if ns.IsSecret(count) or type(count) ~= "number" then return end
   if count == 0 then ns.ClearMail(ns.db.chars, ns.me) end
+  checkExpiry(count)
 end
 
 local function onMailClosed()

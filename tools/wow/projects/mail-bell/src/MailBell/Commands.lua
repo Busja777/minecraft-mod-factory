@@ -1,7 +1,8 @@
 local _, ns = ...
 local L = ns.L
 
--- /mb shows the characters with mail and the help; /mb sound, /mb login and /mb forget change things.
+-- /mb shows the characters with mail and the help; /mb sound, /mb login, /mb expire and /mb forget
+-- change things.
 
 local function soundText()
   return ns.settings.sound and L["Sound is on."] or L["Sound is off."]
@@ -11,14 +12,30 @@ local function loginText()
   return ns.settings.login and L["Login list is on."] or L["Login list is off."]
 end
 
+local function expireText()
+  if ns.settings.expire == 0 then return L["Expiry warning is off."] end
+  return string.format(L["Expiry warning: mail with items or gold that runs out within %s."], ns.DaysText(ns.settings.expire))
+end
+
 local function help()
-  ns.Print(L["/mb sound on|off plays the bell or not, /mb login on|off names your characters with mail at login, /mb forget Name-Realm removes a character."])
+  ns.Print(L["/mb sound on/off plays the bell or not, /mb login on/off names your characters with mail at login, /mb forget Name-Realm removes a character."])
+  ns.Print(L["/mb expire followed by 1 to 30 days, or off, sets the warning for mail with items or gold that runs out soon."])
 end
 
 local function show()
   ns.Print(ns.WaitingText(ns.db.chars, ns.me, ns.MyRealm()) or L["No mail waiting on your other characters."])
-  ns.Print(soundText() .. " " .. loginText())
+  local expiring = ns.ExpiringLine()
+  if expiring then ns.Print(expiring) end
+  ns.Print(soundText() .. " " .. loginText() .. " " .. expireText())
   help()
+end
+
+local function expire(word)
+  if word == "" then return ns.Print(expireText()) end
+  local days = ns.ParseDays(word)
+  if days == nil then return help() end
+  ns.settings.expire = days
+  ns.Print(expireText())
 end
 
 local function forget(wanted)
@@ -46,6 +63,8 @@ SlashCmdList.MAILBELL = function(msg)
     else
       ns.Print(cmd == "sound" and soundText() or loginText())
     end
+  elseif cmd == "expire" then
+    expire(rest)
   elseif cmd == "forget" and rest ~= "" then
     forget(rest)
   else

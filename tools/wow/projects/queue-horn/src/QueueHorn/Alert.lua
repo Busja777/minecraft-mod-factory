@@ -19,10 +19,13 @@ local function plain(value)
   return value
 end
 
-local function playSound()
-  if not PlaySound or not SOUNDKIT or not SOUNDKIT.READY_CHECK then return end
+-- Plays the sound chosen for one kind of alert (nil: the horn).
+function ns.PlayAlertSound(kind)
+  if not PlaySound then return end
+  local id = ns.SoundId(SOUNDKIT, ns.SoundFor(ns.settings, kind))
+  if not id then return end
   -- Master plays even when the effects channel is turned down or muted.
-  PlaySound(SOUNDKIT.READY_CHECK, "Master")
+  PlaySound(id, "Master")
 end
 
 local function showMessage(text)
@@ -33,11 +36,12 @@ local function showMessage(text)
   end
 end
 
--- The alert itself, without any check. kind = nil is the test from /qh test.
-function ns.Play(kind)
-  playSound()
+-- The alert itself, without any check. kind = nil is the test from /qh test; test = true plays the
+-- sound of that kind with the test message (/qh test lfg).
+function ns.Play(kind, test)
+  ns.PlayAlertSound(kind)
   if ns.settings.flash and FlashClientIcon then FlashClientIcon() end
-  showMessage(ns.Message(kind))
+  showMessage(ns.Message((not test) and kind or nil))
 end
 
 function ns.Alert(kind)
@@ -63,7 +67,7 @@ end
 local function onLogin()
   if type(QueueHornDB) ~= "table" then QueueHornDB = {} end
   local db = QueueHornDB
-  db.version = 1
+  db.version = 2 -- 2 since 1.1: settings.sounds[kind]
   if type(db.settings) ~= "table" then db.settings = {} end
   ns.db = db
   ns.settings = ns.Settings(db.settings)

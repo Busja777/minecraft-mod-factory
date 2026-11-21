@@ -1,8 +1,10 @@
 local _, ns = ...
 
 -- Listens for duel requests and group invitations and turns down those from strangers.
+-- When the player wants it, the stranger gets one short polite whisper (1.1).
 
 ns.session = { duel = 0, invite = 0 }
+ns.whispers = ns.NewWhisperState()
 
 local POPUPS = {
   duel = { "DUEL_REQUESTED" },
@@ -35,6 +37,33 @@ local function decline(kind)
   return true
 end
 
+function ns.WhisperText()
+  return ns.settings.whisperText or ns.L[ns.DEFAULT_WHISPER]
+end
+
+-- The game's chat function: C_ChatInfo.SendChatMessage in current clients, SendChatMessage before.
+local function send(text, target)
+  local api = C_ChatInfo and C_ChatInfo.SendChatMessage or SendChatMessage
+  if not api then return false end
+  return pcall(api, text, "WHISPER", nil, target)
+end
+
+local function outdoors()
+  if not IsInInstance then return false end
+  local inInstance, instanceType = IsInInstance()
+  local lockdown = nil
+  if C_ChatInfo and C_ChatInfo.InChatMessagingLockdown then lockdown = C_ChatInfo.InChatMessagingLockdown() end
+  return ns.SafeToWhisper(inInstance, instanceType, lockdown)
+end
+
+-- One polite whisper to the stranger who was just declined, if switched on, allowed here and not
+-- sent to that name a short while ago.
+local function reply(name)
+  if not ns.settings.whisper or not outdoors() then return end
+  if not ns.MayWhisper(ns.whispers, ns.WhisperKey(name, ns.HomeRealm()), GetTime()) then return end
+  send(ns.WhisperText(), name)
+end
+
 function ns.Handle(kind, name, guid)
   if not ns.settings then return end
   local person = ns.Identify(kind, name, guid)
@@ -42,16 +71,19 @@ function ns.Handle(kind, name, guid)
   if not decline(kind) then return end
   ns.session[kind] = ns.session[kind] + 1
   if not ns.settings.quiet then ns.Print(ns.DeclineLine(kind, name, ns.session[kind])) end
+  reply(name)
 end
 
 local function onLogin()
   if type(PoliteDeclineDB) ~= "table" then PoliteDeclineDB = {} end
   local db = PoliteDeclineDB
-  db.version = 1
+  db.version = 2 -- 2 since 1.1: settings.whisper and settings.whisperText
   if type(db.settings) ~= "table" then db.settings = {} end
   if db.settings.duels == nil then db.settings.duels = true end
   if db.settings.invites == nil then db.settings.invites = true end
   if db.settings.quiet == nil then db.settings.quiet = false end
+  if type(db.settings.whisper) ~= "boolean" then db.settings.whisper = false end
+  db.settings.whisperText = ns.CleanWhisper(db.settings.whisperText) -- nil: the default text
   if type(db.allow) ~= "table" then db.allow = {} end
   ns.db = db
   ns.settings = db.settings

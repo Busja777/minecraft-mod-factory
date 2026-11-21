@@ -1,15 +1,17 @@
 local _, ns = ...
 local L = ns.L
 
--- /pd shows the state; duels, invites and quiet switch on or off; allow, unallow and list keep
--- the allow list.
+-- /pd shows the state; duels, invites, quiet and whisper switch on or off; allow, unallow and list
+-- keep the allow list; whisper text and whisper reset set the reply.
 
-local HELP = "/pd duels on|off, /pd invites on|off, /pd quiet on|off, /pd allow Name, /pd unallow Name, /pd list."
+local HELP = "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list."
+local WHISPER_HELP = "/pd whisper on or off sends declined strangers a short polite whisper, /pd whisper text Your words sets it, /pd whisper reset brings back the default."
 
 local SWITCHES = {
   duels = { on = "Declining duels from strangers is on.", off = "Declining duels from strangers is off." },
   invites = { on = "Declining group invites from strangers is on.", off = "Declining group invites from strangers is off." },
   quiet = { on = "Quiet mode is on: nothing is said in chat.", off = "Quiet mode is off." },
+  whisper = { on = "Reply whisper is on.", off = "Reply whisper is off." },
 }
 
 local function switchText(key)
@@ -17,9 +19,43 @@ local function switchText(key)
   return ns.settings[key] and L[texts.on] or L[texts.off]
 end
 
-local function showState()
-  ns.Print(switchText("duels") .. " " .. switchText("invites") .. " " .. switchText("quiet"))
+local function help()
   ns.Print(L[HELP])
+  ns.Print(L[WHISPER_HELP])
+end
+
+local function showState()
+  ns.Print(switchText("duels") .. " " .. switchText("invites") .. " " .. switchText("quiet") .. " " .. switchText("whisper"))
+  help()
+end
+
+local function replyText()
+  ns.Print(string.format(L["Reply text: %s"], ns.WhisperText()))
+end
+
+-- /pd whisper, /pd whisper text ..., /pd whisper reset (on and off are plain switches).
+local function whisper(rest)
+  local sub, words = rest:match("^(%S*)%s*(.-)$")
+  sub = (sub or ""):lower()
+  if sub == "" then
+    ns.Print(switchText("whisper"))
+    replyText()
+  elseif sub == "text" and words == "" then
+    replyText()
+  elseif sub == "text" then
+    local text, why = ns.CleanWhisper(words)
+    if not text then
+      if why == "long" then return ns.Print(string.format(L["That text is too long: %d characters at most."], ns.WHISPER_MAX)) end
+      return help()
+    end
+    ns.settings.whisperText = text
+    replyText()
+  elseif sub == "reset" then
+    ns.settings.whisperText = nil
+    replyText()
+  else
+    help()
+  end
 end
 
 local function allow(name)
@@ -59,13 +95,16 @@ SlashCmdList.POLITEDECLINE = function(msg)
   elseif SWITCHES[cmd] and (value == "on" or value == "off") then
     ns.settings[cmd] = value == "on"
     ns.Print(switchText(cmd))
+    if cmd == "whisper" and ns.settings.whisper then replyText() end
   elseif cmd == "allow" then
     allow(rest)
   elseif cmd == "unallow" then
     unallow(rest)
   elseif cmd == "list" then
     list()
+  elseif cmd == "whisper" then
+    whisper(rest)
   else
-    ns.Print(L[HELP])
+    help()
   end
 end
