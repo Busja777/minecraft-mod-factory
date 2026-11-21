@@ -17,6 +17,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "FastLeafFall-1.1.jar",
+      "changelog": "## Fast Leaf Fall 1.1\n\nSpeed settings.\n\n- New file `config/fastleaffall.json`, created on the first start. Without changes leaves fall exactly as fast as in 1.0.\n- `minDelayTicks` and `maxDelayTicks` (defaults `10` and `49`, 20 ticks are one second): each leaf that lost its tree waits a random time between the two before it decays. Lower them for an even faster fall, raise them (up to `400`) for a slower one.\n- `leavesPerTick` (default `64`, from `1` to `512`): how many leaves may decay per world and tick. Lower it on busy servers to spread the work over more ticks.\n- A value out of range falls back to its default with a warning in the server log; a maximum below the minimum uses the minimum for both.\n- Everything from 1.0 stays the same.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }

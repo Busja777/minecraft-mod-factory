@@ -1,5 +1,7 @@
 package com.factory.fastleaffall.gametest;
 
+import com.factory.fastleaffall.FastLeafFall;
+import com.factory.fastleaffall.LeafConfig;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -52,6 +54,13 @@ public class FastLeafFallGameTest implements FabricGameTest {
 
     private static long leafCount(TestContext ctx, List<BlockPos> at) {
         return at.stream().filter(p -> ctx.getBlockState(p).getBlock() instanceof LeavesBlock).count();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void theDefaultsAreThoseOf10(TestContext ctx) {
+        ctx.assertTrue(FastLeafFall.config().equals(LeafConfig.defaults()), "the game test server runs with the defaults: " + FastLeafFall.config());
+        ctx.assertTrue(LeafConfig.defaults().maxDelayTicks() + 20 <= SECONDS * 20, "the longest default wait fits into the test time");
+        ctx.complete();
     }
 
     @GameTest(templateName = EMPTY_STRUCTURE, tickLimit = SETTLE + SECONDS * 20 + 20)

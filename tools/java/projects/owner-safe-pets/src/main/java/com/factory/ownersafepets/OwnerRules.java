@@ -25,6 +25,24 @@ public final class OwnerRules {
     }
 
     /**
+     * Whether a hit on a pet is cancelled, with the settings of config/ownersafepets.json (since 1.1).
+     * With the default settings this is exactly the 1.0 rule above.
+     *
+     * @param explosion        whether the damage is an explosion (TNT, end crystal, firework)
+     * @param attackerSneaking whether the one responsible for the damage is sneaking right now
+     * @param config           the settings
+     */
+    public static boolean blocksDamage(UUID petOwner, boolean tamed, UUID attacker, UUID directSource, boolean unstoppable,
+                                       boolean explosion, boolean attackerSneaking, OwnerConfig config) {
+        if (!blocksDamage(petOwner, tamed, attacker, directSource, unstoppable)) return false;
+        if (explosion && !config.protectFromOwnerExplosions()) return false;
+        // Only the owner's own hand (hit or sweep): the owner is both attacker and direct source.
+        // An arrow is not the owner, so sneaking while it lands changes nothing.
+        if (config.sneakToHit() && attackerSneaking && !explosion && petOwner.equals(attacker) && petOwner.equals(directSource)) return false;
+        return true;
+    }
+
+    /**
      * Whether a pet needs its sit order back after a cancelled hit. Wolves and parrots drop the order
      * on every hit before the game asks whether the hit does damage; the sitting pose itself only
      * ends a tick later. A pet still in the sitting pose without the order lost it to this hit.
