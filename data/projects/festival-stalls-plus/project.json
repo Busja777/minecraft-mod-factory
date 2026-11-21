@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "FestivalStallsPlus-1.1.zip",
+      "changelog": "## Festival Stalls Plus 1.1\n\nThe Night Market joins in.\n\n- The magic shop boat at the Night Market now sells a little more each night, up to 10 of each per day:\n- Night 1 (winter 15): Crystal Fruit (230g) and Coral (120g).\n- Night 2 (winter 16): Snow Yam (150g) and Sea Urchin (240g).\n- Night 3 (winter 17): Crocus (90g) and Nautilus Shell (180g).\n- Same price rule as before: 1.5 times the sell price, so nothing can be sold back at a profit. The boat's own stock stays as it is.\n- The Desert Festival is not changed: its shops take Calico Eggs, not gold. All booths from 1.0 stay exactly as they were.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

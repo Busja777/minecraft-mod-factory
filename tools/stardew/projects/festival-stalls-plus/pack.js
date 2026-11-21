@@ -1,6 +1,8 @@
 // Festival Stalls Plus: the festival booths sell a few more fitting goods: seeds for the rest of the
 // season (Pierre's shop is closed on most festival days), seasonal flowers and festive food. Every
 // item is one the player can get in the game anyway; the vanilla stock of each booth stays as it is.
+// Since 1.1 the magic shop boat of the Night Market sells a little winter forage and a few beach finds
+// too, one small selection per night.
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/Shops holds the festival shops; their IDs are listed under "And the main festival shops"
@@ -35,9 +37,22 @@
 // Jellies (184308), Spirit's Eve (192510), Festival of Ice (192452), Feast of the Winter Star
 // (179976), each page's "Shop" section.
 //
+// 1.1, the Night Market (winter 15 to 17, https://stardewvalleywiki.com/Night_Market, revision
+// 195534): its magic shop boat has one shop per night, Festival_NightMarket_MagicBoat_Day1 to _Day3
+// (Modding:Shops, same list as above), and sells for gold ({{Price|…}} on the Night Market page).
+// Each night gets one winter forage item and one beach find, as goods under the same rules (1.5 ×
+// the sell price, 10 per player and day). No seeds: the boat already sells every seed Pierre has for
+// spring, summer and fall (one season per night), and nothing planted on a winter day can be
+// harvested outdoors, which the seed rule above requires. Coral, Sea Urchin and Nautilus Shell are
+// beach forage, not fish, so the Fisher/Angler bonus ("Fish worth 25/50% more",
+// https://stardewvalleywiki.com/Fishing/Skill, revision 190353) does not raise their sell price.
+//
 // Left out on purpose: the Stardew Valley Fair (Festival_StardewValleyFair_StarTokens sells for
-// star tokens, which have no gold value to price against), the Night Market and the Desert Festival
-// shops (planned for later updates), furniture and hats (only (O) objects can be checked here).
+// star tokens, which have no gold value to price against), the Desert Festival (its egg merchant
+// DesertFestival_EggShop and the villager shops DesertFestival_<name> sell for Calico Eggs, the
+// festival's own currency that "sell[s] for 0g", https://stardewvalleywiki.com/Desert_Festival,
+// revision 195409: no gold value either), the Night Market's decoration boat (decorations only),
+// furniture and hats (only (O) objects can be checked here).
 
 const SEASONS = ['spring', 'summer', 'fall', 'winter'];
 export const SEASON_DAYS = 28;
@@ -79,10 +94,37 @@ export const STALLS = {
     festival: 'Feast of the Winter Star', season: 'winter', day: 25,
     vanilla: ['Triple Shot Espresso', 'Powdermelon', 'Garlic', 'Fire Quartz', 'Frozen Tear', 'Fried Mushroom', 'Duck Egg', 'Bread', 'Cave Carrot', 'Perch', 'Clam', 'Winter Root'],
     add: ['Plum Pudding', 'Cookie', 'Holly']
+  },
+  // 1.1: the Night Market's magic shop boat, one shop per night (vanilla objects: the seeds of
+  // each night's "Permanent Stock" table on the Night Market page; the rest are decorations, hats,
+  // furniture and big craftables)
+  Festival_NightMarket_MagicBoat_Day1: {
+    festival: 'Night Market (night 1)', season: 'winter', day: 15,
+    vanilla: ['Parsnip Seeds', 'Bean Starter', 'Cauliflower Seeds', 'Potato Seeds', 'Tulip Bulb', 'Kale Seeds', 'Jazz Seeds', 'Garlic Seeds'],
+    add: ['Crystal Fruit', 'Coral']
+  },
+  Festival_NightMarket_MagicBoat_Day2: {
+    festival: 'Night Market (night 2)', season: 'winter', day: 16,
+    vanilla: ['Melon Seeds', 'Tomato Seeds', 'Blueberry Seeds', 'Pepper Seeds', 'Wheat Seeds', 'Radish Seeds', 'Poppy Seeds', 'Spangle Seeds', 'Hops Starter', 'Corn Seeds', 'Sunflower Seeds', 'Red Cabbage Seeds'],
+    add: ['Snow Yam', 'Sea Urchin']
+  },
+  Festival_NightMarket_MagicBoat_Day3: {
+    festival: 'Night Market (night 3)', season: 'winter', day: 17,
+    vanilla: ['Corn Seeds', 'Eggplant Seeds', 'Pumpkin Seeds', 'Bok Choy Seeds', 'Yam Seeds', 'Cranberry Seeds', 'Wheat Seeds', 'Fairy Seeds', 'Amaranth Seeds', 'Grape Starter', 'Sunflower Seeds', 'Artichoke Seeds'],
+    add: ['Crocus', 'Nautilus Shell']
   }
 };
-// The Fair's shop sells for star tokens: never touched.
-export const NOT_TOUCHED = ['Festival_StardewValleyFair_StarTokens'];
+// The festival shop IDs listed on Modding:Shops (revision 195385) that this pack may edit.
+export const DOCUMENTED_SHOPS = [
+  'Festival_EggFestival_Pierre', 'Festival_FlowerDance_Pierre', 'Festival_Luau_Pierre',
+  'Festival_DanceOfTheMoonlightJellies_Pierre', 'Festival_SpiritsEve_Pierre',
+  'Festival_FestivalOfIce_TravelingMerchant', 'Festival_FeastOfTheWinterStar_Pierre',
+  'Festival_NightMarket_MagicBoat_Day1', 'Festival_NightMarket_MagicBoat_Day2', 'Festival_NightMarket_MagicBoat_Day3'
+];
+// Shops that do not sell for gold (the Fair: star tokens; the Desert Festival: Calico Eggs) or sell
+// no objects (the decoration boat): never touched.
+export const NOT_TOUCHED = ['Festival_StardewValleyFair_StarTokens', 'DesertFestival_EggShop', 'Festival_NightMarket_DecorationBoat'];
+export const NOT_TOUCHED_PREFIX = 'DesertFestival_';
 
 // seed → [Pierre's price, growth days, crop seasons] (Crops page, revision 193979)
 export const SEEDS = {
@@ -99,7 +141,9 @@ export const SEEDS = {
 // goods → sell price (Traveling Cart page, revision 192698)
 export const GOODS = {
   Egg: 50, Tulip: 30, 'Blue Jazz': 50, Pumpkin: 320, 'Pumpkin Pie': 385, 'Cranberry Candy': 175,
-  Chowder: 135, 'Fish Stew': 175, 'Winter Seeds': 30, 'Plum Pudding': 260, Cookie: 140, Holly: 80
+  Chowder: 135, 'Fish Stew': 175, 'Winter Seeds': 30, 'Plum Pudding': 260, Cookie: 140, Holly: 80,
+  // 1.1, Night Market
+  'Crystal Fruit': 150, Coral: 80, 'Snow Yam': 100, 'Sea Urchin': 160, Crocus: 60, 'Nautilus Shell': 120
 };
 
 // the booths' own everyday goods: name → [booth price, sell price] (festival pages; sell prices
@@ -137,8 +181,8 @@ export default async function ({ items }) {
   const used = new Set();
   const changes = [];
   for (const [shop, stall] of Object.entries(STALLS)) {
-    if (NOT_TOUCHED.includes(shop)) throw new Error(`${shop} must stay vanilla`);
-    if (!/^Festival_[A-Za-z]+_(Pierre|TravelingMerchant)$/.test(shop)) throw new Error(`${shop} is not a documented festival shop ID`);
+    if (NOT_TOUCHED.includes(shop) || shop.startsWith(NOT_TOUCHED_PREFIX)) throw new Error(`${shop} must stay vanilla`);
+    if (!DOCUMENTED_SHOPS.includes(shop)) throw new Error(`${shop} is not a documented festival shop ID`);
     if (!SEASONS.includes(stall.season) || !(stall.day >= 1 && stall.day <= SEASON_DAYS)) throw new Error(`${shop}: date`);
     if (!(stall.add.length >= 2 && stall.add.length <= 3)) throw new Error(`${shop}: ${stall.add.length} items`);
     const entries = {};
