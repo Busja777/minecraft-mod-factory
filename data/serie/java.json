@@ -21,9 +21,9 @@
       "art": "D",
       "was": "Holz im Steinsäger: Treppen, Stufen, Zäune, Türen",
       "updates": [
-        "Stämme und entrindetes Holz",
-        "Bambusmosaik",
-        "Blasse Eiche, sobald 1.21.1 nicht mehr bedient wird"
+        "Blasse Eiche, sobald 1.21.1 nicht mehr bedient wird",
+        "Zäune und Schilder aus Stämmen, falls fair rechenbar",
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -70,9 +70,9 @@
       "art": "D",
       "was": "Dörfer erscheinen häufiger in neuen Gebieten",
       "updates": [
-        "Ozeanmonumente und Ruinen",
         "Fortschritte für gefundene Bauwerke",
-        "Trail-Ruinen (Archäologie) häufiger, gleiche Regel"
+        "Trail-Ruinen (Archäologie) häufiger, gleiche Regel",
+        "Feinschliff nach Kommentaren (Ozeanmonumente bleiben selten: Gold, Schwämme und Abbaulähmung)"
       ],
       "banner": {
         "from": "chatgpt",
