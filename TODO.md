@@ -21,7 +21,15 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 - **Die Nacht-Sitzung lief noch nie:** Diese Sitzung und sie teilen sich ein Ausgabe-Limit. Claude baut tagsüber mit höchstens zwei Helfern und abends nichts Großes. Besser wäre ein höheres Limit (deine Entscheidung).
 - **Blind bleibt blind:** Stardew, Bedrock und 1.21.1 sind ungetestet im Spiel; die Seiten sagen nichts anderes.
 
-**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #33 → #37 → #75 → #31 → #34. Danach `npm run cf -- serie` für die 18 Minecraft-Projekte, die schon warten.
+**Empfohlene Reihenfolge für deine Merges:** **#89 zuerst** (Java-Dateien für die Zwischenversionen, behebt kaputte Packs auf 1.21.5 bis 26.2) → #29 → #30 (Anlegen) → #28 → #27 → #33 → #37 → #75 → #84 → #31 → #34. Danach `npm run cf -- serie` für die 18 Minecraft-Projekte, die schon warten.
+
+## Abend 21.11.: Java-Packs auf den Zwischenversionen
+
+- Ein Ladetest über alle Minecraft-Versionen von 1.21.5 bis 26.2 hat gezeigt: Unsere Zwei-Versionen-Dateien nehmen jede Version dazwischen an. Drei Packs funktionierten dort nicht richtig, bei Hush wären auf 1.21.2 bis 1.21.4 die Wölfe stumm.
+- **#89** ordnet jeder Zwischenversion den Dateisatz zu, der bei ihr nachweislich lädt (`alsoLoads`). Offen bleiben Anglers Loot und Farmers Advancements auf 26.2 sowie das Rezeptbuch von Uncraft Basics auf 1.21.2 bis 26.2; dafür bräuchte es einen dritten Dateisatz (deine Entscheidung).
+- **Bis #89 gemergt ist, baut Claude keine Java-Updates**, sonst wären sie gleich wieder veraltet.
+- **Später möglich:** Die sieben Packs, die überall laden, könnten auf CurseForge auch 1.21.5 bis 26.2 angeben. Das bringt mehr Reichweite, braucht aber einen eigenen Schritt im Upload.
+- **Speicherplatz:** Auf deinem Mac sind nur noch etwa 14 GB frei. Der Zwischenspeicher `~/.cache/mod-factory/minecraft/` enthält jetzt 14 weitere Versionen (3,4 GB). Die Ordner 1.21.2 bis 26.2 dürfen jederzeit weg; `--zwischen` lädt sie bei Bedarf neu.
 
 ## Nachmittag 21.11.: Updates statt neuer Projekte
 
