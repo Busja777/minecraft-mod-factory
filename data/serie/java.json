@@ -149,7 +149,11 @@
         "Schutz vor Lava und Ertrinken",
         "Einstellungen",
         "NeoForge"
-      ]
+      ],
+      "banner": {
+        "from": "claude",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 10,
@@ -185,7 +189,11 @@
         "Tempo",
         "Feinschliff",
         "NeoForge"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 13,

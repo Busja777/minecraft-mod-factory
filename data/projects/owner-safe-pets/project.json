@@ -1,0 +1,22 @@
+{
+  "slug": "owner-safe-pets",
+  "game": "java",
+  "name": "Owner Safe Pets",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "OwnerSafePets-1.0.jar",
+      "changelog": "## Owner Safe Pets 1.0\n\nFirst release.\n\n- Tamed wolves, cats, parrots, horses, donkeys, mules, llamas and camels take no damage from the player who tamed them.\n- This covers direct hits, sword sweeps, arrows, tridents and other projectiles you shot, and explosions you caused, such as TNT you lit.\n- A sitting wolf or parrot stays seated when you hit it by mistake.\n- Damage from anyone or anything else is unchanged.\n- Only the server needs the mod: players without it are covered too.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}

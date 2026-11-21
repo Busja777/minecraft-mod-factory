@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "fastleaffall",
+  "version": "${version}",
+  "name": "Fast Leaf Fall",
+  "description": "When a tree loses its logs, its leaves decay within a few seconds instead of minutes. Leaves placed by players are never touched. Works on the server alone; players need nothing installed.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.fastleaffall.FastLeafFall"]
+  },
+  "mixins": ["fastleaffall.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

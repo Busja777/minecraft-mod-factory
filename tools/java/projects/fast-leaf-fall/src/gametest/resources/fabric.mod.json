@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "fastleaffall-gametest",
+  "version": "1.0.0",
+  "name": "Fast Leaf Fall game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.fastleaffall.gametest.FastLeafFallGameTest"]
+  },
+  "depends": {
+    "fastleaffall": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}
