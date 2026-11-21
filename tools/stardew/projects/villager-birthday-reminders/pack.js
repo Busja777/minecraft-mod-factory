@@ -34,6 +34,11 @@
 //   the only island villager in tools/stardew/data/npcs.json (34 giftable villagers). Island
 //   villagers have their own table (ISLAND_GIFTS) and their own four patches with the same
 //   letters, conditions and DayBefore switch; the valley patches are unchanged.
+// - 1.3, German: i18n/de.json has every letter and title in German (de.js: two templates and the
+//   table villager → official German item name, each with its wiki source). Content Patcher picks
+//   the file that matches the game language and falls back to default.json for anything missing
+//   (author-guide/translations.md); every key here has a German text. The config text (DayBefore)
+//   stays English.
 // - The eve letters can be switched off: config option "DayBefore" ("true, false", default true;
 //   author-guide/config.md: "true, false" is a boolean and shows as a checkbox). Only the trigger
 //   patch carries "When": { "DayBefore": "true" } (author-guide.md#conditions). The eve letter texts
@@ -45,6 +50,8 @@
 // Gifts: one loved gift per villager. The ID must be in that villager's loved list in
 // Data/NPCGiftTastes (raw data as of 1.6.15 on the wiki) and its name in the villager page's
 // "favorites"; both are in tools/stardew/data/npcs.json and checked below.
+
+import { DE_GIFTS, letterDe, eveLetterDe, titleDe, eveTitleDe } from './de.js';
 
 // name → [gift ID, how the letter names it, how the letter calls the villager]
 export const GIFTS = {
@@ -114,7 +121,19 @@ export default async function ({ items, npcs }) {
     if (got.season !== want[0] || got.day !== want[1]) throw new Error(`eve of ${date.join(' ')} is ${got.season} ${got.day}, expected ${want.join(' ')}`);
   }
   const i18n = {};
+  const de = {};
   const used = new Set();
+  // German (since 1.3): same gift as the English letter, greeting and no mail commands, as in
+  // Joja Junk Mail's German letters.
+  const german = (key, text) => {
+    if (typeof text !== 'string' || !text.trim()) throw new Error(`${key}: German text missing`);
+    if (/[%[\]¦{}#$]/.test(text)) throw new Error(`${key}: mail command characters in the German text`);
+    if (key.startsWith('letter.') || key.startsWith('eve.')) {
+      if (!text.startsWith('Hallo @,^^')) throw new Error(`${key}: German letter must greet the player ("Hallo @,")`);
+      if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(text)) throw new Error(`${key}: German letters use the Du-form`);
+    }
+    de[key] = text;
+  };
   // One group of patches per table: the valley (GIFTS) and, since 1.2, Ginger Island (ISLAND_GIFTS).
   const build = (table, island) => {
     const mail = {};
@@ -131,11 +150,15 @@ export default async function ({ items, npcs }) {
       if (!phrase.includes(itemName.replace(/s$/, ''))) throw new Error(`${name}: "${phrase}" does not name ${itemName}`);
       if (used.has(gift)) throw new Error(`${name}: ${gift} is already another villager's gift idea`);
       used.add(gift);
+      const [deGift, deName, deCall = name] = DE_GIFTS[name] || [];
+      if (deGift !== gift || !deName) throw new Error(`${name}: de.js must name the same gift ${gift} in German`);
 
       const id = `{{ModId}}_Birthday_${name}`;
       const { season, day } = npc.birthday;
       i18n[`letter.${name}`] = letter(call, phrase);
       i18n[`title.${name}`] = `${cap(call)}'s Birthday`;
+      german(`letter.${name}`, letterDe(deCall, deName));
+      german(`title.${name}`, titleDe(deCall));
       mail[id] = `{{i18n:letter.${name}}}[#]{{i18n:title.${name}}}`;
       triggers[id] = {
         Id: id,
@@ -149,6 +172,8 @@ export default async function ({ items, npcs }) {
       const before = eve(npc.birthday);
       i18n[`eve.${name}`] = eveLetter(call, phrase);
       i18n[`eveTitle.${name}`] = `${cap(call)}'s Birthday Tomorrow`;
+      german(`eve.${name}`, eveLetterDe(deCall, deName));
+      german(`eveTitle.${name}`, eveTitleDe(deCall));
       eveMail[eveId] = `{{i18n:eve.${name}}}[#]{{i18n:eveTitle.${name}}}`;
       eveTriggers[eveId] = {
         Id: eveId,
@@ -164,6 +189,9 @@ export default async function ({ items, npcs }) {
   const island = build(ISLAND_GIFTS, true);
   const missing = Object.keys(npcs.npcs).filter(n => !GIFTS[n] && !ISLAND_GIFTS[n]);
   if (missing.length) throw new Error(`no letter for ${missing.join(', ')}`);
+  const extra = Object.keys(DE_GIFTS).filter(n => !GIFTS[n] && !ISLAND_GIFTS[n]);
+  if (extra.length) throw new Error(`de.js has villagers without a letter: ${extra.join(', ')}`);
+  if (Object.keys(de).sort().join() !== Object.keys(i18n).sort().join()) throw new Error('i18n/de.json must have exactly the keys of default.json');
   const patches = ({ mail, triggers, eveMail, eveTriggers }, who) => [
     { LogName: `Birthday letters${who}`, Action: 'EditData', Target: 'Data/mail', Entries: mail },
     { LogName: `Reminder letters for the day before${who}`, Action: 'EditData', Target: 'Data/mail', Entries: eveMail },
@@ -182,6 +210,7 @@ export default async function ({ items, npcs }) {
       },
       Changes: [...patches(valley, ''), ...patches(island, ' (Ginger Island)')]
     },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }
