@@ -47,6 +47,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "Hush-1.4.zip",
+      "changelog": "## Hush 1.4\n\nWolves, horses and pistons.\n\n- Wolves bark, pant and whine at 35 %. On 26.3 this covers every wolf sound variant (angry, big, cute, grumpy, puglin and sad wolves). A growling wolf stays at full volume, so you still hear when one is angry.\n- Horses (calls and breathing), donkeys and mules play their calls at 35 %. Eating, steps, taming, hurt and death sounds are not touched.\n- Pistons extend and retract at 40 %, so redstone machines are easier to live next to.\n- Everything from 1.3 keeps its volume. No sound is muted and every sound keeps its subtitle.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
