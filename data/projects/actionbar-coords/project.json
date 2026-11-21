@@ -1,0 +1,20 @@
+{
+  "slug": "actionbar-coords",
+  "game": "java",
+  "name": "Actionbar Coords",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ActionbarCoords-1.0.zip",
+      "changelog": "## Actionbar Coords 1.0\n\nFirst release.\n\n- Shows your block coordinates (X, Y, Z) and the time of day (24-hour clock) above the hotbar, four times a second.\n- On for every player by default; `/trigger coords` hides the line for you and shows it again.\n- The clock follows the Overworld's day, also in the Nether and the End.\n- Works for every player without operator rights; one file for Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}

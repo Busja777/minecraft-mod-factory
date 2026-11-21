@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "afktag-gametest",
+  "version": "1.0.0",
+  "name": "AFK Tag game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.afktag.gametest.AfkTagGameTest"]
+  },
+  "depends": {
+    "afktag": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}
