@@ -26,7 +26,7 @@
     "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs.",
     "",
     "## Good to know",
-    "- Made for Minecraft: Java Edition 1.21 and 1.21.1. It only changes sound volumes, so you can add or remove it at any time.",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only changes sound volumes, so you can add or remove it at any time.",
     "- Hurt and death sounds stay at full volume, so you still hear when something is in trouble. Every sound keeps its subtitle.",
     "- Only players who install it hear the difference, on servers too.",
     "- New features arrive with updates, see each file's changelog.",

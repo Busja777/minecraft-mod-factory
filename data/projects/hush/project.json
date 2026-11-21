@@ -14,6 +14,17 @@
         "1.21",
         "1.21.1"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "Hush-1.1.zip",
+      "changelog": "## Hush 1.1\n\nNow also for Minecraft 26.3.\n\n- The same zip works on Minecraft 1.21, 1.21.1 and 26.3; every quieter sound was checked against the sound list of each version.\n- Same volumes as in 1.0, nothing changes on 1.21 and 1.21.1.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
