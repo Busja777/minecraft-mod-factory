@@ -1,0 +1,19 @@
+{
+  "slug": "pierres-year-round-seeds",
+  "game": "stardewvalley",
+  "name": "Pierre's Year-Round Seeds",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "PierresYearRoundSeeds-1.0.zip",
+      "changelog": "## Pierre's Year-Round Seeds 1.0\n\nFirst release.\n\n- Pierre sells the spring, summer and fall seeds of his shop all year, also in winter.\n- Out-of-season seeds cost more: choose +25 %, +50 % (default) or +100 % in the config.\n- Seeds he only sells from year 2 on (garlic, rice, red cabbage, artichoke) still wait for year 2.\n- Crops still only grow in their own season.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "More to Say",
+  "summary": "Linus and Willy share fresh thoughts on the seasons, the weather and your growing friendship, each in their own voice.",
+  "class": "Mods",
+  "category": "Miscellaneous",
+  "logoPrompt": "Two overlapping blank speech bubbles of weathered parchment, one tied with a small pine sprig and the other with a tiny brass fishing hook",
+  "cover": {
+    "tagline": "New words from the mountain and the sea.",
+    "bullets": [
+      "12 new lines for Linus",
+      "12 new lines for Willy",
+      "Season, weather, friendship"
+    ]
+  },
+  "description": [
+    "**More to Say gives Linus and Willy new things to talk about as the seasons, the weather and your friendship change.**",
+    "",
+    "## Features",
+    "- Twelve new lines each for Linus and Willy, three for every season.",
+    "- A greeting once you have met, a rainy or snowy day line from 2 hearts and a closer word from 6 hearts.",
+    "- Written in their own voice: Linus calm and private, Willy salty and full of fishing lore.",
+    "- Their usual dialogue stays as it is; each new line is said once.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Visit Linus at his tent or Willy at the beach and talk to them as usual.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. It only adds lines: no items, no changes to events or schedules.",
+    "- Lines only mention what you already know at that friendship level, so nothing is spoiled.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "slug": "machine-tempo",
+  "game": "stardewvalley",
+  "name": "Machine Tempo",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MachineTempo-1.0.zip",
+      "changelog": "## Machine Tempo 1.0\n\nFirst release.\n\n- Kegs and preserves jars finish their goods faster: wine, juice, beer, pale ale, mead, coffee, green tea, vinegar, jelly, pickles, caviar and aged roe.\n- Choose the speed in the config: 1.0 (normal), 1.25, 1.5 (default) or 2.0.\n- Only the processing time changes. Inputs, outputs and prices stay as they are.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

@@ -35,7 +35,11 @@
         "Pam und Gus",
         "Marnie und Robin",
         "Evelyn, George, Zauberer"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 3,
@@ -71,7 +75,11 @@
         "Käsepresse und Webstuhl",
         "Kristallarium",
         "Zapfhähne"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 6,
@@ -83,7 +91,11 @@
         "+20",
         "Gutscheine",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 7,
@@ -95,7 +107,11 @@
         "Obstbäume",
         "Blumen",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 8,
