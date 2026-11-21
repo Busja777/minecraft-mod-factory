@@ -1,7 +1,8 @@
 // Uncraft Basics: crafting recipes that take apart blocks vanilla packs but never unpacks again
 // (wool, quartz, clay, snow, glowstone, amethyst, bricks, honeycomb, ice, dripstone; not magma: magma blocks are mined in bulk, so 4 cream per block would skip magma cubes).
 // Since V1.2 also the polished, bricks, tiles and chiseled blocks of the stone families back into
-// the stone they are cut from, and glass panes back into glass.
+// the stone they are cut from, and glass panes back into glass. Since V1.3 copper at every
+// oxidation stage, waxed or not (see COPPER).
 //
 // Nothing is typed in by hand except the two allow lists below. The list of candidates comes from the
 // vanilla recipes of the version: every crafting recipe that packs one repeated ingredient into a
@@ -56,7 +57,7 @@ export const ALLOW = [
 // ingredient (mossy stone bricks: vine or moss; red nether bricks: nether wart; tinted glass:
 // amethyst), stairs, slabs and walls, polished blackstone (vanilla already makes a button from that
 // block alone), stained glass panes (most are dyed from plain panes, which contain no stained glass,
-// so the cheapest amount is 0) and copper (oxidation and wax would need a recipe per stage).
+// so the cheapest amount is 0) and copper (V1.3, see COPPER).
 export const FAMILIES = [
   { group: 'stone', base: 'stone', variants: ['stone_bricks', 'chiseled_stone_bricks'] },
   { group: 'andesite', base: 'andesite', variants: ['polished_andesite'] },
@@ -73,6 +74,78 @@ export const FAMILIES = [
   { group: 'mud', base: 'packed_mud', variants: ['mud_bricks'] },
   { group: 'glass', base: 'glass', variants: ['glass_pane'], n: 8 }
 ];
+
+// V1.3: copper. Every shape at every stage, waxed or not, goes back into the copper block of the
+// same stage (exposed cut copper → exposed copper, waxed stays waxed), or into copper ingots where
+// vanilla makes the shape from ingots (an ingot has no stage). n of a shape give the amount the
+// cheapest vanilla route needs for n of them, and n is chosen so that this is a whole number:
+//   cut copper, stairs, chiseled copper, grate   4 → 1 block   (the stonecutter cuts 1 block into 4)
+//   cut copper slab                              8 → 1 block   (the stonecutter cuts 1 block into 8)
+//   copper bulb                                  4 → 3 blocks  (3 blocks + blaze rod + redstone → 4;
+//                                                               the blaze rod and redstone are used up)
+//   copper door                                  1 → 2 ingots  (6 ingots → 3 doors)
+//   copper trapdoor                              1 → 3 ingots in 1.21.1 (6 → 2), 4 in 26.3 (4 → 1)
+//   exposed / weathered / oxidized copper block  1 → 9 ingots  (vanilla already does this for the
+//                                                               plain and the waxed copper block)
+//   lightning rod (plain only)                   1 → 3 ingots
+// Vanilla makes the aged doors, trapdoors and lightning rods only by letting copper age in the world,
+// and an axe scrapes age and wax off again for free. To measure them, WORLD adds these changes as
+// recipes that cost nothing (aging one stage, scraping one stage back, removing wax), so every amount
+// and the check in `gains` hold across all stages.
+// Left out on purpose: copper chains, lanterns, chests, torches and golem statues of 26.3 (made with
+// other ingredients that would be lost, or not crafted at all), and copper tools and armour (a later
+// update, "tool recycling"). Copper bars and the aged and waxed lightning rods only exist in 26.3: they
+// wait until 1.21.1 is no longer served (every file in the zip's root is read by 1.21.1 too).
+export const STAGES = ['', 'exposed_', 'weathered_', 'oxidized_'];
+export const COPPER = [
+  { shape: 'cut_copper', n: 4, to: 'block' },
+  { shape: 'cut_copper_stairs', n: 4, to: 'block' },
+  { shape: 'cut_copper_slab', n: 8, to: 'block' },
+  { shape: 'chiseled_copper', n: 4, to: 'block' },
+  { shape: 'copper_grate', n: 4, to: 'block' },
+  { shape: 'copper_bulb', n: 4, to: 'block' },
+  { shape: 'copper_door', n: 1, to: 'ingot' },
+  { shape: 'copper_trapdoor', n: 1, to: 'ingot' },
+  { shape: 'copper_block', n: 1, to: 'ingot', aged: true },
+  { shape: 'lightning_rod', n: 1, to: 'ingot', plainOnly: true }
+];
+// The copper block of a stage: copper_block, exposed_copper …, waxed_copper_block, waxed_exposed_copper …
+const copperBlock = (stage, wax) => `${wax}${stage ? `${stage}copper` : 'copper_block'}`;
+const copperItem = (shape, stage, wax) => (shape === 'copper_block' ? copperBlock(stage, wax) : `${wax}${stage}${shape}`);
+
+// → [{ group, from, to, n }] for every shape, stage and wax.
+export function copperPairs() {
+  const out = [];
+  for (const { shape, n, to, aged, plainOnly } of COPPER) {
+    for (const wax of ['', 'waxed_']) {
+      for (const stage of STAGES) {
+        if ((aged && !stage) || (plainOnly && (stage || wax))) continue;
+        out.push({ group: 'copper', from: copperItem(shape, stage, wax), to: to === 'block' ? copperBlock(stage, wax) : 'copper_ingot', n });
+      }
+    }
+  }
+  return out;
+}
+
+// Free changes in the world, as recipes of the type "world" (never crafting, so no clash and no
+// compacting recipe is found in them): a copper item ages one stage, an axe scrapes one stage or the
+// wax off. Only for items the version has.
+export function world(items) {
+  const out = [];
+  const add = (from, to) => { if (items.has(from) && items.has(to)) out.push({ name: `world/${from}_to_${to}`, type: 'world', inputs: [[from]], out: to, count: 1 }); };
+  for (const shape of COPPER.map(c => c.shape)) {
+    for (let i = 0; i < STAGES.length; i++) {
+      for (const wax of ['', 'waxed_']) {
+        if (wax) add(copperItem(shape, STAGES[i], wax), copperItem(shape, STAGES[i], ''));
+        if (i + 1 < STAGES.length && !wax) {
+          add(copperItem(shape, STAGES[i], ''), copperItem(shape, STAGES[i + 1], ''));
+          add(copperItem(shape, STAGES[i + 1], ''), copperItem(shape, STAGES[i], ''));
+        }
+      }
+    }
+  }
+  return out;
+}
 
 const strip = id => String(id).replace(/^minecraft:/, '');
 
@@ -184,9 +257,12 @@ export function ancestors(flat, id) {
 // chain. One exception: when vanilla cannot make `to` from m at all (m in `to` is Infinity, as for
 // stone from stone bricks in 26.3, where stone and cobblestone only make each other), m must itself
 // be made from `to`; the measure "cheapest `to`" is checked too and already covers m.
+// free: items that are no measure because the world makes them for nothing (V1.3: every copper item
+// of a stage or with wax, since aging and the axe are free; the copper in them is measured in copper
+// ingots, raw copper and ore, the wax in honeycomb).
 // → the broken measures as text (empty = fair).
-export function gains(flat, pairs, costOf) {
-  const measures = new Set(pairs.flatMap(p => [p.to, ...ancestors(flat, p.from)]));
+export function gains(flat, pairs, costOf, free = new Set()) {
+  const measures = new Set(pairs.flatMap(p => [p.to, ...ancestors(flat, p.from)]).filter(m => !free.has(m)));
   const broken = [];
   for (const m of measures) {
     const cost = costOf(m);
@@ -203,8 +279,11 @@ export function gains(flat, pairs, costOf) {
 }
 
 // → [{ group, from, to, count, n }] in a stable order; throws when vanilla does not back a pair.
-export function plan(vanilla, recipes = loadRecipes(vanilla)) {
+// items: the item ids of the version (needed for copper: aging and scraping happen only between items
+// the version has).
+export function plan(vanilla, recipes = loadRecipes(vanilla), items = null) {
   const flat = recipes.map(r => flatten(vanilla, r));
+  if (items) flat.push(...world(items));
   const forward = compacting(flat);
   const costs = new Map();
   const costOf = base => { if (!costs.has(base)) costs.set(base, baseCost(flat, base)); return costs.get(base); };
@@ -235,12 +314,26 @@ export function plan(vanilla, recipes = loadRecipes(vanilla)) {
       out.push({ group, from, to: base, count: amount, n });
     }
   }
+  for (const { group, from, to, n } of items ? copperPairs() : []) {
+    if (!items.has(from)) throw new Error(`${from}: this Minecraft version has no such item`);
+    // Measured in copper ingots: a stage block costs as much copper as the plain one, and aging is free.
+    const ingots = costOf('copper_ingot');
+    const each = ingots(from) / ingots(to);
+    const amount = Math.round(n * each);
+    if (!Number.isFinite(each) || !(amount >= 1)) throw new Error(`${n} ${from} → ${to}: no vanilla route from ${to} (cost ${each} each)`);
+    if (Math.abs(n * each - amount) > 1e-9) throw new Error(`${n} ${from} → ${to}: vanilla needs ${n * each} ${to}, not a whole number; pick another n`);
+    if (hasReverse(flat, from, to)) throw new Error(`${from} → ${to}: vanilla already has the reverse recipe`);
+    const clash = clashes(flat, from, n);
+    if (clash.length) throw new Error(`${from}: vanilla recipe ${clash.join(', ')} already takes ${n} of this block alone`);
+    out.push({ group, from, to, count: amount, n });
+  }
   const seen = new Set();
   for (const p of out) {
     if (seen.has(p.from)) throw new Error(`${p.from} is taken apart twice`);
     seen.add(p.from);
   }
-  const broken = gains(flat, out, costOf);
+  const free = new Set(items ? COPPER.flatMap(({ shape }) => STAGES.flatMap(stage => ['', 'waxed_'].map(wax => copperItem(shape, stage, wax)))) : []);
+  const broken = gains(flat, out, costOf, free);
   if (broken.length) throw new Error(`not fair:\n${broken.join('\n')}`);
   return out;
 }
@@ -302,11 +395,12 @@ export function dialect(vanilla) {
   return d;
 }
 
-// Called once per Minecraft version: the same 55 recipes under the same paths for every version.
-export default async function ({ vanilla }) {
+// Called once per Minecraft version: the same 126 recipes under the same paths for every version
+// (55 until V1.2, 71 copper recipes since V1.3).
+export default async function ({ vanilla, registry }) {
   const d = dialect(vanilla);
   const files = {};
-  for (const { from, to, count, n } of plan(vanilla)) {
+  for (const { from, to, count, n } of plan(vanilla, loadRecipes(vanilla), registry('item'))) {
     const name = `${from}_to_${to}`;
     files[`data/${NS}/recipe/${name}.json`] = recipe(d, from, to, count, n);
     files[`data/${NS}/advancement/recipes/misc/${name}.json`] = unlock(d, from, `${NS}:${name}`);
