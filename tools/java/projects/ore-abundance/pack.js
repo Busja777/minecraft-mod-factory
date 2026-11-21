@@ -1,12 +1,14 @@
-// Ore Abundance: more ore veins in newly generated Overworld land. Each Overworld ore has one or
+// Ore Abundance: more ore veins in newly generated Overworld and Nether land. Each ore has one or
 // more vanilla placed features (data/minecraft/worldgen/placed_feature/ore_*.json) whose first
 // placement modifier says how many vein attempts a chunk gets. This pack copies the vanilla file
 // of its Minecraft version and only raises that number by half (rounded down); vein size, height
 // range, biome rules and the configured features stay vanilla.
 //   minecraft:count          count N   → floor(N × 1.5)
 //   minecraft:rarity_filter  chance N  → floor(N / 1.5)   (one attempt in N chunks; only large diamond veins)
-// Left alone: ore_gold_lower (its count is a random 0–1, not a number), every Nether ore, and the
-// stone, dirt, gravel, clay and infested-stone "ores".
+// 1.1 adds Nether quartz and nether gold ore (also their basalt-delta variants) by the same rule.
+// Left alone: ore_gold_lower (its count is a random 0–1, not a number), ancient debris (too
+// valuable to multiply; its placed features have no count anyway), and the stone, dirt, gravel,
+// blackstone, magma, soul sand, clay and infested-stone "ores".
 import fs from 'fs';
 import path from 'path';
 
@@ -32,7 +34,12 @@ export const ORES = {
   ore_diamond_buried: { ore: 'diamond', type: 'minecraft:count', value: 4 },
   ore_diamond_medium: { ore: 'diamond', type: 'minecraft:count', value: 2 },
   ore_diamond_large: { ore: 'diamond', type: 'minecraft:rarity_filter', value: 9 },
-  ore_emerald: { ore: 'emerald', type: 'minecraft:count', value: 100 }               // mountains
+  ore_emerald: { ore: 'emerald', type: 'minecraft:count', value: 100 },              // mountains
+  // Nether (1.1)
+  ore_quartz_nether: { ore: 'nether_quartz', type: 'minecraft:count', value: 16 },
+  ore_quartz_deltas: { ore: 'nether_quartz', type: 'minecraft:count', value: 32 },   // basalt deltas
+  ore_gold_nether: { ore: 'nether_gold', type: 'minecraft:count', value: 10 },
+  ore_gold_deltas: { ore: 'nether_gold', type: 'minecraft:count', value: 20 }        // basalt deltas
 };
 
 const KEY = { 'minecraft:count': 'count', 'minecraft:rarity_filter': 'chance' };
