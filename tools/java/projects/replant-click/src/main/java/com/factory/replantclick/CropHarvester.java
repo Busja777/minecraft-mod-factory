@@ -4,6 +4,7 @@ import com.factory.replantclick.HarvestRules.Drop;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CocoaBlock;
@@ -12,6 +13,7 @@ import net.minecraft.block.NetherWartBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
@@ -24,7 +26,9 @@ import net.minecraft.world.WorldEvents;
 import net.minecraft.world.event.GameEvent;
 
 /**
- * Harvests and replants a fully grown crop, nether wart or cocoa pod on right-click.
+ * Harvests and replants a fully grown crop, nether wart or cocoa pod on right-click. Since 1.2 a
+ * click with a hoe also harvests the ripe crops of the same kind in the 3×3 area around it (same
+ * y level, not cocoa), each one for one point of the hoe's durability.
  *
  * <p>All work happens on the server, so the mod also helps players whose game has no mods. On a
  * client with the mod, the click only answers SUCCESS (arm swing, no block placement guess) and
@@ -64,7 +68,51 @@ public final class CropHarvester {
         String heldId = Registries.ITEM.getId(tool.getItem()).toString();
         if (!HarvestRules.isHarvestable(blockId, plant.age(), plant.maxAge(), player.isSneaking(), heldId)) return ActionResult.PASS;
         if (world.isClient()) return ActionResult.SUCCESS;
-        return harvest((ServerWorld) world, pos, state, plant, player, tool) ? ActionResult.SUCCESS : ActionResult.PASS;
+        ServerWorld serverWorld = (ServerWorld) world;
+        if (!harvest(serverWorld, pos, state, plant, player, tool)) return ActionResult.PASS;
+        if (HarvestRules.harvestsArea(blockId, tool.isIn(ItemTags.HOES), ReplantClick.config().areaWithHoe())) {
+            harvestArea(serverWorld, pos, state.getBlock(), player, tool);
+        }
+        // A player without the mod may have guessed a block placement or item use on their side;
+        // send the real inventory back so nothing looks used up (and the hoe shows its wear).
+        if (player instanceof ServerPlayerEntity serverPlayer && !tool.isEmpty()) serverPlayer.currentScreenHandler.syncState();
+        return ActionResult.SUCCESS;
+    }
+
+    /**
+     * The 3×3 area of a click with a hoe: every ripe plant of the clicked kind next to {@code center}
+     * on the same y level is harvested like the clicked one (same loot with the hoe, so Fortune
+     * counts for each, one seed replants it). Each one costs the hoe one point of durability, with
+     * Unbreaking as for any other use; the clicked plant itself stays free as in 1.0 and 1.1. When
+     * the hoe is down to its last point the area stops, so the hoe never breaks. Young plants, other
+     * kinds and blocks the player may not change there are skipped: spawn protection and the world
+     * border ({@code canPlayerModifyAt}), and claim or protection mods, which veto through Fabric API's
+     * {@code PlayerBlockBreakEvents.BEFORE} (asked for each neighbour as if the player broke it).
+     *
+     * <p>AFTER and CANCELED of that event are not fired: the crop is not broken but replanted (like
+     * the clicked crop, which never fired them either), so mods that count or log broken blocks
+     * (jobs, quests, statistics) would count a break that did not happen, and the client predicted
+     * nothing for the neighbours that CANCELED would have to undo.
+     *
+     * @return how many neighbours were harvested
+     */
+    static int harvestArea(ServerWorld world, BlockPos center, Block kind, PlayerEntity player, ItemStack hoe) {
+        int harvested = 0;
+        for (int[] d : HarvestRules.AREA_OFFSETS) {
+            if (!HarvestRules.hoeCanTakeHit(hoe.isDamageable(), hoe.getDamage(), hoe.getMaxDamage())) break;
+            BlockPos pos = center.add(d[0], 0, d[1]);
+            BlockState state = world.getBlockState(pos);
+            if (!state.isOf(kind)) continue;
+            Plant plant = plantOf(state);
+            if (plant == null || plant.maxAge() <= 0 || plant.age() < plant.maxAge()) continue;
+            if (!world.canPlayerModifyAt(player, pos)) continue;
+            if (!PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(world, player, pos, state, world.getBlockEntity(pos))) continue;
+            if (!harvest(world, pos, state, plant, player, hoe)) continue;
+            // applies Unbreaking, skips creative players and unbreakable hoes; never breaks (checked above)
+            hoe.damage(1, world, player instanceof ServerPlayerEntity serverPlayer ? serverPlayer : null, item -> {});
+            harvested++;
+        }
+        return harvested;
     }
 
     /**
@@ -99,9 +147,6 @@ public final class CropHarvester {
         state.onStacksDropped(world, pos, tool, true);
 
         LAST_HARVEST.put(player, world.getTime());
-        // A player without the mod may have guessed a block placement or item use on their side;
-        // send the real inventory back so nothing looks used up.
-        if (player instanceof ServerPlayerEntity serverPlayer && !tool.isEmpty()) serverPlayer.currentScreenHandler.syncState();
         return true;
     }
 }

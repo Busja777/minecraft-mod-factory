@@ -68,8 +68,10 @@ class DecayQueueTest {
         assertTrue(queue.add(1L, 0));
         assertTrue(queue.add(2L, 0));
         assertTrue(queue.add(3L, 0));
+        assertTrue(queue.isFull());
         assertFalse(queue.add(4L, 0), "full: vanilla's slow decay handles this one");
         drain(queue, 1);
+        assertFalse(queue.isFull());
         assertTrue(queue.add(4L, 0), "room again");
     }
 

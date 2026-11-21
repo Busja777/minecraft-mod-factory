@@ -30,6 +30,19 @@
         "Server",
         "Client"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "FastLeafFall-1.2.jar",
+      "changelog": "## Fast Leaf Fall 1.2\n\nOld leaves are caught too.\n\n- Leaves that were already left without a tree before the mod was installed (cut forests, old worlds, leaves far from any log) used to wait for vanilla's slow decay. Now they fall within the same few seconds as soon as you come near and their area loads.\n- Each loaded area is looked through once, spread over many ticks: areas without such leaves are skipped almost for free, and at most `leavesPerTick` leaves are picked up per tick.\n- The rule stays the game's own: only leaves with no log within six blocks decay. Leaves placed by players never do.\n- Leaves placed by tools such as WorldEdit without the \"persistent\" flag already decay in vanilla, only slowly; now they fall as fast as the others. Set `catchOldLeaves` to `false` to turn the scan of loaded areas off.\n- Areas at the edge of your view distance, where the game does not update blocks, are left alone until they do.\n- New setting `catchOldLeaves` (default `true`) in `config/fastleaffall.json`; set it to `false` to leave old leaves to vanilla. Config files from 1.1 keep their values and get the new setting's default.\n- Everything from 1.1 stays the same. Only the server needs the mod.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
     }
   ]
 }

@@ -107,4 +107,42 @@ class HarvestRulesTest {
         assertFalse(HarvestRules.blocksItemUse(-1, 0), "no harvest yet");
         assertFalse(HarvestRules.blocksItemUse(100, 99), "time went back (another world)");
     }
+    // --- V1.2: 3×3 area with a hoe ---
+
+    @Test
+    void theAreaNeedsAHoeAndTheSetting() {
+        assertTrue(HarvestRules.harvestsArea("minecraft:wheat", true, true));
+        assertFalse(HarvestRules.harvestsArea("minecraft:wheat", false, true), "without a hoe nothing changes");
+        assertFalse(HarvestRules.harvestsArea("minecraft:wheat", true, false), "areaWithHoe off");
+    }
+
+    @Test
+    void theAreaCoversFieldCropsAndNetherWartButNotCocoa() {
+        for (String id : List.of("minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots", "minecraft:nether_wart")) {
+            assertTrue(HarvestRules.harvestsArea(id, true, true), id);
+        }
+        assertFalse(HarvestRules.harvestsArea("minecraft:cocoa", true, true), "pods hang on logs, not in a flat grid");
+        assertTrue(HarvestRules.CROPS.containsAll(HarvestRules.AREA_CROPS), "the area only harvests what a single click harvests");
+    }
+
+    @Test
+    void theAreaIsTheEightNeighboursOnTheSameLevel() {
+        assertEquals(8, HarvestRules.AREA_OFFSETS.size());
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        for (int[] d : HarvestRules.AREA_OFFSETS) {
+            assertEquals(2, d.length);
+            assertTrue(Math.abs(d[0]) <= 1 && Math.abs(d[1]) <= 1, d[0] + "," + d[1]);
+            assertFalse(d[0] == 0 && d[1] == 0, "the clicked crop is not part of the neighbours");
+            assertTrue(seen.add(d[0] + "," + d[1]), "each neighbour once");
+        }
+    }
+
+    @Test
+    void theHoeNeverBreaks() {
+        assertTrue(HarvestRules.hoeCanTakeHit(true, 0, 250));
+        assertTrue(HarvestRules.hoeCanTakeHit(true, 248, 250), "two points left: one may go");
+        assertFalse(HarvestRules.hoeCanTakeHit(true, 249, 250), "one point left: the next hit would break it");
+        assertFalse(HarvestRules.hoeCanTakeHit(true, 250, 250));
+        assertTrue(HarvestRules.hoeCanTakeHit(false, 0, 0), "an unbreakable hoe");
+    }
 }

@@ -48,6 +48,37 @@ public final class HarvestRules {
         return lastHarvest >= 0 && now >= lastHarvest && now - lastHarvest <= ITEM_USE_GUARD_TICKS;
     }
 
+    /**
+     * Plants a right-click with a hoe also harvests around the clicked one (since 1.2): the
+     * farmland crops and nether wart, which grow in flat fields. Cocoa pods hang on the sides of
+     * logs, not in a flat grid, so they stay single.
+     */
+    public static final Set<String> AREA_CROPS = Set.of("minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots",
+        "minecraft:nether_wart");
+
+    /** The eight neighbours of the clicked crop on the same y level, as {dx, dz}, row by row. */
+    public static final List<int[]> AREA_OFFSETS = List.of(
+        new int[] {-1, -1}, new int[] {0, -1}, new int[] {1, -1},
+        new int[] {-1, 0}, new int[] {1, 0},
+        new int[] {-1, 1}, new int[] {0, 1}, new int[] {1, 1});
+
+    /**
+     * Whether a harvest of {@code blockId} also harvests the ripe crops of the same kind in the 3×3
+     * area around it: only with a hoe in the main hand, only for {@link #AREA_CROPS}, and only while
+     * the setting {@code areaWithHoe} is on.
+     */
+    public static boolean harvestsArea(String blockId, boolean holdingHoe, boolean areaWithHoe) {
+        return areaWithHoe && holdingHoe && AREA_CROPS.contains(blockId);
+    }
+
+    /**
+     * Whether the hoe may pay one more point of durability for a neighbour crop. The hoe never breaks:
+     * at one point left it stops (a hit of 1 would break it). Unbreakable hoes always may.
+     */
+    public static boolean hoeCanTakeHit(boolean damageable, int damage, int maxDamage) {
+        return !damageable || maxDamage - damage > 1;
+    }
+
     /** One stack of drops as the rules see it. */
     public record Drop(String itemId, int count) {}
 

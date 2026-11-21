@@ -56,6 +56,11 @@ public final class DecayQueue {
         return done;
     }
 
+    /** Whether no more positions fit in (then {@link #add} turns new ones away). */
+    public boolean isFull() {
+        return queued.size() >= capacity;
+    }
+
     public boolean contains(long pos) {
         return queued.contains(pos);
     }

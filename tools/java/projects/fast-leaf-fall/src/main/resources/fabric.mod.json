@@ -3,7 +3,7 @@
   "id": "fastleaffall",
   "version": "${version}",
   "name": "Fast Leaf Fall",
-  "description": "When a tree loses its logs, its leaves decay within a few seconds instead of minutes. Leaves placed by players are never touched. Works on the server alone; players need nothing installed.",
+  "description": "When a tree loses its logs, its leaves decay within a few seconds instead of minutes, and so do leaves that were already without a tree. Leaves placed by players are never touched. Works on the server alone; players need nothing installed.",
   "authors": ["SevFactory"],
   "contact": {},
   "license": "MIT",

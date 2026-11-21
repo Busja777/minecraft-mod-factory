@@ -1,6 +1,10 @@
 package com.factory.replantclick.gametest;
 
+import com.factory.replantclick.ReplantClick;
+import com.factory.replantclick.ReplantConfig;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CocoaBlock;
@@ -333,6 +337,216 @@ public class ReplantClickGameTest implements FabricGameTest {
         ctx.assertTrue(ctx.getBlockState(CROP).get(CocoaBlock.AGE) == CocoaBlock.MAX_AGE, "the ripe pod stays");
         ctx.assertTrue(dropped(ctx, Items.COCOA_BEANS) == 0, "nothing drops");
         ctx.assertTrue(boneMeal.getMainHandStack().getCount() == 3, "no bone meal is used on a ripe pod");
+        ctx.complete();
+    }
+    // --- V1.2: the 3×3 area with a hoe ---
+
+    /** A 3×3 field around {@code center} (soil one below), every plant in {@code ripe}. */
+    private static void field(TestContext ctx, BlockPos center, Block soil, BlockState ripe) {
+        for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) {
+            BlockPos at = center.add(dx, 0, dz);
+            ctx.setBlockState(at.down(), soil);
+            ctx.setBlockState(at, ripe);
+        }
+    }
+
+    private static BlockState ripe(CropBlock crop) {
+        return crop.withAge(crop.getMaxAge());
+    }
+
+    /** How many plants of the 3×3 field around {@code center} are at age 0 (freshly replanted). */
+    private static int replanted(TestContext ctx, BlockPos center) {
+        int n = 0;
+        for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) if (plantAge(ctx, center.add(dx, 0, dz)) == 0) n++;
+        return n;
+    }
+
+    private static int plantAge(TestContext ctx, BlockPos at) {
+        BlockState state = ctx.getBlockState(at);
+        if (state.getBlock() instanceof CropBlock crop) return crop.getAge(state);
+        if (state.isOf(Blocks.NETHER_WART)) return state.get(NetherWartBlock.AGE);
+        if (state.isOf(Blocks.COCOA)) return state.get(CocoaBlock.AGE);
+        throw new AssertionError("no plant at " + at + ": " + state);
+    }
+
+    private static ItemStack enchanted(TestContext ctx, Item item, net.minecraft.registry.RegistryKey<net.minecraft.enchantment.Enchantment> enchantment, int level) {
+        ItemStack stack = new ItemStack(item);
+        stack.addEnchantment(ctx.getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT).entryOf(enchantment), level);
+        return stack;
+    }
+
+    private static final BlockPos FIELD = new BlockPos(3, 2, 3);
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void aHoeHarvestsTheRipeCropsOfTheSameKindAround(TestContext ctx) {
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.WHEAT));
+        BlockPos young = FIELD.add(-1, 0, -1);
+        BlockPos carrot = FIELD.add(1, 0, 1);
+        BlockPos outside = FIELD.add(3, 0, 0);
+        ctx.setBlockState(young, ((CropBlock) Blocks.WHEAT).withAge(3));
+        ctx.setBlockState(carrot, ripe((CropBlock) Blocks.CARROTS));
+        plant(ctx, outside, (CropBlock) Blocks.WHEAT, 7);
+        ServerPlayerEntity player = farmer(ctx, new ItemStack(Items.IRON_HOE));
+        ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "a right-click on ripe wheat with a hoe is handled");
+        ctx.assertTrue(replanted(ctx, FIELD) == 7, "the clicked wheat and its six ripe wheat neighbours are replanted, got " + replanted(ctx, FIELD));
+        ctx.assertTrue(plantAge(ctx, young) == 3, "young wheat in the area keeps growing");
+        ctx.assertTrue(plantAge(ctx, carrot) == 7, "a crop of another kind in the area stays ripe");
+        ctx.assertTrue(plantAge(ctx, outside) == 7, "ripe wheat outside the 3×3 area stays ripe");
+        for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) ctx.expectBlock(Blocks.FARMLAND, FIELD.add(dx, -1, dz));
+        int wheat = ctx.getEntitiesAround(EntityType.ITEM, FIELD, 2.5).stream().map(ItemEntity::getStack).filter(st -> st.isOf(Items.WHEAT)).mapToInt(ItemStack::getCount).sum();
+        ctx.assertTrue(wheat == 7, "one wheat drops per harvested crop, got " + wheat);
+        ctx.assertTrue(player.getMainHandStack().getDamage() == 6, "one point of durability per neighbour, the clicked crop is free: " + player.getMainHandStack().getDamage());
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void withoutAHoeOnlyTheClickedCrop(TestContext ctx) {
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.WHEAT));
+        ServerPlayerEntity bare = farmer(ctx, ItemStack.EMPTY);
+        ctx.assertTrue(click(ctx, bare, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "an empty hand harvests");
+        ctx.assertTrue(replanted(ctx, FIELD) == 1, "an empty hand harvests only the clicked wheat, got " + replanted(ctx, FIELD));
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.WHEAT));
+        ServerPlayerEntity shovel = farmer(ctx, new ItemStack(Items.IRON_SHOVEL));
+        ctx.assertTrue(click(ctx, shovel, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "another tool harvests");
+        ctx.assertTrue(replanted(ctx, FIELD) == 1, "another tool harvests only the clicked wheat, got " + replanted(ctx, FIELD));
+        ctx.assertTrue(shovel.getMainHandStack().getDamage() == 0, "the shovel takes no damage");
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void theHoeNeverBreaks(TestContext ctx) {
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.POTATOES));
+        ItemStack worn = new ItemStack(Items.IRON_HOE);
+        worn.setDamage(worn.getMaxDamage() - 3); // three points left
+        ServerPlayerEntity player = farmer(ctx, worn);
+        ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "a worn hoe still harvests");
+        ItemStack hoe = player.getMainHandStack();
+        ctx.assertTrue(hoe.isOf(Items.IRON_HOE), "the hoe is still there: " + hoe);
+        ctx.assertTrue(hoe.getDamage() == hoe.getMaxDamage() - 1, "the hoe stops at its last point, damage " + hoe.getDamage());
+        ctx.assertTrue(replanted(ctx, FIELD) == 3, "the clicked potatoes and two neighbours are harvested, got " + replanted(ctx, FIELD));
+        // the next click with one point left harvests the clicked crop only
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.POTATOES));
+        ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "a hoe with one point left still harvests the clicked crop");
+        ctx.assertTrue(replanted(ctx, FIELD) == 1, "only the clicked potatoes, got " + replanted(ctx, FIELD));
+        ctx.assertTrue(player.getMainHandStack().isOf(Items.IRON_HOE) && player.getMainHandStack().getDamage() == hoe.getMaxDamage() - 1, "the hoe is unchanged");
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void unbreakingSavesTheHoe(TestContext ctx) {
+        // 5 clicks on a full field: 40 neighbours. Unbreaking III lets a hoe take a hit only one time
+        // in four, so about 10 points go (above 30 is far outside chance); without it all 40 would.
+        ServerPlayerEntity player = farmer(ctx, enchanted(ctx, Items.DIAMOND_HOE, Enchantments.UNBREAKING, 3));
+        for (int i = 0; i < 5; i++) {
+            field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.CARROTS));
+            click(ctx, player, Hand.MAIN_HAND, FIELD);
+            ctx.assertTrue(replanted(ctx, FIELD) == 9, "round " + i + ": the whole field is harvested, got " + replanted(ctx, FIELD));
+        }
+        int damage = player.getMainHandStack().getDamage();
+        ctx.assertTrue(damage < 30, "Unbreaking III spares the hoe: " + damage + " points for 40 crops");
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void fortuneCountsForEveryCropOfTheArea(TestContext ctx) {
+        // 4 clicks on a full field of carrots each: 36 harvests, on average 1.7 against 3.4 carrots
+        // left per harvest with Fortune III, so the Fortune pile is bigger by about 60.
+        BlockPos plain = new BlockPos(2, 2, 2);
+        BlockPos lucky = new BlockPos(6, 2, 6);
+        ServerPlayerEntity plainFarmer = farmer(ctx, new ItemStack(Items.DIAMOND_HOE));
+        ServerPlayerEntity luckyFarmer = farmer(ctx, enchanted(ctx, Items.DIAMOND_HOE, Enchantments.FORTUNE, 3));
+        for (int i = 0; i < 4; i++) {
+            field(ctx, plain, Blocks.FARMLAND, ripe((CropBlock) Blocks.CARROTS));
+            field(ctx, lucky, Blocks.FARMLAND, ripe((CropBlock) Blocks.CARROTS));
+            click(ctx, plainFarmer, Hand.MAIN_HAND, plain);
+            click(ctx, luckyFarmer, Hand.MAIN_HAND, lucky);
+        }
+        int without = ctx.getEntitiesAround(EntityType.ITEM, plain, 2.5).stream().map(ItemEntity::getStack).filter(st -> st.isOf(Items.CARROT)).mapToInt(ItemStack::getCount).sum();
+        int with = ctx.getEntitiesAround(EntityType.ITEM, lucky, 2.5).stream().map(ItemEntity::getStack).filter(st -> st.isOf(Items.CARROT)).mapToInt(ItemStack::getCount).sum();
+        ctx.assertTrue(without >= 36, "at least one carrot is left per plain harvest, got " + without);
+        ctx.assertTrue(with > without + 25, "Fortune III gives more carrots on every crop of the area: " + with + " against " + without);
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void netherWartIsHarvestedInTheAreaToo(TestContext ctx) {
+        field(ctx, FIELD, Blocks.SOUL_SAND, Blocks.NETHER_WART.getDefaultState().with(NetherWartBlock.AGE, NetherWartBlock.MAX_AGE));
+        ServerPlayerEntity player = farmer(ctx, new ItemStack(Items.GOLDEN_HOE));
+        ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "ripe nether wart with a hoe is handled");
+        ctx.assertTrue(replanted(ctx, FIELD) == 9, "the whole patch of nether wart is replanted, got " + replanted(ctx, FIELD));
+        ctx.assertTrue(player.getMainHandStack().getDamage() == 8, "eight neighbours cost eight points: " + player.getMainHandStack().getDamage());
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void cocoaStaysSingleWithAHoe(TestContext ctx) {
+        // two ripe pods side by side on two logs
+        BlockPos first = new BlockPos(2, 2, 2);
+        BlockPos second = new BlockPos(2, 2, 3);
+        plantCocoa(ctx, first, Direction.EAST, CocoaBlock.MAX_AGE);
+        plantCocoa(ctx, second, Direction.EAST, CocoaBlock.MAX_AGE);
+        ServerPlayerEntity player = farmer(ctx, new ItemStack(Items.IRON_HOE));
+        ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, first, Direction.WEST) == ActionResult.SUCCESS, "a ripe pod is harvested with a hoe");
+        ctx.assertTrue(plantAge(ctx, first) == 0, "the clicked pod is replanted");
+        ctx.assertTrue(plantAge(ctx, second) == CocoaBlock.MAX_AGE, "the pod next to it stays ripe");
+        ctx.assertTrue(player.getMainHandStack().getDamage() == 0, "the hoe takes no damage");
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void sneakingWithAHoeLeavesTheField(TestContext ctx) {
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.BEETROOTS));
+        ServerPlayerEntity player = farmer(ctx, new ItemStack(Items.IRON_HOE));
+        player.setSneaking(true);
+        click(ctx, player, Hand.MAIN_HAND, FIELD);
+        ctx.assertTrue(replanted(ctx, FIELD) == 0, "sneaking harvests nothing");
+        ctx.assertTrue(player.getMainHandStack().getDamage() == 0, "the hoe takes no damage");
+        ctx.complete();
+    }
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void theAreaCanBeSwitchedOff(TestContext ctx) {
+        // the setting is global; the click happens in this same tick, so no other test sees it
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.WHEAT));
+        ServerPlayerEntity player = farmer(ctx, new ItemStack(Items.IRON_HOE));
+        ReplantConfig before = ReplantClick.config();
+        ctx.assertTrue(before.areaWithHoe(), "the area is on by default");
+        ReplantClick.setConfig(new ReplantConfig(false));
+        try {
+            ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "the clicked wheat is still harvested");
+        } finally {
+            ReplantClick.setConfig(before);
+        }
+        ctx.assertTrue(replanted(ctx, FIELD) == 1, "with areaWithHoe off only the clicked wheat, got " + replanted(ctx, FIELD));
+        ctx.assertTrue(player.getMainHandStack().getDamage() == 0, "the hoe takes no damage");
+        ctx.complete();
+    }
+    /** The position a stand-in claim mod protects (absolute; null: none). Server thread only. */
+    private static BlockPos protectedPos;
+    private static boolean claimModRegistered;
+
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void protectedNeighboursAreSkipped(TestContext ctx) {
+        // a stand-in claim mod: vetoes breaking one block the way claim mods do, via PlayerBlockBreakEvents.BEFORE
+        if (!claimModRegistered) {
+            PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !pos.equals(protectedPos));
+            claimModRegistered = true;
+        }
+        field(ctx, FIELD, Blocks.FARMLAND, ripe((CropBlock) Blocks.WHEAT));
+        BlockPos guarded = FIELD.add(1, 0, 0);
+        ServerPlayerEntity player = farmer(ctx, new ItemStack(Items.IRON_HOE));
+        // set and cleared within this tick, so no other test sees the veto
+        protectedPos = ctx.getAbsolutePos(guarded);
+        try {
+            ctx.assertTrue(click(ctx, player, Hand.MAIN_HAND, FIELD) == ActionResult.SUCCESS, "the clicked wheat is harvested");
+        } finally {
+            protectedPos = null;
+        }
+        ctx.assertTrue(plantAge(ctx, guarded) == 7, "the protected wheat stays ripe");
+        ctx.assertTrue(replanted(ctx, FIELD) == 8, "the clicked wheat and the seven unprotected neighbours are harvested, got " + replanted(ctx, FIELD));
+        int wheat = ctx.getEntitiesAround(EntityType.ITEM, FIELD, 2.5).stream().map(ItemEntity::getStack).filter(st -> st.isOf(Items.WHEAT)).mapToInt(ItemStack::getCount).sum();
+        ctx.assertTrue(wheat == 8, "nothing drops from the protected wheat, got " + wheat + " wheat");
+        ctx.assertTrue(player.getMainHandStack().getDamage() == 7, "the protected wheat costs no durability: " + player.getMainHandStack().getDamage());
         ctx.complete();
     }
 }

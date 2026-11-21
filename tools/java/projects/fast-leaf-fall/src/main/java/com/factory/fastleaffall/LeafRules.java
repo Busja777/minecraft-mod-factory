@@ -19,6 +19,22 @@ public final class LeafRules {
     /** At most this many leaves wait per world; beyond that vanilla's slow decay takes over for the rest. */
     public static final int MAX_QUEUED = 32768;
 
+    /**
+     * Work of the scan of loaded chunks (since 1.2) per world and tick: one unit per block read, so
+     * at most one 16×16×16 section of blocks; looking a chunk up or a section's palette costs
+     * {@link ChunkScanner#CHUNK_COST} or {@link ChunkScanner#SECTION_COST}.
+     */
+    public static final int SCAN_WORK_PER_TICK = 4096;
+
+    /** At most this many loaded chunks wait for their scan per world; beyond that new ones are not scanned. */
+    public static final int MAX_SCAN_CHUNKS = 65536;
+
+    /** A loaded chunk whose blocks do not tick yet is looked at again after this many ticks (five seconds). */
+    public static final int RECHECK_TICKS = 100;
+
+    /** At most this many chunks per world and tick come back from waiting for their blocks to tick. */
+    public static final int RECHECKS_PER_TICK = 32;
+
     private LeafRules() {}
 
     /**
