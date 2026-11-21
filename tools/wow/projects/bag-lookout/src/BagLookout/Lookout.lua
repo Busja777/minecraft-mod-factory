@@ -4,6 +4,7 @@ local L = ns.L
 -- Counts the bag slots after every bag change and warns when the bags are about to be full.
 
 ns.warner = ns.NewWarner()
+ns.shown = {} -- the warnings shown in this session (1.2, for "once per session")
 ns.counts = nil -- the last count: { free, total, reagentFree, reagentTotal, professions }
 
 function ns.Print(msg)
@@ -53,14 +54,19 @@ function ns.Count()
   return counts
 end
 
+-- Plays the chosen warning sound once (also the preview of /bl sound <name>).
+function ns.PlayWarningSound()
+  if not PlaySound then return end
+  local id = ns.SoundId(SOUNDKIT, ns.settings.soundName)
+  if id then pcall(PlaySound, id) end
+end
+
 local function alert(kind, free)
   local rgb = ns.RGB[kind]
   if UIErrorsFrame and UIErrorsFrame.AddMessage then
     UIErrorsFrame:AddMessage(ns.WarningText(kind, free), rgb[1], rgb[2], rgb[3])
   end
-  if ns.settings.sound and PlaySound and SOUNDKIT and SOUNDKIT.RAID_WARNING then
-    PlaySound(SOUNDKIT.RAID_WARNING)
-  end
+  if ns.settings.sound then ns.PlayWarningSound() end
 end
 
 function ns.Recount()
@@ -69,7 +75,7 @@ function ns.Recount()
   ns.counts = c
   local free, total = c and c.free, c and c.total
   local kind = ns.Warn(ns.warner, free, total, ns.settings.threshold)
-  if kind then alert(kind, free) end
+  if ns.AllowWarning(ns.shown, kind, ns.settings.repeatWarn) then alert(kind, free) end
   if ns.Render then ns.Render() end
 end
 
@@ -81,11 +87,13 @@ end
 local function onLogin()
   if type(BagLookoutDB) ~= "table" then BagLookoutDB = {} end
   local db = BagLookoutDB
-  db.version = 2 -- 2: settings.view (1.1) replaces settings.details
+  db.version = 3 -- 2: settings.view (1.1) replaces settings.details; 3: soundName and repeatWarn (1.2)
   if type(db.settings) ~= "table" then db.settings = {} end
   local s = db.settings
   s.threshold = ns.ValidThreshold(s.threshold) or ns.DEFAULT_THRESHOLD
   s.sound = flag(s.sound, true)
+  s.soundName = ns.ValidSound(s.soundName) or ns.DEFAULT_SOUND
+  s.repeatWarn = ns.ValidRepeat(s.repeatWarn) or "always"
   s.locked = flag(s.locked, false)
   s.hidden = flag(s.hidden, false)
   -- 1.0 showed the reagent bag on a click (details); 1.1 shows it in the split view instead.

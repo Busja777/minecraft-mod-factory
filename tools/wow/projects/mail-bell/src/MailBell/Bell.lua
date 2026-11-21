@@ -31,21 +31,16 @@ local function readNewMail()
   return value and true or false
 end
 
--- The first sound constant this client knows.
-local function bellSound()
-  if not SOUNDKIT then return nil end
-  for _, name in ipairs({ "ALARM_CLOCK_WARNING_3", "TELL_MESSAGE" }) do
-    if type(SOUNDKIT[name]) == "number" then return SOUNDKIT[name] end
-  end
-  return nil
+-- Plays the chosen bell once (also the preview of /mb sound <name>).
+function ns.PlayBell()
+  if not PlaySound then return end
+  local sound = ns.SoundId(SOUNDKIT, ns.settings.bell)
+  -- "Master" so it is heard even with sound effects muted.
+  if sound then pcall(PlaySound, sound, "Master") end
 end
 
 local function ring()
-  if ns.settings.sound and PlaySound then
-    local sound = bellSound()
-    -- "Master" so it is heard even with sound effects muted.
-    if sound then pcall(PlaySound, sound, "Master") end
-  end
+  if ns.settings.sound then ns.PlayBell() end
   ns.Print(L["You have new mail."])
 end
 

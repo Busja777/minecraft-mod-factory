@@ -84,9 +84,33 @@ local function takeOff(now)
   pending = nil
 end
 
+-- 1.2: plays the chosen arrival sound once (also as the preview of /fm sound).
+function ns.PlayArrivalSound()
+  if not PlaySound then return end
+  local id = ns.SoundId(SOUNDKIT, ns.db and ns.db.settings.soundName)
+  if not id then return end
+  -- "Master" so it is heard even with sound effects muted.
+  pcall(PlaySound, id, "Master")
+end
+
+local function soundWhen()
+  return ns.db and ns.db.settings.soundWhen
+end
+
+-- The early sound: once per flight, a few seconds before the learned landing time.
+local function checkArrival(now)
+  local flight = ns.flight
+  if not flight or flight.early or flight.soundPlayed or not ns.PlaysBefore(soundWhen()) then return end
+  if ns.ArrivalDue(flight.known, now - flight.start) then
+    flight.soundPlayed = true
+    ns.PlayArrivalSound()
+  end
+end
+
 local function land(now)
   local flight = ns.flight
   ns.flight = nil
+  if ns.PlaysAtLanding(soundWhen()) then ns.PlayArrivalSound() end
   local seconds = now - flight.start
   if flight.early or not ns.Plausible(seconds) then return end
   local route, isNew = ns.Learn(ns.routes, flight.key, seconds)
@@ -111,6 +135,7 @@ function ns.Check()
     elseif now - ns.flight.groundSince >= ns.LAND_AFTER then
       land(ns.flight.groundSince)
     end
+    if flying then checkArrival(now) end
   elseif pending then
     if flying then
       takeOff(now)
@@ -125,9 +150,12 @@ end
 local function onLogin()
   FlightMinutesDB = FlightMinutesDB or {}
   local db = FlightMinutesDB
-  db.version = 1
+  db.version = 2 -- 2 since 1.2: settings.soundWhen and settings.soundName
   db.factions = db.factions or {}
   db.settings = db.settings or {}
+  local s = db.settings
+  s.soundWhen = ns.ValidWhen(s.soundWhen) or "off"
+  s.soundName = ns.ValidSound(s.soundName) or ns.DEFAULT_SOUND
   ns.db = db
 
   -- Alliance and Horde use different flight masters, so each faction has its own routes.

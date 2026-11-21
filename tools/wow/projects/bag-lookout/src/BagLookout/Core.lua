@@ -171,3 +171,67 @@ function ns.WarningText(kind, free)
   if free == 1 then return L["Bags almost full: 1 free slot left."] end
   return string.format(L["Bags almost full: %d free slots left."], free or 0)
 end
+
+-- 1.2: the warning sound and how often to warn.
+-- The word typed in /bl sound and the game's SOUNDKIT name behind it. "warning" is the raid
+-- warning sound every warning played in 1.0 and 1.1; "none" (or /bl sound off) is silent.
+ns.SOUND_NAMES = { "warning", "bell", "chime", "horn", "whisper" }
+ns.SOUND_KIT = {
+  warning = "RAID_WARNING",
+  bell = "ALARM_CLOCK_WARNING_3",
+  chime = "MAP_PING",
+  horn = "READY_CHECK",
+  whisper = "TELL_MESSAGE",
+}
+ns.DEFAULT_SOUND = "warning"
+
+function ns.ValidSound(value)
+  if type(value) == "string" and ns.SOUND_KIT[value] then return value end
+  return nil
+end
+
+-- The sound id for a name from the game's SOUNDKIT table. A sound this client does not know falls
+-- back to the raid warning; nil when not even that is there.
+function ns.SoundId(kit, name)
+  if type(kit) ~= "table" then return nil end
+  local id = kit[ns.SOUND_KIT[name] or ""]
+  if type(id) == "number" then return id end
+  id = kit[ns.SOUND_KIT[ns.DEFAULT_SOUND]]
+  if type(id) == "number" then return id end
+  return nil
+end
+
+-- "always": warn every time the bags fill up again (as in 1.1). "once": each warning (almost
+-- full, full) comes at most once per session.
+function ns.ValidRepeat(value)
+  if value == "always" or value == "once" then return value end
+  return nil
+end
+
+-- Whether a warning the state machine gave is shown. shown = { low = true, ... } is what this
+-- session has already shown; it is noted here.
+function ns.AllowWarning(shown, kind, mode)
+  if not kind then return false end
+  local before = shown[kind]
+  shown[kind] = true
+  return mode ~= "once" or not before
+end
+
+-- "a, b or c"
+function ns.OrList(words)
+  if #words < 2 then return words[1] or "" end
+  local head = {}
+  for i = 1, #words - 1 do head[i] = words[i] end
+  return string.format(ns.L["%s or %s"], table.concat(head, ", "), words[#words])
+end
+
+-- "Sound is on: warning." or "Sound is off."
+function ns.SoundText(settings)
+  if not settings.sound then return ns.L["Sound is off."] end
+  return string.format(ns.L["Sound is on: %s."], ns.ValidSound(settings.soundName) or ns.DEFAULT_SOUND)
+end
+
+function ns.RepeatText(mode)
+  if mode == "once" then return ns.L["Warns once per session."] end
+  return ns.L["Warns every time the bags fill up again."]
+end

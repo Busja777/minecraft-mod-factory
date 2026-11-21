@@ -5,7 +5,7 @@ local L = ns.L
 -- change things.
 
 local function soundText()
-  return ns.settings.sound and L["Sound is on."] or L["Sound is off."]
+  return ns.SoundText(ns.settings)
 end
 
 local function loginText()
@@ -20,6 +20,7 @@ end
 local function help()
   ns.Print(L["/mb sound on/off plays the bell or not, /mb login on/off names your characters with mail at login, /mb forget Name-Realm removes a character."])
   ns.Print(L["/mb expire followed by 1 to 30 days, or off, sets the warning for mail with items or gold that runs out soon."])
+  ns.Print(string.format(L["/mb sound followed by %s picks the bell and plays it once."], ns.OrList(ns.SOUND_NAMES)))
 end
 
 local function show()
@@ -28,6 +29,16 @@ local function show()
   if expiring then ns.Print(expiring) end
   ns.Print(soundText() .. " " .. loginText() .. " " .. expireText())
   help()
+end
+
+-- /mb sound on/off switches the bell, /mb sound chime (or another name) picks it and plays it once,
+-- /mb sound alone tells the setting.
+local function sound(word)
+  if word == "" then return ns.Print(soundText()) end
+  if ns.Switch(ns.settings, "sound", word) ~= nil then return ns.Print(soundText()) end
+  if not ns.ChooseBell(ns.settings, word) then return help() end
+  ns.PlayBell() -- a preview of the new choice
+  ns.Print(soundText())
 end
 
 local function expire(word)
@@ -57,11 +68,13 @@ SlashCmdList.MAILBELL = function(msg)
   local text = strtrim(msg or "")
   local cmd, rest = text:match("^(%S*)%s*(.-)$")
   cmd = (cmd or ""):lower()
-  if cmd == "sound" or cmd == "login" then
+  if cmd == "sound" then
+    sound(rest)
+  elseif cmd == "login" then
     if ns.Switch(ns.settings, cmd, rest) == nil then
       help()
     else
-      ns.Print(cmd == "sound" and soundText() or loginText())
+      ns.Print(loginText())
     end
   elseif cmd == "expire" then
     expire(rest)

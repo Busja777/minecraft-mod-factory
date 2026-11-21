@@ -13,6 +13,19 @@ ns.EXPIRE_DEFAULT = 3 -- days: mail with items or gold that runs out within this
 ns.EXPIRE_MAX = 30    -- the game keeps mail for 30 days at most
 ns.DAY = 86400        -- seconds
 
+-- 1.2: the bell can be picked. The word typed in /mb sound and the game's SOUNDKIT name behind it.
+-- "bell" is the sound of 1.0 and 1.1; a client without it falls back to the whisper sound, as before.
+ns.SOUND_NAMES = { "bell", "chime", "horn", "warning", "whisper" }
+ns.SOUND_KIT = {
+  bell = "ALARM_CLOCK_WARNING_3",
+  chime = "MAP_PING",
+  horn = "READY_CHECK",
+  warning = "RAID_WARNING",
+  whisper = "TELL_MESSAGE",
+}
+ns.DEFAULT_SOUND = "bell"
+ns.FALLBACK_SOUNDS = { "ALARM_CLOCK_WARNING_3", "TELL_MESSAGE" }
+
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
@@ -119,14 +132,16 @@ end
 
 -- Makes the saved table usable: settings with their defaults, the character list, nothing lost.
 -- Version 1 (Mail Bell 1.0) had no expiry setting; it starts at 3 days.
+-- Version 2 (1.1) had no choice of bell; it starts with the bell it always played.
 function ns.PrepareDB(db)
   if type(db) ~= "table" then db = {} end
-  db.version = 2
+  db.version = 3
   if type(db.settings) ~= "table" then db.settings = {} end
   for _, name in ipairs(ns.SETTINGS) do
     if type(db.settings[name]) ~= "boolean" then db.settings[name] = ns.DEFAULTS[name] end
   end
   if not ns.ValidDays(db.settings.expire) then db.settings.expire = ns.EXPIRE_DEFAULT end
+  db.settings.bell = ns.ValidSound(db.settings.bell) or ns.DEFAULT_SOUND
   if type(db.chars) ~= "table" then db.chars = {} end
   return db
 end
@@ -225,6 +240,46 @@ function ns.ExpiringText(chars, now, warnDays, myRealm)
     parts[i] = string.format(ns.L["%s in %s"], ns.DisplayName(entry.key, myRealm), ns.DaysText(entry.left))
   end
   return string.format(ns.L["Mail with items or gold runs out soon on: %s"], table.concat(parts, ", "))
+end
+
+function ns.ValidSound(value)
+  if type(value) == "string" and ns.SOUND_KIT[value] then return value end
+  return nil
+end
+
+-- The sound id for a name from the game's SOUNDKIT table. A sound this client does not know falls
+-- back to the sounds of 1.0 (the bell, then the whisper sound); nil when it knows none of them.
+function ns.SoundId(kit, name)
+  if type(kit) ~= "table" then return nil end
+  local id = kit[ns.SOUND_KIT[name] or ""]
+  if type(id) == "number" then return id end
+  for _, fallback in ipairs(ns.FALLBACK_SOUNDS) do
+    if type(kit[fallback]) == "number" then return kit[fallback] end
+  end
+  return nil
+end
+
+-- Picks the bell from a word and switches the sound on. Returns true, or nil for an unknown word.
+function ns.ChooseBell(settings, word)
+  local name = ns.ValidSound((word or ""):lower())
+  if not name then return nil end
+  settings.bell = name
+  settings.sound = true
+  return true
+end
+
+-- "a, b or c"
+function ns.OrList(words)
+  if #words < 2 then return words[1] or "" end
+  local head = {}
+  for i = 1, #words - 1 do head[i] = words[i] end
+  return string.format(ns.L["%s or %s"], table.concat(head, ", "), words[#words])
+end
+
+-- "Sound is on: bell." or "Sound is off."
+function ns.SoundText(settings)
+  if not settings.sound then return ns.L["Sound is off."] end
+  return string.format(ns.L["Sound is on: %s."], ns.ValidSound(settings.bell) or ns.DEFAULT_SOUND)
 end
 
 -- "on" / "off" → true / false; anything else → nil.

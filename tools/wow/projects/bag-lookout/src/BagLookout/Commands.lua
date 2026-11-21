@@ -17,7 +17,8 @@ local function stateText()
     parts[#parts + 1] = string.format(L["%d of %d bag slots free."], c.free, c.total)
   end
   parts[#parts + 1] = string.format(L["Warning at %d free slots or fewer."], s.threshold)
-  parts[#parts + 1] = s.sound and L["Sound is on."] or L["Sound is off."]
+  parts[#parts + 1] = ns.SoundText(s)
+  parts[#parts + 1] = ns.RepeatText(s.repeatWarn)
   if s.hidden then
     parts[#parts + 1] = L["The counter is hidden."]
   else
@@ -50,13 +51,39 @@ local function setView(arg)
   ns.Print(viewText())
 end
 
+local function soundChoices()
+  ns.Print(string.format(L["Sounds: %s. /bl sound followed by a name picks it and plays it once, /bl sound none is silent."],
+    ns.OrList(ns.SOUND_NAMES)))
+end
+
+-- /bl sound on, off or none switch the sound; /bl sound bell (or another name) picks it and plays it.
 local function setSound(arg)
+  local s = ns.settings
   if arg == "on" then
-    ns.settings.sound = true
-  elseif arg == "off" then
-    ns.settings.sound = false
+    s.sound = true
+  elseif arg == "off" or arg == "none" then
+    s.sound = false
+  elseif ns.ValidSound(arg) then
+    s.sound = true
+    s.soundName = arg
+    ns.PlayWarningSound() -- a preview of the new choice
+  else
+    ns.Print(ns.SoundText(s))
+    soundChoices()
+    return
   end
-  ns.Print(ns.settings.sound and L["Sound is on."] or L["Sound is off."])
+  ns.Print(ns.SoundText(s))
+end
+
+local function setRepeat(arg)
+  local mode = ns.ValidRepeat(arg)
+  if mode then
+    ns.settings.repeatWarn = mode
+  elseif arg ~= "" then
+    ns.Print(L["Use /bl warn once or /bl warn always."])
+    return
+  end
+  ns.Print(ns.RepeatText(ns.settings.repeatWarn))
 end
 
 SLASH_BAGLOOKOUT1 = "/baglookout"
@@ -81,8 +108,10 @@ SlashCmdList.BAGLOOKOUT = function(msg)
     setSound(arg)
   elseif cmd == "view" then
     setView(arg)
+  elseif cmd == "warn" then
+    setRepeat(arg)
   else
     ns.Print(stateText())
-    ns.Print(L["Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off."])
+    ns.Print(L["Commands: /bl threshold <0-50>, /bl view total or split, /bl lock, /bl hide, /bl show, /bl sound on or off, /bl sound followed by a sound name or none, /bl warn once or always."])
   end
 end

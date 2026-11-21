@@ -89,11 +89,35 @@ local function forgetRoutes()
   ns.Refresh()
 end
 
+-- 1.2: /fm sound tells the setting, /fm sound before, landing, both or off sets when it plays,
+-- /fm sound bell (or another name) picks the sound and plays it once.
+local function soundHelp()
+  ns.Print(string.format(L["/fm sound before, landing, both or off sets when it plays; /fm sound followed by %s picks the sound."],
+    ns.OrList(ns.SOUND_NAMES)))
+end
+
+local function sound(word)
+  local s = ns.db.settings
+  if word == "" then
+    ns.Print(ns.SoundText(s.soundWhen, s.soundName))
+    soundHelp()
+    return
+  end
+  local changed = ns.ChooseSound(s, word)
+  if not changed then return soundHelp() end
+  ns.Print(ns.SoundText(s.soundWhen, s.soundName))
+  if changed == "sound" then
+    ns.PlayArrivalSound() -- a preview of the new choice
+    if s.soundWhen == "off" then ns.Print(L["/fm sound both switches it on."]) end
+  end
+end
+
 SLASH_FLIGHTMINUTES1 = "/flightminutes"
 SLASH_FLIGHTMINUTES2 = "/fm"
 SlashCmdList.FLIGHTMINUTES = function(msg)
   if not ns.db then return end
   local cmd = strtrim(msg or ""):lower()
+  local word, arg = cmd:match("^(%S*)%s*(.-)$")
   if cmd == "" then
     local count = ns.Count(ns.routes)
     if count == 0 then
@@ -105,7 +129,10 @@ SlashCmdList.FLIGHTMINUTES = function(msg)
     listRoutes()
   elseif cmd == "forget" then
     forgetRoutes()
+  elseif word == "sound" then
+    sound(arg)
   else
     ns.Print(L["/fm shows how many routes are known, /fm list shows them with their times, /fm forget clears all routes."])
+    soundHelp()
   end
 end
