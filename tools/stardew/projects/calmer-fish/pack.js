@@ -1,6 +1,9 @@
 // Calmer Fish: fish are easier to catch. The player picks one of three levels in the Content
 // Patcher config (Light, Medium = default, Strong); every non-legendary fish caught with a fishing
 // rod gets a lower difficulty, everything else in Data/Fish stays vanilla.
+// 1.1: an optional switch "Legendaries" (default false, so 1.0 behaviour stays) makes the ten
+// legendary fish (and their Legendary Fish II versions) a little calmer too, by a fixed gentle factor
+// that does not depend on the level.
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/Fish is a string → string lookup; each value is a slash-delimited string. For fish caught
@@ -19,11 +22,20 @@
 //   vanilla (and so do other mods' edits to those fields). The raw vanilla strings are not
 //   published on the wiki, so the pack deliberately does not rewrite whole strings.
 // - The level is a config option (author-guide/config.md: ConfigSchema with AllowValues/Default)
-//   and selects one patch through "When" (author-guide.md#conditions).
+//   and selects one patch through "When" (author-guide.md#conditions). The legendary switch is a
+//   second option with AllowValues "true, false" ("use "true, false" for a field that can be enabled
+//   or disabled, and Content Patcher will recognize it as a boolean", config.md) and its own patch.
 //
 // Vanilla difficulty and behaviour of every rod fish: https://stardewvalleywiki.com/Fish
 // (tables "Fishing Pole Fish" and "Night Market Fish", column "Difficulty & Behavior", revision
-// 195502). Legendary fish (tables "Legendary Fish" and "Legendary Fish II") are left out on purpose.
+// 195502). Legendary fish (tables "Legendary Fish" and "Legendary Fish II") are left out of FISH and
+// the levels on purpose; only the Legendaries switch touches them. Their difficulty and behaviour
+// come from the same two tables and match each fish's own page (Crimsonfish rev. 193655, Angler
+// 193659, Legend 193653, Glacierfish 193652, Mutant Carp 193657, Son of Crimsonfish 193656, Ms.
+// Angler 193660, Legend II 193654, Glacierfish Jr. 193651, Radioactive Carp 193658). Legend and
+// Legend II have 110 there, above the "between 15 (carp) and 100 (glacierfish)" of Modding:Fish data,
+// so legendary values are checked against 15 to 110. The Fish page: the Legendary Fish II "have the
+// same difficulties as the older generation of fish", i.e. they read their own Data/Fish entries.
 // Item IDs come from tools/stardew/data/items.json; Goby is a 1.6 object with the text ID "Goby"
 // (Content Patcher docs, action-editdata.md, the Data/Objects "Goby" example), not in items.json.
 //
@@ -91,14 +103,34 @@ export const FISH = {
 };
 // Objects with a text ID in 1.6 (not in items.json), with their source.
 export const TEXT_IDS = { Goby: 'Goby' };
-// Legendary fish (Fish page, "Legendary Fish" and "Legendary Fish II"): never touched.
-export const LEGENDARY = ['Crimsonfish', 'Angler', 'Legend', 'Mutant Carp', 'Glacierfish', 'Son of Crimsonfish', 'Ms. Angler', 'Legend II', 'Radioactive Carp', 'Glacierfish Jr.'];
+// Legendary fish (Fish page, "Legendary Fish" and "Legendary Fish II"): name → [vanilla
+// difficulty, vanilla behaviour]. Never touched by the levels; only by the Legendaries switch.
+export const LEGENDARY_FISH = {
+  Crimsonfish: [95, 'mixed'],
+  Angler: [85, 'smooth'],
+  Legend: [110, 'mixed'],
+  Glacierfish: [100, 'mixed'],
+  'Mutant Carp': [80, 'dart'],
+  'Son of Crimsonfish': [95, 'mixed'],
+  'Ms. Angler': [85, 'smooth'],
+  'Legend II': [110, 'mixed'],
+  'Glacierfish Jr.': [100, 'mixed'],
+  'Radioactive Carp': [80, 'dart']
+};
+export const LEGENDARY = Object.keys(LEGENDARY_FISH);
+// Legendary II name → the original it copies (Fish page: same difficulties).
+const LEGENDARY_II = { 'Son of Crimsonfish': 'Crimsonfish', 'Ms. Angler': 'Angler', 'Legend II': 'Legend', 'Glacierfish Jr.': 'Glacierfish', 'Radioactive Carp': 'Mutant Carp' };
+export const LEGENDARY_MAX = 110; // Legend, Legend II (see above)
 
 // Config values → difficulty factor. The new difficulty never drops below the easiest vanilla
 // fish (Carp, 15), so nothing becomes easier than a carp.
 export const LEVELS = { Light: 0.85, Medium: 0.7, Strong: 0.55 };
 export const DEFAULT = 'Medium';
 export const MINIMUM = 15;
+// Legendaries switch: one gentle factor, the same 15 % as the Light level, whatever level is chosen
+// (legendary fish stay a real challenge even at Strong). Default off.
+export const LEGENDARY_FACTOR = 0.85;
+export const LEGENDARY_DEFAULT = 'false';
 
 export const calmer = (difficulty, factor) => Math.max(MINIMUM, Math.min(difficulty, Math.round(difficulty * factor)));
 
@@ -115,7 +147,15 @@ export default async function ({ items }) {
     if (!BEHAVIOURS.includes(behaviour)) throw new Error(`${name}: unknown behaviour ${behaviour}`);
   }
   for (const name of LEGENDARY) if (/^\d+$/.test(idOf[name] || '') === false) throw new Error(`legendary ${name} is not in items.json`);
-  if (new Set(Object.keys(FISH).map(n => idOf[n])).size !== Object.keys(FISH).length) throw new Error('two fish share an item ID');
+  if (LEGENDARY.length !== 10) throw new Error('ten legendary fish expected (five and their Legendary Fish II versions)');
+  for (const [name, [difficulty, behaviour]] of Object.entries(LEGENDARY_FISH)) {
+    if (!(Number.isInteger(difficulty) && difficulty >= MINIMUM && difficulty <= LEGENDARY_MAX)) throw new Error(`${name}: difficulty ${difficulty} is outside the documented ${MINIMUM} to ${LEGENDARY_MAX}`);
+    if (!BEHAVIOURS.includes(behaviour)) throw new Error(`${name}: unknown behaviour ${behaviour}`);
+  }
+  for (const [two, one] of Object.entries(LEGENDARY_II)) if (JSON.stringify(LEGENDARY_FISH[two]) !== JSON.stringify(LEGENDARY_FISH[one])) throw new Error(`${two} must match ${one} (Fish page: same difficulties)`);
+  if (!(LEGENDARY_FACTOR >= 0.8 && LEGENDARY_FACTOR < 1)) throw new Error(`legendary factor ${LEGENDARY_FACTOR} is not gentle (0.8 to 1)`);
+  const every = [...Object.keys(FISH), ...LEGENDARY];
+  if (new Set(every.map(n => idOf[n])).size !== every.length) throw new Error('two fish share an item ID');
 
   const changes = Object.entries(LEVELS).map(([level, factor]) => {
     const fields = {};
@@ -133,6 +173,19 @@ export default async function ({ items }) {
       When: { Level: level }
     };
   });
+  const legendary = {};
+  for (const [name, [difficulty]] of Object.entries(LEGENDARY_FISH)) {
+    const value = calmer(difficulty, LEGENDARY_FACTOR);
+    if (!(value < difficulty && value >= MINIMUM)) throw new Error(`${name}: ${value} is not calmer than ${difficulty} or below ${MINIMUM}`);
+    legendary[idOf[name]] = { [FIELD.difficulty]: String(value) };
+  }
+  changes.push({
+    LogName: `Calmer legendary fish (difficulty × ${LEGENDARY_FACTOR})`,
+    Action: 'EditData',
+    Target: 'Data/Fish',
+    Fields: legendary,
+    When: { Legendaries: 'true' }
+  });
   return {
     'content.json': {
       Format: '2.9.0',
@@ -140,7 +193,12 @@ export default async function ({ items }) {
         Level: {
           AllowValues: Object.keys(LEVELS).join(', '),
           Default: DEFAULT,
-          Description: 'How much calmer fish are in the fishing minigame. Light lowers the difficulty by 15 %, Medium by 30 %, Strong by 45 %. Legendary fish are not changed.'
+          Description: 'How much calmer fish are in the fishing minigame. Light lowers the difficulty by 15 %, Medium by 30 %, Strong by 45 %. Legendary fish are not changed by this.'
+        },
+        Legendaries: {
+          AllowValues: 'true, false',
+          Default: LEGENDARY_DEFAULT,
+          Description: `Also make the legendary fish a little calmer: their difficulty is lowered by ${Math.round(100 * (1 - LEGENDARY_FACTOR))} %, whatever the level. Off by default.`
         }
       },
       Changes: changes

@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "CalmerFish-1.1.zip",
+      "changelog": "## Calmer Fish 1.1\n\nLegendary fish, if you want.\n\n- New config option `Legendaries` (off by default): turn it on and the five legendary fish and their Legendary Fish II versions fight 15 % less, whatever level you picked. Legend drops from 110 to 94, Glacierfish from 100 to 85.\n- With the option off, nothing changes: legendary fish keep their full challenge, all other fish work as in 1.0.\n- Behaviour, seasons and locations of the legendary fish stay as they are.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }
