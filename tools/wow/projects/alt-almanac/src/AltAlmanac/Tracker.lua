@@ -128,9 +128,16 @@ end
 local function onLogin()
   AltAlmanacDB = AltAlmanacDB or {}
   local db = AltAlmanacDB
-  db.version = 2 -- 2: played time (1.1); entries of 1.0 simply have none yet
+  -- 2: played time (1.1), entries of 1.0 simply have none yet; 3: sorting and filters (1.2).
+  db.version = 3
   db.chars = db.chars or {}
-  db.settings = db.settings or {}
+  if type(db.settings) ~= "table" then db.settings = {} end
+  local s = db.settings
+  s.sortBy = ns.ValidSort(s.sortBy) or ns.DEFAULT_SORT
+  s.sortReverse = s.sortReverse == true
+  s.realmOnly = s.realmOnly == true
+  s.minLevel = ns.ValidMinLevel(s.minLevel)
+  if s.minLevel == 1 then s.minLevel = nil end -- level 1 and up is everyone
   ns.db = db
 
   local key = ns.CharKey()

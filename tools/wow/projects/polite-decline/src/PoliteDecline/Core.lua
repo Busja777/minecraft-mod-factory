@@ -140,3 +140,40 @@ function ns.SafeToWhisper(inInstance, instanceType, lockdown)
   if lockdown then return false end
   return true
 end
+
+-- 1.2: the log. One entry is { t = time, name = name as the game gave it, kind = "duel"|"invite" }.
+-- Lists are oldest first.
+ns.LOG_KEEP = 50 -- entries kept across sessions, and shown of this session
+
+function ns.ValidLogEntry(e)
+  if type(e) ~= "table" or type(e.t) ~= "number" or e.t <= 0 then return nil end
+  if type(e.name) ~= "string" or e.name == "" or not ns.KINDS[e.kind] then return nil end
+  return e
+end
+
+-- The saved log, cleaned: usable entries only, oldest first, at most LOG_KEEP.
+function ns.CleanLog(list)
+  local out = {}
+  if type(list) ~= "table" then return out end
+  for _, e in ipairs(list) do
+    if ns.ValidLogEntry(e) then out[#out + 1] = e end
+  end
+  table.sort(out, function(a, b) return a.t < b.t end)
+  while #out > ns.LOG_KEEP do table.remove(out, 1) end
+  return out
+end
+
+-- Adds one entry to a list and drops the oldest beyond LOG_KEEP. False when the entry is unusable.
+function ns.AddLog(list, entry)
+  if type(list) ~= "table" or not ns.ValidLogEntry(entry) then return false end
+  list[#list + 1] = entry
+  while #list > ns.LOG_KEEP do table.remove(list, 1) end
+  return true
+end
+
+-- "Nov 20 18:05: duel from Grumbash."
+function ns.LogLine(e)
+  local when = date(L["%b %d %H:%M"], e.t)
+  if e.kind == "duel" then return string.format(L["%s: duel from %s."], when, e.name) end
+  return string.format(L["%s: group invite from %s."], when, e.name)
+end

@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "DurabilityWatch-1.2.zip",
+      "changelog": "## Durability Watch 1.2\n\n- New **repair cost history**: every visit to a vendor who can repair while your gear is damaged is noted with the date and the price of a full repair, for each character on its own.\n- It also notes how you paid: with your own gold, with guild money, or not repaired at that visit. Repairing single items with the repair hammer counts as your own gold.\n- `/dw history` lists your last 20 visits, newest first, and what your repairs cost in the last 7 days, with the part the guild paid. `/dw history clear` empties the list of the character you are playing.\n- The tooltip of the display now shows the repair costs of the last 7 days.\n- Opening the same vendor again a few minutes later at the same price is not counted twice. Durability Watch still never repairs by itself.\n- Your settings from 1.0 and 1.1 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

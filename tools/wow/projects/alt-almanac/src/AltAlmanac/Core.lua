@@ -138,6 +138,88 @@ function ns.BuildRows(chars, currentKey, now)
   return rows, total, played
 end
 
+-- 1.2: sorting by any column and filtering.
+-- The columns that can be sorted, with their first direction: true = highest first.
+ns.SORT_DESC = { name = false, level = true, gold = true, zone = false, rested = true, played = true, seen = false }
+ns.DEFAULT_SORT = "level"
+ns.MIN_LEVEL_LIMIT = 100 -- the highest level the filter accepts
+
+local function sortValue(row, field)
+  if field == "name" then return row.name:lower() end
+  if field == "level" then return row.level end
+  if field == "gold" then return row.money end
+  if field == "zone" then return row.place and row.place:lower() end
+  if field == "rested" then return row.rested end
+  if field == "played" then return row.played end
+  return row.ago -- seen: the most recent first
+end
+
+function ns.ValidSort(field)
+  if type(field) == "string" and ns.SORT_DESC[field] ~= nil then return field end
+  return nil
+end
+
+-- Sorts the rows by one column; reverse turns its direction around. Unknown values always go last,
+-- equal values by name. Sorting by level without reverse is the order of 1.0.
+function ns.SortRows(rows, field, reverse)
+  field = ns.ValidSort(field) or ns.DEFAULT_SORT
+  local desc = ns.SORT_DESC[field]
+  if reverse then desc = not desc end
+  table.sort(rows, function(a, b)
+    local va, vb = sortValue(a, field), sortValue(b, field)
+    if va ~= vb then
+      if va == nil then return false end
+      if vb == nil then return true end
+      if desc then return va > vb end
+      return va < vb
+    end
+    local na, nb = a.name:lower(), b.name:lower()
+    if na ~= nb then return na < nb end
+    return a.key < b.key
+  end)
+  return rows
+end
+
+-- A level for the filter: a whole number from 1 to MIN_LEVEL_LIMIT, else nil.
+function ns.ValidMinLevel(value)
+  if type(value) ~= "number" or value ~= math.floor(value) then return nil end
+  if value < 1 or value > ns.MIN_LEVEL_LIMIT then return nil end
+  return value
+end
+
+function ns.ParseLevel(text)
+  if type(text) ~= "string" then return nil end
+  local digits = text:match("^%s*(%d+)%s*$")
+  return digits and ns.ValidMinLevel(tonumber(digits)) or nil
+end
+
+-- filter = { realmOnly, minLevel }. Characters of other realms (realmOnly) and below minLevel are
+-- left out; a character whose level is unknown counts as below. The character you are playing is
+-- always shown. Returns the rows to show and how many were left out.
+function ns.FilterRows(rows, filter, realm)
+  local shown, hidden = {}, 0
+  filter = filter or {}
+  for _, r in ipairs(rows) do
+    local keep = true
+    if not r.current then
+      if filter.realmOnly and r.realm ~= realm then keep = false end
+      if filter.minLevel and (r.level or 0) < filter.minLevel then keep = false end
+    end
+    if keep then shown[#shown + 1] = r else hidden = hidden + 1 end
+  end
+  return shown, hidden
+end
+
+-- The gold of the given rows, and their played time (nil when nobody's is known).
+function ns.Totals(rows)
+  local total, played = 0, nil
+  for _, r in ipairs(rows) do
+    total = total + (r.money or 0)
+    if r.played then played = (played or 0) + r.played end
+  end
+  return total, played
+end
+
 -- The rows that fit into the window; when there are more, the last place says how many are left.
 -- Returns the rows to show and the number of characters left out.
 function ns.Visible(rows, max)

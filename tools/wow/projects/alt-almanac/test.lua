@@ -88,6 +88,12 @@ test("addon defines only its own globals", function(wow, installed, before)
   wait(0)
   wow.fire("PLAYER_LOGOUT")
   wow.slash("/aa") -- creates the window
+  AltAlmanacFrame.headButtons.gold:Click()
+  AltAlmanacFrame.realmCheck:Click()
+  AltAlmanacFrame.levelBox:SetText("10")
+  AltAlmanacFrame.levelBox.scripts.OnEnterPressed(AltAlmanacFrame.levelBox)
+  wow.slash("/aa realm all")
+  wow.slash("/aa level off")
   local allowed = { AltAlmanacDB = true, AltAlmanacFrame = true, SLASH_ALTALMANAC1 = true, SLASH_ALTALMANAC2 = true }
   for _, name in ipairs(STAND_IN) do installed[name] = true end
   for k in pairs(_G) do
@@ -98,7 +104,7 @@ end)
 test("login stores the whole character", function(wow)
   local ns = boot(wow, { level = 42, max = 20000, rested = 9000, resting = true }, 123456)
   local c = me()
-  eq(AltAlmanacDB.version, 2)
+  eq(AltAlmanacDB.version, 3)
   eq(ns.char, c)
   eq(c.class, "MAGE")
   eq(c.level, 42)
@@ -421,8 +427,9 @@ test("/aa and /altalmanac toggle the window, anything else prints help", functio
   eq(#wow.chat, 0)
   wow.slash("/aa help")
   wow.slash("/aa forget")
-  eq(#wow.chat, 2)
+  eq(#wow.chat, 4)
   eq(wow.chat[1]:match("/aa forget Name%-Realm removes a character") ~= nil, true)
+  eq(wow.chat[2]:match("Click a heading to sort%. /aa realm this or /aa realm all filters by realm") ~= nil, true)
 end)
 
 test("the window can be moved and comes back where it was left", function(wow)
@@ -604,7 +611,7 @@ test("saved data of 1.0 keeps everything and shows a dash until the character lo
     ["Yubi-Silvermoon"] = { class = "MAGE", level = 41, money = 100, seen = wow.now - DAY },
   } }
   local ns = boot(wow, { level = 42 }, 200)
-  eq(AltAlmanacDB.version, 2)
+  eq(AltAlmanacDB.version, 3)
   eq(AltAlmanacDB.settings.point[1], "TOP")
   eq(AltAlmanacDB.chars["Brakk-Silvermoon"].money, 5000000)
   eq(AltAlmanacDB.chars["Brakk-Silvermoon"].played, nil)
@@ -657,4 +664,292 @@ test("without timers the time is asked at once and the chat is not touched", fun
   answer(wow, 7200)
   eq(me().played, 7200)
   eq(printed(), 2, "the answer shows in the chat once")
+end)
+
+-- 1.2: sorting and filters
+
+local function names()
+  local out = {}
+  for i = 1, 15 do
+    local n = row(i).name
+    if n == "" then break end
+    out[#out + 1] = (n:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""))
+  end
+  return table.concat(out, ",")
+end
+
+local function plainRows(spec)
+  local rows = {}
+  for _, r in ipairs(spec) do
+    local name, realm = r.key:match("^(.-)%-(.+)$")
+    r.name, r.realm = name, realm
+    rows[#rows + 1] = r
+  end
+  return rows
+end
+
+local function order(rows)
+  local out = {}
+  for i, r in ipairs(rows) do out[i] = r.name end
+  return table.concat(out, ",")
+end
+
+-- Four characters on two realms; you play Yubi (level 20) on Silvermoon.
+local function family(wow)
+  local now = wow.now
+  AltAlmanacDB = { version = 2, chars = {
+    ["Brakk-Silvermoon"] = { class = "WARRIOR", level = 80, money = 50000, zone = "Dornogal", rested = 0, maxLevel = true, played = 10 * DAY, playedAt = now - DAY, seen = now - DAY },
+    ["Lia-Argent Dawn"] = { level = 35, money = 900000, zone = "Duskwood", rested = 10, seen = now - 2 * HOUR, played = HOUR, playedAt = now - 2 * HOUR },
+    ["anna-Silvermoon"] = { level = 12, money = 100, zone = "Elwynn Forest", rested = 60, resting = true, seen = now - 3 * DAY },
+  } }
+end
+
+test("core: rows sort by every column, a second click reverses, unknown values go last", function(wow)
+  local ns = boot(wow)
+  local function rows()
+    return plainRows({
+      { key = "Cara-A", level = 30, money = 500, place = "Zuldazar", rested = 20, played = 300, ago = 60 },
+      { key = "bob-A", level = 70, money = 9000, place = "azsuna", rested = 0, played = 100, ago = 0 },
+      { key = "Abe-B", level = 30, money = nil, place = nil, rested = nil, played = nil, ago = nil },
+      { key = "Dex-A", level = nil, money = 20, place = "Bastion", rested = 150, played = 50, ago = 5000 },
+    })
+  end
+  eq(order(ns.SortRows(rows(), "level")), "bob,Abe,Cara,Dex", "highest level first, equal levels by name, unknown last")
+  eq(order(ns.SortRows(rows(), "level", true)), "Abe,Cara,bob,Dex", "reversed: lowest first, unknown still last")
+  eq(order(ns.SortRows(rows(), "name")), "Abe,bob,Cara,Dex", "names A to Z without case")
+  eq(order(ns.SortRows(rows(), "name", true)), "Dex,Cara,bob,Abe")
+  eq(order(ns.SortRows(rows(), "gold")), "bob,Cara,Dex,Abe", "richest first")
+  eq(order(ns.SortRows(rows(), "zone")), "bob,Dex,Cara,Abe", "zones A to Z without case")
+  eq(order(ns.SortRows(rows(), "rested")), "Dex,Cara,bob,Abe", "most rested first")
+  eq(order(ns.SortRows(rows(), "played")), "Cara,bob,Dex,Abe", "most played first")
+  eq(order(ns.SortRows(rows(), "seen")), "bob,Cara,Dex,Abe", "most recently seen first")
+  eq(order(ns.SortRows(rows(), "seen", true)), "Dex,Cara,bob,Abe")
+  eq(order(ns.SortRows(rows(), "bogus")), "bob,Abe,Cara,Dex", "an unknown column sorts by level")
+  eq(ns.ValidSort("gold"), "gold")
+  eq(ns.ValidSort("Gold"), nil)
+  eq(ns.ValidSort(nil), nil)
+end)
+
+test("core: the filter leaves out other realms and low levels, never your own character", function(wow)
+  local ns = boot(wow)
+  local rows = plainRows({
+    { key = "Yubi-Silvermoon", level = 5, money = 1, played = 10, current = true },
+    { key = "Brakk-Silvermoon", level = 80, money = 100, played = 1000 },
+    { key = "Lia-Argent Dawn", level = 70, money = 10000 },
+    { key = "Old-Silvermoon", money = 5 },
+  })
+  local shown, hidden = ns.FilterRows(rows, {}, "Silvermoon")
+  eq(#shown, 4)
+  eq(hidden, 0)
+  shown, hidden = ns.FilterRows(rows, { realmOnly = true }, "Silvermoon")
+  eq(order(shown), "Yubi,Brakk,Old")
+  eq(hidden, 1)
+  shown, hidden = ns.FilterRows(rows, { minLevel = 70 }, "Silvermoon")
+  eq(order(shown), "Yubi,Brakk,Lia", "your own level 5 stays, an unknown level counts as below")
+  eq(hidden, 1)
+  shown, hidden = ns.FilterRows(rows, { realmOnly = true, minLevel = 80 }, "Silvermoon")
+  eq(order(shown), "Yubi,Brakk")
+  eq(hidden, 2)
+  local total, played = ns.Totals(shown)
+  eq(total, 101)
+  eq(played, 1010)
+  eq(ns.Totals({}), 0)
+  eq(select(2, ns.Totals({ { money = 3 } })), nil)
+end)
+
+test("core: levels for the filter and the headings", function(wow)
+  local ns = boot(wow)
+  eq(ns.ParseLevel("70"), 70)
+  eq(ns.ParseLevel(" 1 "), 1)
+  eq(ns.ParseLevel("100"), 100)
+  eq(ns.ParseLevel("101"), nil)
+  eq(ns.ParseLevel("0"), nil)
+  eq(ns.ParseLevel("7.5"), nil)
+  eq(ns.ParseLevel("seventy"), nil)
+  eq(ns.ParseLevel(nil), nil)
+  eq(ns.ValidMinLevel(70.5), nil)
+  eq(ns.HeadingText("level", "level", false), "|cffffffffLevel v|r")
+  eq(ns.HeadingText("level", "level", true), "|cffffffffLevel ^|r")
+  eq(ns.HeadingText("name", "name", false), "|cffffffffCharacter ^|r")
+  eq(ns.HeadingText("gold", "level", false), "Gold")
+end)
+
+test("a click on a heading sorts the window, a second click reverses, the choice is saved", function(wow)
+  family(wow)
+  local ns = boot(wow, { level = 20 }, 7000)
+  wow.slash("/aa")
+  local f = AltAlmanacFrame
+  eq(names(), "Brakk,Lia-Argent Dawn,Yubi,anna", "by level as before")
+  eq(f.head.level:GetText(), "|cffffffffLevel v|r")
+  f.headButtons.gold:Click()
+  eq(names(), "Lia-Argent Dawn,Brakk,Yubi,anna")
+  eq(f.head.gold:GetText(), "|cffffffffGold v|r")
+  eq(f.head.level:GetText(), "Level")
+  eq(AltAlmanacDB.settings.sortBy, "gold")
+  eq(AltAlmanacDB.settings.sortReverse, false)
+  f.headButtons.gold:Click()
+  eq(names(), "anna,Yubi,Brakk,Lia-Argent Dawn")
+  eq(f.head.gold:GetText(), "|cffffffffGold ^|r")
+  eq(AltAlmanacDB.settings.sortReverse, true)
+  f.headButtons.name:Click()
+  eq(names(), "anna,Brakk,Lia-Argent Dawn,Yubi", "a new column starts in its own direction")
+  eq(AltAlmanacDB.settings.sortReverse, false)
+  f.headButtons.zone:Click()
+  eq(names(), "Brakk,Lia-Argent Dawn,anna,Yubi", "Dornogal, Duskwood, Elwynn Forest, Stormwind City")
+  f.headButtons.rested:Click()
+  eq(names(), "anna,Lia-Argent Dawn,Brakk,Yubi", "max level and no rested bonus both count as 0, then by name")
+  f.headButtons.played:Click()
+  eq(names(), "Brakk,Lia-Argent Dawn,anna,Yubi", "characters without a played time go last, by name")
+  f.headButtons.seen:Click()
+  eq(names(), "Yubi,Lia-Argent Dawn,Brakk,anna")
+  f.headButtons.seen.scripts.OnEnter(f.headButtons.seen)
+  eq(wow.tooltip.lines[1], "Click to sort by this column, click again to reverse the order.")
+  f.headButtons.seen.scripts.OnLeave(f.headButtons.seen)
+  eq(wow.tooltip.shown, false)
+  eq(#wow.chat, 0, "sorting says nothing in chat")
+end)
+
+test("the sort order is still there after a reload", function(wow)
+  family(wow)
+  AltAlmanacDB.settings = { sortBy = "gold", sortReverse = true }
+  local ns = boot(wow, { level = 20 }, 7000)
+  wow.slash("/aa")
+  eq(names(), "anna,Yubi,Brakk,Lia-Argent Dawn")
+  eq(AltAlmanacFrame.head.gold:GetText(), "|cffffffffGold ^|r")
+end)
+
+test("this realm only: the checkbox filters the window and the total, and is saved", function(wow)
+  family(wow)
+  local ns = boot(wow, { level = 20 }, 7000)
+  wow.slash("/aa")
+  local f = AltAlmanacFrame
+  eq(f.realmLabel:GetText(), "This realm only")
+  eq(f.filterInfo:GetText(), "")
+  eq(f.total:GetText(), "95g 71s 00c")
+  f.realmCheck:Click()
+  eq(AltAlmanacDB.settings.realmOnly, true)
+  eq(wow.chat[1], "|cffffd100Alt Almanac:|r Showing the characters of this realm only.")
+  eq(names(), "Brakk,Yubi,anna")
+  eq(f.total:GetText(), "5g 71s 00c", "the total adds up the characters shown")
+  eq(f.totalPlayed:GetText(), "10d 0h")
+  eq(f.filterInfo:GetText(), "1 hidden by the filter")
+  f.realmCheck:Click()
+  eq(AltAlmanacDB.settings.realmOnly, false)
+  eq(wow.chat[2], "|cffffd100Alt Almanac:|r Showing the characters of all realms.")
+  eq(names(), "Brakk,Lia-Argent Dawn,Yubi,anna")
+end)
+
+test("hide below level: the box takes a level, Enter applies it, wrong values are put back", function(wow)
+  family(wow)
+  local ns = boot(wow, { level = 20 }, 7000)
+  wow.slash("/aa")
+  local f = AltAlmanacFrame
+  local box = f.levelBox
+  eq(f.levelLabel:GetText(), "Hide below level")
+  eq(box:GetText(), "")
+  box:SetText("30")
+  box.scripts.OnEnterPressed(box)
+  eq(AltAlmanacDB.settings.minLevel, 30)
+  eq(wow.chat[1], "|cffffd100Alt Almanac:|r Hiding characters below level 30.")
+  eq(names(), "Brakk,Lia-Argent Dawn,Yubi", "anna (12) is hidden, Yubi (20) is you")
+  eq(f.filterInfo:GetText(), "1 hidden by the filter")
+  box.scripts.OnEditFocusLost(box)
+  eq(#wow.chat, 1, "the same level again says nothing")
+  box:SetText("500")
+  box.scripts.OnEnterPressed(box)
+  eq(box:GetText(), "30", "a level the filter cannot take puts the old one back")
+  eq(AltAlmanacDB.settings.minLevel, 30)
+  box:SetText("80")
+  box.scripts.OnEscapePressed(box)
+  eq(box:GetText(), "30", "Escape puts the old level back")
+  box.scripts.OnEditFocusLost(box)
+  eq(AltAlmanacDB.settings.minLevel, 30)
+  box:SetText("")
+  box.scripts.OnEnterPressed(box)
+  eq(AltAlmanacDB.settings.minLevel, nil)
+  eq(wow.chat[2], "|cffffd100Alt Almanac:|r Showing characters of every level.")
+  eq(names(), "Brakk,Lia-Argent Dawn,Yubi,anna")
+  box:SetText("0")
+  box.scripts.OnEnterPressed(box)
+  eq(#wow.chat, 2)
+end)
+
+test("/aa realm and /aa level set the filters from the chat", function(wow)
+  family(wow)
+  local ns = boot(wow, { level = 20 }, 7000)
+  local P = "|cffffd100Alt Almanac:|r "
+  wow.slash("/aa realm this")
+  eq(AltAlmanacDB.settings.realmOnly, true)
+  eq(wow.chat[1], P .. "Showing the characters of this realm only.")
+  wow.slash("/aa REALM All")
+  eq(AltAlmanacDB.settings.realmOnly, false)
+  wow.slash("/aa level 70")
+  eq(AltAlmanacDB.settings.minLevel, 70)
+  eq(wow.chat[3], P .. "Hiding characters below level 70.")
+  wow.slash("/aa")
+  eq(names(), "Brakk,Yubi")
+  eq(AltAlmanacFrame.levelBox:GetText(), "70")
+  eq(AltAlmanacFrame.filterInfo:GetText(), "2 hidden by the filter")
+  wow.slash("/aa level 101")
+  eq(wow.chat[4], P .. "Use a whole number from 1 to 100, for example /aa level 70, or /aa level off.")
+  eq(AltAlmanacDB.settings.minLevel, 70)
+  wow.slash("/aa level off")
+  eq(AltAlmanacDB.settings.minLevel, nil)
+  eq(wow.chat[5], P .. "Showing characters of every level.")
+  wow.slash("/aa level off")
+  eq(wow.chat[6], P .. "Showing characters of every level.", "the chat always answers")
+  wow.slash("/aa level 1")
+  eq(AltAlmanacDB.settings.minLevel, nil, "level 1 and up is everyone")
+  wow.slash("/aa realm")
+  eq(wow.chat[#wow.chat]:match("^" .. P:gsub("%p", "%%%0") .. "Click a heading to sort") ~= nil, true, "without this or all: the help")
+  eq(AltAlmanacFrame.levelBox:GetText(), "")
+end)
+
+test("with a filter the last row counts only the characters left after it", function(wow)
+  AltAlmanacDB = { chars = {} }
+  for i = 1, 20 do AltAlmanacDB.chars["Alt" .. string.format("%02d", i) .. "-Silvermoon"] = { level = i } end
+  for i = 1, 5 do AltAlmanacDB.chars["Far" .. i .. "-Kazzak"] = { level = 60 + i } end
+  local ns = boot(wow, { level = 70 })
+  wow.slash("/aa realm this")
+  wow.slash("/aa")
+  eq(row(1).name, "|cff3fc7ebYubi|r")
+  eq(row(2).name, "Alt20")
+  eq(row(15).name, "|cff9d9d9dand 7 more|r")
+  eq(AltAlmanacFrame.filterInfo:GetText(), "5 hidden by the filter")
+  wow.slash("/aa level 10")
+  eq(row(12).name, "Alt10")
+  eq(row(13).name, "")
+  eq(AltAlmanacFrame.filterInfo:GetText(), "14 hidden by the filter")
+end)
+
+test("saved data of 1.1 keeps everything and gets the old order, broken sort settings are replaced", function(wow)
+  family(wow)
+  AltAlmanacDB.settings = { point = { "TOP", "TOP", 0, -50 } }
+  local ns = boot(wow, { level = 20 }, 7000)
+  local s = AltAlmanacDB.settings
+  eq(AltAlmanacDB.version, 3)
+  eq(s.point[1], "TOP")
+  eq(s.sortBy, "level")
+  eq(s.sortReverse, false)
+  eq(s.realmOnly, false)
+  eq(s.minLevel, nil)
+  eq(AltAlmanacDB.chars["Brakk-Silvermoon"].played, 10 * DAY)
+  wow.slash("/aa")
+  eq(names(), "Brakk,Lia-Argent Dawn,Yubi,anna")
+
+  AltAlmanacDB.settings = { sortBy = "mood", sortReverse = "yes", realmOnly = 1, minLevel = 250 }
+  wow.fire("PLAYER_LOGIN")
+  s = AltAlmanacDB.settings
+  eq(s.sortBy, "level")
+  eq(s.sortReverse, false)
+  eq(s.realmOnly, false)
+  eq(s.minLevel, nil)
+  AltAlmanacDB.settings = "broken"
+  wow.fire("PLAYER_LOGIN")
+  eq(type(AltAlmanacDB.settings), "table")
+  AltAlmanacDB.settings = { sortBy = "seen", sortReverse = true, realmOnly = true, minLevel = 1 }
+  wow.fire("PLAYER_LOGIN")
+  eq(AltAlmanacDB.settings.sortBy, "seen")
+  eq(AltAlmanacDB.settings.realmOnly, true)
+  eq(AltAlmanacDB.settings.minLevel, nil)
 end)

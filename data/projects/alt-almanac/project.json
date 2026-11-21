@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "AltAlmanac-1.2.zip",
+      "changelog": "## Alt Almanac 1.2\n\n- **Sort by any column**: click a heading (character, level, gold, zone, rested, played or last seen) to sort the list by it, click it again to reverse the order. The column you sort by is shown in white with a small arrow.\n- Characters whose value is not known yet always stay at the bottom, whichever way you sort.\n- New **filters** at the bottom of the window: tick \"This realm only\" to hide characters of other realms, and type a level into \"Hide below level\" to hide your low alts. The character you are playing is always shown.\n- The total line adds up the gold and played time of the characters shown, and a short note tells how many the filter hides.\n- `/aa realm this` and `/aa realm all`, `/aa level 70` and `/aa level off` set the filters from the chat.\n- Your sort order and filters are saved. All your characters and settings from 1.0 and 1.1 are kept, and the list starts in the familiar order: highest level first.\n- The window is a little taller so the filters fit.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

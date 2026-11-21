@@ -2,7 +2,7 @@ local _, ns = ...
 local L = ns.L
 
 -- A small display with the overall condition and the lowest item. Drag it anywhere unless it is
--- locked; the mouse-over tooltip lists every damaged item.
+-- locked; the mouse-over tooltip lists every damaged item and, since 1.2, what repairs cost this week.
 
 local display
 
@@ -20,6 +20,11 @@ function ns.ShowTooltip(owner)
   end
   for _, it in ipairs(damaged) do
     GameTooltip:AddDoubleLine(ns.ItemText(it.slot), ns.Colored(it.percent), 1, 1, 1)
+  end
+  local history = ns.History()
+  if #history > 0 then
+    GameTooltip:AddLine(ns.WeekText(history, time()), 1, 0.82, 0)
+    GameTooltip:AddLine(L["/dw history lists your last repair costs."], 0.6, 0.6, 0.6)
   end
   GameTooltip:AddLine(string.format(L["Warning at %d%%."], ns.settings.warn), 0.6, 0.6, 0.6)
   GameTooltip:AddLine(ns.settings.locked and L["Locked. /dw lock unlocks it."] or L["Drag to move. /dw lock locks it."], 0.6, 0.6, 0.6)

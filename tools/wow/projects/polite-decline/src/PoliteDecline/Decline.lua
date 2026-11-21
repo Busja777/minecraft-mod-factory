@@ -1,10 +1,13 @@
 local _, ns = ...
 
 -- Listens for duel requests and group invitations and turns down those from strangers.
--- When the player wants it, the stranger gets one short polite whisper (1.1).
+-- When the player wants it, the stranger gets one short polite whisper (1.1). Every declined request
+-- is written to the log (1.2).
 
 ns.session = { duel = 0, invite = 0 }
 ns.whispers = ns.NewWhisperState()
+ns.sessionLog = {}    -- 1.2: what was declined since login (the last LOG_KEEP of it)
+ns.sessionLogged = 0  -- and how much, since login or /pd log clear
 
 local POPUPS = {
   duel = { "DUEL_REQUESTED" },
@@ -64,6 +67,15 @@ local function reply(name)
   send(ns.WhisperText(), name)
 end
 
+-- Notes a declined request in the log of this session and in the saved log (1.2), also in quiet mode.
+function ns.Log(kind, name)
+  local entry = { t = time(), name = name, kind = kind }
+  if not ns.ValidLogEntry(entry) then return end
+  ns.AddLog(ns.sessionLog, entry)
+  ns.AddLog(ns.db.log, { t = entry.t, name = name, kind = kind })
+  ns.sessionLogged = ns.sessionLogged + 1
+end
+
 function ns.Handle(kind, name, guid)
   if not ns.settings then return end
   local person = ns.Identify(kind, name, guid)
@@ -71,13 +83,14 @@ function ns.Handle(kind, name, guid)
   if not decline(kind) then return end
   ns.session[kind] = ns.session[kind] + 1
   if not ns.settings.quiet then ns.Print(ns.DeclineLine(kind, name, ns.session[kind])) end
+  ns.Log(kind, name)
   reply(name)
 end
 
 local function onLogin()
   if type(PoliteDeclineDB) ~= "table" then PoliteDeclineDB = {} end
   local db = PoliteDeclineDB
-  db.version = 2 -- 2 since 1.1: settings.whisper and settings.whisperText
+  db.version = 3 -- 2 since 1.1: settings.whisper and settings.whisperText; 3 since 1.2: the log
   if type(db.settings) ~= "table" then db.settings = {} end
   if db.settings.duels == nil then db.settings.duels = true end
   if db.settings.invites == nil then db.settings.invites = true end
@@ -85,6 +98,7 @@ local function onLogin()
   if type(db.settings.whisper) ~= "boolean" then db.settings.whisper = false end
   db.settings.whisperText = ns.CleanWhisper(db.settings.whisperText) -- nil: the default text
   if type(db.allow) ~= "table" then db.allow = {} end
+  db.log = ns.CleanLog(db.log)
   ns.db = db
   ns.settings = db.settings
   -- Asks the server for the guild roster, so guild mates are recognised by name.

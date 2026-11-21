@@ -76,8 +76,12 @@ test("addon defines only its own globals", function(wow, installed, before)
   wear(wow, w, 16, 10)
   w.repairCost = 500
   wow.fire("MERCHANT_SHOW")
+  RepairAllItems(true)
+  wow.fire("MERCHANT_CLOSED")
   wow.fire("PLAYER_EQUIPMENT_CHANGED", 16, true)
   DurabilityWatchFrame.scripts.OnEnter(DurabilityWatchFrame)
+  wow.slash("/dw history")
+  wow.slash("/dw history clear")
   wow.slash("/dw")
   wow.slash("/dw warn 30")
   wow.slash("/dw lock")
@@ -196,7 +200,7 @@ end)
 
 test("login reads the gear, saves the defaults and shows the display", function(wow)
   local ns = boot(wow, set())
-  eq(DurabilityWatchDB.version, 2)
+  eq(DurabilityWatchDB.version, 3)
   eq(DurabilityWatchDB.settings.warn, 25)
   eq(DurabilityWatchDB.settings.locked, false)
   eq(DurabilityWatchDB.settings.hidden, false)
@@ -360,19 +364,20 @@ end)
 test("/dw and /durabilitywatch print the state and the commands", function(wow)
   local ns = boot(wow, set())
   wow.slash("/dw")
-  eq(#wow.chat, 3)
+  eq(#wow.chat, 4)
   eq(wow.chat[1], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. Warning before dungeons and raids at 50%. The display can be dragged.")
   eq(wow.chat[2]:match("/dw warn <percent> sets the warning level") ~= nil, true)
   eq(wow.chat[3]:match("/dw instance <percent> warns you before dungeons and raids") ~= nil, true)
+  eq(wow.chat[4], PREFIX .. "/dw history lists the repair costs of your last 20 vendor visits, /dw history clear empties the list.")
   wow.slash("/durabilitywatch help")
-  eq(#wow.chat, 6)
+  eq(#wow.chat, 8)
   wow.slash("/dw lock")
   wow.slash("/dw")
-  eq(wow.chat[8], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. Warning before dungeons and raids at 50%. The display is locked.")
+  eq(wow.chat[10], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. Warning before dungeons and raids at 50%. The display is locked.")
   wow.slash("/dw hide")
   wow.slash("/dw instance off")
   wow.slash("/dw")
-  eq(wow.chat[13], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. No warning before dungeons and raids. The display is hidden.")
+  eq(wow.chat[16], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. No warning before dungeons and raids. The display is hidden.")
 end)
 
 test("/dw warn sets the level, checks it and saves it", function(wow)
@@ -620,7 +625,7 @@ test("saved settings of 1.0 are kept and get the instance check switched on", fu
   DurabilityWatchDB = { version = 1, settings = { warn = 35, locked = true, hidden = false, point = { "LEFT", "LEFT", 10, 20 } } }
   local ns, w = boot(wow, set())
   local s = DurabilityWatchDB.settings
-  eq(DurabilityWatchDB.version, 2)
+  eq(DurabilityWatchDB.version, 3)
   eq(s.warn, 35)
   eq(s.locked, true)
   eq(s.point[1], "LEFT")
@@ -659,4 +664,303 @@ test("a client without the instance functions, or with secret answers, stays qui
   eq(place.key, "party", "without a name or ID the kind tells it apart")
   enter(wow, w, STONEVAULT)
   eq(wow.chat[1], PREFIX .. "You are entering a dungeon with Main Hand: [Blade] at 40% durability. Repair first.")
+end)
+
+-- 1.2: the repair cost history
+
+local HOUR, DAY = 3600, 86400
+
+-- Clicking Repair All at the vendor: the button calls RepairAllItems, then the game reports the
+-- repaired gear. ok = false: the game refused (not enough money), nothing changes.
+local function repairAll(wow, w, guild, ok)
+  RepairAllItems(guild)
+  if ok == false then return end
+  for _, it in pairs(w.items) do it[1] = it[2] end
+  w.repairCost = 0
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+end
+
+-- A visit to a vendor who can repair: the window opens, something happens, the window closes.
+local function visit(wow, w, cost, action)
+  w.repairCost = cost
+  wow.fire("MERCHANT_SHOW")
+  if action then action() end
+  wow.fire("MERCHANT_CLOSED")
+end
+
+local function mine() return DurabilityWatchDB.history["Yubi-Silvermoon"] end
+
+test("core: visits are noted, the same price soon after is the same visit, 20 are kept", function(wow)
+  local ns = boot(wow)
+  local list = {}
+  local now = 1000000
+  local v = ns.AddVisit(list, now, 5000)
+  eq(#list, 1)
+  eq(v.t, now)
+  eq(v.cost, 5000)
+  eq(v.paid, nil)
+  eq(ns.AddVisit(list, now + 60, 5000), v, "the window opened again")
+  eq(#list, 1)
+  eq(v.t, now + 60)
+  ns.AddVisit(list, now + 120, 5200)
+  eq(#list, 2, "more wear: a new price")
+  ns.AddVisit(list, now + 120 + 600, 5200)
+  eq(#list, 3, "ten minutes later it is a new visit")
+  eq(ns.MarkPaid(list[3], "gold"), true)
+  ns.AddVisit(list, now + 721, 5200)
+  eq(#list, 4, "after a repair the same price is a new visit")
+  eq(ns.AddVisit(list, now, 0), nil)
+  eq(ns.AddVisit(list, now, -5), nil)
+  eq(ns.AddVisit(list, now, 12.5), nil)
+  eq(ns.AddVisit(list, now, { secret = true }), nil)
+  eq(ns.AddVisit(nil, now, 100), nil)
+  eq(#list, 4)
+  for i = 1, 30 do ns.AddVisit(list, now + 1000 * i, i) end
+  eq(#list, 20)
+  eq(list[1].cost, 11, "the oldest go first")
+  eq(list[20].cost, 30)
+end)
+
+test("core: how a visit was paid, the total of the last 7 days and the wear", function(wow)
+  local ns = boot(wow)
+  local v = { t = 1, cost = 10 }
+  eq(ns.MarkPaid(v, "cash"), false)
+  eq(ns.MarkPaid(v, "guild"), true)
+  eq(ns.MarkPaid(v, "gold"), false, "the first answer counts")
+  eq(v.paid, "guild")
+  local now = wow.now
+  local list = {
+    { t = now - 8 * DAY, cost = 1000, paid = "gold" },  -- too old
+    { t = now - 6 * DAY, cost = 2000, paid = "gold" },
+    { t = now - 3 * DAY, cost = 4000 },                 -- not repaired
+    { t = now - HOUR, cost = 500, paid = "guild" },
+    { t = now + HOUR, cost = 9999, paid = "gold" },     -- a clock that went back
+  }
+  local total, guild, count = ns.WeekTotal(list, now)
+  eq(total, 2500)
+  eq(guild, 500)
+  eq(count, 2)
+  eq(ns.WeekTotal({}, now), 0)
+  eq(ns.WeekTotal(nil, now), 0)
+  local missing, max = ns.Wear({ { slot = 1, cur = 40, max = 100 }, { slot = 5, cur = 165, max = 165 }, { slot = 7, cur = -3, max = 50 } })
+  eq(missing, 110)
+  eq(max, 315)
+  eq(ns.Wear({}), 0)
+end)
+
+test("core: saved visits are checked and kept in order", function(wow)
+  local ns = boot(wow)
+  eq(ns.ValidVisit({ t = 5, cost = 10, paid = "gold" }).paid, "gold")
+  eq(ns.ValidVisit({ t = 5, cost = 10, paid = "cash" }).paid, nil, "an unknown way of paying is forgotten")
+  eq(ns.ValidVisit({ t = 5, cost = 0 }), nil)
+  eq(ns.ValidVisit({ t = "yesterday", cost = 10 }), nil)
+  eq(ns.ValidVisit({ cost = 10 }), nil)
+  eq(ns.ValidVisit("broken"), nil)
+  local clean = ns.CleanHistory({ { t = 30, cost = 3 }, "x", { t = 10, cost = 1 }, { t = 20, cost = 2.5 }, { t = 20, cost = 2 } })
+  eq(#clean, 3)
+  eq(clean[1].cost, 1)
+  eq(clean[3].cost, 3)
+  eq(#ns.CleanHistory("broken"), 0)
+  local long = {}
+  for i = 1, 25 do long[i] = { t = i, cost = i } end
+  clean = ns.CleanHistory(long)
+  eq(#clean, 20)
+  eq(clean[1].cost, 6)
+end)
+
+test("core: the texts of a visit and of the week", function(wow)
+  local ns = boot(wow)
+  local t = os.time({ year = 2026, month = 11, day = 20, hour = 18, min = 5 })
+  eq(ns.VisitText({ t = t, cost = 123456, paid = "gold" }), "Nov 20 18:05: 12g 34s 56c, repaired with your gold.")
+  eq(ns.VisitText({ t = t, cost = 1507, paid = "guild" }), "Nov 20 18:05: 15s 07c, repaired with guild money.")
+  eq(ns.VisitText({ t = t, cost = 7 }), "Nov 20 18:05: 7c, not repaired.")
+  eq(ns.WeekText({ { t = t, cost = 30000, paid = "gold" } }, t), "Repairs in the last 7 days: 3g 00s 00c.")
+  eq(ns.WeekText({ { t = t, cost = 30000, paid = "gold" }, { t = t, cost = 10000, paid = "guild" } }, t), "Repairs in the last 7 days: 4g 00s 00c (1g 00s 00c from the guild).")
+  eq(ns.WeekText({ { t = t, cost = 30000 } }, t), "No repairs in the last 7 days.")
+end)
+
+test("a vendor visit with damaged gear notes the cost, Repair All with your gold marks it", function(wow)
+  local ns, w = boot(wow, set())
+  w.repairCost = 123456
+  wow.fire("MERCHANT_SHOW")
+  eq(#mine(), 1)
+  eq(mine()[1].t, wow.now)
+  eq(mine()[1].cost, 123456)
+  eq(mine()[1].paid, nil)
+  repairAll(wow, w, false)
+  eq(mine()[1].paid, "gold")
+  eq(w.repairs, 1, "the game's own function still runs")
+  wow.fire("MERCHANT_CLOSED")
+  eq(ns.visit, nil)
+  eq(ns.condition.overall, 100)
+  wow.fire("MERCHANT_SHOW")
+  eq(#mine(), 1, "nothing damaged any more: nothing to note")
+end)
+
+test("Repair All with guild money is noted as guild money", function(wow)
+  local ns, w = boot(wow, set())
+  visit(wow, w, 50000, function() repairAll(wow, w, true) end)
+  eq(mine()[1].paid, "guild")
+  eq(ns.WeekText(mine(), wow.now), "Repairs in the last 7 days: 5g 00s 00c (5g 00s 00c from the guild).")
+end)
+
+test("a refused guild repair is not noted, your own gold afterwards is", function(wow)
+  local ns, w = boot(wow, set())
+  w.repairCost = 50000
+  wow.fire("MERCHANT_SHOW")
+  repairAll(wow, w, true, false) -- the guild bank cannot pay
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+  eq(mine()[1].paid, nil)
+  repairAll(wow, w, false)
+  eq(mine()[1].paid, "gold")
+end)
+
+test("repairing single items counts as your gold, a change of gear at the vendor does not", function(wow)
+  local ns, w = boot(wow, set())
+  w.repairCost = 6000
+  wow.fire("MERCHANT_SHOW")
+  w.items[16] = { 100, 100, "[Blade]" } -- the swap to another weapon
+  w.items[17] = { 50, 120 }
+  wow.fire("PLAYER_EQUIPMENT_CHANGED", 16, true)
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+  eq(mine()[1].paid, nil, "other gear is no repair")
+  wow.fire("MERCHANT_CLOSED")
+  w.repairCost = 6000
+  wow.fire("MERCHANT_SHOW")
+  eq(#mine(), 1, "the same price again: the same visit")
+  w.items[17] = { 120, 120 } -- the repair hammer on the off hand
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+  eq(mine()[1].paid, "gold")
+  wow.fire("MERCHANT_CLOSED")
+end)
+
+test("leaving without a repair is noted as not repaired, after closing nothing is marked", function(wow)
+  local ns, w = boot(wow, set())
+  visit(wow, w, 7000)
+  visit(wow, w, 7000)
+  eq(#mine(), 1, "opened twice in a row")
+  eq(mine()[1].paid, nil)
+  for _, it in pairs(w.items) do it[1] = it[2] end -- repaired somewhere the addon did not see
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+  eq(mine()[1].paid, nil)
+  wear(wow, w, 16, 40)
+  wow.now = wow.now + HOUR
+  visit(wow, w, 7000)
+  eq(#mine(), 2, "an hour later it is a new visit")
+end)
+
+test("no history for vendors who cannot repair, nothing to pay or secret prices", function(wow)
+  local ns, w = boot(wow, set())
+  w.canRepair = false
+  visit(wow, w, 500)
+  w.canRepair = true
+  visit(wow, w, 0)
+  GetRepairAllCost = function() return { secret = true }, true end
+  wow.fire("MERCHANT_SHOW")
+  RepairAllItems()
+  wow.fire("MERCHANT_CLOSED")
+  eq(mine(), nil)
+  eq(ns.visit, nil)
+end)
+
+test("every character has its own history", function(wow)
+  local ns, w = boot(wow, set())
+  visit(wow, w, 1000, function() repairAll(wow, w, false) end)
+  wow.player = "Brakk"
+  wow.fire("PLAYER_LOGIN")
+  eq(DurabilityWatchDB.history["Brakk-Silvermoon"], nil)
+  wear(wow, w, 16, 10)
+  visit(wow, w, 2000)
+  eq(#DurabilityWatchDB.history["Brakk-Silvermoon"], 1)
+  eq(DurabilityWatchDB.history["Brakk-Silvermoon"][1].cost, 2000)
+  eq(#mine(), 1)
+  eq(mine()[1].cost, 1000)
+end)
+
+test("the tooltip adds the repairs of the last 7 days once there is a history", function(wow)
+  local ns, w = boot(wow, set())
+  visit(wow, w, 30000, function() repairAll(wow, w, false) end)
+  wear(wow, w, 16, 40)
+  visit(wow, w, 10000, function() repairAll(wow, w, true) end)
+  wear(wow, w, 16, 40)
+  local f = DurabilityWatchFrame
+  f.scripts.OnEnter(f)
+  local tip = wow.tooltip.lines
+  eq(tip[2], "Main Hand: [Blade] = " .. YELLOW .. "40%|r")
+  eq(tip[3], "Repairs in the last 7 days: 4g 00s 00c (1g 00s 00c from the guild).")
+  eq(tip[4], "/dw history lists your last repair costs.")
+  eq(tip[5], "Warning at 25%.")
+  eq(#tip, 6)
+end)
+
+test("/dw history lists the visits newest first with the total, /dw history clear empties it", function(wow)
+  local ns, w = boot(wow, set())
+  wow.slash("/dw history")
+  eq(wow.chat[1], PREFIX .. "No repair costs noted yet. They are noted at a vendor who can repair while your gear is damaged.")
+  wow.now = wow.now - 8 * DAY
+  visit(wow, w, 90000, function() repairAll(wow, w, false) end)
+  wear(wow, w, 16, 40)
+  wow.now = wow.now + 8 * DAY
+  visit(wow, w, 30000)
+  wow.now = wow.now + 5 * 60
+  visit(wow, w, 30000, function() repairAll(wow, w, true) end)
+  wear(wow, w, 16, 40)
+  wow.now = wow.now + DAY
+  visit(wow, w, 20000, function() repairAll(wow, w, false) end)
+  local before = #wow.chat
+  wow.slash("/dw HISTORY")
+  eq(#wow.chat - before, 5)
+  eq(wow.chat[before + 1], PREFIX .. "Repair costs of your last 3 vendor visits, newest first:")
+  eq(wow.chat[before + 2], PREFIX .. "Nov 21 18:05: 2g 00s 00c, repaired with your gold.")
+  eq(wow.chat[before + 3], PREFIX .. "Nov 20 18:05: 3g 00s 00c, repaired with guild money.", "two looks at the same price are one visit")
+  eq(wow.chat[before + 4], PREFIX .. "Nov 12 18:00: 9g 00s 00c, repaired with your gold.")
+  eq(wow.chat[before + 5], PREFIX .. "Repairs in the last 7 days: 5g 00s 00c (3g 00s 00c from the guild).")
+  wow.slash("/dw history all")
+  eq(wow.chat[#wow.chat], PREFIX .. "Use /dw history to list your repair costs, /dw history clear to empty the list.")
+  wow.slash("/dw history clear")
+  eq(wow.chat[#wow.chat], PREFIX .. "The repair cost history of this character is empty now.")
+  eq(#mine(), 0)
+end)
+
+test("only the last 20 visits are kept", function(wow)
+  local ns, w = boot(wow, set())
+  for i = 1, 23 do
+    wow.now = wow.now + HOUR
+    visit(wow, w, 1000 + i)
+  end
+  eq(#mine(), 20)
+  eq(mine()[1].cost, 1004)
+  eq(mine()[20].cost, 1023)
+end)
+
+test("saved data of 1.1 is kept and gets an empty history, broken history is cleaned", function(wow)
+  DurabilityWatchDB = { version = 2, settings = { warn = 35, locked = true, hidden = false, instanceWarn = false, instanceLevel = 40, point = { "LEFT", "LEFT", 10, 20 } } }
+  local ns, w = boot(wow, set())
+  local db = DurabilityWatchDB
+  eq(db.version, 3)
+  eq(db.settings.warn, 35)
+  eq(db.settings.locked, true)
+  eq(db.settings.instanceWarn, false)
+  eq(db.settings.instanceLevel, 40)
+  eq(db.settings.point[1], "LEFT")
+  eq(type(db.history), "table")
+  eq(next(db.history), nil)
+  visit(wow, w, 500)
+  eq(#mine(), 1)
+
+  DurabilityWatchDB = { version = 3, settings = {}, history = {
+    ["Yubi-Silvermoon"] = { { t = 20, cost = 2, paid = "gold" }, "x", { t = 10, cost = 1, paid = "cash" } },
+    ["Old-Silvermoon"] = { "broken" },
+    ["Odd-Silvermoon"] = "broken",
+  } }
+  wow.fire("PLAYER_LOGIN")
+  eq(#mine(), 2)
+  eq(mine()[1].cost, 1)
+  eq(mine()[1].paid, nil)
+  eq(mine()[2].paid, "gold")
+  eq(DurabilityWatchDB.history["Old-Silvermoon"], nil)
+  eq(DurabilityWatchDB.history["Odd-Silvermoon"], nil)
+  DurabilityWatchDB = { version = 3, history = "broken" }
+  wow.fire("PLAYER_LOGIN")
+  eq(type(DurabilityWatchDB.history), "table")
 end)

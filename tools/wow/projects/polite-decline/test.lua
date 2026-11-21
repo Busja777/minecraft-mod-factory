@@ -89,6 +89,9 @@ test("addon defines only its own globals", function(wow)
   wow.slash("/pd")
   wow.slash("/pd allow Thrall")
   wow.slash("/politedecline list")
+  wow.slash("/pd log")
+  wow.slash("/pd log all")
+  wow.slash("/pd log clear")
   local allowed = { PoliteDeclineDB = true, SLASH_POLITEDECLINE1 = true, SLASH_POLITEDECLINE2 = true }
   for k in pairs(_G) do
     if not mine[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
@@ -317,7 +320,7 @@ test("slash commands show the state and switch duels, invites and quiet mode", f
   boot(wow)
   wow.slash("/pd")
   eq(wow.chat[1], PREFIX .. "Declining duels from strangers is on. Declining group invites from strangers is on. Quiet mode is off. Reply whisper is off.")
-  eq(wow.chat[2], PREFIX .. "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list.")
+  eq(wow.chat[2], PREFIX .. "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list, /pd log.")
   eq(wow.chat[3], PREFIX .. "/pd whisper on or off sends declined strangers a short polite whisper, /pd whisper text Your words sets it, /pd whisper reset brings back the default.")
   wow.slash("/pd duels off")
   eq(wow.chat[4], PREFIX .. "Declining duels from strangers is off.")
@@ -387,7 +390,7 @@ test("settings survive: saved values are kept, new ones get their defaults", fun
   local w = world(wow)
   w.inGuild = true
   boot(wow)
-  eq(PoliteDeclineDB.version, 2)
+  eq(PoliteDeclineDB.version, 3)
   eq(PoliteDeclineDB.settings.duels, true)
   eq(PoliteDeclineDB.settings.invites, true)
   eq(PoliteDeclineDB.settings.quiet, false)
@@ -498,7 +501,7 @@ test("reply whisper: off by default, settings of 1.0 are kept", function(wow)
   local w = world(wow)
   PoliteDeclineDB = { version = 1, settings = { duels = true, invites = false, quiet = true }, allow = { thrall = "Thrall" } }
   boot(wow)
-  eq(PoliteDeclineDB.version, 2)
+  eq(PoliteDeclineDB.version, 3)
   eq(PoliteDeclineDB.settings.whisper, false)
   eq(PoliteDeclineDB.settings.whisperText, nil)
   eq(PoliteDeclineDB.settings.invites, false)
@@ -665,4 +668,188 @@ test("reply whisper: missing chat functions are no error, nothing declined means
   w.invite("Newcomer", "Player-1-0042")
   eq(older[2], "WHISPER:Newcomer", "the limit was not used up by the duel")
   eq(#w.whispers, 0)
+end)
+
+-- Polite Decline 1.2: the log.
+
+local LOG_HELP = PREFIX .. "/pd log lists what was declined this session, /pd log all the last 50 across sessions, /pd log clear empties the log."
+
+-- A /reload or the next login: the addon starts again with the saved data.
+local function reload(wow)
+  wow.load(ADDON_DIR, ADDON_NAME)
+  for i = 1, #wow.frames - 1 do wow.frames[i].events = {} end -- the older copies no longer listen
+  wow.fire("PLAYER_LOGIN")
+end
+
+local function since(wow, n)
+  local out = {}
+  for i = n + 1, #wow.chat do out[#out + 1] = wow.chat[i] end
+  return out
+end
+
+test("core: log entries are checked, 50 are kept, each has one line", function(wow)
+  local ns = boot(wow)
+  local t = os.time({ year = 2026, month = 11, day = 20, hour = 18, min = 5 })
+  eq(ns.ValidLogEntry({ t = t, name = "Grumbash", kind = "duel" }) ~= nil, true)
+  eq(ns.ValidLogEntry({ t = t, name = "Grumbash", kind = "trade" }), nil)
+  eq(ns.ValidLogEntry({ t = t, name = "", kind = "duel" }), nil)
+  eq(ns.ValidLogEntry({ t = t, name = SECRET, kind = "duel" }), nil)
+  eq(ns.ValidLogEntry({ name = "Grumbash", kind = "duel" }), nil)
+  eq(ns.ValidLogEntry("broken"), nil)
+  local list = {}
+  for i = 1, 55 do eq(ns.AddLog(list, { t = t + i, name = "N" .. i, kind = "invite" }), true) end
+  eq(#list, 50)
+  eq(list[1].name, "N6", "the oldest go first")
+  eq(list[50].name, "N55")
+  eq(ns.AddLog(list, { t = t, name = 5, kind = "duel" }), false)
+  eq(ns.AddLog(nil, { t = t, name = "A", kind = "duel" }), false)
+  local clean = ns.CleanLog({ { t = 30, name = "C", kind = "duel" }, "x", { t = 10, name = "A", kind = "invite" }, { t = 20, kind = "duel" } })
+  eq(#clean, 2)
+  eq(clean[1].name, "A")
+  eq(clean[2].name, "C")
+  eq(#ns.CleanLog("broken"), 0)
+  eq(ns.LogLine({ t = t, name = "Grumbash", kind = "duel" }), "Nov 20 18:05: duel from Grumbash.")
+  eq(ns.LogLine({ t = t, name = "Spammer-Kazzak", kind = "invite" }), "Nov 20 18:05: group invite from Spammer-Kazzak.")
+end)
+
+test("every declined request is logged with time, name and kind, /pd log lists this session", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd log")
+  eq(wow.chat[1], PREFIX .. "Nothing declined this session.")
+  eq(wow.chat[2], LOG_HELP)
+  w.duel("Grumbash")
+  wow.now = wow.now + 65
+  w.invite("Spammer-Kazzak", "Player-1-0100")
+  local log = PoliteDeclineDB.log
+  eq(#log, 2)
+  eq(log[1].name, "Grumbash")
+  eq(log[1].kind, "duel")
+  eq(log[1].t, wow.now - 65)
+  eq(log[2].kind, "invite")
+  local n = #wow.chat
+  wow.slash("/pd LOG")
+  local out = since(wow, n)
+  eq(#out, 4)
+  eq(out[1], PREFIX .. "Declined this session: 2. Newest first:")
+  eq(out[2], PREFIX .. "Nov 20 18:01: group invite from Spammer-Kazzak.")
+  eq(out[3], PREFIX .. "Nov 20 18:00: duel from Grumbash.")
+  eq(out[4], LOG_HELP)
+end)
+
+test("the log notes declines in quiet mode, but nothing that was let through", function(wow)
+  local w = world(wow)
+  w.friends["Player-1-0001"] = "Pal"
+  boot(wow)
+  wow.slash("/pd quiet on")
+  w.duel("Grumbash")
+  eq(#PoliteDeclineDB.log, 1, "quiet only keeps the chat silent")
+  w.invite("Pal", "Player-1-0001")
+  w.invite("Unsure", nil)
+  wow.slash("/pd duels off")
+  w.duel("Orcy")
+  wow.slash("/pd duels on")
+  CancelDuel = nil
+  w.duel("Orcy")
+  eq(#PoliteDeclineDB.log, 1, "friends, unsure cases, switched off and undeclinable requests are not logged")
+  eq(PoliteDeclineDB.log[1].name, "Grumbash")
+end)
+
+test("/pd log all shows the last declines of earlier sessions too", function(wow)
+  local w = world(wow)
+  boot(wow)
+  w.duel("Grumbash")
+  w.invite("Spammer", "Player-1-0100")
+  wow.now = wow.now + 86400
+  reload(wow)
+  local n = #wow.chat
+  wow.slash("/pd log")
+  eq(wow.chat[n + 1], PREFIX .. "Nothing declined this session.", "a new session starts empty")
+  w.duel("Orcy")
+  n = #wow.chat
+  wow.slash("/pd log all")
+  local out = since(wow, n)
+  eq(#out, 4)
+  eq(out[1], PREFIX .. "The last 3 declined requests, newest first:")
+  eq(out[2], PREFIX .. "Nov 21 18:00: duel from Orcy.")
+  eq(out[3], PREFIX .. "Nov 20 18:00: group invite from Spammer.")
+  eq(out[4], PREFIX .. "Nov 20 18:00: duel from Grumbash.")
+  n = #wow.chat
+  wow.slash("/pd log")
+  out = since(wow, n)
+  eq(out[1], PREFIX .. "Declined this session: 1. Newest first:")
+  eq(out[2], PREFIX .. "Nov 21 18:00: duel from Orcy.")
+  eq(#out, 3)
+end)
+
+test("/pd log clear empties both logs, anything else after /pd log explains it", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd log all")
+  eq(wow.chat[1], PREFIX .. "Nothing declined yet.")
+  w.duel("Grumbash")
+  w.duel("Orcy")
+  wow.slash("/pd log clear")
+  eq(wow.chat[#wow.chat], PREFIX .. "The log is empty now.")
+  eq(#PoliteDeclineDB.log, 0)
+  wow.slash("/pd log")
+  eq(wow.chat[#wow.chat - 1], PREFIX .. "Nothing declined this session.")
+  wow.slash("/pd log yesterday")
+  eq(wow.chat[#wow.chat], LOG_HELP)
+  w.duel("Newcomer")
+  eq(#PoliteDeclineDB.log, 1)
+  eq(wow.chat[#wow.chat], PREFIX .. "Declined a duel from Newcomer (3 this session).", "the session counter is not part of the log")
+end)
+
+test("only the last 50 are kept, this session counts all of them", function(wow)
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd quiet on")
+  for i = 1, 53 do
+    wow.now = wow.now + 60
+    w.invite("Spammer" .. i, "Player-1-" .. i)
+  end
+  eq(#PoliteDeclineDB.log, 50)
+  eq(PoliteDeclineDB.log[1].name, "Spammer4")
+  local n = #wow.chat
+  wow.slash("/pd log")
+  local out = since(wow, n)
+  eq(out[1], PREFIX .. "Declined this session: 53. Newest first:")
+  eq(out[2]:match("group invite from Spammer53%.$") ~= nil, true)
+  eq(out[51]:match("group invite from Spammer4%.$") ~= nil, true)
+  eq(#out, 52)
+end)
+
+test("saved data of 1.1 is kept and gets an empty log, a broken log is cleaned", function(wow)
+  local w = world(wow)
+  PoliteDeclineDB = { version = 2, settings = { duels = true, invites = false, quiet = true, whisper = true, whisperText = "Busy, sorry." }, allow = { thrall = "Thrall" } }
+  boot(wow)
+  local db = PoliteDeclineDB
+  eq(db.version, 3)
+  eq(db.settings.invites, false)
+  eq(db.settings.quiet, true)
+  eq(db.settings.whisper, true)
+  eq(db.settings.whisperText, "Busy, sorry.")
+  eq(db.allow.thrall, "Thrall")
+  eq(type(db.log), "table")
+  eq(#db.log, 0)
+  w.duel("Grumbash")
+  eq(#db.log, 1)
+
+  PoliteDeclineDB = { version = 3, log = { { t = 20, name = "B", kind = "duel" }, "x", { t = 10, name = "A", kind = "invite" }, { t = 5, name = "C", kind = "trade" } } }
+  reload(wow)
+  eq(#PoliteDeclineDB.log, 2)
+  eq(PoliteDeclineDB.log[1].name, "A")
+  PoliteDeclineDB = { log = "broken" }
+  reload(wow)
+  eq(type(PoliteDeclineDB.log), "table")
+end)
+
+test("/pd log before login does nothing", function(wow)
+  local w = world(wow)
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.slash("/pd log")
+  wow.slash("/pd log clear")
+  eq(#wow.chat, 0)
+  eq(PoliteDeclineDB, nil)
 end)
