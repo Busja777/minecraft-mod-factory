@@ -26,6 +26,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "OreAbundance-1.2.zip",
+      "changelog": "## Ore Abundance 1.2\n\nAmethyst geodes.\n\n- Amethyst geodes are now about 1.5 times as common, by the same rule as the ores: one geode attempt every 16 chunks instead of every 24.\n- Geode size, height (from 6 blocks above the bottom up to y 30) and contents stay vanilla, so budding amethyst stays as rare inside each geode as before.\n- All ore changes of 1.0 and 1.1 stay as they were.\n- Only land generated after the update gets the extra geodes; existing chunks do not change.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

@@ -6,6 +6,8 @@
 //   minecraft:count          count N   → floor(N × 1.5)
 //   minecraft:rarity_filter  chance N  → floor(N / 1.5)   (one attempt in N chunks; only large diamond veins)
 // 1.1 adds Nether quartz and nether gold ore (also their basalt-delta variants) by the same rule.
+// 1.2 adds amethyst geodes (placed feature amethyst_geode: one attempt in 24 chunks → 16, same
+// rule; size, height 6 above bottom to y 30 and the geode itself stay vanilla).
 // Left alone: ore_gold_lower (its count is a random 0–1, not a number), ancient debris (too
 // valuable to multiply; its placed features have no count anyway), and the stone, dirt, gravel,
 // blackstone, magma, soul sand, clay and infested-stone "ores".
@@ -39,7 +41,9 @@ export const ORES = {
   ore_quartz_nether: { ore: 'nether_quartz', type: 'minecraft:count', value: 16 },
   ore_quartz_deltas: { ore: 'nether_quartz', type: 'minecraft:count', value: 32 },   // basalt deltas
   ore_gold_nether: { ore: 'nether_gold', type: 'minecraft:count', value: 10 },
-  ore_gold_deltas: { ore: 'nether_gold', type: 'minecraft:count', value: 20 }        // basalt deltas
+  ore_gold_deltas: { ore: 'nether_gold', type: 'minecraft:count', value: 20 },       // basalt deltas
+  // Geodes (1.2)
+  amethyst_geode: { ore: 'amethyst', type: 'minecraft:rarity_filter', value: 24, feature: 'minecraft:amethyst_geode' }
 };
 
 const KEY = { 'minecraft:count': 'count', 'minecraft:rarity_filter': 'chance' };
@@ -62,7 +66,8 @@ export function abundant(name, vanillaFeature, factor = FACTOR) {
   if (Object.keys(first).length !== 2 || first[key] !== want.value) {
     throw new Error(`${name}.json: expected vanilla ${key} ${want.value}, found ${JSON.stringify(first)}`);
   }
-  if (!String(vanillaFeature.feature || '').startsWith('minecraft:ore_')) throw new Error(`${name}.json: unexpected feature ${vanillaFeature.feature}`);
+  const feature = String(vanillaFeature.feature || '');
+  if (want.feature ? feature !== want.feature : !feature.startsWith('minecraft:ore_')) throw new Error(`${name}.json: unexpected feature ${feature}`);
   const copy = structuredClone(vanillaFeature);
   copy.placement[0][key] = boosted(want.type, want.value, factor);
   return copy;
