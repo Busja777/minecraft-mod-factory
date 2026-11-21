@@ -1,3 +1,6 @@
+// German names checked on 21.11. via the [[de:]] links of the English wiki pages: Forellenderby
+// (Trout Derby rev 192887), Tintenfischfest (SquidFest rev 193809), Goldene Marke (Golden Tag rev 179802),
+// Sterntautaler Volksfest and Sterntoken (German wiki page Sterntautaler Volksfest rev 30065).
 // German texts (i18n/de.json) for every letter of pack.js: key → [title, text]. Joja addresses the
 // player formally ("Sie"), as a corporation would. @ = player name, ^ = line break, same as English.
 export const SIGN = '^^-JojaMart-Marketingteam';
@@ -46,11 +49,11 @@ export const DE = {
   Luau: ['Joja Eintopfpulver',
     'Hallo @,^^Bald trifft sich der ganze Ort am Strand zum Luau, wo alle etwas in einen großen Suppentopf für den Gouverneur geben.^^Machen Sie Ihren Beitrag unvergesslich mit Joja Eintopfpulver! Ein Löffel macht aus jeder Suppe eine Suppe mit Joja-Geschmack.^^Wie schmeckt Joja-Geschmack? Unsere Anwälte haben uns gebeten, das nicht zu verraten.'],
   TroutDerby: ['Joja Goldfarbene Marken',
-    'Hallo @,^^Bald ist Forellen-Derby am Fluss im Wald. Wer eine Regenbogenforelle fängt, findet vielleicht eine Goldene Marke, die man gegen Preise tauschen kann.^^Warum auf Glück warten? Joja Goldfarbene Marken gibt es im Zwanzigerpack, schon glänzend, ganz ohne Fisch.^^Am Derby-Stand nicht gültig. Auch sonst nirgends.'],
+    'Hallo @,^^Bald ist Forellenderby am Fluss im Wald. Wer eine Regenbogenforelle fängt, findet vielleicht eine Goldene Marke, die man gegen Preise tauschen kann.^^Warum auf Glück warten? Joja Goldfarbene Marken gibt es im Zwanzigerpack, schon glänzend, ganz ohne Fisch.^^Am Derby-Stand nicht gültig. Auch sonst nirgends.'],
   MoonlightJellies: ['Joja Quallen-Aussichtsdeck',
     'Hallo @,^^Jeden Sommer versammelt sich der Ort nachts auf dem Steg, um die Mondlichtquallen vorbeiziehen zu sehen, angelockt von einem einzigen Licht auf dem Wasser.^^Genießen Sie den Anblick dieses Jahr vom neuen Joja Quallen-Aussichtsdeck! Bequeme Sitze, ein Getränkeautomat und dreihundert Joja-Flutlichter.^^Unsere Ingenieure sagen, die Quallen könnten unsere Lichter so sehr mögen, dass sie nie wieder weiterziehen. Wir betrachten das als Erfolg.'],
   Fair: ['Joja Auslage-aus-der-Schachtel',
-    'Hallo @,^^Bald ist Volksfest! Spiele, Sternmarken und der Wettbewerb um die beste Auslage, bei dem die Jury auf Qualität und Vielfalt achtet.^^Sparen Sie sich die Arbeit mit der Joja Auslage-aus-der-Schachtel: neun Wachsgemüse in neun leicht unterschiedlichen Beigetönen.^^Das ist Vielfalt. Unsere Marketingabteilung hat es geprüft.'],
+    'Hallo @,^^Bald ist das Sterntautaler Volksfest! Spiele, Sterntoken und der Wettbewerb um die beste Auslage, bei dem die Jury auf Qualität und Vielfalt achtet.^^Sparen Sie sich die Arbeit mit der Joja Auslage-aus-der-Schachtel: neun Wachsgemüse in neun leicht unterschiedlichen Beigetönen.^^Das ist Vielfalt. Unsere Marketingabteilung hat es geprüft.'],
   SpiritsEve: ['Joja Labyrinthkarte',
     'Hallo @,^^Bald ist Geisternacht, und mit ihr das gruselige Heckenlabyrinth im Ort.^^Verlaufen Sie sich nie wieder mit der Joja Labyrinthkarte! Sie hat einen großen, deutlichen Pfeil, und der zeigt immer zum nächsten JojaMart.^^Immer noch verlaufen? Das gehört zur Jahreszeit. Fröhliches Gruseln!'],
   FestivalOfIce: ['Joja Eisangel-Set',
