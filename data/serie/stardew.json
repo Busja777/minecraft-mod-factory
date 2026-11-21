@@ -323,7 +323,11 @@
         "+10",
         "Briefe von Gunther",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 24,
@@ -387,7 +391,11 @@
         "Regler",
         "mehr Rezepte",
         "Deutsch"
-      ]
+      ],
+      "banner": {
+        "from": "chatgpt",
+        "at": "2026-11-21"
+      }
     },
     {
       "nr": 29,

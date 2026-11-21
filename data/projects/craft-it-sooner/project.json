@@ -1,0 +1,19 @@
+{
+  "slug": "craft-it-sooner",
+  "game": "stardewvalley",
+  "name": "Craft It Sooner",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "CraftItSooner-1.0.zip",
+      "changelog": "## Craft It Sooner 1.0\n\nFirst release.\n\n- The Sprinkler, Quality Sprinkler, Basic Retaining Soil, Quality Retaining Soil and Speed-Gro recipes unlock at a lower Farming level.\n- Choose the level in the config: Light, Medium (default) or Strong. At Medium, the Sprinkler unlocks at Farming 1 instead of 2 and the Quality Sprinkler at 4 instead of 6.\n- Ingredients and results stay as they are. The Iridium Sprinkler is unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
