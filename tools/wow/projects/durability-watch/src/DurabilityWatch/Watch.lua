@@ -3,7 +3,8 @@ local L = ns.L
 
 -- Reads the durability of the equipped gear, warns when an item is about to break and
 -- tells the repair cost at a vendor. It never repairs by itself. On the way into a dungeon or
--- raid it tells you to repair first when the gear is worn.
+-- raid it tells you to repair first when the gear is worn. Since 1.2 it notes the repair cost of
+-- every vendor visit with damaged gear, and whether you repaired with your gold or guild money.
 
 ns.warning = { armed = true }
 ns.instanceState = { warnedFor = nil }
@@ -56,9 +57,26 @@ function ns.InstanceLevel()
   return s.instanceLevel
 end
 
+-- 1.2: the vendor visit going on right now: { entry, missing, max, how }. A repair shows as less
+-- missing durability with the same gear; how is "guild" when Repair All was clicked for guild money.
+ns.visit = nil
+
+local function checkRepair(items)
+  local v = ns.visit
+  if not v then return end
+  local missing, max = ns.Wear(items)
+  if max == v.max and missing < v.missing then
+    ns.MarkPaid(v.entry, v.how or "gold")
+    v.missing = missing
+  end
+end
+
 function ns.Recount()
   if not ns.settings then return end
-  local cond = ns.Condition(ns.ReadGear())
+  local items = ns.ReadGear()
+  checkRepair(items)
+  local cond = ns.Condition(items)
+  ns.items = items
   ns.condition = cond
   if ns.Warning(ns.warning, cond.lowest, ns.settings.warn) then warn(cond) end
   ns.InstanceRearm(ns.instanceState, cond.lowest, ns.InstanceLevel())
@@ -119,13 +137,57 @@ local function onMerchantShow()
   local cost = plain((GetRepairAllCost()))
   if type(cost) ~= "number" or cost <= 0 then return end
   ns.Print(string.format(L["Repairing all your gear here costs %s."], ns.FormatMoney(cost)))
+  local entry = ns.AddVisit(ns.History(), time(), cost)
+  if entry then
+    local missing, max = ns.Wear(ns.items)
+    ns.visit = { entry = entry, missing = missing, max = max }
+  end
+end
+
+local function onMerchantClosed()
+  if not ns.settings then return end
+  ns.Recount() -- a repair the game reported only now still counts
+  ns.visit = nil
+end
+
+-- The Repair All button of the vendor window: RepairAllItems(true) pays with guild money.
+local function onRepairAll(guildBankRepair)
+  if ns.visit then ns.visit.how = guildBankRepair and "guild" or "gold" end
+end
+
+if hooksecurefunc and RepairAllItems then hooksecurefunc("RepairAllItems", onRepairAll) end
+
+-- The character the history belongs to: "Name-Realm".
+function ns.CharKey()
+  local name = UnitName and plain(UnitName("player"))
+  local realm = GetRealmName and plain(GetRealmName())
+  if type(name) ~= "string" or name == "" then name = "?" end
+  if type(realm) ~= "string" or realm == "" then realm = "?" end
+  return name .. "-" .. realm
+end
+
+-- The repair visits of the character you are playing, oldest first.
+function ns.History()
+  local key = ns.CharKey()
+  local list = ns.db.history[key]
+  if type(list) ~= "table" then
+    list = {}
+    ns.db.history[key] = list
+  end
+  return list
 end
 
 local function onLogin()
   if type(DurabilityWatchDB) ~= "table" then DurabilityWatchDB = {} end
   local db = DurabilityWatchDB
-  db.version = 2 -- 2: the check before instances (1.1); settings of 1.0 are kept as they are
+  -- 2: the check before instances (1.1); 3: the repair cost history (1.2). Older settings are kept.
+  db.version = 3
   if type(db.settings) ~= "table" then db.settings = {} end
+  if type(db.history) ~= "table" then db.history = {} end
+  for key, list in pairs(db.history) do
+    local clean = ns.CleanHistory(list)
+    db.history[key] = #clean > 0 and clean or nil
+  end
   local s = db.settings
   s.warn = ns.ValidWarn(s.warn) or ns.DEFAULT_WARN
   s.locked = s.locked == true
@@ -146,6 +208,8 @@ frame:SetScript("OnEvent", function(_, event, ...)
     onLogin()
   elseif event == "MERCHANT_SHOW" then
     onMerchantShow()
+  elseif event == "MERCHANT_CLOSED" then
+    onMerchantClosed()
   elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
     if not ns.settings then return end
     local reloading = false
@@ -166,5 +230,6 @@ listen("PLAYER_LOGIN")
 listen("UPDATE_INVENTORY_DURABILITY")
 listen("PLAYER_EQUIPMENT_CHANGED")
 listen("MERCHANT_SHOW")
+listen("MERCHANT_CLOSED")
 listen("PLAYER_ENTERING_WORLD")
 listen("ZONE_CHANGED_NEW_AREA")

@@ -1,7 +1,8 @@
 local _, ns = ...
 local L = ns.L
 
--- /dw shows the state and the commands; warn, instance, lock, hide and show change the settings.
+-- /dw shows the state and the commands; warn, instance, lock, hide and show change the settings,
+-- history lists the repair costs (1.2).
 
 local function instanceText()
   local s = ns.settings
@@ -50,6 +51,28 @@ local function instanceCommand(rest)
   ns.Recount()
 end
 
+-- /dw history lists the noted repair costs of this character, /dw history clear empties the list.
+local function historyCommand(rest)
+  local list = ns.History()
+  if rest == "clear" then
+    for i = #list, 1, -1 do list[i] = nil end
+    ns.visit = nil
+    ns.Print(L["The repair cost history of this character is empty now."])
+    return
+  end
+  if rest ~= "" then
+    ns.Print(L["Use /dw history to list your repair costs, /dw history clear to empty the list."])
+    return
+  end
+  if #list == 0 then
+    ns.Print(L["No repair costs noted yet. They are noted at a vendor who can repair while your gear is damaged."])
+    return
+  end
+  ns.Print(string.format(L["Repair costs of your last %d vendor visits, newest first:"], #list))
+  for i = #list, 1, -1 do ns.Print(ns.VisitText(list[i])) end
+  ns.Print(ns.WeekText(list, time()))
+end
+
 SLASH_DURABILITYWATCH1 = "/durabilitywatch"
 SLASH_DURABILITYWATCH2 = "/dw"
 SlashCmdList.DURABILITYWATCH = function(msg)
@@ -67,6 +90,8 @@ SlashCmdList.DURABILITYWATCH = function(msg)
     ns.Recount()
   elseif cmd == "instance" then
     instanceCommand(rest)
+  elseif cmd == "history" then
+    historyCommand(rest)
   elseif cmd == "lock" then
     s.locked = not s.locked
     ns.Print(s.locked and L["The display is locked."] or L["The display can be dragged."])
@@ -82,5 +107,6 @@ SlashCmdList.DURABILITYWATCH = function(msg)
     ns.Print(stateText())
     ns.Print(L["/dw warn <percent> sets the warning level (5 to 90), /dw lock locks or unlocks the display, /dw hide and /dw show hide or show it."])
     ns.Print(L["/dw instance <percent> warns you before dungeons and raids when an item is at or below it, /dw instance off switches that off."])
+    ns.Print(L["/dw history lists the repair costs of your last 20 vendor visits, /dw history clear empties the list."])
   end
 end

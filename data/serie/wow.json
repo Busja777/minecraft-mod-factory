@@ -109,9 +109,9 @@
       "art": "RF",
       "was": "Haltbarkeit in Prozent, Warnung, Reparaturkosten",
       "updates": [
-        "Kostenverlauf",
         "Warnung auch in Tiefen (Delves)",
-        "Reparatur-Erinnerung beim Händler"
+        "Reparatur-Erinnerung beim Händler",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -121,9 +121,9 @@
       "art": "RF",
       "was": "Alle Charaktere: Level, Gold, Ort, Erholung",
       "updates": [
-        "Sortieren und Filtern",
         "Berufe",
-        "Gesamtgold-Verlauf"
+        "Gesamtgold-Verlauf",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {
@@ -157,9 +157,9 @@
       "art": "RF",
       "was": "Lehnt Duelle und Einladungen von Fremden ab",
       "updates": [
-        "Protokoll",
         "Ausnahme für Gruppenmitglieder der letzten Stunde",
-        "Handelsanfragen optional"
+        "Handelsanfragen optional",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {

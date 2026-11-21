@@ -22,6 +22,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "PoliteDecline-1.2.zip",
+      "changelog": "## Polite Decline 1.2\n\n- New **log**: every duel and group invite that Polite Decline turns down is noted with the time, the name and the kind of request, also in quiet mode.\n- `/pd log` lists what was declined this session, newest first, with the number of declines so far.\n- `/pd log all` lists the last 50 declined requests across all your sessions and characters, so you can see who kept asking while you were busy.\n- `/pd log clear` empties the log.\n- Requests that got through (friends, guild mates, your allow list, anyone the addon was unsure about) are not logged, because they were not declined.\n- `/pd` now mentions `/pd log` in its help. Your settings, allow list and reply whisper from 1.0 and 1.1 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

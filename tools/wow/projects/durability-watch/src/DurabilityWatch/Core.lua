@@ -157,3 +157,101 @@ function ns.FormatMoney(copper)
   if GetMoneyString then return GetMoneyString(copper, true) end
   return ns.PlainMoney(copper)
 end
+
+-- 1.2: the repair cost history. One visit is { t = time, cost = copper, paid = "gold"|"guild"|nil }:
+-- the full repair price shown at a vendor who can repair while the gear was damaged, and how it was
+-- paid when you repaired there (nil: not repaired at that visit). The list is oldest first.
+
+ns.HISTORY_KEEP = 20       -- visits kept per character
+ns.WEEK = 7 * 86400        -- seconds the total looks back
+ns.REVISIT = 600           -- seconds: the same price again this soon, unrepaired, is the same visit
+ns.PAID = { gold = true, guild = true }
+
+-- A saved visit that can be used, else nil.
+function ns.ValidVisit(v)
+  if type(v) ~= "table" then return nil end
+  if type(v.t) ~= "number" or v.t <= 0 then return nil end
+  if type(v.cost) ~= "number" or v.cost <= 0 or v.cost ~= math.floor(v.cost) then return nil end
+  if v.paid ~= nil and not ns.PAID[v.paid] then v.paid = nil end
+  return v
+end
+
+-- The saved list of one character, cleaned: only usable visits, oldest first, at most HISTORY_KEEP.
+function ns.CleanHistory(list)
+  local out = {}
+  if type(list) ~= "table" then return out end
+  for _, v in ipairs(list) do
+    if ns.ValidVisit(v) then out[#out + 1] = v end
+  end
+  table.sort(out, function(a, b) return a.t < b.t end)
+  while #out > ns.HISTORY_KEEP do table.remove(out, 1) end
+  return out
+end
+
+-- Notes the price seen at a vendor. The same price again within REVISIT seconds, without a repair
+-- in between, is the same visit. Returns the visit, or nil when the cost cannot be used.
+function ns.AddVisit(list, now, cost)
+  if type(list) ~= "table" or type(now) ~= "number" then return nil end
+  if type(cost) ~= "number" or cost <= 0 or cost ~= math.floor(cost) then return nil end
+  local last = list[#list]
+  if last and last.paid == nil and last.cost == cost and now >= last.t and now - last.t < ns.REVISIT then
+    last.t = now
+    return last
+  end
+  local visit = { t = now, cost = cost }
+  list[#list + 1] = visit
+  while #list > ns.HISTORY_KEEP do table.remove(list, 1) end
+  return visit
+end
+
+-- Notes how a visit was paid. The first answer counts: a guild repair is not turned into gold later.
+function ns.MarkPaid(visit, how)
+  if type(visit) ~= "table" or not ns.PAID[how] or visit.paid ~= nil then return false end
+  visit.paid = how
+  return true
+end
+
+-- What the repairs of the last 7 days cost: all of them, the part paid by the guild, and how many.
+-- Visits without a repair do not count.
+function ns.WeekTotal(list, now)
+  local total, guild, count = 0, 0, 0
+  if type(list) ~= "table" or type(now) ~= "number" then return total, guild, count end
+  for _, v in ipairs(list) do
+    if v.paid and v.t <= now and now - v.t < ns.WEEK then
+      total, count = total + v.cost, count + 1
+      if v.paid == "guild" then guild = guild + v.cost end
+    end
+  end
+  return total, guild, count
+end
+
+-- How much durability is missing in total, and the total maximum. A repair lowers the first while
+-- the second stays the same; other gear changes the second.
+function ns.Wear(items)
+  local missing, max = 0, 0
+  for _, it in ipairs(items or {}) do
+    if type(it.cur) == "number" and type(it.max) == "number" and it.max > 0 then
+      missing = missing + math.max(it.max - math.max(it.cur, 0), 0)
+      max = max + it.max
+    end
+  end
+  return missing, max
+end
+
+-- "Nov 20 18:05: 12g 34s 56c, repaired with your gold."
+function ns.VisitText(v)
+  local L = ns.L
+  local how = v.paid == "guild" and L["repaired with guild money"] or v.paid == "gold" and L["repaired with your gold"] or L["not repaired"]
+  return string.format(L["%s: %s, %s."], date(L["%b %d %H:%M"], v.t), ns.FormatMoney(v.cost), how)
+end
+
+-- "Repairs in the last 7 days: 3g 00s 00c (1g 00s 00c from the guild)."
+function ns.WeekText(list, now)
+  local L = ns.L
+  local total, guild, count = ns.WeekTotal(list, now)
+  if count == 0 then return L["No repairs in the last 7 days."] end
+  if guild > 0 then
+    return string.format(L["Repairs in the last 7 days: %s (%s from the guild)."], ns.FormatMoney(total), ns.FormatMoney(guild))
+  end
+  return string.format(L["Repairs in the last 7 days: %s."], ns.FormatMoney(total))
+end

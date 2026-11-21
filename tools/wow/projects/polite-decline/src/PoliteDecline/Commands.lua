@@ -2,9 +2,10 @@ local _, ns = ...
 local L = ns.L
 
 -- /pd shows the state; duels, invites, quiet and whisper switch on or off; allow, unallow and list
--- keep the allow list; whisper text and whisper reset set the reply.
+-- keep the allow list; whisper text and whisper reset set the reply; log shows what was declined.
 
-local HELP = "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list."
+local HELP = "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list, /pd log."
+local LOG_HELP = "/pd log lists what was declined this session, /pd log all the last 50 across sessions, /pd log clear empties the log."
 local WHISPER_HELP = "/pd whisper on or off sends declined strangers a short polite whisper, /pd whisper text Your words sets it, /pd whisper reset brings back the default."
 
 local SWITCHES = {
@@ -82,6 +83,36 @@ local function list()
   ns.Print(string.format(L["Allow list: %s."], table.concat(names, ", ")))
 end
 
+-- Prints log entries newest first.
+local function printEntries(list)
+  for i = #list, 1, -1 do ns.Print(ns.LogLine(list[i])) end
+end
+
+-- /pd log, /pd log all, /pd log clear (1.2).
+local function log(rest)
+  rest = rest:lower()
+  if rest == "" then
+    if ns.sessionLogged == 0 then
+      ns.Print(L["Nothing declined this session."])
+    else
+      ns.Print(string.format(L["Declined this session: %d. Newest first:"], ns.sessionLogged))
+      printEntries(ns.sessionLog)
+    end
+    ns.Print(L[LOG_HELP])
+  elseif rest == "all" then
+    if #ns.db.log == 0 then return ns.Print(L["Nothing declined yet."]) end
+    ns.Print(string.format(L["The last %d declined requests, newest first:"], #ns.db.log))
+    printEntries(ns.db.log)
+  elseif rest == "clear" then
+    for i = #ns.db.log, 1, -1 do ns.db.log[i] = nil end
+    for i = #ns.sessionLog, 1, -1 do ns.sessionLog[i] = nil end
+    ns.sessionLogged = 0
+    ns.Print(L["The log is empty now."])
+  else
+    ns.Print(L[LOG_HELP])
+  end
+end
+
 SLASH_POLITEDECLINE1 = "/politedecline"
 SLASH_POLITEDECLINE2 = "/pd"
 SlashCmdList.POLITEDECLINE = function(msg)
@@ -104,6 +135,8 @@ SlashCmdList.POLITEDECLINE = function(msg)
     list()
   elseif cmd == "whisper" then
     whisper(rest)
+  elseif cmd == "log" then
+    log(rest)
   else
     help()
   end
