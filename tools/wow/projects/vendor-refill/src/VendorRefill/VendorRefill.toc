@@ -8,4 +8,5 @@
 Locale.lua
 Core.lua
 Refill.lua
+Bank.lua
 Commands.lua

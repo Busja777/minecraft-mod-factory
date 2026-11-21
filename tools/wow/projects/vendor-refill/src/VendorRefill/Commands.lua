@@ -1,7 +1,7 @@
 local _, ns = ...
 local L = ns.L
 
--- /vr shows the help and the state; add, remove, list, on, off and warn change the list or the settings.
+-- /vr shows the help and the state; add, remove, list, on, off, bank and warn change the list or the settings.
 
 local function warnText()
   local share = ns.ValidShare(ns.db.warnShare) or 0
@@ -9,16 +9,26 @@ local function warnText()
   return string.format(L["Low stock warning below %d%% of your count."], share)
 end
 
+local function bankText()
+  return ns.db.bank and L["Taking items from the bank is on."] or L["Taking items from the bank is off."]
+end
+
 local function stateText()
   local n = ns.CountList(ns.list)
   local state = ns.db.enabled and L["Refilling is on."] or L["Refilling is off."]
-  if n == 0 then return state .. " " .. L["Your list is empty."] .. " " .. warnText() end
-  if n == 1 then return state .. " " .. L["1 item is on your list."] .. " " .. warnText() end
-  return state .. " " .. string.format(L["%d items are on your list."], n) .. " " .. warnText()
+  local count
+  if n == 0 then
+    count = L["Your list is empty."]
+  elseif n == 1 then
+    count = L["1 item is on your list."]
+  else
+    count = string.format(L["%d items are on your list."], n)
+  end
+  return state .. " " .. count .. " " .. bankText() .. " " .. warnText()
 end
 
 local function helpText()
-  return L["/vr add <item> <count> keeps an item stocked, /vr remove <item> takes it off, /vr list shows your list, /vr on and /vr off switch refilling, /vr warn <percent> or /vr warn off sets the low stock warning. Use an item link (Shift-click the item) or an item ID. Hold Shift while you open a vendor to skip one visit."]
+  return L["/vr add <item> <count> keeps an item stocked, /vr remove <item> takes it off, /vr list shows your list, /vr on and /vr off switch all refilling (vendor and bank), /vr bank on or /vr bank off switches only taking items from the bank, /vr warn <percent> or /vr warn off sets the low stock warning. Use an item link (Shift-click the item) or an item ID. Hold Shift while you open a vendor or the bank to skip one visit."]
 end
 
 -- The item as the player named it: the link they gave, else its name, else its ID.
@@ -71,6 +81,17 @@ local function warn(rest)
   ns.CheckStock(true)
 end
 
+local function bank(rest)
+  local word = strtrim(rest):lower()
+  if word == "on" or word == "off" then
+    ns.db.bank = word == "on"
+  elseif word ~= "" then
+    ns.Print(L["Use /vr bank on or /vr bank off."])
+    return
+  end
+  ns.Print(bankText())
+end
+
 local function list()
   local lines = ns.ListLines(ns.list, ns.ItemName)
   if #lines == 0 then
@@ -98,6 +119,8 @@ SlashCmdList.VENDORREFILL = function(msg)
     list()
   elseif cmd == "warn" then
     warn(rest)
+  elseif cmd == "bank" then
+    bank(rest)
   elseif cmd == "on" or cmd == "off" then
     ns.db.enabled = cmd == "on"
     ns.Print(ns.db.enabled and L["Refilling is on."] or L["Refilling is off."])
