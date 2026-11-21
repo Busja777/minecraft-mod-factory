@@ -1,0 +1,37 @@
+{
+  "name": "Trigger Homes",
+  "summary": "Set a home and travel back to it or to the world spawn with simple chat commands that work without operator rights.",
+  "class": "Data Packs",
+  "category": "Utility",
+  "logoPrompt": "A small cosy cabin with a glowing window and a red bed beside a swirling purple portal frame, standing on a grass block, in blocky voxel style",
+  "cover": {
+    "tagline": "Home and spawn, one command away.",
+    "bullets": [
+      "No operator rights needed",
+      "One home per player",
+      "Works across dimensions"
+    ]
+  },
+  "description": [
+    "**Trigger Homes gives every player a home they can return to with one chat command, even on servers where nobody else has operator rights.**",
+    "",
+    "## Features",
+    "- `/trigger sethome` saves the block you stand on as your home, one home per player.",
+    "- `/trigger home` takes you back there, also from another dimension: a home in the Nether works from the Overworld.",
+    "- `/trigger spawn` takes you to the world spawn.",
+    "- A 30-second cooldown after each teleport, and a message that tells you how long to wait.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world (or pick it when you create a new world). Stand where you want your home, type `/trigger sethome`, then use `/trigger home` whenever you want to go back.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Players need nothing installed.",
+    "- Homes can be set in the Overworld, the Nether and the End. A new home replaces the old one.",
+    "- The teleport does not check for danger: if your home is later filled with lava, you land in it.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

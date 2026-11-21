@@ -1,0 +1,8 @@
+{
+  "kind": "data",
+  "name": "Trigger Homes",
+  "description": "/trigger home, sethome and spawn for everyone",
+  "mc": "1.21.1",
+  "also": ["26.3"],
+  "gameVersions": ["1.21", "1.21.1", "26.3"]
+}

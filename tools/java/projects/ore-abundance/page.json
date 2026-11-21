@@ -1,0 +1,36 @@
+{
+  "name": "Ore Abundance",
+  "summary": "Caves and mountains in newly explored land hold half as many ore veins again, so mining trips pay off sooner.",
+  "class": "Data Packs",
+  "category": "Adventure",
+  "logoPrompt": "A single chunk of stone block cracked open with large glowing veins of diamond, gold, redstone and emerald ore, in blocky voxel style",
+  "cover": {
+    "tagline": "Half as many ore veins again.",
+    "bullets": [
+      "Eight Overworld ores",
+      "Same heights and vein sizes",
+      "Only newly generated land"
+    ]
+  },
+  "description": [
+    "**Ore Abundance puts more ore veins into the Overworld, so a mining trip fills your chests a little faster without making ores feel cheap.**",
+    "",
+    "## Features",
+    "- About 1.5 times as many veins of coal, copper, iron, gold, redstone, lapis lazuli, diamond and emerald.",
+    "- Veins keep their usual size, height and biomes: diamonds stay deep, emeralds stay in the mountains.",
+    "- The extra gold of badlands, the large copper veins of dripstone caves and the large diamond veins grow too.",
+    "",
+    "## How to use",
+    "Pick the zip under Data Packs when you create a new world, or put it into the `datapacks` folder of an existing world and open the world again. Then go mining in land you have not visited yet.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3.",
+    "- Only affects newly generated chunks. Land you have already visited keeps its ores.",
+    "- Nether ores stay as they are. Because it changes world generation, Minecraft may show its \"experimental settings\" notice when you open the world.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}
