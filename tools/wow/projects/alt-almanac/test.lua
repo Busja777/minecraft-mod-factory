@@ -1,11 +1,22 @@
 -- Tests for Alt Almanac, run by tools/wow/client/run.lua.
 
 -- The stand-in client has no XP bar, zones or resting; these are the game functions the addon reads.
+-- Since 1.1 also /played (RequestTimePlayed), timers (C_Timer) and the chat windows that print the answer.
 local STAND_IN = {
   "UnitLevel", "UnitXPMax", "GetXPExhaustion", "IsPlayerAtEffectiveMaxLevel",
   "IsResting", "GetRealZoneText", "GetSubZoneText",
+  "RequestTimePlayed", "C_Timer", "NUM_CHAT_WINDOWS", "ChatFrame1", "ChatFrame2",
 }
-local player
+local player, timers
+
+-- A chat window: it prints the /played answer while it listens for TIME_PLAYED_MSG.
+local function chatFrame()
+  local f = { events = { TIME_PLAYED_MSG = true }, printed = 0 }
+  function f:IsEventRegistered(e) return self.events[e] == true end
+  function f:RegisterEvent(e) self.events[e] = true end
+  function f:UnregisterEvent(e) self.events[e] = nil end
+  return f
+end
 
 local function client(p)
   player = { level = 20, max = 10000, rested = nil, atMax = false, resting = false, zone = "Stormwind City", subzone = "Trade District" }
@@ -17,7 +28,33 @@ local function client(p)
   IsResting = function() return player.resting end
   GetRealZoneText = function() return player.zone end
   GetSubZoneText = function() return player.subzone end
+  player.requests = 0
+  RequestTimePlayed = function() player.requests = player.requests + 1 end
+  timers = {}
+  C_Timer = { After = function(seconds, fn) timers[#timers + 1] = { seconds, fn } end }
+  NUM_CHAT_WINDOWS = 2
+  ChatFrame1, ChatFrame2 = chatFrame(), chatFrame()
 end
+
+-- Runs the timers that are due within the given seconds, the way the game does a moment later.
+local function wait(seconds)
+  local due, rest = {}, {}
+  for _, t in ipairs(timers) do
+    if t[1] <= seconds then due[#due + 1] = t[2] else rest[#rest + 1] = { t[1] - seconds, t[2] } end
+  end
+  timers = rest
+  for _, fn in ipairs(due) do fn() end
+end
+
+-- The server's answer to /played: the addon and every listening chat window get it.
+local function answer(wow, total, level)
+  wow.fire("TIME_PLAYED_MSG", total, level or 0)
+  for _, f in ipairs({ ChatFrame1, ChatFrame2 }) do
+    if f.events.TIME_PLAYED_MSG then f.printed = f.printed + 1 end
+  end
+end
+
+local function printed() return ChatFrame1.printed + ChatFrame2.printed end
 
 local function boot(wow, p, money)
   client(p)
@@ -36,13 +73,20 @@ local function row(i)
   return {
     name = cells.name:GetText(), level = cells.level:GetText(), gold = cells.gold:GetText(),
     zone = cells.zone:GetText(), rested = cells.rested:GetText(), seen = cells.seen:GetText(),
+    played = cells.played:GetText(),
   }
 end
 
 local HOUR = 3600
+local DAY = 86400
+local DASH = "|cff9d9d9d\226\128\148|r"
 
 test("addon defines only its own globals", function(wow, installed, before)
   boot(wow)
+  wait(3)
+  answer(wow, 5000)
+  wait(0)
+  wow.fire("PLAYER_LOGOUT")
   wow.slash("/aa") -- creates the window
   local allowed = { AltAlmanacDB = true, AltAlmanacFrame = true, SLASH_ALTALMANAC1 = true, SLASH_ALTALMANAC2 = true }
   for _, name in ipairs(STAND_IN) do installed[name] = true end
@@ -54,7 +98,7 @@ end)
 test("login stores the whole character", function(wow)
   local ns = boot(wow, { level = 42, max = 20000, rested = 9000, resting = true }, 123456)
   local c = me()
-  eq(AltAlmanacDB.version, 1)
+  eq(AltAlmanacDB.version, 2)
   eq(ns.char, c)
   eq(c.class, "MAGE")
   eq(c.level, 42)
@@ -316,8 +360,11 @@ test("the window lists every character with class colour, gold, zone, rested and
   eq(r.zone, "|cff9d9d9d?|r")
   eq(r.seen, "?")
   eq(row(5).name, "")
-  eq(f.totalLabel:GetText(), "Total gold")
+  eq(f.head.played:GetText(), "Played")
+  eq(row(1).played, DASH, "not seen with 1.1 yet")
+  eq(f.totalLabel:GetText(), "Total")
   eq(f.total:GetText(), "502g 12s 34c")
+  eq(f.totalPlayed:GetText(), DASH)
 end)
 
 test("the window follows changes while it is open", function(wow)
@@ -406,9 +453,208 @@ test("nothing happens before login", function(wow)
   wow.fire("UPDATE_EXHAUSTION")
   wow.fire("PLAYER_UPDATE_RESTING")
   wow.fire("PLAYER_LOGOUT")
+  wow.fire("TIME_PLAYED_MSG", 5000, 100)
   wow.slash("/aa")
   wow.slash("/aa forget Brakk-Silvermoon")
+  eq(player.requests, 0)
+  eq(#timers, 0)
   eq(AltAlmanacFrame, nil)
   eq(AltAlmanacDB, nil)
   eq(#wow.chat, 0)
+end)
+
+-- 1.1: played time
+
+test("core: played time texts", function(wow)
+  local ns = boot(wow)
+  eq(ns.PlayedText(0), "0m")
+  eq(ns.PlayedText(59), "0m")
+  eq(ns.PlayedText(45 * 60), "45m")
+  eq(ns.PlayedText(HOUR), "1h 0m")
+  eq(ns.PlayedText(5 * HOUR + 12 * 60 + 30), "5h 12m")
+  eq(ns.PlayedText(DAY - 1), "23h 59m")
+  eq(ns.PlayedText(DAY), "1d 0h")
+  eq(ns.PlayedText(12 * DAY + 4 * HOUR + 59 * 60), "12d 4h")
+  eq(ns.PlayedText(400 * DAY), "400d 0h")
+  eq(ns.PlayedText(nil), nil)
+  eq(ns.PlayedText(-1), nil)
+end)
+
+test("core: played time keeps counting only for the character you play, and adds up", function(wow)
+  local ns = boot(wow)
+  local now = wow.now
+  eq(ns.PlayedNow({ played = 100, playedAt = now - 60 }, true, now), 160)
+  eq(ns.PlayedNow({ played = 100, playedAt = now - 60 }, false, now), 100, "logged out: the clock stands")
+  eq(ns.PlayedNow({ played = 100, playedAt = now + 60 }, true, now), 100, "a clock that went back")
+  eq(ns.PlayedNow({ played = 100 }, true, now), 100)
+  eq(ns.PlayedNow({}, true, now), nil)
+  local chars = {
+    ["A-Silvermoon"] = { level = 10, played = 2 * DAY, playedAt = now - DAY },
+    ["B-Silvermoon"] = { level = 20, played = HOUR, playedAt = now - 600 },
+    ["C-Silvermoon"] = { level = 30 },
+  }
+  local rows, total, played = ns.BuildRows(chars, "B-Silvermoon", now)
+  eq(rows[1].played, nil)
+  eq(rows[2].played, HOUR + 600)
+  eq(rows[3].played, 2 * DAY)
+  eq(played, 2 * DAY + HOUR + 600, "characters without a time are left out")
+  local _, _, none = ns.BuildRows({ ["C-Silvermoon"] = { level = 30 } }, "x", now)
+  eq(none, nil)
+end)
+
+test("login asks for the played time once, a few seconds later, without chat spam", function(wow)
+  local ns = boot(wow)
+  eq(player.requests, 0, "not during the loading screen")
+  eq(me().played, nil)
+  wait(3)
+  eq(player.requests, 1)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), false, "the chat does not print this answer")
+  eq(ChatFrame2:IsEventRegistered("TIME_PLAYED_MSG"), false)
+  wow.now = wow.now + 1
+  answer(wow, 3 * DAY + 5 * HOUR, 2 * HOUR)
+  eq(me().played, 3 * DAY + 5 * HOUR)
+  eq(me().playedAt, wow.now)
+  eq(printed(), 0)
+  wait(0)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), true, "the chat gets /played back right after")
+  eq(ChatFrame2:IsEventRegistered("TIME_PLAYED_MSG"), true)
+  wait(15)
+  eq(player.requests, 1, "asked only once")
+end)
+
+test("your own /played later is printed as usual and updates the time", function(wow)
+  local ns = boot(wow)
+  wait(3)
+  answer(wow, 1000)
+  wait(0)
+  wow.now = wow.now + 600
+  answer(wow, 1600)
+  eq(printed(), 2, "both chat windows print it")
+  eq(me().played, 1600)
+end)
+
+test("without an answer the chat gets /played back after 15 seconds", function(wow)
+  local ns = boot(wow)
+  wait(3)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), false)
+  wait(14)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), false)
+  wait(1)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), true)
+  eq(ChatFrame2:IsEventRegistered("TIME_PLAYED_MSG"), true)
+  eq(me().played, nil)
+  answer(wow, 1000)
+  eq(printed(), 2)
+end)
+
+test("a chat window that did not listen is left alone", function(wow)
+  local ns = boot(wow)
+  ChatFrame2:UnregisterEvent("TIME_PLAYED_MSG") -- set up that way by the player or another addon
+  wait(3)
+  answer(wow, 1000)
+  wait(0)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), true)
+  eq(ChatFrame2:IsEventRegistered("TIME_PLAYED_MSG"), false)
+  eq(printed(), 0)
+end)
+
+test("the window shows the played time per character and in the total line", function(wow)
+  local now = wow.now
+  AltAlmanacDB = { version = 2, chars = {
+    ["Brakk-Silvermoon"] = { class = "WARRIOR", level = 80, played = 12 * DAY + 4 * HOUR, playedAt = now - 5 * DAY, seen = now - 5 * DAY },
+    ["Lia-Silvermoon"] = { level = 35 },
+  } }
+  local ns = boot(wow, { level = 42 })
+  wait(3)
+  answer(wow, 2 * HOUR + 30 * 60)
+  wait(0)
+  wow.slash("/aa")
+  eq(row(1).played, "12d 4h", "logged out for five days: still the same")
+  eq(row(2).played, "2h 30m")
+  eq(row(3).played, DASH, "not seen with 1.1 yet")
+  eq(AltAlmanacFrame.totalPlayed:GetText(), "12d 6h")
+  wow.now = wow.now + 40 * 60
+  wow.setMoney(5)
+  eq(row(2).played, "3h 10m", "your own time keeps counting")
+  eq(AltAlmanacFrame.totalPlayed:GetText(), "12d 7h")
+end)
+
+test("logout keeps the played time up to date, the time logged out does not count", function(wow)
+  local ns = boot(wow)
+  wait(3)
+  answer(wow, 10 * HOUR)
+  wait(0)
+  wow.now = wow.now + HOUR
+  wow.fire("PLAYER_LOGOUT")
+  eq(me().played, 11 * HOUR)
+  eq(me().playedAt, wow.now)
+  -- three days later the same character logs in again
+  wow.now = wow.now + 3 * DAY
+  wow.fire("PLAYER_LOGIN")
+  eq(me().played, 11 * HOUR)
+  eq(me().playedAt, wow.now)
+  wow.now = wow.now + 600
+  local rows = ns.BuildRows(AltAlmanacDB.chars, "Yubi-Silvermoon", wow.now)
+  eq(rows[1].played, 11 * HOUR + 600, "until the answer arrives the stored time counts on")
+end)
+
+test("saved data of 1.0 keeps everything and shows a dash until the character logs in", function(wow)
+  AltAlmanacDB = { version = 1, settings = { point = { "TOP", "TOP", 0, -50 } }, chars = {
+    ["Brakk-Silvermoon"] = { class = "WARRIOR", level = 80, money = 5000000, zone = "Dornogal", rested = 0, maxLevel = true, seen = wow.now - DAY },
+    ["Yubi-Silvermoon"] = { class = "MAGE", level = 41, money = 100, seen = wow.now - DAY },
+  } }
+  local ns = boot(wow, { level = 42 }, 200)
+  eq(AltAlmanacDB.version, 2)
+  eq(AltAlmanacDB.settings.point[1], "TOP")
+  eq(AltAlmanacDB.chars["Brakk-Silvermoon"].money, 5000000)
+  eq(AltAlmanacDB.chars["Brakk-Silvermoon"].played, nil)
+  eq(me().played, nil)
+  wow.slash("/aa")
+  eq(row(1).played, DASH)
+  eq(row(2).played, DASH)
+  eq(AltAlmanacFrame.totalPlayed:GetText(), DASH)
+  wait(3)
+  answer(wow, 90 * 60)
+  eq(row(2).played, "1h 30m", "the open window follows the answer")
+  eq(row(1).played, DASH)
+  eq(AltAlmanacFrame.totalPlayed:GetText(), "1h 30m")
+end)
+
+test("answers that cannot be used are skipped, broken saved times are dropped", function(wow)
+  AltAlmanacDB = { chars = { ["Yubi-Silvermoon"] = { level = 20, played = "a lot", playedAt = 5 } } }
+  local ns = boot(wow)
+  eq(me().played, nil)
+  eq(me().playedAt, nil)
+  answer(wow, { secret = true })
+  eq(me().played, nil)
+  answer(wow, -5)
+  answer(wow, nil)
+  eq(me().played, nil)
+  answer(wow, 1234.7)
+  eq(me().played, 1234)
+end)
+
+test("a client without RequestTimePlayed still works and leaves the chat alone", function(wow)
+  client()
+  RequestTimePlayed = nil
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  wait(3)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), true)
+  wait(20)
+  eq(me().played, nil)
+  wow.slash("/aa")
+  eq(row(1).played, DASH)
+end)
+
+test("without timers the time is asked at once and the chat is not touched", function(wow)
+  client()
+  C_Timer = nil
+  local ns = wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  eq(player.requests, 1)
+  eq(ChatFrame1:IsEventRegistered("TIME_PLAYED_MSG"), true)
+  answer(wow, 7200)
+  eq(me().played, 7200)
+  eq(printed(), 2, "the answer shows in the chat once")
 end)

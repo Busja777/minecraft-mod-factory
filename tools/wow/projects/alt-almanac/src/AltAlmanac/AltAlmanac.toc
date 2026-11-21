@@ -1,6 +1,6 @@
 ## Interface: 120105, 120107
 ## Title: Alt Almanac
-## Notes: Shows level, gold, place and rested bonus of all your characters in one window.
+## Notes: Shows level, gold, place, rested bonus and played time of all your characters in one window.
 ## Version: @version@
 ## SavedVariables: AltAlmanacDB
 ## IconTexture: Interface\Icons\INV_Misc_Book_09

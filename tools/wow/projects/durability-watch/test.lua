@@ -1,8 +1,9 @@
 -- Tests for Durability Watch, run by tools/wow/client/run.lua.
 
--- The parts of the game the stand-in client lacks: equipped gear, a vendor and the error frame.
+-- The parts of the game the stand-in client lacks: equipped gear, a vendor, the error frame and instances.
 -- items[slot] = { cur, max, link }; a slot without an entry has no durability.
-local STAND_IN = { "GetInventoryItemDurability", "GetInventoryItemLink", "CanMerchantRepair", "GetRepairAllCost", "RepairAllItems", "UIErrorsFrame" }
+-- instance = { kind, name, id } of the instance the player is in, nil outside.
+local STAND_IN = { "GetInventoryItemDurability", "GetInventoryItemLink", "CanMerchantRepair", "GetRepairAllCost", "RepairAllItems", "UIErrorsFrame", "IsInInstance", "GetInstanceInfo" }
 
 local function world(items)
   local w = { items = items or {}, read = {}, canRepair = true, repairCost = 0, errors = {}, repairs = 0 }
@@ -20,6 +21,15 @@ local function world(items)
   GetRepairAllCost = function() return w.repairCost, w.repairCost > 0 end
   RepairAllItems = function() w.repairs = w.repairs + 1 end
   UIErrorsFrame = { AddMessage = function(_, msg, r, g, b) w.errors[#w.errors + 1] = msg end }
+  IsInInstance = function()
+    if w.instance then return true, w.instance.kind end
+    return false, "none"
+  end
+  GetInstanceInfo = function()
+    local i = w.instance
+    if not i then return "Isle of Dorn", "none", 0, "", 0, 0, false, 2552 end
+    return i.name, i.kind, 1, "Normal", 5, 0, false, i.id
+  end
   return w
 end
 
@@ -37,6 +47,15 @@ local function wear(wow, w, slot, cur, max)
   w.items[slot] = { cur, max or it[2], it[3] }
   wow.fire("UPDATE_INVENTORY_DURABILITY")
 end
+
+-- A loading screen into (or out of) an instance, the way the game reports it.
+local function enter(wow, w, instance, reloading)
+  w.instance = instance
+  wow.fire("PLAYER_ENTERING_WORLD", false, reloading == true)
+end
+
+local STONEVAULT = { kind = "party", name = "The Stonevault", id = 2652 }
+local NERUBAR = { kind = "raid", name = "Nerub-ar Palace", id = 2657 }
 
 local function lines() return DurabilityWatchFrame.gear:GetText(), DurabilityWatchFrame.lowest:GetText() end
 
@@ -64,6 +83,10 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.slash("/dw lock")
   wow.slash("/dw hide")
   wow.slash("/durabilitywatch show")
+  wow.slash("/dw instance 40")
+  wow.slash("/dw instance off")
+  enter(wow, w, STONEVAULT)
+  wow.fire("ZONE_CHANGED_NEW_AREA")
   local allowed = { DurabilityWatchDB = true, DurabilityWatchFrame = true, SLASH_DURABILITYWATCH1 = true, SLASH_DURABILITYWATCH2 = true }
   for _, name in ipairs(STAND_IN) do installed[name] = true end
   for k in pairs(_G) do
@@ -173,7 +196,7 @@ end)
 
 test("login reads the gear, saves the defaults and shows the display", function(wow)
   local ns = boot(wow, set())
-  eq(DurabilityWatchDB.version, 1)
+  eq(DurabilityWatchDB.version, 2)
   eq(DurabilityWatchDB.settings.warn, 25)
   eq(DurabilityWatchDB.settings.locked, false)
   eq(DurabilityWatchDB.settings.hidden, false)
@@ -337,17 +360,19 @@ end)
 test("/dw and /durabilitywatch print the state and the commands", function(wow)
   local ns = boot(wow, set())
   wow.slash("/dw")
-  eq(#wow.chat, 2)
-  eq(wow.chat[1], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. The display can be dragged.")
+  eq(#wow.chat, 3)
+  eq(wow.chat[1], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. Warning before dungeons and raids at 50%. The display can be dragged.")
   eq(wow.chat[2]:match("/dw warn <percent> sets the warning level") ~= nil, true)
+  eq(wow.chat[3]:match("/dw instance <percent> warns you before dungeons and raids") ~= nil, true)
   wow.slash("/durabilitywatch help")
-  eq(#wow.chat, 4)
+  eq(#wow.chat, 6)
   wow.slash("/dw lock")
   wow.slash("/dw")
-  eq(wow.chat[6], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. The display is locked.")
+  eq(wow.chat[8], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. Warning before dungeons and raids at 50%. The display is locked.")
   wow.slash("/dw hide")
+  wow.slash("/dw instance off")
   wow.slash("/dw")
-  eq(wow.chat[9]:match("The display is hidden%.$") ~= nil, true)
+  eq(wow.chat[13], PREFIX .. "Gear 87%, lowest Main Hand 40%. Warning at 25%. No warning before dungeons and raids. The display is hidden.")
 end)
 
 test("/dw warn sets the level, checks it and saves it", function(wow)
@@ -434,10 +459,204 @@ test("nothing happens before login", function(wow)
   wow.fire("UPDATE_INVENTORY_DURABILITY")
   wow.fire("PLAYER_EQUIPMENT_CHANGED", 16, true)
   wow.fire("MERCHANT_SHOW")
+  w.instance = STONEVAULT
+  wow.fire("PLAYER_ENTERING_WORLD", true, false)
+  wow.fire("ZONE_CHANGED_NEW_AREA")
   wow.slash("/dw")
   wow.slash("/dw warn 40")
+  wow.slash("/dw instance 30")
   eq(DurabilityWatchFrame, nil)
   eq(DurabilityWatchDB, nil)
   eq(#wow.chat, 0)
   eq(#w.errors, 0)
+end)
+
+-- 1.1: the warning before dungeons and raids
+
+test("core: the instance warning fires once per instance and only for dungeons and raids", function(wow)
+  local ns = boot(wow)
+  local s = {}
+  local vault = { kind = "party", key = 1 }
+  eq(ns.InstanceWarning(s, vault, 60, 50), false, "gear above the level")
+  eq(ns.InstanceWarning(s, vault, 50, 50), true, "at the level counts")
+  eq(s.warnedFor, 1)
+  eq(ns.InstanceWarning(s, vault, 30, 50), false, "the run back after a wipe stays quiet")
+  eq(ns.InstanceWarning(s, { kind = "raid", key = 2 }, 30, 50), true, "a different instance warns")
+  eq(ns.InstanceWarning(s, { kind = "raid", key = 2 }, 30, nil), false, "switched off")
+  eq(ns.InstanceWarning(s, nil, 30, 50), false, "outside an instance")
+  eq(s.warnedFor, 2, "being outside alone is no repair")
+  eq(ns.InstanceWarning(s, { kind = "pvp", key = 3 }, 10, 50), false, "battleground")
+  eq(ns.InstanceWarning(s, { kind = "arena", key = 4 }, 10, 50), false)
+  eq(ns.InstanceWarning(s, { kind = "scenario", key = 5 }, 10, 50), false, "delves and scenarios")
+  eq(ns.InstanceWarning(s, { kind = "party" }, 10, 50), false, "no key, no warning")
+  eq(ns.InstanceWarning(s, vault, nil, 50), false, "no gear with durability")
+  ns.InstanceRearm(s, 51, 50)
+  eq(s.warnedFor, nil, "above the level again")
+  ns.InstanceRearm(s, 30, 50)
+  eq(s.warnedFor, nil)
+  eq(ns.InstanceWarning(s, { kind = "raid", key = 2 }, 30, 50), true, "after a repair the same raid warns again")
+end)
+
+test("entering a dungeon with worn gear: one centred message and one chat line", function(wow)
+  local ns, w = boot(wow, set())
+  enter(wow, w, STONEVAULT)
+  eq(#w.errors, 1)
+  eq(w.errors[1], "Repair first: Main Hand is at 40% durability")
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "You are entering The Stonevault with Main Hand: [Blade] at 40% durability. Repair first.")
+  wow.fire("ZONE_CHANGED_NEW_AREA")
+  enter(wow, w, STONEVAULT)
+  eq(#w.errors, 1, "a new area inside or the run back after a wipe say nothing")
+  eq(#wow.chat, 1)
+end)
+
+test("entering a raid, and instances the game does not name", function(wow)
+  local ns, w = boot(wow, set())
+  enter(wow, w, NERUBAR)
+  eq(wow.chat[1], PREFIX .. "You are entering Nerub-ar Palace with Main Hand: [Blade] at 40% durability. Repair first.")
+  enter(wow, w, { kind = "party", name = "", id = 0 })
+  eq(wow.chat[2], PREFIX .. "You are entering a dungeon with Main Hand: [Blade] at 40% durability. Repair first.")
+  GetInstanceInfo = nil
+  enter(wow, w, { kind = "raid" })
+  eq(wow.chat[3], PREFIX .. "You are entering a raid with Main Hand: [Blade] at 40% durability. Repair first.")
+  eq(#w.errors, 3)
+end)
+
+test("no instance warning with gear above the level, in the open world, battlegrounds or delves", function(wow)
+  local items = set()
+  items[16] = { 60, 100, "[Blade]" }
+  items[17] = { 100, 100 }
+  local ns, w = boot(wow, items)
+  enter(wow, w, STONEVAULT)
+  eq(#wow.chat, 0, "60 % is above 50 %")
+  wear(wow, w, 16, 45)
+  enter(wow, w, nil)
+  enter(wow, w, { kind = "pvp", name = "Warsong Gulch", id = 489 })
+  enter(wow, w, { kind = "arena", name = "Nagrand Arena", id = 1505 })
+  enter(wow, w, { kind = "scenario", name = "Fungal Folly", id = 2664 })
+  w.instance = nil
+  wow.fire("ZONE_CHANGED_NEW_AREA")
+  eq(#wow.chat, 0)
+  eq(#w.errors, 0)
+end)
+
+test("after a repair the same dungeon warns again, a different one warns at once", function(wow)
+  local ns, w = boot(wow, set())
+  enter(wow, w, STONEVAULT)
+  enter(wow, w, NERUBAR)
+  eq(#wow.chat, 2, "a different instance")
+  enter(wow, w, nil)
+  w.items[16] = { 100, 100, "[Blade]" }
+  w.items[17] = { 100, 100 }
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+  eq(ns.instanceState.warnedFor, nil)
+  enter(wow, w, NERUBAR)
+  eq(#wow.chat, 2, "repaired")
+  w.items[16] = { 30, 100, "[Blade]" }
+  wow.fire("UPDATE_INVENTORY_DURABILITY")
+  enter(wow, w, nil)
+  enter(wow, w, NERUBAR)
+  eq(#wow.chat, 3, "worn again on the next visit")
+  eq(wow.chat[3], PREFIX .. "You are entering Nerub-ar Palace with Main Hand: [Blade] at 30% durability. Repair first.")
+end)
+
+test("a reload inside an instance stays quiet, a login inside one warns", function(wow)
+  local ns, w = boot(wow, set())
+  enter(wow, w, STONEVAULT, true)
+  eq(#wow.chat, 0)
+  eq(ns.instanceState.warnedFor, 2652, "the reload takes note")
+  enter(wow, w, STONEVAULT)
+  eq(#wow.chat, 0, "and the run back after a wipe stays quiet too")
+end)
+
+test("logging in inside a raid with worn gear warns", function(wow)
+  local ns, w = boot(wow, set())
+  w.instance = NERUBAR
+  wow.fire("PLAYER_ENTERING_WORLD", true, false) -- the first login, inside the raid
+  eq(#wow.chat, 1)
+  eq(wow.chat[1], PREFIX .. "You are entering Nerub-ar Palace with Main Hand: [Blade] at 40% durability. Repair first.")
+end)
+
+test("/dw instance switches the check off and on and sets its level", function(wow)
+  local ns, w = boot(wow, set())
+  wow.slash("/dw instance off")
+  eq(DurabilityWatchDB.settings.instanceWarn, false)
+  eq(wow.chat[1], PREFIX .. "No warning before dungeons and raids.")
+  enter(wow, w, STONEVAULT)
+  eq(#wow.chat, 1, "switched off")
+  eq(#w.errors, 0)
+  enter(wow, w, nil)
+  wow.slash("/dw instance on")
+  eq(DurabilityWatchDB.settings.instanceWarn, true)
+  eq(DurabilityWatchDB.settings.instanceLevel, 50)
+  eq(wow.chat[2], PREFIX .. "Warning before dungeons and raids at 50%.")
+  wow.slash("/dw instance 30")
+  eq(DurabilityWatchDB.settings.instanceLevel, 30)
+  eq(wow.chat[3], PREFIX .. "Warning before dungeons and raids at 30%.")
+  enter(wow, w, STONEVAULT)
+  eq(#wow.chat, 3, "40 % is above 30 %")
+  enter(wow, w, nil)
+  wow.slash("/dw instance off")
+  wow.slash("/dw INSTANCE 45%")
+  eq(DurabilityWatchDB.settings.instanceWarn, true, "a level switches it on")
+  eq(DurabilityWatchDB.settings.instanceLevel, 45)
+  enter(wow, w, STONEVAULT)
+  eq(wow.chat[#wow.chat]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "You are entering The Stonevault") ~= nil, true)
+end)
+
+test("/dw instance with a wrong value explains itself and changes nothing", function(wow)
+  local ns = boot(wow, set())
+  wow.slash("/dw instance 95")
+  eq(wow.chat[1], PREFIX .. "Use /dw instance on, /dw instance off or a whole number from 5 to 90, for example /dw instance 40.")
+  wow.slash("/dw instance maybe")
+  eq(#wow.chat, 2)
+  eq(DurabilityWatchDB.settings.instanceLevel, 50)
+  eq(DurabilityWatchDB.settings.instanceWarn, true)
+  wow.slash("/dw instance")
+  eq(wow.chat[3], PREFIX .. "Warning before dungeons and raids at 50%.", "alone it tells the state")
+end)
+
+test("saved settings of 1.0 are kept and get the instance check switched on", function(wow)
+  DurabilityWatchDB = { version = 1, settings = { warn = 35, locked = true, hidden = false, point = { "LEFT", "LEFT", 10, 20 } } }
+  local ns, w = boot(wow, set())
+  local s = DurabilityWatchDB.settings
+  eq(DurabilityWatchDB.version, 2)
+  eq(s.warn, 35)
+  eq(s.locked, true)
+  eq(s.point[1], "LEFT")
+  eq(s.instanceWarn, true)
+  eq(s.instanceLevel, 50)
+end)
+
+test("saved instance settings are checked at login", function(wow)
+  DurabilityWatchDB = { version = 2, settings = { instanceWarn = false, instanceLevel = 30 } }
+  boot(wow, set())
+  eq(DurabilityWatchDB.settings.instanceWarn, false, "switched off stays off")
+  eq(DurabilityWatchDB.settings.instanceLevel, 30)
+  DurabilityWatchDB = { version = 2, settings = { instanceWarn = "yes", instanceLevel = 120 } }
+  boot(wow, set())
+  eq(DurabilityWatchDB.settings.instanceWarn, true)
+  eq(DurabilityWatchDB.settings.instanceLevel, 50)
+end)
+
+test("a client without the instance functions, or with secret answers, stays quiet", function(wow)
+  local ns, w = boot(wow, set())
+  local secret = { secret = true }
+  IsInInstance = function() return secret, "party" end
+  enter(wow, w, STONEVAULT)
+  IsInInstance = function() return true, secret end
+  enter(wow, w, STONEVAULT)
+  eq(#wow.chat, 0)
+  IsInInstance = nil
+  enter(wow, w, STONEVAULT)
+  eq(#wow.chat, 0)
+  eq(ns.ReadPlace(), nil)
+  IsInInstance = function() return true, "party" end
+  GetInstanceInfo = function() return secret, "party", 1, "Normal", 5, 0, false, secret end
+  local place = ns.ReadPlace()
+  eq(place.kind, "party")
+  eq(place.name, nil)
+  eq(place.key, "party", "without a name or ID the kind tells it apart")
+  enter(wow, w, STONEVAULT)
+  eq(wow.chat[1], PREFIX .. "You are entering a dungeon with Main Hand: [Blade] at 40% durability. Repair first.")
 end)

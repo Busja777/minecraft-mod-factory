@@ -1,7 +1,8 @@
 local _, ns = ...
 
 -- Pure bookkeeping: no frames, no events. Everything here runs outside the game in the tests.
--- A character entry is { class, level, money, zone, subzone, rested, resting, maxLevel, seen }.
+-- A character entry is { class, level, money, zone, subzone, rested, resting, maxLevel, seen,
+-- played, playedAt }: played is the total time played in seconds as it was at the time playedAt.
 
 ns.MAX_ROWS = 15
 ns.RESTED_CAP = 150                    -- the game stores at most one and a half levels
@@ -37,6 +38,26 @@ function ns.RelativeTime(seconds)
   if seconds < 3600 then return string.format(ns.L["%dm"], math.floor(seconds / 60)) end
   if seconds < 86400 then return string.format(ns.L["%dh"], math.floor(seconds / 3600)) end
   return string.format(ns.L["%dd"], math.floor(seconds / 86400))
+end
+
+-- Played time: "45m", "5h 12m", "12d 4h".
+function ns.PlayedText(seconds)
+  if type(seconds) ~= "number" or seconds < 0 then return nil end
+  if seconds < 3600 then return string.format(ns.L["%dm"], math.floor(seconds / 60)) end
+  if seconds < 86400 then
+    return string.format(ns.L["%dh %dm"], math.floor(seconds / 3600), math.floor(seconds % 3600 / 60))
+  end
+  return string.format(ns.L["%dd %dh"], math.floor(seconds / 86400), math.floor(seconds % 86400 / 3600))
+end
+
+-- The played time of one character by now: the character you play keeps counting since the
+-- reading, everyone else stands still while logged out. nil until it was read once.
+function ns.PlayedNow(c, current, now)
+  if type(c.played) ~= "number" then return nil end
+  if current and type(c.playedAt) == "number" and now and now > c.playedAt then
+    return c.played + (now - c.playedAt)
+  end
+  return c.played
 end
 
 local function thousands(n)
@@ -83,9 +104,10 @@ function ns.SplitKey(key)
   return name or key, realm or ""
 end
 
--- One row per character: highest level first, then by name. Also returns the gold of all of them.
+-- One row per character: highest level first, then by name. Also returns the gold of all of them
+-- and the played time of all whose time is known (nil when nobody's is).
 function ns.BuildRows(chars, currentKey, now)
-  local rows, total = {}, 0
+  local rows, total, played = {}, 0, nil
   for key, c in pairs(chars) do
     local name, realm = ns.SplitKey(key)
     local current = key == currentKey
@@ -101,8 +123,10 @@ function ns.BuildRows(chars, currentKey, now)
       place = ns.PlaceText(c.zone, c.subzone), rested = rested, resting = c.resting and true or false,
       maxLevel = c.maxLevel and true or false, current = current,
       ago = current and 0 or (c.seen and math.max(now - c.seen, 0) or nil),
+      played = ns.PlayedNow(c, current, now),
     }
     total = total + (c.money or 0)
+    if rows[#rows].played then played = (played or 0) + rows[#rows].played end
   end
   table.sort(rows, function(a, b)
     local la, lb = a.level or 0, b.level or 0
@@ -111,7 +135,7 @@ function ns.BuildRows(chars, currentKey, now)
     if na ~= nb then return na < nb end
     return a.key < b.key
   end)
-  return rows, total
+  return rows, total, played
 end
 
 -- The rows that fit into the window; when there are more, the last place says how many are left.

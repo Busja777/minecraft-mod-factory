@@ -1,6 +1,10 @@
 local _, ns = ...
 
--- Notes how the character you are playing looks right now: class, level, gold, place and rested bonus.
+-- Notes how the character you are playing looks right now: class, level, gold, place, rested bonus
+-- and played time.
+
+ns.PLAYED_DELAY = 3   -- seconds after login before the played time is asked for
+ns.HUSH_TIMEOUT = 15  -- the chat prints /played answers again at the latest after this many seconds
 
 function ns.CharKey()
   return (UnitName("player") or "?") .. "-" .. (GetRealmName() or "?")
@@ -57,6 +61,58 @@ local function saveResting(c)
   if readable(resting) then c.resting = resting and true or false end
 end
 
+-- The played time comes from the same answer as /played. While the addon asks for it, the chat
+-- windows do not print that answer; they get it back right after (or after HUSH_TIMEOUT).
+-- Without C_Timer there is no safe way back, so the chat is left alone.
+local hushed
+
+local function later(seconds, fn)
+  if C_Timer and C_Timer.After then
+    C_Timer.After(seconds, fn)
+    return true
+  end
+  return false
+end
+
+local function unhush()
+  if not hushed then return end
+  for _, f in ipairs(hushed) do pcall(f.RegisterEvent, f, "TIME_PLAYED_MSG") end
+  hushed = nil
+end
+
+local function hush()
+  if hushed or not (C_Timer and C_Timer.After) or type(NUM_CHAT_WINDOWS) ~= "number" then return end
+  hushed = {}
+  for i = 1, NUM_CHAT_WINDOWS do
+    local f = _G["ChatFrame" .. i]
+    if type(f) == "table" and f.IsEventRegistered and f:IsEventRegistered("TIME_PLAYED_MSG") then
+      f:UnregisterEvent("TIME_PLAYED_MSG")
+      hushed[#hushed + 1] = f
+    end
+  end
+  later(ns.HUSH_TIMEOUT, unhush)
+end
+
+function ns.RequestPlayed()
+  if not ns.char or not RequestTimePlayed then return end
+  hush()
+  RequestTimePlayed()
+end
+
+local function savePlayed(c, total)
+  if not readable(total) or type(total) ~= "number" or total < 0 then return end
+  c.played = math.floor(total)
+  c.playedAt = time()
+end
+
+-- The character's own clock keeps running while you play: brought up to date on logout.
+local function advancePlayed(c)
+  if type(c.played) ~= "number" or type(c.playedAt) ~= "number" then return end
+  local now = time()
+  if now > c.playedAt then c.played = c.played + (now - c.playedAt) end
+  c.playedAt = now
+end
+
 function ns.SaveAll()
   local c = ns.char
   if not c then return end
@@ -72,7 +128,7 @@ end
 local function onLogin()
   AltAlmanacDB = AltAlmanacDB or {}
   local db = AltAlmanacDB
-  db.version = 1
+  db.version = 2 -- 2: played time (1.1); entries of 1.0 simply have none yet
   db.chars = db.chars or {}
   db.settings = db.settings or {}
   ns.db = db
@@ -81,7 +137,13 @@ local function onLogin()
   local char = db.chars[key] or {}
   db.chars[key] = char
   ns.char = char
+  if type(char.played) == "number" then
+    char.playedAt = time() -- the time logged out does not count as played
+  else
+    char.played, char.playedAt = nil, nil
+  end
   ns.SaveAll()
+  if not later(ns.PLAYED_DELAY, ns.RequestPlayed) then ns.RequestPlayed() end
 end
 
 local frame = CreateFrame("Frame")
@@ -93,6 +155,7 @@ frame:SetScript("OnEvent", function(_, event, ...)
   elseif not ns.char then
     return
   elseif event == "PLAYER_LOGOUT" then
+    advancePlayed(ns.char)
     ns.SaveAll()
     return
   else
@@ -113,6 +176,9 @@ frame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "PLAYER_UPDATE_RESTING" then
       saveResting(c)
       saveRested(c)
+    elseif event == "TIME_PLAYED_MSG" then
+      savePlayed(c, (...))
+      if hushed and not later(0, unhush) then unhush() end
     end
     c.seen = time()
   end
@@ -133,3 +199,4 @@ listen("ZONE_CHANGED")
 listen("ZONE_CHANGED_INDOORS")
 listen("UPDATE_EXHAUSTION")
 listen("PLAYER_UPDATE_RESTING")
+listen("TIME_PLAYED_MSG")

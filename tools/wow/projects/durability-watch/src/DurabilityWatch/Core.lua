@@ -16,6 +16,7 @@ ns.SLOT_LABEL = {
 ns.DEFAULT_WARN = 25 -- percent
 ns.MIN_WARN = 5
 ns.MAX_WARN = 90
+ns.DEFAULT_INSTANCE = 50 -- percent: the check before dungeons and raids
 ns.YELLOW = 50       -- at or below: yellow
 ns.RED = 20          -- at or below: red
 
@@ -89,6 +90,28 @@ function ns.Warning(state, lowest, level)
     state.armed = true
   end
   return false
+end
+
+-- Instance kinds the check before an instance looks at: dungeons ("party") and raids.
+ns.INSTANCE_KINDS = { party = true, raid = true }
+
+-- Once the lowest item is above the level again (a repair, new gear), the next instance may warn.
+function ns.InstanceRearm(state, lowest, level)
+  if type(lowest) == "number" and type(level) == "number" and lowest > level then state.warnedFor = nil end
+end
+
+-- The warning when you enter a dungeon or raid with worn gear. place = { kind, key } of the instance
+-- you are in, nil outside one; level nil means the check is switched off. state = { warnedFor = key }.
+-- It fires once per instance: not again after a wipe and the run back, only after the gear was above
+-- the level in between or in a different instance. Returns true when the warning is to be shown now.
+function ns.InstanceWarning(state, place, lowest, level)
+  if type(level) ~= "number" then return false end
+  ns.InstanceRearm(state, lowest, level)
+  if type(place) ~= "table" or not ns.INSTANCE_KINDS[place.kind] or place.key == nil then return false end
+  if type(lowest) ~= "number" or lowest > level then return false end
+  if state.warnedFor == place.key then return false end
+  state.warnedFor = place.key
+  return true
 end
 
 -- A warning level from the settings or the chat: a whole number from 5 to 90, else nil.
