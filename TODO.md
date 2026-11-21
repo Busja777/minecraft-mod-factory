@@ -31,6 +31,12 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 - **Später möglich:** Die sieben Packs, die überall laden, könnten auf CurseForge auch 1.21.5 bis 26.2 angeben. Das bringt mehr Reichweite, braucht aber einen eigenen Schritt im Upload.
 - **Speicherplatz:** Auf deinem Mac sind nur noch etwa 14 GB frei. Der Zwischenspeicher `~/.cache/mod-factory/minecraft/` enthält jetzt 14 weitere Versionen (3,4 GB). Die Ordner 1.21.2 bis 26.2 dürfen jederzeit weg; `--zwischen` lädt sie bei Bedarf neu.
 
+## Deutsche Spielnamen (21.11. abends)
+
+- Die deutschen Texte der Stardew-Packs hatten über 20 Spielnamen, die das deutsche Spiel anders nennt (zum Beispiel Saloon statt „Kneipe zum Sternenfall“, Ton statt „Lehm“, Volksfest statt „Sterntautaler Volksfest“). Korrigiert in #92, #93 und #94, belegt über die `[[de:]]`-Verweise des Wikis. Hochgeladen war nichts davon.
+- **Regel ab jetzt:** Deutsche Namen von Gegenständen, Festen und Orten nur aus dem `[[de:]]`-Verweis der englischen Wiki-Seite oder vom deutschen Wiki, mit Revision im Kommentar. Die deutschen Seiten liegen in `~/.cache/mod-factory/stardew/wiki-de/`.
+- **Für später (Werkzeug, braucht dein Wort):** Diese Regel in `tools/stardew/BRIEF.md` aufnehmen und eine Namensliste `tools/stardew/data/de-names.json` aus dem Wiki erzeugen, gegen die die Stardew-Prüfung jeden deutschen Text abgleicht.
+
 ## Nachmittag 21.11.: Updates statt neuer Projekte
 
 **Gebaut (alles nur Inhalte, von selbst übernommen oder unterwegs):**
