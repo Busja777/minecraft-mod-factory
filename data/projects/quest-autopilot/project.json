@@ -40,6 +40,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "QuestAutopilot-1.4.zip",
+      "changelog": "## Quest Autopilot 1.4\n\n- Quest Autopilot now speaks **German**. On clients in other languages it stays in English.\n- The price in the reward hint uses the game's own coin letters in your client's language, for example \"1G 20S 3K\" on a German client. English clients still see \"1g 20s 3c\".\n- Quest names and reward links come from the game as before, in your client's language.\n- The commands stay the same in every language, for example `/qa manual` or `/qa hint off`.\n- Your settings, manual quests and dialogue choices from 1.3 stay as they are.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

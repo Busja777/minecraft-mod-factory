@@ -3,26 +3,27 @@ local L = ns.L
 
 -- /pd shows the state; duels, invites, quiet and whisper switch on or off; allow, unallow and list
 -- keep the allow list; whisper text and whisper reset set the reply; log shows what was declined.
+-- The texts are looked up once, when the addon loads: Locale.lua has set the language by then.
 
-local HELP = "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list, /pd log."
-local LOG_HELP = "/pd log lists what was declined this session, /pd log all the last 50 across sessions, /pd log clear empties the log."
-local WHISPER_HELP = "/pd whisper on or off sends declined strangers a short polite whisper, /pd whisper text Your words sets it, /pd whisper reset brings back the default."
+local HELP = L["/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list, /pd log."]
+local LOG_HELP = L["/pd log lists what was declined this session, /pd log all the last 50 across sessions, /pd log clear empties the log."]
+local WHISPER_HELP = L["/pd whisper on or off sends declined strangers a short polite whisper, /pd whisper text Your words sets it, /pd whisper reset brings back the default."]
 
 local SWITCHES = {
-  duels = { on = "Declining duels from strangers is on.", off = "Declining duels from strangers is off." },
-  invites = { on = "Declining group invites from strangers is on.", off = "Declining group invites from strangers is off." },
-  quiet = { on = "Quiet mode is on: nothing is said in chat.", off = "Quiet mode is off." },
-  whisper = { on = "Reply whisper is on.", off = "Reply whisper is off." },
+  duels = { on = L["Declining duels from strangers is on."], off = L["Declining duels from strangers is off."] },
+  invites = { on = L["Declining group invites from strangers is on."], off = L["Declining group invites from strangers is off."] },
+  quiet = { on = L["Quiet mode is on: nothing is said in chat."], off = L["Quiet mode is off."] },
+  whisper = { on = L["Reply whisper is on."], off = L["Reply whisper is off."] },
 }
 
 local function switchText(key)
   local texts = SWITCHES[key]
-  return ns.settings[key] and L[texts.on] or L[texts.off]
+  return ns.settings[key] and texts.on or texts.off
 end
 
 local function help()
-  ns.Print(L[HELP])
-  ns.Print(L[WHISPER_HELP])
+  ns.Print(HELP)
+  ns.Print(WHISPER_HELP)
 end
 
 local function showState()
@@ -98,7 +99,7 @@ local function log(rest)
       ns.Print(string.format(L["Declined this session: %d. Newest first:"], ns.sessionLogged))
       printEntries(ns.sessionLog)
     end
-    ns.Print(L[LOG_HELP])
+    ns.Print(LOG_HELP)
   elseif rest == "all" then
     if #ns.db.log == 0 then return ns.Print(L["Nothing declined yet."]) end
     ns.Print(string.format(L["The last %d declined requests, newest first:"], #ns.db.log))
@@ -109,7 +110,7 @@ local function log(rest)
     ns.sessionLogged = 0
     ns.Print(L["The log is empty now."])
   else
-    ns.Print(L[LOG_HELP])
+    ns.Print(LOG_HELP)
   end
 end
 

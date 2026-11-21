@@ -1329,3 +1329,126 @@ test("1.2 saved data is taken over: everything stays, the reward hint starts on"
   boot(wow)
   eq(QuestAutopilotDB.settings.hint, false, "a switched-off hint stays off")
 end)
+
+-- 1.4: German
+
+local P = "|cffffd100Quest Autopilot:|r "
+
+-- A German client: its language and the coin letters it has (GlobalStrings). The stand-in client
+-- has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  GOLD_AMOUNT_SYMBOL, SILVER_AMOUNT_SYMBOL, COPPER_AMOUNT_SYMBOL = "G", "S", "K"
+end
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("coin letters come from the game, English when the client has none", function(wow)
+  local ns = boot(wow)
+  eq(ns.MoneyText(12003), "1g 20s 3c")
+  germanClient(wow)
+  eq(ns.MoneyText(12003), "1G 20S 3K")
+  eq(ns.MoneyText(0), "0K")
+  eq(ns.MoneyText(1000000), "100G")
+  COPPER_AMOUNT_SYMBOL = ""
+  eq(ns.MoneyText(7), "7c", "an empty letter stays English")
+  SILVER_AMOUNT_SYMBOL = 5
+  eq(ns.MoneyText(4503), "45s 3c", "so does one that is no text")
+end)
+
+test("German client: state, switches and help in German, the command words stay English", function(wow)
+  germanClient(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa")
+  eq(wow.chat[1], P .. "Autopilot ist an. Quests annehmen: an. Quests abgeben: an. Tägliche und wöchentliche Quests: automatisch. Einzige Gesprächsoption: aus. Belohnungshinweis: an. Manuell: 0.")
+  wow.slash("/qa dailies")
+  eq(wow.chat[2], P .. "Autopilot ist an. Quests annehmen: an. Quests abgeben: an. Tägliche und wöchentliche Quests: manuell. Einzige Gesprächsoption: aus. Belohnungshinweis: an. Manuell: 0.")
+  wow.slash("/qa off")
+  eq(wow.chat[3]:match("^.-Autopilot ist aus%. ") ~= nil, true)
+  eq(QuestAutopilotDB.settings.enabled, false)
+  wow.slash("/qa aus")
+  eq(#wow.chat, 8, "German command words are not commands: the five help lines")
+  eq(wow.chat[4], P .. "/qa zeigt den Stand, /qa on und /qa off schalten alles, /qa accept und /qa turnin schalten das Annehmen oder das Abgeben. Halte Shift gedrückt, während du jemanden ansprichst, um zu pausieren.")
+  eq(wow.chat[5], P .. "/qa manual stellt die Quest, die du gerade gesehen hast, auf manuell, /qa manual <ID, Name oder Questlink> fügt eine hinzu, /qa auto <ID oder Name> gibt sie dem Autopiloten zurück, /qa list zeigt sie.")
+  eq(wow.chat[6], P .. "/qa dailies überlässt dir alle täglichen und wöchentlichen Quests, nochmal eingeben macht es rückgängig.")
+  eq(wow.chat[7], P .. "/qa gossip wählt die einzige Gesprächsoption eines NPCs, der keine Quests für dich hat, nochmal eingeben macht es rückgängig.")
+  eq(wow.chat[8], P .. "/qa hint on oder /qa hint off: markiert die Belohnung, für die ein Händler am meisten zahlt, wenn du bei einer Quest wählen darfst. Der Hinweis wählt nie für dich.")
+  wow.slash("/qa hint off")
+  eq(wow.chat[9], P .. "Der Belohnungshinweis ist aus.")
+  wow.slash("/qa hint on")
+  eq(wow.chat[10], P .. "Der Belohnungshinweis ist an: Wenn du bei einer Quest wählen darfst, bekommt die Belohnung, für die ein Händler am meisten zahlt, eine Münze.")
+end)
+
+test("German client: quests kept manual in German, quest names from the game", function(wow)
+  germanClient(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qa manual")
+  eq(wow.chat[1], P .. "Noch keine Quest gesehen. Öffne eine mit gedrückter Shift-Taste und gib /qa manual ein, oder nutze /qa manual <ID oder Name>.")
+  wow.slash("/qa list")
+  eq(wow.chat[2], P .. "Du hast keine manuellen Quests. /qa manual fügt die Quest hinzu, die du gerade gesehen hast.")
+  g.titles[4242] = "Füttert die Greifen"
+  wow.slash("/qa manual 4242")
+  eq(wow.chat[3], P .. "Füttert die Greifen (4242) bleibt ab jetzt manuell.")
+  wow.slash("/qa manual 4242")
+  eq(wow.chat[4], P .. "Füttert die Greifen (4242) ist schon manuell.")
+  wow.slash("/qa manual 61")
+  eq(wow.chat[5], P .. "Quest 61 bleibt ab jetzt manuell.")
+  wow.slash("/qa list")
+  eq(wow.chat[6], P .. "Manuelle Quests: 2")
+  eq(wow.chat[7], P .. "  Füttert die Greifen (4242)")
+  eq(wow.chat[8], P .. "  Quest 61")
+  wow.slash("/qa auto 61")
+  eq(wow.chat[9], P .. "Quest 61 übernimmt wieder der Autopilot.")
+  wow.slash("/qa auto 6")
+  eq(wow.chat[10], P .. "Quest 6 steht nicht auf deiner Liste. /qa list zeigt sie.")
+  wow.slash("/qa")
+  eq(wow.chat[11]:match("Manuell: 1%.$") ~= nil, true)
+end)
+
+test("German client: rewards, the reward hint with the game's coin letters and the dialogue question in German", function(wow)
+  germanClient(wow)
+  local ns, g = boot(wow)
+  rewardsGame(g, {
+    { name = "Umhang", id = 11, price = 4500 },
+    { name = "Stab", id = 12, price = 12003 },
+  })
+  wow.fire("QUEST_COMPLETE")
+  eq(g.done(), "", "the autopilot never picks")
+  eq(wow.chat[1], P .. "Diese Quest hat mehrere Belohnungen. Wähle selbst eine aus.")
+  eq(wow.chat[2], P .. "Höchster Verkaufswert beim Händler: " .. link(12, "Stab") .. " (1G 20S 3K). Die Wahl bleibt bei dir.")
+  leave(wow)
+  wow.slash("/qa gossip")
+  wow.chat = {}
+  g.options = { option(80) }
+  wow.fire("GOSSIP_SHOW")
+  wow.clock = wow.clock + 0.1
+  wow.fire("GOSSIP_CONFIRM", 80, "5 Gold bezahlen?", 50000)
+  eq(wow.chat[1], P .. "Diese Gesprächsoption verlangt eine Bestätigung, also entscheidest du. Der Autopilot wählt sie nicht noch einmal.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 24, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts and the game's English coin letters", function(wow)
+  wow.locale = "enUS"
+  GOLD_AMOUNT_SYMBOL, SILVER_AMOUNT_SYMBOL, COPPER_AMOUNT_SYMBOL = "g", "s", "c"
+  local ns, g = boot(wow)
+  eq(next(ns.L), nil)
+  rewardsGame(g, { { name = "Cloak", id = 11, price = 4500 }, { name = "Staff", id = 12, price = 12000 } })
+  wow.fire("QUEST_COMPLETE")
+  eq(wow.chat[1], CHOOSE)
+  eq(wow.chat[2], HINT .. link(12, "Staff") .. " (1g 20s). The choice is still yours.")
+end)

@@ -9,7 +9,8 @@ ns.KINDS = { duel = true, invite = true }
 ns.WHISPER_GAP = 1800
 ns.WHISPER_SPACING = 10
 ns.WHISPER_MAX = 200 -- characters of a custom reply; a whisper takes 255
-ns.DEFAULT_WHISPER = "Thanks, but I don't take duels or group invites from people I don't know. Have a good day!"
+-- 1.3: in the player's language, as the stranger most likely plays on a realm of that language.
+ns.DEFAULT_WHISPER = L["Thanks, but I don't take duels or group invites from people I don't know. Have a good day!"]
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false

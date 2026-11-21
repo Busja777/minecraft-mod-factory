@@ -853,3 +853,135 @@ test("/pd log before login does nothing", function(wow)
   eq(#wow.chat, 0)
   eq(PoliteDeclineDB, nil)
 end)
+
+-- 1.3: German
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+local DE_HELP = PREFIX .. "/pd duels on/off, /pd invites on/off, /pd quiet on/off, /pd allow Name, /pd unallow Name, /pd list, /pd log."
+local DE_WHISPER_HELP = PREFIX .. "/pd whisper on oder off schickt abgelehnten Fremden eine kurze, höfliche Flüsternachricht, /pd whisper text Deine Worte legt sie fest, /pd whisper reset stellt den Standardtext wieder her."
+local DE_DEFAULT = "Danke, aber ich nehme keine Duelle und Gruppeneinladungen von Leuten an, die ich nicht kenne. Einen schönen Tag noch!"
+
+test("German client: declines, settings, help and the allow list in German", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow)
+  boot(wow)
+  w.duel("Grumbash")
+  w.invite("Spammer-Kazzak", "Player-1-0100")
+  eq(wow.chat[1], PREFIX .. "Duell von Grumbash abgelehnt (1 in dieser Sitzung).")
+  eq(wow.chat[2], PREFIX .. "Gruppeneinladung von Spammer-Kazzak abgelehnt (1 in dieser Sitzung).")
+  wow.slash("/pd")
+  eq(#wow.chat, 5)
+  eq(wow.chat[3], PREFIX .. "Duelle von Fremden ablehnen ist an. Gruppeneinladungen von Fremden ablehnen ist an. Der stille Modus ist aus. Die Antwort per Flüsternachricht ist aus.")
+  eq(wow.chat[4], DE_HELP)
+  eq(wow.chat[5], DE_WHISPER_HELP)
+  wow.slash("/pd duels off")
+  eq(wow.chat[6], PREFIX .. "Duelle von Fremden ablehnen ist aus.")
+  wow.slash("/pd invites off")
+  eq(wow.chat[7], PREFIX .. "Gruppeneinladungen von Fremden ablehnen ist aus.")
+  wow.slash("/pd quiet on")
+  eq(wow.chat[8], PREFIX .. "Der stille Modus ist an: Im Chat erscheint nichts.")
+  wow.slash("/pd duels aus")
+  eq(wow.chat[9], DE_HELP, "German command words are not commands")
+  eq(PoliteDeclineDB.settings.duels, false)
+
+  local n = #wow.chat
+  wow.slash("/pd list")
+  wow.slash("/pd allow Thrall")
+  wow.slash("/pd allow thrall")
+  wow.slash("/pd allow")
+  wow.slash("/pd list")
+  wow.slash("/pd unallow Jaina")
+  wow.slash("/pd unallow THRALL")
+  wow.slash("/pd unallow")
+  local out = since(wow, n)
+  eq(#out, 8)
+  eq(out[1], PREFIX .. "Deine Ausnahmeliste ist leer.")
+  eq(out[2], PREFIX .. "Thrall steht jetzt auf deiner Ausnahmeliste.")
+  eq(out[3], PREFIX .. "Thrall steht schon auf deiner Ausnahmeliste.")
+  eq(out[4], PREFIX .. "Gib einen Namen an: /pd allow Name oder Name-Realm.")
+  eq(out[5], PREFIX .. "Ausnahmeliste: Thrall.")
+  eq(out[6], PREFIX .. "Jaina steht nicht auf deiner Ausnahmeliste.")
+  eq(out[7], PREFIX .. "Thrall wurde von deiner Ausnahmeliste genommen.")
+  eq(out[8], PREFIX .. "Gib einen Namen an: /pd unallow Name oder Name-Realm.")
+end)
+
+test("German client: the reply whisper goes out in German, the player's own text as typed", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd whisper on")
+  eq(wow.chat[1], PREFIX .. "Die Antwort per Flüsternachricht ist an.")
+  eq(wow.chat[2], PREFIX .. "Antworttext: " .. DE_DEFAULT)
+  eq(#DE_DEFAULT <= 255, true, "a whisper takes 255 bytes")
+  w.duel("Grumbash")
+  eq(w.whispers[1].text, DE_DEFAULT)
+  eq(w.whispers[1].target, "Grumbash")
+  wow.slash("/pd whisper text " .. string.rep("a", 201))
+  eq(wow.chat[4], PREFIX .. "Der Text ist zu lang: höchstens 200 Zeichen.")
+  wow.slash("/pd whisper text Heute nicht, danke.")
+  eq(wow.chat[5], PREFIX .. "Antworttext: Heute nicht, danke.")
+  wow.clock = wow.clock + 10
+  w.duel("Orcy")
+  eq(w.whispers[2].text, "Heute nicht, danke.")
+  wow.slash("/pd whisper reset")
+  eq(wow.chat[7], PREFIX .. "Antworttext: " .. DE_DEFAULT)
+  eq(PoliteDeclineDB.settings.whisperText, nil, "the default is not saved, so it follows the client's language")
+  wow.slash("/pd whisper off")
+  eq(wow.chat[8], PREFIX .. "Die Antwort per Flüsternachricht ist aus.")
+end)
+
+test("German client: the log in German with German dates", function(wow)
+  wow.locale = "deDE"
+  local w = world(wow)
+  boot(wow)
+  wow.slash("/pd log")
+  eq(wow.chat[1], PREFIX .. "In dieser Sitzung wurde nichts abgelehnt.")
+  eq(wow.chat[2], PREFIX .. "/pd log zeigt, was in dieser Sitzung abgelehnt wurde, /pd log all die letzten 50 über alle Sitzungen, /pd log clear leert das Protokoll.")
+  wow.slash("/pd log all")
+  eq(wow.chat[3], PREFIX .. "Noch nichts abgelehnt.")
+  w.duel("Grumbash")
+  wow.now = wow.now + 65
+  w.invite("Spammer-Kazzak", "Player-1-0100")
+  local n = #wow.chat
+  wow.slash("/pd log")
+  local out = since(wow, n)
+  eq(#out, 4)
+  eq(out[1], PREFIX .. "In dieser Sitzung abgelehnt: 2. Neueste zuerst:")
+  eq(out[2], PREFIX .. "20.11. 18:01: Gruppeneinladung von Spammer-Kazzak.")
+  eq(out[3], PREFIX .. "20.11. 18:00: Duell von Grumbash.")
+  wow.slash("/pd log all")
+  eq(wow.chat[n + 5], PREFIX .. "Die letzten 2 abgelehnten Anfragen, neueste zuerst:")
+  wow.slash("/pd log clear")
+  eq(wow.chat[#wow.chat], PREFIX .. "Das Protokoll ist jetzt leer.")
+  eq(#PoliteDeclineDB.log, 0)
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  world(wow)
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    if not key:find("%H", 1, true) then eq(placeholders(text), placeholders(key), key) end
+  end
+  eq(n, 33, "every text on screen has its German one")
+  eq(ns.L["%b %d %H:%M"], "%d.%m. %H:%M", "dates the German way")
+end)
+
+test("an English client keeps the English texts and the English reply", function(wow)
+  wow.locale = "enUS"
+  local w = world(wow)
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  wow.slash("/pd whisper on")
+  w.duel("Grumbash")
+  eq(w.whispers[1].text, DEFAULT)
+  eq(wow.chat[3], PREFIX .. "Declined a duel from Grumbash (1 this session).")
+end)

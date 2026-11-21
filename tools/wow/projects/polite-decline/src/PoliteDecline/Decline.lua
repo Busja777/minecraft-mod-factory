@@ -41,7 +41,7 @@ local function decline(kind)
 end
 
 function ns.WhisperText()
-  return ns.settings.whisperText or ns.L[ns.DEFAULT_WHISPER]
+  return ns.settings.whisperText or ns.DEFAULT_WHISPER
 end
 
 -- The game's chat function: C_ChatInfo.SendChatMessage in current clients, SendChatMessage before.

@@ -154,7 +154,7 @@ test("core: slash words, state text and the background sound option", function(w
   eq(ns.Apply(s, "lfg maybe"), nil)
   eq(ns.Apply(s, "sound on"), nil)
   eq(ns.Apply(s, ""), nil)
-  eq(ns.StateText(s), "Alerts: Group finder on, Ready check on, Battleground and arena on, Pet battle on. Icon flash: off.")
+  eq(ns.StateText(s), "Alerts: Group Finder on, Ready Check on, Battleground and Arena on, Pet Battle on. Icon flash: off.")
   eq(ns.BackgroundSoundOff("0"), true)
   eq(ns.BackgroundSoundOff("1"), false)
   eq(ns.BackgroundSoundOff(nil), false)
@@ -359,18 +359,18 @@ test("slash commands show the state, help and switch alerts", function(wow)
   local _, g = boot(wow)
   wow.slash("/qh")
   eq(#wow.chat, 4)
-  eq(wow.chat[1], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena on, Pet battle on. Icon flash: on.")
-  eq(wow.chat[2], PREFIX .. "Sounds: Group finder horn, Ready check horn, Battleground and arena horn, Pet battle horn. Choices: horn, warning, alarm, invite, whisper.")
-  eq(wow.chat[3], PREFIX .. "Screen flash: Group finder off, Ready check off, Battleground and arena off, Pet battle off. Choices: red, gold, blue, green, off. Icon flash: on.")
+  eq(wow.chat[1], PREFIX .. "Alerts: Group Finder on, Ready Check on, Battleground and Arena on, Pet Battle on. Icon flash: on.")
+  eq(wow.chat[2], PREFIX .. "Sounds: Group Finder horn, Ready Check horn, Battleground and Arena horn, Pet Battle horn. Choices: horn, warning, alarm, invite, whisper.")
+  eq(wow.chat[3], PREFIX .. "Screen flash: Group Finder off, Ready Check off, Battleground and Arena off, Pet Battle off. Choices: red, gold, blue, green, off. Icon flash: on.")
   eq(wow.chat[4]:match("^" .. PREFIX:gsub("%p", "%%%0") .. "/qh shows this") ~= nil, true)
   eq(wow.chat[4]:find("/qh sound lfg alarm picks one for an alert, /qh test lfg plays it.", 1, true) ~= nil, true)
   eq(wow.chat[4]:match("/qh flash lfg red gives an alert a coloured flash at the screen edges %(red, gold, blue, green or off%)%.$") ~= nil, true)
   wow.slash("/qh pvp off")
-  eq(wow.chat[5], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena off, Pet battle on. Icon flash: on.")
+  eq(wow.chat[5], PREFIX .. "Alerts: Group Finder on, Ready Check on, Battleground and Arena off, Pet Battle on. Icon flash: on.")
   eq(QueueHornDB.settings.pvp, false)
   wow.slash("/queuehorn  Ready   OFF ")
   eq(QueueHornDB.settings.ready, false)
-  eq(wow.chat[6]:match("Ready check off") ~= nil, true)
+  eq(wow.chat[6]:match("Ready Check off") ~= nil, true)
   wow.slash("/qh flash off")
   eq(QueueHornDB.settings.flash, false)
   wow.slash("/qh sound on")
@@ -501,7 +501,7 @@ test("core: sound names, ids and the fallback to the horn", function(wow)
   eq(ns.ChooseSound(s, "flash", "alarm"), nil)
   eq(ns.ChooseSound(s, "sounds", "alarm"), nil)
   eq(s.sounds.lfg, "alarm")
-  eq(ns.SoundText(s), "Sounds: Group finder alarm, Ready check horn, Battleground and arena horn, Pet battle whisper. Choices: horn, warning, alarm, invite, whisper.")
+  eq(ns.SoundText(s), "Sounds: Group Finder alarm, Ready Check horn, Battleground and Arena horn, Pet Battle whisper. Choices: horn, warning, alarm, invite, whisper.")
   for _, name in ipairs(ns.SOUND_NAMES) do eq(type(ns.SOUND_KIT[name]), "string", name) end
 end)
 
@@ -524,11 +524,11 @@ end)
 test("/qh sound lists the sounds and picks one with a preview", function(wow)
   local _, g = boot(wow)
   wow.slash("/qh sound")
-  eq(wow.chat[1], PREFIX .. "Sounds: Group finder horn, Ready check horn, Battleground and arena horn, Pet battle horn. Choices: horn, warning, alarm, invite, whisper.")
+  eq(wow.chat[1], PREFIX .. "Sounds: Group Finder horn, Ready Check horn, Battleground and Arena horn, Pet Battle horn. Choices: horn, warning, alarm, invite, whisper.")
   wow.slash("/qh SOUNDS")
   eq(wow.chat[2], wow.chat[1])
   wow.slash("/queuehorn  Sound  LFG  Alarm ")
-  eq(wow.chat[3], PREFIX .. "Group finder now plays alarm.")
+  eq(wow.chat[3], PREFIX .. "Group Finder now plays alarm.")
   eq(QueueHornDB.settings.sounds.lfg, "alarm")
   eq(table.concat(g.sounds, " "), "12889@Master", "the new sound plays once")
   eq(g.flashes, 0, "a preview does not flash")
@@ -672,7 +672,7 @@ test("core: every alert starts without a screen flash, a saved colour is kept", 
   eq(ns.ChooseScreen(s, "flash", "red"), nil)
   eq(ns.ChooseScreen(s, "sound", "red"), nil)
   eq(s.screen.lfg, "off")
-  eq(ns.ScreenText(s), "Screen flash: Group finder off, Ready check off, Battleground and arena off, Pet battle green. Choices: red, gold, blue, green, off. Icon flash: on.")
+  eq(ns.ScreenText(s), "Screen flash: Group Finder off, Ready Check off, Battleground and Arena off, Pet Battle green. Choices: red, gold, blue, green, off. Icon flash: on.")
   for _, name in ipairs(ns.SCREEN_NAMES) do eq(#ns.SCREEN_RGB[name], 3, name) end
 end)
 
@@ -709,7 +709,7 @@ test("/qh flash ready red: a preview, then every ready check flashes red", funct
   local s = screen(wow)
   local ns, g = boot(wow)
   wow.slash("/qh flash ready red")
-  eq(wow.chat[1], PREFIX .. "Ready check now flashes the screen red.")
+  eq(wow.chat[1], PREFIX .. "Ready Check now flashes the screen red.")
   eq(QueueHornDB.settings.screen.ready, "red")
   local f = ns.screenFlash
   eq(f.shown, true, "the preview")
@@ -784,12 +784,12 @@ test("/qh flash lists, off switches it off, wrong words show the help, the icon 
   local s = screen(wow)
   local ns, g = boot(wow)
   wow.slash("/qh flash")
-  eq(wow.chat[1], PREFIX .. "Screen flash: Group finder off, Ready check off, Battleground and arena off, Pet battle off. Choices: red, gold, blue, green, off. Icon flash: on.")
+  eq(wow.chat[1], PREFIX .. "Screen flash: Group Finder off, Ready Check off, Battleground and Arena off, Pet Battle off. Choices: red, gold, blue, green, off. Icon flash: on.")
   wow.slash("/qh  Flash  LFG  Gold ")
-  eq(wow.chat[2], PREFIX .. "Group finder now flashes the screen gold.")
+  eq(wow.chat[2], PREFIX .. "Group Finder now flashes the screen gold.")
   s.run(ns, 5)
   wow.slash("/qh flash lfg off")
-  eq(wow.chat[3], PREFIX .. "Group finder: no screen flash.")
+  eq(wow.chat[3], PREFIX .. "Group Finder: no screen flash.")
   eq(ns.screenFlash.shown, false, "no preview for off")
   eq(QueueHornDB.settings.screen.lfg, "off")
   wow.slash("/qh flash lfg purple")
@@ -801,10 +801,10 @@ test("/qh flash lists, off switches it off, wrong words show the help, the icon 
   eq(QueueHornDB.settings.screen.lfg, "off")
   wow.slash("/qh flash off")
   eq(QueueHornDB.settings.flash, false, "/qh flash off still switches the icon flash")
-  eq(wow.chat[7], PREFIX .. "Alerts: Group finder on, Ready check on, Battleground and arena on, Pet battle on. Icon flash: off.")
+  eq(wow.chat[7], PREFIX .. "Alerts: Group Finder on, Ready Check on, Battleground and Arena on, Pet Battle on. Icon flash: off.")
   wow.slash("/qh flash ready red")
   wow.slash("/qh flash")
-  eq(wow.chat[9], PREFIX .. "Screen flash: Group finder off, Ready check red, Battleground and arena off, Pet battle off. Choices: red, gold, blue, green, off. Icon flash: off.")
+  eq(wow.chat[9], PREFIX .. "Screen flash: Group Finder off, Ready Check red, Battleground and Arena off, Pet Battle off. Choices: red, gold, blue, green, off. Icon flash: off.")
   wow.slash("/qh")
   eq(wow.chat[12], wow.chat[9], "/qh shows it too")
   for _, line in ipairs(wow.chat) do
@@ -896,4 +896,126 @@ test("the screen flash defines no globals", function(wow)
     if not stubs[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
   end
   eq(ns.screenFlash.shown, false)
+end)
+
+-- 1.3: German
+
+-- A German client: its language and the names it has for the alerts (GlobalStrings). The stand-in
+-- client has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  DUNGEONS_BUTTON, QUEUED_STATUS_READY_CHECK_IN_PROGRESS = "Dungeonbrowser", "Bereitschaftscheck"
+  BATTLEGROUND, ARENA, PET_BATTLE_PVP_QUEUE = "Schlachtfeld", "Arena", "Haustierkampf"
+  ENABLE_BGSOUND = "Sound im Hintergrund"
+end
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("alert names come from the game, English when the client has none", function(wow)
+  local ns = boot(wow)
+  eq(ns.KindName("lfg"), "Group Finder")
+  eq(ns.KindName("ready"), "Ready Check")
+  eq(ns.KindName("pvp"), "Battleground and Arena")
+  eq(ns.KindName("pet"), "Pet Battle")
+  eq(ns.KindName("flash"), nil)
+  germanClient(wow)
+  eq(ns.KindName("lfg"), "Dungeonbrowser")
+  eq(ns.KindName("ready"), "Bereitschaftscheck")
+  eq(ns.KindName("pet"), "Haustierkampf")
+  ARENA = ""
+  eq(ns.KindName("pvp"), "Schlachtfeld and Arena", "an empty name stays English; the joining word comes from the client's language at load")
+  PET_BATTLE_PVP_QUEUE = 7
+  eq(ns.KindName("pet"), "Pet Battle", "so does one that is no text")
+end)
+
+test("German client: settings, help and the background sound hint in German with the game's names", function(wow)
+  germanClient(wow)
+  local _, g = boot(wow)
+  g.cvars.Sound_EnableSoundWhenGameIsInBG = "0"
+  wow.slash("/qh")
+  eq(#wow.chat, 5)
+  eq(wow.chat[1], PREFIX .. "Alarme: Dungeonbrowser an, Bereitschaftscheck an, Schlachtfeld und Arena an, Haustierkampf an. Blinken des Spielsymbols: an.")
+  eq(wow.chat[2], PREFIX .. "Sounds: Dungeonbrowser horn, Bereitschaftscheck horn, Schlachtfeld und Arena horn, Haustierkampf horn. Zur Auswahl: horn, warning, alarm, invite, whisper.")
+  eq(wow.chat[3], PREFIX .. "Bildschirmblitz: Dungeonbrowser off, Bereitschaftscheck off, Schlachtfeld und Arena off, Haustierkampf off. Zur Auswahl: red, gold, blue, green, off. Blinken des Spielsymbols: an.")
+  eq(wow.chat[4], PREFIX .. "Sound im Hintergrund ist in den Audioeinstellungen des Spiels aus, deshalb hörst du nichts, solange das Spiel im Hintergrund läuft.")
+  eq(wow.chat[5], PREFIX .. "/qh zeigt das hier, /qh test spielt den Alarm einmal ab. /qh lfg, ready, pvp oder pet mit on oder off schaltet einen Alarm an oder aus, /qh flash on oder off das Blinken des Spielsymbols."
+    .. " /qh sound zeigt die Sounds, /qh sound lfg alarm wählt einen für einen Alarm, /qh test lfg spielt ihn ab."
+    .. " /qh flash zeigt die Bildschirmblitze, /qh flash lfg red gibt einem Alarm einen farbigen Blitz an den Bildschirmrändern (red, gold, blue, green oder off).")
+  wow.slash("/qh pvp off")
+  eq(wow.chat[6], PREFIX .. "Alarme: Dungeonbrowser an, Bereitschaftscheck an, Schlachtfeld und Arena aus, Haustierkampf an. Blinken des Spielsymbols: an.")
+  eq(QueueHornDB.settings.pvp, false, "the English command words work as before")
+  wow.slash("/qh pvp aus")
+  eq(wow.chat[7]:match("^.-/qh zeigt das hier") ~= nil, true, "German command words are not commands")
+  for _, line in ipairs(wow.chat) do
+    eq(line:sub(#PREFIX + 1):find("|", 1, true), nil, "no colour code by accident in: " .. line)
+  end
+end)
+
+test("German client: sound and screen flash choices in German, the command words stay English", function(wow)
+  screen(wow)
+  germanClient(wow)
+  local ns, g = boot(wow)
+  wow.slash("/qh sound lfg alarm")
+  eq(wow.chat[1], PREFIX .. "Dungeonbrowser spielt jetzt den Sound alarm.")
+  eq(QueueHornDB.settings.sounds.lfg, "alarm")
+  wow.slash("/qh flash ready red")
+  eq(wow.chat[2], PREFIX .. "Bereitschaftscheck: Bildschirmblitz jetzt red.")
+  eq(ns.screenFlash.color, "red")
+  wow.slash("/qh flash ready off")
+  eq(wow.chat[3], PREFIX .. "Bereitschaftscheck: kein Bildschirmblitz.")
+  wow.slash("/qh flash pet rot")
+  eq(wow.chat[4]:match("^.-/qh zeigt das hier") ~= nil, true, "colour names are typed in English")
+  wow.slash("/qh flash")
+  eq(wow.chat[5], PREFIX .. "Bildschirmblitz: Dungeonbrowser off, Bereitschaftscheck off, Schlachtfeld und Arena off, Haustierkampf off. Zur Auswahl: red, gold, blue, green, off. Blinken des Spielsymbols: an.")
+  eq(g.count(), 1, "the sound preview")
+end)
+
+test("German client: the alerts in the middle of the screen in German", function(wow)
+  germanClient(wow)
+  local _, g = boot(wow)
+  wow.fire("LFG_PROPOSAL_SHOW")
+  wow.fire("READY_CHECK", "Tank", 30)
+  g.pvp("confirm")
+  wow.fire("PET_BATTLE_QUEUE_PROPOSE_MATCH")
+  wow.slash("/qh test")
+  wow.slash("/qh test pvp")
+  eq(#g.notices, 6)
+  eq(g.notices[1], "Deine Gruppe ist bereit!")
+  eq(g.notices[2], "Bereitschaftscheck!")
+  eq(g.notices[3], "Dein Schlachtfeld oder deine Arena ist bereit!")
+  eq(g.notices[4], "Dein Haustierkampf ist bereit!")
+  eq(g.notices[5], "Test von Queue Horn: So sieht ein Alarm aus.")
+  eq(g.notices[6], "Test von Queue Horn: So sieht ein Alarm aus.")
+  eq(g.count(), 6)
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 19, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts and the game's English names", function(wow)
+  wow.locale = "enUS"
+  DUNGEONS_BUTTON, QUEUED_STATUS_READY_CHECK_IN_PROGRESS = "Group Finder", "Ready Check"
+  BATTLEGROUND, ARENA, PET_BATTLE_PVP_QUEUE = "Battleground", "Arena", "Pet Battle"
+  ENABLE_BGSOUND = "Sound in Background"
+  local ns, g = boot(wow)
+  eq(next(ns.L), nil)
+  g.cvars.Sound_EnableSoundWhenGameIsInBG = "0"
+  wow.slash("/qh")
+  eq(wow.chat[1], PREFIX .. "Alerts: Group Finder on, Ready Check on, Battleground and Arena on, Pet Battle on. Icon flash: on.")
+  eq(wow.chat[4], PREFIX .. "Sound in Background is off in the game's sound options, so you hear nothing while tabbed out.")
+  wow.fire("READY_CHECK", "Tank", 30)
+  eq(g.notices[1], "Ready check!")
 end)
