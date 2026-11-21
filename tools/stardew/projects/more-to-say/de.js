@@ -21,6 +21,20 @@
 //   Carpenter's Shop (195197) → Schreinerladen, address "Bergstraße 24" (de 29837)
 //   Coop (193803) → Hühnerstall · Barn (193419) → Stall (de 29442) · Wood (192694) → Holz
 //   Stone (192695) → Stein
+// Since 1.4 (Evelyn, George and the Wizard say "du" to the player, as on their German pages:
+// Evelyn rev 29403, George rev 28909, Zauberer rev 30419):
+//   Evelyn (191129) → Evelyn · George (193909) → George · Wizard (193912) → Zauberer
+//   Leek (192783) → Lauch (de 29303) · Sweet Pea (192753) → Edelwicke (de 30237)
+//   Cookie (189088) → Kekse · Raisins (193433) → Rosinen · Pumpkin (192033) → Kürbis (de 29365)
+//   Festival of Ice (192452) → Fest des Eises · Night Market (195534) → Nachtmarkt
+//   Coffee (184120) → Kaffee (de 29361) · Fried Mushroom (190294) → Gebratene Pilze
+//   Purple Mushroom (193142) → Violetter Pilz (de 22686) · Common Mushroom (191745) → Gewöhnlicher Pilz
+//   The Mines (195228) → Minen · Wizard's Tower (192711) → Turm des Zauberers
+//   Feast of the Winter Star (179976) → Fest des Wintersterns (the star itself: "Winterstern")
+//   The German lines are new sentences, like the English ones: no run of 6 or more words from the
+//   German villager pages (checked once with a script). Single words kept from those pages:
+//   "banal" (the Wizard's hated-gift reaction on "Zauberer", for "mundane"), "arkane" and "Hmmph"
+//   (George). "People without magic" → "die meisten ohne Magie", so no gender switch is needed.
 export const LINES_DE = {
   Linus: {
     spring: {
@@ -71,7 +85,7 @@ export const LINES_DE = {
     spring: {
       met: 'Frühling heißt Pastinaken. Wette, du hast schon ein ganzes Feld davon angesetzt, was?#$b#Ich mein ja nur. Unsereins könnte ab und zu was Anständiges zu futtern gebrauchen.',
       weather: 'Die ganze Nacht Regen auf dem Wohnwagendach, als würde einer Schlagzeug spielen. Da krieg ich kein Auge zu.#$b#Bleibst du trocken, Kleines? Hol dir da draußen bloß keine Erkältung.',
-      friend: 'Penny steckt die Nase immer in irgendein altes Buch. Die ist um einiges klüger, als ich je war.#$b#Sag ihr nicht, dass ich das gesagt hab, aber... ich bin echt stolz auf das Mädel.$h'
+      friend: 'Penny steckt die Nase immer in irgendein altes Buch. Das Mädel hat einen Grips, den ich nie hatte.#$b#Sag ihr nicht, dass ich das gesagt hab, aber... ich bin echt stolz auf sie.$h'
     },
     summer: {
       met: 'Heiß heute, Kleines. Da könnte man auf der Straße ein Ei braten.#$b#Trink genug Wasser und lass den Hut auf.',
@@ -121,8 +135,8 @@ export const LINES_DE = {
     },
     summer: {
       met: 'Jas sagt, das Beste am Leben auf dem Hof ist frisches Eis aus der Milch unserer Kühe.#$b#Da kann ich nicht widersprechen. Etwas Kaltes an einem heißen Tag hat noch niemandem geschadet.$h',
-      weather: 'Bei so einem Gewitter mache ich mir Sorgen um jedes Tier im Tal. Wenn ich mich nicht um sie kümmere, wer dann?#$b#Falls du Tiere hast, sorg dafür, dass sie heute Nacht sicher drinnen sind, @.',
-      friend: 'Die meisten Abende gehe ich in die Kneipe. Tiere sind tolle Gesellschaft, aber ich brauche auch Menschen um mich.#$b#In letzter Zeit bist du einer der Menschen, die ich am liebsten sehe, @.$h'
+      weather: 'Bei so einem Gewitter mache ich mir Sorgen um jedes Tier im Tal. Irgendwer muss auf sie aufpassen, also kann ich das genauso gut sein.#$b#Falls du Tiere hast, sorg dafür, dass sie heute Nacht sicher drinnen sind, @.',
+      friend: 'Die meisten Abende gehe ich in die Kneipe. Ich liebe meine Tiere, aber man braucht auch Leute zum Reden.#$b#In letzter Zeit bist du einer der Menschen, die ich am liebsten sehe, @.$h'
     },
     fall: {
       met: 'Der Herbst ist da! Zeit, Gras zu mähen und das Silo zu füllen. Den ganzen Winter über fressen die Tiere Heu.#$b#Noch kein Silo? Robin baut dir eins. Oder du kaufst dein Heu bei mir, natürlich.',
@@ -130,7 +144,7 @@ export const LINES_DE = {
       friend: 'Es ist immer schön, wenn du vorbeischaust, @. Sogar die Tiere wirken dann ruhiger.#$b#Die merken immer, wer gut zu ihnen ist. Ich auch.$h'
     },
     winter: {
-      met: 'Brr! Um diese Jahreszeit tun mir all die armen, frierenden Tiere da draußen leid.#$b#Was auch immer auf deiner Farm lebt, @: Ein warmer Platz und ein freundliches Wort helfen viel.',
+      met: 'Brr! Um diese Jahreszeit fühle ich mit jedem Tier, das draußen in der Kälte ausharren muss.#$b#Was auch immer auf deiner Farm lebt, @: Ein warmer Platz und ein freundliches Wort helfen viel.',
       weather: 'Schneetag! Jas würde bis zum Dunkelwerden draußen spielen, wenn ich sie ließe. Aber die Regel heißt: um sechs zu Hause, Schnee hin oder her.#$b#Bleib schön warm, @. Eine Tasse heiße Milch wirkt an so einem Tag Wunder.$h',
       friend: 'Winternächte sind lang und still hier draußen im Wald. Ich höre jedes Tier im Stall rascheln.#$b#Schön, wenn du vorbeischaust, @. Dann kommen mir die langen Nächte kürzer vor.$h'
     }
@@ -138,24 +152,93 @@ export const LINES_DE = {
   // since 1.3
   Robin: {
     spring: {
-      met: 'Der Frühling ist eine arbeitsreiche Zeit! Frische Bergluft und jede Menge zu tun in der Werkstatt.#$b#Du brauchst einen Hühnerstall, einen Stall oder ein größeres Haus? Du weißt ja, wo du mich findest: Bergstraße 24!$h',
+      met: 'Im Frühling komme ich kaum zur Ruhe! Frische Bergluft und jede Menge zu tun in der Werkstatt.#$b#Du brauchst einen Hühnerstall, einen Stall oder ein größeres Haus? Du weißt ja, wo du mich findest: Bergstraße 24!$h',
       weather: 'Schon wieder Regen! Dann sortiere ich heute eben an der Theke Bretter. Mit nassem Holz arbeitet man nicht gern.#$b#Komm hoch und trockne dich, wenn du vorbeikommst, @. Nach einem Schauer riecht die Bergluft wunderbar.$h',
-      friend: 'Hab ich dir erzählt, dass ich unser Haus von Grund auf selbst gebaut habe? Jeden Balken, jedes Brett.#$b#Etwas zu schaffen, das bleibt... ein besseres Gefühl gibt es nicht. Ich wette, das kennst du von deiner Farm, @.$h'
+      friend: 'Hab ich dir erzählt, dass dieses ganze Haus mein eigenes Werk ist? Jeder Balken, jedes Brett, von Anfang bis Ende.#$b#Etwas zu schaffen, das bleibt... ein besseres Gefühl gibt es nicht. Ich wette, das kennst du von deiner Farm, @.$h'
     },
     summer: {
       met: 'Die Sommersonne trocknet das Holz schön durch. Perfektes Wetter für ein Bauprojekt!#$b#Soll auf deiner Farm etwas ausgebaut werden? Bring genug Holz und Stein mit, dazu das Geld, und um den Rest kümmere ich mich.$h',
       weather: 'Hörst du den Donner? Macht mir keine Sorgen. Bei Gewittern und den Experimenten meines Mannes habe ich das Haus so gebaut, dass es einiges aushält.#$b#Feuerfester Lack auf jedem Dachbalken. Meine beste Entscheidung!$h',
-      friend: 'Hier oben in den Bergen kann es ziemlich einsam werden. Deshalb freue ich mich immer, wenn du vorbeischaust, @.#$b#Nicht zum Einkaufen, einfach zum Plaudern. So machen das Freunde, oder?$h'
+      friend: 'So weit oben am Berg habe ich manchmal tagelang kaum Gesellschaft. Deshalb freue ich mich immer, wenn du vorbeischaust, @.#$b#Nicht zum Einkaufen, einfach zum Plaudern. So machen das Freunde, oder?$h'
     },
     fall: {
-      met: 'Der Herbst ist da! Die beste Zeit, vor dem Winter Holz und Stein zu horten.#$b#Du planst ein Gebäude? Bestell lieber früh. An Festtagen arbeite ich nicht!$h',
+      met: 'Der Herbst ist da! Jetzt ist der Moment, Holz und Stein aufzuhäufen, bevor der Schnee kommt.#$b#Du planst ein Gebäude? Bestell lieber früh. An Festtagen arbeite ich nicht!$h',
       weather: 'Regentage sind zum Träumen von neuen Holzprojekten da. Vielleicht ein neuer Stuhl... oder gleich eine ganze Reihe Möbel für den Laden.#$b#Wie hält sich das Holz in deinem Haus, @? Knarrt irgendwo ein Brett?',
       friend: 'Im Herbst bin ich immer besonders dankbar. Demetrius, Maru, Sebastian... ein volles Haus und eine Arbeit, die ich liebe.#$b#Und gute Freunde wie dich, @. Vergiss das nicht.$h'
     },
     winter: {
-      met: 'Der Winter ist die perfekte Zeit zum Holzsammeln. Vom Hacken wird einem auch gleich warm!#$b#Wenn du genug sammelst, kannst du vielleicht noch vor dem Frühling dein Haus ausbauen.$h',
+      met: 'Zum Holzsammeln ist der Winter ideal, finde ich. Vom Hacken wird einem auch gleich warm!#$b#Wenn du genug sammelst, kannst du vielleicht noch vor dem Frühling dein Haus ausbauen.$h',
       weather: 'Nach frischem Schnee wirkt alles so still. Ich liebe diesen Blick hier oben vom Berg.#$b#Pass auf dem Bergweg auf, @. Der Schnee versteckt jede Wurzel und jeden Stein.',
-      friend: 'Meine Eltern waren ganz verdutzt, als ich ihnen sagte, dass ich mit Holz arbeiten will. Sie waren ziemlich altmodisch.#$b#Ich bin froh, dass ich nicht auf sie gehört habe. Ich kann mir nichts anderes vorstellen, @.$h'
+      friend: 'Als ich sagte, dass ich beruflich Dinge bauen will, haben mich meine Eltern nur angestarrt. Sie hatten sehr traditionelle Vorstellungen.#$b#Ich bin froh, dass ich nicht auf sie gehört habe. Ich kann mir nichts anderes vorstellen, @.$h'
+    }
+  },
+  // since 1.4; Evelyn's "dear" is "Liebes"
+  Evelyn: {
+    spring: {
+      met: 'Guten Morgen, Liebes! Die Blumenbeete in der Stadt sind meine Aufgabe, und im Frühling brauchen sie mich am meisten.#$b#Wenn du mich auf den Knien in der Erde siehst, keine Sorge. Ich pflanze nur!$h',
+      weather: 'So ein sanfter Frühlingsregen. Meine Blumen trinken sich heute Vormittag richtig satt.#$b#Ich bleibe heute mit einer Schüssel Keksteig drinnen. Um diese Jahreszeit steche ich die Kekse als kleine Blumen aus.$h',
+      friend: 'George und ich bekommen nicht viel jungen Besuch, Liebes. Jedes Mal, wenn du vorbeikommst, wird das Haus ein bisschen lebendiger.#$b#Ein Tipp unter uns: Bring ihm Lauch aus den Bergen. Er wird brummeln, aber er freut sich.$h'
+    },
+    summer: {
+      met: 'Die Edelwicken blühen, Liebes. Wenn du unterwegs welche findest, nimm dir einen Moment und riech daran.#$b#Und setz in dieser Sonne einen Hut auf. Feldarbeit und Sonnenbrand passen nicht zusammen.',
+      weather: 'Regen an einem Sommertag! Na, dann ist es beschlossen: Ich backe.#$b#Diesmal Kokoskekse, ausgestochen wie winzige Palmen. Ein bisschen Strand, sogar im Haus.$h',
+      friend: 'Unter uns, Liebes: In den warmen Monaten ist George sanfter gestimmt. Pass gut auf, dann merkst du es.#$b#Nach sechzig gemeinsamen Jahren liest man einen Mann wie ein offenes Buch.$h'
+    },
+    fall: {
+      met: 'Herbstluft, Liebes! Feuchtes Laub und Pilze... ein Atemzug, und ich bin wieder ein kleines Mädchen, das durch den Wald rennt.#$b#Pass bitte auf die Blumenbeete in der Stadt auf. Die Herbstblüten sind so empfindlich.$h',
+      weather: 'Ein nasser Herbsttag, also backe ich. Kekse in Kürbisform, passend zur Jahreszeit.#$b#Außerdem schmuggle ich George Rosinen ins Frühstück. Bisher kein Wort von ihm. Schmeckt er das überhaupt?$s',
+      friend: 'In meinem Alter fühlt sich jede Jahreszeit wie ein Geschenk an, Liebes. Ich will keine einzige vergeuden.#$b#Ein paar dieser Tage mit dir zu plaudern, ist ganz bestimmt keine Vergeudung.$h'
+    },
+    winter: {
+      met: 'Meine armen Gärten schlafen unter dem Schnee. Ich gehe trotzdem hinaus und werfe einen Blick auf sie.#$b#Pass auf den glatten Wegen gut auf, Liebes, und zieh dich ordentlich warm an!',
+      weather: 'Noch mehr Schnee, Liebes! Diese Kälte zieht mir direkt in die alten Gelenke.#$b#Versprich mir, dass du heute etwas Warmes isst. Eine Schüssel Suppe wirkt Wunder.$h',
+      friend: 'Soll ich dir ein Geheimnis verraten, Liebes? Als George mich zum ersten Mal bemerkt hat, war ein Schneeball im Spiel. Ausgerechnet beim Fest des Eises!#$b#Er kam sofort herüber, um zu sehen, ob ich verletzt bin. Was für Manieren! Hihi.$h'
+    }
+  },
+  // since 1.4
+  George: {
+    spring: {
+      met: "Evelyn hat mir heute früh Lauch zu den Eiern gemacht. Ein besseres Frühstück gibt's nicht.#$b#Ich bin also halbwegs gut gelaunt. Genieß es, solange es anhält.",
+      weather: 'Regen. Hmmph. Kalt und nass, das ganze elende Zeug.#$b#Ich sitz gleich vorm Fernseher. Meine Sendung fängt jeden Moment an, also sag, was du sagen willst.',
+      friend: 'Junge Leute geben sich normalerweise nicht mit einem alten Griesgram wie mir ab. Du bist ein seltsamer Vogel.#$b#Hmmph. Stört mich aber nicht.$h'
+    },
+    summer: {
+      met: "Evelyn behauptet, die Sommerwärme macht mich freundlicher.#$b#Hmmph. Die Frau meint, sie weiß alles. ...Meistens stimmt's sogar.",
+      weather: 'Grauer Himmel mitten im Sommer. Hmmph. War ja klar.#$b#Wenigstens brauchen deine Felder heute keine Gießkanne. Irgendwer sollte sich ja darüber freuen.',
+      friend: 'Nimm dir einen Stuhl, @. Vorm Fernseher ist noch Platz.#$b#Evelyn sagt ständig, ich soll öfter aus dem Haus. Mach ich auch. Nach dieser Folge.$h'
+    },
+    fall: {
+      met: 'Landwirtschaft, was? Im Herbst zeigt sich, ob sich die Arbeit gelohnt hat. Ein anständiges Auskommen.#$b#Hmmph. Na los, du hast eine Ernte einzubringen.',
+      weather: 'Nass, kalt und grau. Hmmph. Bei so einem Wetter muss ein Teller gebratene Pilze her.#$b#Das ist kein Wink. Nur so gesagt.',
+      friend: 'Mein Großvater war übrigens Bauer. Gute, anständige Leute, die Bauern.#$b#Ein paar Jahrzehnte jünger, und ich stünde diesen Herbst auf deinem Feld und würde dir sagen, was du falsch machst.$h'
+    },
+    winter: {
+      met: 'Brr. Die Kälte geht einem jedes Jahr tiefer in die Knochen, sag ich dir.#$b#Und die Pullover heutzutage? Dünn wie Papier. Nicht wie die alten aus Wolle.',
+      weather: "Schon wieder Schnee. Hmmph. Wette, Evelyn plant schon einen Grund, mich nach draußen zu zerren.#$b#Heute nicht. Heute gibt's nur mich, eine Decke und den Fernseher.",
+      friend: "Jeden Winter gehen Evelyn und ich auf den Nachtmarkt. Ihr gefällt's. Mir gefällt, dass der Kaffee nichts kostet.#$b#...Und dass ich dich da vielleicht treffe, @. Sag ihr bloß nicht, dass ich das gesagt hab.$h"
+    }
+  },
+  // since 1.4; "young @" is just "@" (German "junger/junge" would need a gender switch the English line does not have)
+  Wizard: {
+    spring: {
+      met: 'Ah, @. Der Wald erwacht wieder, wie in jedem Frühling.#$b#Nicht jedes Geheimnis dieses Tals zeigt sich sofort. Geduld wird dir gute Dienste leisten.',
+      weather: 'Regen... und wenn das Glück mir hold ist, am Abend Donner. Manche Elementargeister antworten mir nur, wenn ein Gewitter über uns steht.#$b#Bitte mich nicht um eine Erklärung. Ich muss mich vorbereiten.',
+      friend: 'Ich behalte die Menschen dieses Tals still im Auge, @. Eines Tages muss jemand meine Arbeit fortführen.#$b#Ich werde schließlich nicht ewig hier sein. Wissen ohne Erben ist verlorenes Wissen.'
+    },
+    summer: {
+      met: 'Der Sommer wärmt den Wald, @. Unter deinen Füßen liegt ein Feld großer magischer Kraft.#$b#Darum steht mein Turm genau hier. Und nun, falls dein Anliegen nicht dringend ist, habe ich zu tun.',
+      weather: 'Der Regen trommelt auf den Turm, und der Wald ist heute laut. Ein guter Tag für meine Studien.#$b#Die Sprache der Elementargeister lernt man nicht in einer Saison, @. Ich habe ihr mein ganzes Leben gewidmet und bin noch nicht fertig.',
+      friend: 'Deine Zukunft ist mir nicht verborgen, @. Doch zu teilen, was ich gesehen habe, könnte echten Schaden anrichten.#$b#Also schweige ich. Die Entscheidungen triffst du selbst.'
+    },
+    fall: {
+      met: 'Um diese Jahreszeit ist der Wald voller Pilze. Meist gewöhnliche. Banal.#$b#Ein Violetter Pilz aus den Minen dagegen... für den hätte ich Verwendung.',
+      weather: 'Schon wieder Regen, @. Ein guter Tag, um die langweiligeren Geschenke dem Feuer zu übergeben.#$b#Wenn du mir etwas bringst, dann etwas, in dem arkane Kraft summt. Gewöhnliches langweilt mich.',
+      friend: 'Ich habe vorausgesehen, dass du in dieses Tal kommst, @. Nicht vorausgesehen habe ich, wie oft du an meine Tür klopfen würdest.#$b#Es ist... nicht unwillkommen.'
+    },
+    winter: {
+      met: 'Der Winterstern fasziniert mich seit jeher, @. Er ist einer der Gründe, warum ich mich überhaupt in diesem Tal niedergelassen habe.#$b#Mehr sage ich nicht. Meine Arbeit wartet.',
+      weather: 'Durch all den Schnee, nur um zu meinem Turm zu kommen? Die meisten ohne Magie würden sich das nie antun, @.#$b#Du bist eigenartig. Das meine ich freundlich.',
+      friend: 'Die Leute in der Stadt halten Abstand zu mir. Was sie nicht erklären können, macht sie nervös.#$b#Dich, @, scheint das nie gestört zu haben. In dieser kalten, stillen Zeit sind deine Besuche willkommen.'
     }
   }
 };
