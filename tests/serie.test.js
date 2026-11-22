@@ -6,7 +6,7 @@ import path from 'path';
 import sharp from 'sharp';
 import { execFileSync } from 'node:child_process';
 import { REIHEN, loadReihe, loadReihen, findSerieProject, plannedDate, outDir, projectDir, addStock, stateOf, reiheStand, registerProject } from '../scripts/lib/serie.js';
-import { checkPage, pageOk, section, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE } from '../scripts/lib/page-check.js';
+import { checkPage, pageOk, section, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE, wordsFor, longPage } from '../scripts/lib/page-check.js';
 import { coverHtml, renderCover, bannerHtml, renderBanner, THEMES, SIZE } from '../tools/serie/cover.js';
 import { writeChatgptFolder, findChatgptBanner, cropBanner, chatgptPrompt, kindOf, paintBanner } from '../scripts/lib/banner.js';
 import { loadReleaseProject } from '../scripts/lib/releases.js';
@@ -248,7 +248,7 @@ test('every project with a page in the repo passes the text checks and has its l
       if (Array.isArray(page.description)) page.description = page.description.join('\n');
       assert.equal(page.name, project.name, `${project.slug}: page name and plan name differ`);
       assert.ok(page.logoPrompt && page.cover?.tagline && page.cover?.bullets?.length === 3, `${project.slug}: logoPrompt and cover are needed`);
-      const results = await checkPage(page, { logo: path.join(dir, 'logo.png') }, { maxWords: reihe.reihe === 'sims4' ? 250 : 200, bannerFrom: project.banner?.from || null, needsBanner: reihe.banner !== false });
+      const results = await checkPage(page, { logo: path.join(dir, 'logo.png') }, { minWords: wordsFor(reihe.reihe)[0], maxWords: wordsFor(reihe.reihe)[1], detail: longPage(reihe.reihe), bannerFrom: project.banner?.from || null, needsBanner: reihe.banner !== false });
       const failed = results.filter(r => r.level === 'error' && !['cover', 'banner', 'shots'].includes(r.id));
       assert.deepEqual(failed, [], `${project.slug}: ${failed.map(r => `${r.label}: ${r.detail}`).join(' | ')}`);
     }
@@ -345,4 +345,21 @@ test('painted banner through the image API: the logo is the reference, the resul
   assert.equal(calls[0].size, '1536x1024');
   assert.deepEqual(calls[0].references, [Buffer.from('LOGO')]);
   assert.match(calls[0].prompt, /a Minecraft: Java Edition data pack/);
+});
+
+test('page check: a long page (WoW) needs "In detail" with a part per feature and 250 to 450 words', async () => {
+  assert.deepEqual(wordsFor('wow'), [250, 450]);
+  assert.deepEqual(wordsFor('java'), [100, 200]);
+  assert.equal(longPage('wow'), true);
+  assert.equal(longPage('stardew'), false);
+  const page = goodPage();
+  const opts = { minWords: 10, maxWords: 2000, detail: true, needsBanner: false };
+  const desc = r => r.find(x => x.id === 'description');
+  assert.match(desc(await checkPage(page, {}, opts)).detail, /„In detail“ fehlt/);
+  const lines = page.description.split('\n');
+  const at = lines.findIndex(l => l === '## Good to know');
+  const withDetail = parts => ({ ...page, description: [...lines.slice(0, at), '## In detail', ...parts.flatMap(p => [`### ${p}`, `${p} explained in a sentence or two.`, '']), ...lines.slice(at)].join('\n') });
+  assert.match(desc(await checkPage(withDetail(['Sources']), {}, opts)).detail, /1 Teile unter „In detail“/);
+  assert.equal(desc(await checkPage(withDetail(['Sources', 'Views']), {}, opts)).level, 'ok');
+  assert.equal(desc(await checkPage(page, {}, { ...opts, detail: false })).level, 'ok', 'short pages need no detail part');
 });
