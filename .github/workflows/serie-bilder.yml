@@ -1,0 +1,48 @@
+name: Series images
+
+# Every page of the series gets its pictures without the operator: missing AI logos first, then
+# the painted banners (npm run serie -- bilder), at most 8 images per run to cap the OpenAI cost.
+# Only image files of project folders are committed. Which banner a page uses (painted or
+# designed) is chosen by Claude in the next nightly session (tools/serie/NACHT.md, banner-wahl).
+on:
+  schedule:
+    - cron: '30 3 * * *'   # 04:30 in Berlin (winter), after the nightly build session
+  workflow_dispatch:
+
+concurrency:
+  group: serie-bilder
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Paint missing logos and banners
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: npm run -s serie -- bilder --max 8
+      - name: Commit the images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- 'tools/*/projects/*/logo.png' 'tools/*/projects/*/banner-painted.png'
+          if git diff --staged --quiet; then
+            echo "No new images."
+            exit 0
+          fi
+          git commit -m "serie: logos and painted banners [skip ci]"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi
+            sleep 5
+          done
+          exit 1

@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import sharp from 'sharp';
 import { execFileSync } from 'node:child_process';
-import { REIHEN, loadReihe, loadReihen, findSerieProject, plannedDate, outDir, projectDir, addStock, stateOf, reiheStand, registerProject } from '../scripts/lib/serie.js';
+import { REIHEN, loadReihe, loadReihen, findSerieProject, plannedDate, outDir, projectDir, addStock, stateOf, reiheStand, registerProject, missingImages, paintedBannerFile } from '../scripts/lib/serie.js';
 import { checkPage, pageOk, section, AI_LOGO_NOTE, AI_LOGO_BANNER_NOTE } from '../scripts/lib/page-check.js';
 import { coverHtml, renderCover, bannerHtml, renderBanner, THEMES, SIZE } from '../tools/serie/cover.js';
 import { writeChatgptFolder, findChatgptBanner, cropBanner, chatgptPrompt, kindOf, paintBanner } from '../scripts/lib/banner.js';
@@ -238,7 +238,7 @@ test('cover: one theme per row, text is escaped, three bullets are required', as
   assert.deepEqual([meta.width, meta.height, meta.format], [...SIZE, 'png']);
 });
 
-test('every project with a page in the repo passes the text checks and has its logo', async () => {
+test('every project with a page in the repo passes the text checks, and its logo is right', async () => {
   for (const reihe of loadReihen()) {
     for (const project of reihe.projects) {
       const dir = projectDir(reihe.reihe, project.slug);
@@ -248,8 +248,12 @@ test('every project with a page in the repo passes the text checks and has its l
       if (Array.isArray(page.description)) page.description = page.description.join('\n');
       assert.equal(page.name, project.name, `${project.slug}: page name and plan name differ`);
       assert.ok(page.logoPrompt && page.cover?.tagline && page.cover?.bullets?.length === 3, `${project.slug}: logoPrompt and cover are needed`);
+      // The logo may still be missing: the nightly session writes pages, the images workflow paints
+      // the logo afterwards (npm run serie -- bilder). Before the page goes online, `serie seite`
+      // and `serie heute` require it. A logo that is there must be right.
+      const hasLogo = fs.existsSync(path.join(dir, 'logo.png'));
       const results = await checkPage(page, { logo: path.join(dir, 'logo.png') }, { maxWords: reihe.reihe === 'sims4' ? 250 : 200, bannerFrom: project.banner?.from || null, needsBanner: reihe.banner !== false });
-      const failed = results.filter(r => r.level === 'error' && !['cover', 'banner', 'shots'].includes(r.id));
+      const failed = results.filter(r => r.level === 'error' && !['cover', 'banner', 'shots', ...(hasLogo ? [] : ['logo'])].includes(r.id));
       assert.deepEqual(failed, [], `${project.slug}: ${failed.map(r => `${r.label}: ${r.detail}`).join(' | ')}`);
     }
   }
@@ -300,7 +304,7 @@ test('npm run serie: ChatGPT brief, comparison and choice of the banner', { time
   assert.match(run('chatgpt', 'stonecutter-woodworks'), /1 Auftrag/);
   const brief = path.join(dir, 'Output', 'chatgpt-bilder', 'java-01-stonecutter-woodworks');
   assert.ok(fs.existsSync(path.join(brief, 'auftrag.md')));
-  assert.throws(() => run('banner-wahl', 'stonecutter-woodworks', 'chatgpt'), /banner-chatgpt.png fehlt/);
+  assert.throws(() => run('banner-wahl', 'stonecutter-woodworks', 'chatgpt'), /kein gemaltes Banner/);
 
   // what ChatGPT painted: 1536×1024 with big squares
   const w = 1536, h = 1024;
@@ -310,6 +314,8 @@ test('npm run serie: ChatGPT brief, comparison and choice of the banner', { time
   const out = path.join(dir, 'Output', 'serie', 'java', '01-stonecutter-woodworks');
   for (const f of ['banner-claude.png', 'banner-chatgpt.png']) assert.deepEqual(Object.values((({ width, height }) => ({ width, height }))(await sharp(path.join(out, f)).metadata())), [720, 340], f);
   assert.match(fs.readFileSync(path.join(dir, 'Output', 'chatgpt-bilder', 'VERGLEICH.html'), 'utf-8'), /<title>Banner-Vergleich<\/title>[\s\S]*Stonecutter Woodworks/);
+  // the painted banner stays with the project, so a session without the Output folder has it too
+  assert.ok(fs.readFileSync(path.join(src, 'banner-painted.png')).equals(fs.readFileSync(path.join(out, 'banner-chatgpt.png'))));
 
   const chosen = run('banner-wahl', 'stonecutter-woodworks', 'chatgpt');
   assert.match(chosen, /Banner von ChatGPT gewählt/);
@@ -345,4 +351,25 @@ test('painted banner through the image API: the logo is the reference, the resul
   assert.equal(calls[0].size, '1536x1024');
   assert.deepEqual(calls[0].references, [Buffer.from('LOGO')]);
   assert.match(calls[0].prompt, /a Minecraft: Java Edition data pack/);
+});
+
+test('images: a page gets its logo first, then the painted banner, until a banner is chosen', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'serie-images-'));
+  const java = { reihe: 'java' };
+  const wow = { reihe: 'wow', banner: false };
+  const project = { slug: 'probe', nr: 1 };
+  assert.deepEqual(missingImages(java, project, root), [], 'no page, nothing to paint');
+  fs.mkdirSync(projectDir('java', 'probe', root), { recursive: true });
+  fs.writeFileSync(path.join(projectDir('java', 'probe', root), 'page.json'), '{}');
+  assert.deepEqual(missingImages(java, project, root), ['logo', 'banner']);
+  fs.writeFileSync(path.join(projectDir('java', 'probe', root), 'logo.png'), 'PNG');
+  assert.deepEqual(missingImages(java, project, root), ['banner']);
+  fs.writeFileSync(paintedBannerFile('java', 'probe', root), 'PNG');
+  assert.deepEqual(missingImages(java, project, root), []);
+  fs.rmSync(paintedBannerFile('java', 'probe', root));
+  assert.deepEqual(missingImages(java, { ...project, banner: { from: 'claude', at: '2026-11-21' } }, root), [], 'a chosen banner needs no painting');
+  fs.mkdirSync(projectDir('wow', 'probe', root), { recursive: true });
+  fs.writeFileSync(path.join(projectDir('wow', 'probe', root), 'page.json'), '{}');
+  assert.deepEqual(missingImages(wow, project, root), ['logo'], 'WoW has no banner');
+  assert.equal(paintedBannerFile('java', 'probe', root), path.join(root, 'java', 'projects', 'probe', 'banner-painted.png'));
 });

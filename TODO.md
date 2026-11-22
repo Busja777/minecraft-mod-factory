@@ -27,7 +27,10 @@ Stand: 20.11.2026. Ganz oben steht, was als Nächstes dran ist. Grundsatz seit h
    - [ ] Vorab anlegen: Projekt-ID schon eintragen können, bevor die Datei im Vorrat liegt (heute verlangt `serie id` eine Datei). Dann geht ein Vorab-Projekt am Erscheinungstag abends hoch. Berührt den Upload-Ablauf, braucht eigene Tests.
    - [ ] Ladetest gegen jede Minecraft-Version zwischen 1.21.5 und 26.2, damit klar ist, welche davon unsere Zwei-Versionen-Dateien lesen (das Spiel überspringt unbekannte Felder still, zum Beispiel bei der Angel-Beute).
    - [ ] Radar auch für die Versionslisten von CurseForge (WoW, Stardew) und für Bedrock-Packs.
-4. [ ] Bilder ohne dich (`serie-bilder.yml`), Fenster-Vorschauen für WoW, längere WoW-Beschreibungen (Stichwortzeile, Abschnitt pro Funktion, Befehlstabelle, bis etwa 450 Wörter).
+4. Bilder und Seiten:
+   - [x] Bilder ohne dich: `serie-bilder.yml` malt jeden Morgen fehlende Logos und Banner, die Nacht-Sitzung wählt das Banner nach Ansicht.
+   - [ ] Fenster-Vorschauen für WoW (klar beschriftet als „Window preview“).
+   - [ ] Längere WoW-Beschreibungen (Stichwortzeile, Abschnitt pro Funktion, Befehlstabelle, bis etwa 450 Wörter).
 5. [ ] Browser-Helfer füllt das Anlegen-Formular für alle Spiele (`npm run cf -- serie`).
 6. [ ] Bedrock-Reihe statt Sims: `tools/bedrock/`, die ersten sieben Packs, Sims aus `data/serie/` entfernen.
 7. [ ] Saisonkalender mit Winter-Updates, danach der wöchentliche Trend-Radar.
