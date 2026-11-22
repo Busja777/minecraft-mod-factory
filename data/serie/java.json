@@ -315,8 +315,8 @@
       "was": "/trigger home, sethome, spawn ohne Mod",
       "updates": [
         "Abklingzeit einstellbar",
-        "Home-Liste",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Homes benennen (falls ohne Makro-Eingabe machbar)"
       ],
       "banner": {
         "from": "chatgpt",
@@ -384,8 +384,8 @@
       "was": "Koordinaten und Uhrzeit über der Leiste",
       "updates": [
         "Todes-Koordinaten (nur Anzeige; der Weg zurück steckt schon in Trigger Homes)",
-        "Anzeige je Spieler kürzen (nur Koordinaten)",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Biom-Anzeige, falls ohne Last machbar"
       ],
       "banner": {
         "from": "chatgpt",

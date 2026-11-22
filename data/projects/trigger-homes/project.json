@@ -37,6 +37,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.3",
+      "file": "TriggerHomes-1.3.zip",
+      "changelog": "## Trigger Homes 1.3\n\nA list of your homes.\n\n- New: `/trigger homes` lists the homes you have set, one line each with the coordinates, the dimension and the command that takes you there, for example `Home 2: 120 64 -33 in the Nether (/trigger home set 2)`.\n- Without any home it says so and tells you how to set one.\n- If you have to wait before the next teleport, the list also shows the seconds left.\n- A last line reminds you of the commands: `/trigger home`, `/trigger sethome`, `/trigger back` and `/trigger spawn`.\n- `/trigger homes` does not teleport you and does not start the 30-second cooldown. Like the other commands, it needs no operator rights.\n- Your homes from 1.0, 1.1 and 1.2 are kept.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }
