@@ -1,4 +1,4 @@
-// Builds a Minecraft Java pack of the series (data pack or resource pack) into an upload-ready zip,
+// Builds a Minecraft Java pack of the series (data pack, resource pack or both in one zip) into an upload-ready zip,
 // or a Fabric mod (kind "mod") into an upload-ready jar.
 //
 //   npm run java -- bau <slug> --version 1.0     → Output/serie/java/<slug>/<Name>-1.0.zip (mod: .jar)
@@ -23,7 +23,7 @@ import AdmZip from 'adm-zip';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { HERE, listPacks, packOf, generate, checkPack, buildZip, isMod, jarName, versionsOf, planTiers, loadsOf } from './lib.js';
+import { HERE, listPacks, packOf, generate, checkPack, buildZip, isMod, jarName, versionsOf, planTiers, loadsOf, sidesOf } from './lib.js';
 import { ensureVanilla } from './vanilla.js';
 import { supportsLoadTest, loadTest } from './loadtest.js';
 import { FABRIC, gradle, builtJar, hasGameTests } from './fabric/gradle.js';
@@ -66,7 +66,7 @@ const servedBy = pack => [...versionsOf(pack), ...(zwischen ? loadsOf(pack).map(
 
 // The finished zip, loaded by the game for every version that can do it without a window.
 function loadInGame(pack, zip) {
-  if (pack.kind !== 'data') return;
+  if (!sidesOf(pack).includes('data')) return;   // the test server reads data only; a data+resource zip is loaded as it is
   const untested = [];
   for (const mc of servedBy(pack)) {
     if (!supportsLoadTest(mc)) { untested.push(mc); continue; }
@@ -118,7 +118,7 @@ if (cmd === 'test') {
     if (isMod(pack)) testMod(pack);
     else {
       const { files, more } = await check(slug);
-      if (pack.kind === 'data' && servedBy(pack).some(supportsLoadTest)) loadInGame(pack, await buildZip(pack, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'java-test-')), more));
+      if (sidesOf(pack).includes('data') && servedBy(pack).some(supportsLoadTest)) loadInGame(pack, await buildZip(pack, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'java-test-')), more));
     }
   }
 } else if (cmd === 'bau') {
