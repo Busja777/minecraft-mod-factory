@@ -13,6 +13,14 @@ function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
 
+-- 1.1: a word the game itself has (a GlobalStrings constant such as LEVEL), in the client's language;
+-- the English word when the client lacks it.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
 -- A text read from the game; nil when it is secret, missing or empty.
 function ns.CleanText(value)
   if value == nil or ns.IsSecret(value) or type(value) ~= "string" then return nil end

@@ -329,3 +329,79 @@ test("slash commands before login and unknown words", function(wow)
   wow.slash("/gt what")
   eq(lastChat(wow):find("/gt shows this session", 1, true) ~= nil, true)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+local P = "|cffffd100Gather Tally:|r "
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+test("German client: chat, help and the command answers in German, the command words stay English", function(wow)
+  wow.locale = "deDE"
+  local ns, w = boot(wow)
+  wow.slash("/gt")
+  eq(wow.chat[1], P .. "Kräuter: noch keine, Erze: noch keine.")
+  eq(wow.chat[2], P .. "/gt reset startet eine neue Sitzung, /gt hide und /gt show blenden die Anzeige aus oder ein.")
+  loot(wow, w, { { id = 2447, qty = 4 }, { id = 2770, qty = 1 } })
+  wow.slash("/gt")
+  eq(wow.chat[3], P .. "Kräuter: 4 (pro Stunde nach 5 Minuten), Erze: 1 (pro Stunde nach 5 Minuten).")
+  eq(wow.chat[4], P .. "Am meisten gesammelt: " .. linkOf(2447) .. " x4, " .. linkOf(2770) .. " x1")
+  wow.clock = wow.clock + 600
+  wow.slash("/gt")
+  eq(wow.chat[6], P .. "Kräuter: 4 (24 pro Stunde), Erze: 1 (6 pro Stunde).")
+  wow.slash("/gt hide")
+  eq(wow.chat[9], P .. "Die Anzeige ist ausgeblendet. /gt show holt sie zurück.")
+  wow.slash("/gt show")
+  eq(wow.chat[10], P .. "Die Anzeige erscheint, sobald du in dieser Sitzung etwas gesammelt hast.")
+  wow.slash("/gt reset")
+  eq(wow.chat[11], P .. "Neue Sitzung gestartet.")
+  wow.slash("/gt ausblenden")
+  eq(wow.chat[12], P .. "/gt zeigt diese Sitzung, /gt reset startet eine neue, /gt hide und /gt show blenden die Anzeige aus oder ein.",
+    "German command words are not commands")
+  eq(GatherTallyDB.settings.hidden, false)
+end)
+
+test("German client: the display and its tooltip in German", function(wow)
+  wow.locale = "deDE"
+  local ns, w = boot(wow)
+  loot(wow, w, { { id = 2447, qty = 6 } })
+  eq(GatherTallyFrame.herb:GetText(), "Kräuter 6")
+  eq(GatherTallyFrame.ore:GetText(), "Erze 0")
+  wow.clock = wow.clock + 3600
+  GatherTallyFrame:GetScript("OnUpdate")(GatherTallyFrame, 5)
+  eq(GatherTallyFrame.herb:GetText(), "Kräuter 6  |cff9d9d9d6/Std.|r")
+  GatherTallyFrame:GetScript("OnEnter")(GatherTallyFrame)
+  local lines = wow.tooltip.lines
+  eq(lines[1], "Gather Tally")
+  eq(lines[2], "Kräuter: 6 (6 pro Stunde)")
+  eq(lines[3], linkOf(2447) .. " = 6")
+  eq(lines[4], "Erze: noch keine")
+  eq(lines[5], "Zum Verschieben ziehen. /gt reset startet eine neue Sitzung.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 16, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enGB"
+  local ns, w = boot(wow)
+  eq(next(ns.L), nil)
+  loot(wow, w, { { id = 2770, qty = 2 } })
+  eq(GatherTallyFrame.herb:GetText(), "Herbs 0")
+  eq(GatherTallyFrame.ore:GetText(), "Ores 2")
+  wow.slash("/gt")
+  eq(wow.chat[1], P .. "Herbs: none yet, Ores: 2 (per hour after 5 minutes).")
+end)

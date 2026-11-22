@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "RepSession-1.1.zip",
+      "changelog": "## Rep Session 1.1\n\n- Rep Session now speaks **German**: the window, the chat report and every answer to a command. On clients in other languages it stays in English.\n- Renown levels, the words Faction and Reset and the standings come from the game itself, so they read exactly like in your client's language. In English they stay the same words.\n- The commands stay the same in every language, for example `/rs show` or `/rs reset`.\n- Your window position from 1.0 is kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

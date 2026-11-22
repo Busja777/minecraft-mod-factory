@@ -366,3 +366,130 @@ test("the window folds zones beyond its rows into one line", function(wow)
   eq(data.levels[1][1], "Unknown")
   eq(data.levels[1][2], 12)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+local P = "|cffffd100Death Diary:|r "
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and the words it has for the window (GlobalStrings). The stand-in
+-- client has none; zone names come from GetRealZoneText in the client's language.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  ZONE, LEVEL, UNKNOWN = "Zone", "Stufe", "Unbekannt"
+end
+
+local GERMAN = { zone = "Wald von Elwynn", sub = "Goldhain" }
+
+test("window headings and the unknown row come from the game, English when the client has none", function(wow)
+  local ns = boot(wow)
+  eq(ns.GameText("LEVEL", "Level"), "Level")
+  eq(ns.WindowData({ {} }).levels[1][1], "Unknown")
+  germanClient(wow)
+  eq(ns.GameText("LEVEL", "Level"), "Stufe")
+  eq(ns.WindowData({ {} }).levels[1][1], "Unbekannt")
+  UNKNOWN = ""
+  eq(ns.WindowData({ {} }).levels[1][1], "Unknown", "an empty one stays English")
+  LEVEL = { secret = true }
+  eq(ns.GameText("LEVEL", "Level"), "Level", "so does anything that is not a text")
+end)
+
+test("German client: the note after a death, the summary and the help in German", function(wow)
+  germanClient(wow)
+  boot(wow, GERMAN)
+  wow.slash("/dd")
+  eq(wow.chat[1], P .. "Für diesen Charakter sind noch keine Tode notiert.")
+  eq(wow.chat[2], P .. "/dd last zeigt deine letzten 10 Tode, /dd window öffnet das Fenster, /dd quiet on oder off schaltet die Notiz nach einem Tod aus oder ein, /dd reset confirm leert das Tagebuch dieses Charakters.")
+  die(wow)
+  eq(wow.chat[3], P .. "Tod 1 notiert: Wald von Elwynn, Goldhain, Stufe 12.")
+  die(wow, { level = 15, zone = "Westfall", sub = "Späherkuppe" })
+  die(wow, { level = 21, zone = "Westfall", sub = "" })
+  die(wow, { level = SECRET, zone = "", sub = "" })
+  eq(wow.chat[6], P .. "Tod 4 notiert: Unbekannte Zone, Stufe unbekannt.")
+  wow.chat = {}
+  wow.slash("/dd")
+  eq(wow.chat[1], P .. "Notierte Tode dieses Charakters: 4.")
+  eq(wow.chat[2], P .. "Häufigste Zonen: Westfall (2), Unbekannte Zone (1), Wald von Elwynn (1).")
+  eq(wow.chat[3], P .. "Nach Stufe: Stufe 11-20: 2, Stufe 21-30: 1, Stufe unbekannt: 1.")
+end)
+
+test("German client: last deaths, quiet and reset in German, the command words stay English", function(wow)
+  germanClient(wow)
+  local ns = boot(wow, GERMAN)
+  wow.slash("/dd last")
+  eq(wow.chat[1], P .. "Für diesen Charakter sind noch keine Tode notiert.")
+  die(wow)
+  wow.chat = {}
+  wow.slash("/dd last")
+  eq(wow.chat[1], P .. "Deine letzten 1 Tode, neueste zuerst:")
+  eq(wow.chat[2], P .. date("%d.%m. %H:%M", deaths()[1].t) .. ": Wald von Elwynn, Goldhain, Stufe 12")
+  eq(ns.WhenText(nil), "Zeit unbekannt")
+  eq(ns.WhenText(0), date("%d.%m. %H:%M", 0), "dates the German way")
+  wow.slash("/dd quiet on")
+  eq(wow.chat[3], P .. "Keine Notiz im Chat nach einem Tod.")
+  eq(DeathDiaryDB.settings.quiet, true)
+  wow.slash("/dd quiet an")
+  eq(wow.chat[4], P .. "Nutze /dd quiet on oder /dd quiet off.", "German command words are not commands")
+  wow.slash("/dd quiet off")
+  eq(wow.chat[5], P .. "Eine Notiz im Chat nach jedem Tod.")
+  wow.slash("/dd reset")
+  eq(wow.chat[6], P .. "Damit löschst du alle 1 Tode dieses Charakters. Gib /dd reset confirm ein, um es zu tun.")
+  wow.slash("/dd reset bestätigen")
+  eq(#deaths(), 1)
+  wow.slash("/dd reset confirm")
+  eq(wow.chat[8], P .. "Das Tagebuch dieses Charakters ist jetzt leer.")
+  eq(#deaths(), 0)
+end)
+
+test("German client: the window in German with the game's words", function(wow)
+  germanClient(wow)
+  local ns = boot(wow, GERMAN)
+  wow.slash("/dd window")
+  local f = DeathDiaryFrame
+  eq(f.title:GetText(), "Death Diary")
+  eq(f.zones.head:GetText(), "Zone")
+  eq(f.levels.head:GetText(), "Stufe")
+  eq(f.total:GetText(), "Tode: 0")
+  eq(f.last:GetText(), "Für diesen Charakter sind noch keine Tode notiert.")
+  die(wow, { level = SECRET })
+  die(wow, { level = 25, zone = "Westfall", sub = "" })
+  eq(f.levels.rows[1].left:GetText(), "21-30")
+  eq(f.levels.rows[2].left:GetText(), "Unbekannt")
+  eq(f.total:GetText(), "Tode: 2")
+  eq(f.last:GetText(), "Zuletzt: " .. date("%d.%m. %H:%M", deaths()[2].t) .. ": Westfall, Stufe 25")
+  local list = {}
+  for i = 1, 12 do list[i] = { zone = string.format("Zone %02d", i) } end
+  eq(ns.WindowData(list).zones[10][1], "3 weitere Zonen")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    if not key:find("%H", 1, true) then eq(placeholders(text), placeholders(key), key) end
+  end
+  eq(n, 27, "every text on screen has its German one")
+  eq(ns.L["%b %d %H:%M"], "%d.%m. %H:%M", "dates the German way")
+end)
+
+test("an English client keeps the English texts and the game's English words", function(wow)
+  wow.locale = "enUS"
+  ZONE, LEVEL, UNKNOWN = "Zone", "Level", "Unknown"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  die(wow, { level = SECRET })
+  eq(wow.chat[1], P .. "Death 1 noted: Elwynn Forest, Goldshire, unknown level.")
+  wow.slash("/dd window")
+  eq(DeathDiaryFrame.zones.head:GetText(), "Zone")
+  eq(DeathDiaryFrame.levels.head:GetText(), "Level")
+  eq(DeathDiaryFrame.levels.rows[1].left:GetText(), "Unknown")
+  eq(DeathDiaryFrame.total:GetText(), "Deaths: 1")
+end)

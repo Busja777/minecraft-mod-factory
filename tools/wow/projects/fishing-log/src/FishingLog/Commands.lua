@@ -12,7 +12,7 @@ end
 local function zoneList(list)
   local parts = {}
   for _, z in ipairs(list) do
-    parts[#parts + 1] = z.zone .. " " .. z.catches
+    parts[#parts + 1] = ns.ZoneLabel(z.zone) .. " " .. z.catches
   end
   return table.concat(parts, ", ")
 end
@@ -38,7 +38,7 @@ function ns.ZoneLines()
   local catches, items = ns.Totals(ns.db.zones)
   local lines = { string.format(L["All-time catches per zone (%d catches, %d items):"], catches, items) }
   for _, z in ipairs(list) do
-    lines[#lines + 1] = string.format(L["  %s: %d catches, %d items"], z.zone, z.catches, z.items)
+    lines[#lines + 1] = string.format(L["  %s: %d catches, %d items"], ns.ZoneLabel(z.zone), z.catches, z.items)
   end
   return lines
 end

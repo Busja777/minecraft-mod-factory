@@ -25,6 +25,21 @@ function ns.ZoneName(text)
   return text
 end
 
+-- 1.1: a word the game itself has (a GlobalStrings constant such as UNKNOWN), in the client's language;
+-- the English word when the client lacks it.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
+-- 1.1: a zone as it is shown. The saved key of a catch without a zone stays "Unknown"; on screen it
+-- reads like the game's own word for it.
+function ns.ZoneLabel(zone)
+  if zone == ns.UNKNOWN_ZONE then return ns.GameText("UNKNOWN", ns.UNKNOWN_ZONE) end
+  return zone
+end
+
 function ns.NewSession(now)
   return { start = now, first = nil, last = nil, catches = 0, items = 0, zones = {} }
 end
