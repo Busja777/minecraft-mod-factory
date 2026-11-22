@@ -216,9 +216,9 @@
       "art": "CP",
       "was": "Obstbäume tragen öfter zwei Früchte, Stufe wählbar (ersetzt „Faster Fruit Trees“: die Wachstumszeit ist im Spiel fest eingebaut und per Content Patcher nicht ehrlich änderbar)",
       "updates": [
-        "Deutsch (nach PR #75); Insel-Bäume und Stufen sind schon in 1.0",
         "Balance der Stufen nach Kommentaren",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Balance nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -245,8 +245,8 @@
       "was": "Fische leichter zu fangen, drei Stufen",
       "updates": [
         "Krebskorb-Tiere unverändert lassen, aber Algen und Quallen leichter",
-        "Deutsch (Einstellungstexte)",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Balance nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -389,8 +389,8 @@
       "was": "Sprinkler und Co. früher herstellbar",
       "updates": [
         "Werkzeug-Upgrades bei Clint schneller (falls Daten-Feld)",
-        "Deutsch (Einstellungstexte)",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Balance nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -404,9 +404,9 @@
       "art": "CP",
       "was": "Mehr Ware an den Fest-Ständen",
       "updates": [
-        "Deutsch (Einstellungstexte, nach PR #75)",
         "Eierfest und Blumentanz: weitere Stände, falls belegbar",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Balance nach Kommentaren"
       ],
       "banner": {
         "from": "claude",

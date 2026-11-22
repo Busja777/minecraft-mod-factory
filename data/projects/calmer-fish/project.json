@@ -24,6 +24,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "CalmerFish-1.2.zip",
+      "changelog": "## Calmer Fish 1.2\n\nThe settings are now in German too.\n\n- Both config settings, the level and the switch for legendary fish, now have readable names, descriptions and value labels in the in-game config menu, in English and German. Players with the game set to German see them in German; everyone else keeps English.\n- Same fish, same levels, same defaults, nothing else changes. Your settings carry over.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

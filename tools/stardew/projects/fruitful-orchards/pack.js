@@ -27,10 +27,17 @@
 //   migration guide lists "Fixed some non-unique inner IDs" for Data/FruitTrees; vanilla has a
 //   single fruit entry per tree, so "#0" is that entry in every version.
 // - The chance is a config option (author-guide/config.md) and selects the patches through "When".
+// - 1.1: the config menu shows a readable name, description and value labels, in English
+//   (i18n/default.json) and German (i18n/de.json, texts in de.js). Content Patcher reads the keys
+//   config.<field>.name, config.<field>.description and config.<field>.values.<value> itself
+//   (author-guide/config.md, "Translations"); the ConfigSchema Description stays as it is and is
+//   the English description. Nothing else changes.
 //
 // Trees, saplings and fruit: tools/stardew/data/items.json; seasons and Pierre prices for the page:
 // https://stardewvalleywiki.com/Fruit_Trees (revision 195302): fruit trees "require 28 days to
 // mature, after which they produce one fruit per day when in season" (unchanged by this pack).
+
+import { DE } from './de.js';
 
 // sapling ID (key in Data/FruitTrees) → [sapling name, fruit name, vanilla fruit item ID]
 export const TREES = {
@@ -48,6 +55,35 @@ export const TREES = {
 export const CHANCES = { 25: 0.25, 50: 0.5, 100: 1 };
 export const DEFAULT = '50';
 export const EXTRA = 1; // fruits added on a lucky day
+
+// 1.1: English config texts (the description is the ConfigSchema Description); German in de.js.
+export const CONFIG_EN = {
+  SecondFruitChance: { name: 'Second fruit chance', values: { 25: '25 %', 50: '50 %', 100: '100 %' } }
+};
+
+// Config menu texts (Content Patcher author-guide/config.md, "Translations"): for every field
+// config.<field>.name, config.<field>.description and config.<field>.values.<value>, in
+// i18n/default.json (English, the description is the ConfigSchema Description itself) and
+// i18n/de.json. Every field and value needs its text in both languages, and every number of the
+// English description must be in the German one too (decimal comma).
+export function configI18n(schema, en, de) {
+  const files = { 'i18n/default.json': {}, 'i18n/de.json': {} };
+  for (const [lang, texts] of [['en', en], ['de', de]]) {
+    if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts for ${Object.keys(texts).join(', ')}, settings are ${Object.keys(schema).join(', ')}`);
+  }
+  for (const [field, def] of Object.entries(schema)) {
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    for (const [file, texts, description] of [['i18n/default.json', en[field], def.Description], ['i18n/de.json', de[field], de[field].description]]) {
+      if (!texts.name || !description) throw new Error(`${file}: ${field} needs a name and a description`);
+      if (Object.keys(texts.values || {}).sort().join() !== [...values].sort().join()) throw new Error(`${file}: ${field} needs a label for each of ${values.join(', ')}`);
+      files[file][`config.${field}.name`] = texts.name;
+      files[file][`config.${field}.description`] = description;
+      for (const v of values) files[file][`config.${field}.values.${v}`] = texts.values[v];
+    }
+    for (const n of def.Description.match(/\d+(\.\d+)?/g) || []) if (!de[field].description.includes(n.replace('.', ','))) throw new Error(`de.js: ${field}: the German description lacks ${n}`);
+  }
+  return files;
+}
 
 export const modifierOf = chance => ({
   Id: '{{ModId}}_SecondFruit',
@@ -80,17 +116,19 @@ export default async function ({ items }) {
       });
     }
   }
+  const schema = {
+    SecondFruitChance: {
+      AllowValues: Object.keys(CHANCES).join(', '),
+      Default: DEFAULT,
+      Description: 'Chance in percent that a fruit tree grows two fruits instead of one on a day. Growth time, seasons and fruit quality are not changed.'
+    }
+  };
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        SecondFruitChance: {
-          AllowValues: Object.keys(CHANCES).join(', '),
-          Default: DEFAULT,
-          Description: 'Chance in percent that a fruit tree grows two fruits instead of one on a day. Growth time, seasons and fruit quality are not changed.'
-        }
-      },
+      ConfigSchema: schema,
       Changes: changes
-    }
+    },
+    ...configI18n(schema, CONFIG_EN, DE)
   };
 }

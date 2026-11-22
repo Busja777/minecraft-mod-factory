@@ -34,6 +34,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.3",
+      "file": "FestivalStallsPlus-1.3.zip",
+      "changelog": "## Festival Stalls Plus 1.3\n\nThe settings are now in German too.\n\n- The \"Prices\" setting now has a readable name, description and value labels in the in-game config menu, in English and German. Players with the game set to German see it in German; everyone else keeps English.\n- Same booths, same goods, same prices, nothing else changes. Your setting carries over.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

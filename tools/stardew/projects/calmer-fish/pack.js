@@ -4,6 +4,11 @@
 // 1.1: an optional switch "Legendaries" (default false, so 1.0 behaviour stays) makes the ten
 // legendary fish (and their Legendary Fish II versions) a little calmer too, by a fixed gentle factor
 // that does not depend on the level.
+// 1.2: the config menu shows readable names, descriptions and value labels, in English
+// (i18n/default.json) and German (i18n/de.json, texts in de.js). Content Patcher reads the keys
+// config.<field>.name, config.<field>.description and config.<field>.values.<value> itself
+// (author-guide/config.md, "Translations"); the ConfigSchema Description stays as it is and is the
+// English description. Nothing else changes.
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/Fish is a string → string lookup; each value is a slash-delimited string. For fish caught
@@ -42,6 +47,8 @@
 // Side effect (documented, not avoidable through data): fishing XP per catch is
 // ((quality + 1) × 3) + difficulty / 3 (https://stardewvalleywiki.com/Fishing#Experience_Points,
 // revision 193904), so calmer fish give somewhat less XP per catch.
+
+import { configDe } from './de.js';
 
 // Data/Fish field positions this pack relies on (Modding:Fish data, rod-fish format).
 export const FIELD = { name: 0, difficulty: 1, behaviour: 2 };
@@ -134,6 +141,36 @@ export const LEGENDARY_DEFAULT = 'false';
 
 export const calmer = (difficulty, factor) => Math.max(MINIMUM, Math.min(difficulty, Math.round(difficulty * factor)));
 
+// 1.2: English config texts (the description is the ConfigSchema Description); German in de.js.
+export const CONFIG_EN = {
+  Level: { name: 'Level', values: { Light: 'Light', Medium: 'Medium', Strong: 'Strong' } },
+  Legendaries: { name: 'Legendary fish too', values: { true: 'On', false: 'Off' } }
+};
+
+// Config menu texts (Content Patcher author-guide/config.md, "Translations"): for every field
+// config.<field>.name, config.<field>.description and config.<field>.values.<value>, in
+// i18n/default.json (English, the description is the ConfigSchema Description itself) and
+// i18n/de.json. Every field and value needs its text in both languages, and every number of the
+// English description must be in the German one too (decimal comma).
+export function configI18n(schema, en, de) {
+  const files = { 'i18n/default.json': {}, 'i18n/de.json': {} };
+  for (const [lang, texts] of [['en', en], ['de', de]]) {
+    if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts for ${Object.keys(texts).join(', ')}, settings are ${Object.keys(schema).join(', ')}`);
+  }
+  for (const [field, def] of Object.entries(schema)) {
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    for (const [file, texts, description] of [['i18n/default.json', en[field], def.Description], ['i18n/de.json', de[field], de[field].description]]) {
+      if (!texts.name || !description) throw new Error(`${file}: ${field} needs a name and a description`);
+      if (Object.keys(texts.values || {}).sort().join() !== [...values].sort().join()) throw new Error(`${file}: ${field} needs a label for each of ${values.join(', ')}`);
+      files[file][`config.${field}.name`] = texts.name;
+      files[file][`config.${field}.description`] = description;
+      for (const v of values) files[file][`config.${field}.values.${v}`] = texts.values[v];
+    }
+    for (const n of def.Description.match(/\d+(\.\d+)?/g) || []) if (!de[field].description.includes(n.replace('.', ','))) throw new Error(`de.js: ${field}: the German description lacks ${n}`);
+  }
+  return files;
+}
+
 export default async function ({ items }) {
   const idOf = { ...TEXT_IDS };
   for (const [id, name] of Object.entries(items.items)) if (/^\(O\)/.test(id) && !(name in idOf)) idOf[name] = id.slice(3);
@@ -186,22 +223,25 @@ export default async function ({ items }) {
     Fields: legendary,
     When: { Legendaries: 'true' }
   });
+  const percent = Math.round(100 * (1 - LEGENDARY_FACTOR));
+  const schema = {
+    Level: {
+      AllowValues: Object.keys(LEVELS).join(', '),
+      Default: DEFAULT,
+      Description: 'How much calmer fish are in the fishing minigame. Light lowers the difficulty by 15 %, Medium by 30 %, Strong by 45 %. Legendary fish are not changed by this.'
+    },
+    Legendaries: {
+      AllowValues: 'true, false',
+      Default: LEGENDARY_DEFAULT,
+      Description: `Also make the legendary fish a little calmer: their difficulty is lowered by ${percent} %, whatever the level. Off by default.`
+    }
+  };
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Level: {
-          AllowValues: Object.keys(LEVELS).join(', '),
-          Default: DEFAULT,
-          Description: 'How much calmer fish are in the fishing minigame. Light lowers the difficulty by 15 %, Medium by 30 %, Strong by 45 %. Legendary fish are not changed by this.'
-        },
-        Legendaries: {
-          AllowValues: 'true, false',
-          Default: LEGENDARY_DEFAULT,
-          Description: `Also make the legendary fish a little calmer: their difficulty is lowered by ${Math.round(100 * (1 - LEGENDARY_FACTOR))} %, whatever the level. Off by default.`
-        }
-      },
+      ConfigSchema: schema,
       Changes: changes
-    }
+    },
+    ...configI18n(schema, CONFIG_EN, configDe({ percent }))
   };
 }

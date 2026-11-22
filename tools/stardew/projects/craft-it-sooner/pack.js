@@ -30,6 +30,13 @@
 //   action-editdata.md, "Fields"). Ingredients, yield and display name are never written.
 // - The level is a config option (author-guide/config.md: ConfigSchema with AllowValues/Default)
 //   and selects one patch through "When" (author-guide.md#conditions).
+// - 1.2: the config menu shows a readable name, description and value labels, in English
+//   (i18n/default.json) and German (i18n/de.json, texts in de.js). Content Patcher reads the keys
+//   config.<field>.name, config.<field>.description and config.<field>.values.<value> itself
+//   (author-guide/config.md, "Translations"); the ConfigSchema Description stays as it is and is
+//   the English description. Nothing else changes.
+
+import { DE } from './de.js';
 
 // Data/CraftingRecipes field positions this pack relies on (Modding:Recipe data, crafting format).
 export const FIELD = { ingredients: 0, yield: 2, bigCraftable: 3, unlock: 4 };
@@ -69,6 +76,35 @@ export const LEVELS = {
 };
 export const DEFAULT = 'Medium';
 
+// 1.2: English config texts (the description is the ConfigSchema Description); German in de.js.
+export const CONFIG_EN = {
+  Level: { name: 'Level', values: { Light: 'Light', Medium: 'Medium', Strong: 'Strong' } }
+};
+
+// Config menu texts (Content Patcher author-guide/config.md, "Translations"): for every field
+// config.<field>.name, config.<field>.description and config.<field>.values.<value>, in
+// i18n/default.json (English, the description is the ConfigSchema Description itself) and
+// i18n/de.json. Every field and value needs its text in both languages, and every number of the
+// English description must be in the German one too (decimal comma).
+export function configI18n(schema, en, de) {
+  const files = { 'i18n/default.json': {}, 'i18n/de.json': {} };
+  for (const [lang, texts] of [['en', en], ['de', de]]) {
+    if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts for ${Object.keys(texts).join(', ')}, settings are ${Object.keys(schema).join(', ')}`);
+  }
+  for (const [field, def] of Object.entries(schema)) {
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    for (const [file, texts, description] of [['i18n/default.json', en[field], def.Description], ['i18n/de.json', de[field], de[field].description]]) {
+      if (!texts.name || !description) throw new Error(`${file}: ${field} needs a name and a description`);
+      if (Object.keys(texts.values || {}).sort().join() !== [...values].sort().join()) throw new Error(`${file}: ${field} needs a label for each of ${values.join(', ')}`);
+      files[file][`config.${field}.name`] = texts.name;
+      files[file][`config.${field}.description`] = description;
+      for (const v of values) files[file][`config.${field}.values.${v}`] = texts.values[v];
+    }
+    for (const n of def.Description.match(/\d+(\.\d+)?/g) || []) if (!de[field].description.includes(n.replace('.', ','))) throw new Error(`de.js: ${field}: the German description lacks ${n}`);
+  }
+  return files;
+}
+
 // "334 1 335 1/Home/599/false/s Farming 2/" → { skill: 'Farming', level: 2, output: '599', big: 'false' }
 export function parseRecipe(raw) {
   const fields = raw.split('/');
@@ -105,17 +141,19 @@ export default async function ({ items }) {
       When: { Level: level }
     };
   });
+  const schema = {
+    Level: {
+      AllowValues: Object.keys(LEVELS).join(', '),
+      Default: DEFAULT,
+      Description: 'How much sooner the recipes unlock. Medium: Sprinkler at Farming 1, Quality Sprinkler at 4, Quality Fertilizer at 7, Tapper at Foraging 2. Light stays closer to the original levels, Strong goes lower still. The Iridium Sprinkler and the Keg are not changed.'
+    }
+  };
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Level: {
-          AllowValues: Object.keys(LEVELS).join(', '),
-          Default: DEFAULT,
-          Description: 'How much sooner the recipes unlock. Medium: Sprinkler at Farming 1, Quality Sprinkler at 4, Quality Fertilizer at 7, Tapper at Foraging 2. Light stays closer to the original levels, Strong goes lower still. The Iridium Sprinkler and the Keg are not changed.'
-        }
-      },
+      ConfigSchema: schema,
       Changes: changes
-    }
+    },
+    ...configI18n(schema, CONFIG_EN, DE)
   };
 }

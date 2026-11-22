@@ -74,12 +74,20 @@
 //   No good here is an artisan good, so Artisan (+40 %) does not apply either. The highest bonus is
 //   Rancher's 20 % on the Egg, below the 1.25× floor; the build checks every good at every level.
 //
+// 1.3, config texts: the config menu shows a readable name, description and value labels, in
+// English (i18n/default.json) and German (i18n/de.json, texts in de.js). Content Patcher reads the
+// keys config.<field>.name, config.<field>.description and config.<field>.values.<value> itself
+// (author-guide/config.md, "Translations"); the ConfigSchema Description stays as it is and is the
+// English description. Nothing else changes.
+//
 // Left out on purpose: the Stardew Valley Fair (Festival_StardewValleyFair_StarTokens sells for
 // star tokens, which have no gold value to price against), the Desert Festival (its egg merchant
 // DesertFestival_EggShop and the villager shops DesertFestival_<name> sell for Calico Eggs, the
 // festival's own currency that "sell[s] for 0g", https://stardewvalleywiki.com/Desert_Festival,
 // revision 195409: no gold value either), the Night Market's decoration boat (decorations only),
 // furniture and hats (only (O) objects can be checked here).
+
+import { configDe } from './de.js';
 
 const SEASONS = ['spring', 'summer', 'fall', 'winter'];
 export const SEASON_DAYS = 28;
@@ -206,6 +214,35 @@ export const priceOf = (name, markup = MARKUP) => (SEEDS[name] ? SEEDS[name][0] 
 
 export const keyOf = name => name.replace(/[^A-Za-z]/g, '');
 
+// 1.3: English config texts (the description is the ConfigSchema Description); German in de.js.
+export const CONFIG_EN = {
+  Prices: { name: 'Prices', values: { Fair: 'Fair', Normal: 'Normal', Steep: 'Steep' } }
+};
+
+// Config menu texts (Content Patcher author-guide/config.md, "Translations"): for every field
+// config.<field>.name, config.<field>.description and config.<field>.values.<value>, in
+// i18n/default.json (English, the description is the ConfigSchema Description itself) and
+// i18n/de.json. Every field and value needs its text in both languages, and every number of the
+// English description must be in the German one too (decimal comma).
+export function configI18n(schema, en, de) {
+  const files = { 'i18n/default.json': {}, 'i18n/de.json': {} };
+  for (const [lang, texts] of [['en', en], ['de', de]]) {
+    if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts for ${Object.keys(texts).join(', ')}, settings are ${Object.keys(schema).join(', ')}`);
+  }
+  for (const [field, def] of Object.entries(schema)) {
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    for (const [file, texts, description] of [['i18n/default.json', en[field], def.Description], ['i18n/de.json', de[field], de[field].description]]) {
+      if (!texts.name || !description) throw new Error(`${file}: ${field} needs a name and a description`);
+      if (Object.keys(texts.values || {}).sort().join() !== [...values].sort().join()) throw new Error(`${file}: ${field} needs a label for each of ${values.join(', ')}`);
+      files[file][`config.${field}.name`] = texts.name;
+      files[file][`config.${field}.description`] = description;
+      for (const v of values) files[file][`config.${field}.values.${v}`] = texts.values[v];
+    }
+    for (const n of def.Description.match(/\d+(\.\d+)?/g) || []) if (!de[field].description.includes(n.replace('.', ','))) throw new Error(`de.js: ${field}: the German description lacks ${n}`);
+  }
+  return files;
+}
+
 // the season and day the seeds are planted: the festival day, or fall 1 after the last summer day
 export function plantingDay({ season, day }) {
   if (day < SEASON_DAYS) return { season, day };
@@ -285,17 +322,19 @@ export default async function ({ items }) {
     }
   }
   const levels = Object.entries(PRICE_LEVELS).map(([level, markup]) => `${level} ${markup}x`).join(', ');
+  const schema = {
+    Prices: {
+      AllowValues: Object.keys(PRICE_LEVELS).join(', '),
+      Default: DEFAULT_LEVEL,
+      Description: `What the festival booths charge for the goods this pack adds, as a multiple of the sell price: ${levels}. Seeds always cost what Pierre asks, and the booths' own stock is not changed.`
+    }
+  };
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Prices: {
-          AllowValues: Object.keys(PRICE_LEVELS).join(', '),
-          Default: DEFAULT_LEVEL,
-          Description: `What the festival booths charge for the goods this pack adds, as a multiple of the sell price: ${levels}. Seeds always cost what Pierre asks, and the booths' own stock is not changed.`
-        }
-      },
+      ConfigSchema: schema,
       Changes: changes
-    }
+    },
+    ...configI18n(schema, CONFIG_EN, configDe({ levels: PRICE_LEVELS }))
   };
 }
