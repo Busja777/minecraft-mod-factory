@@ -36,6 +36,13 @@ function ns.GameText(global, english)
   return text
 end
 
+-- 1.1: "Renown 12" the way the game writes it (RENOWN_LEVEL_LABEL), in the client's language.
+function ns.RenownText(level)
+  local fmt = ns.GameText("RENOWN_LEVEL_LABEL", "Renown %d")
+  if not fmt:find("%d", 1, true) then fmt = "Renown %d" end
+  return string.format(fmt, level)
+end
+
 function ns.StandingName(reaction)
   local english = ns.STANDING_NAMES[reaction]
   if not english then return "?" end
@@ -88,7 +95,7 @@ function ns.RenownReading(id, name, major, hasMax)
   return {
     id = id, name = ns.PlainText(major.name) or name, kind = "renown", level = level,
     value = earned, min = 0, max = size, maxed = (hasMax == true) or size <= 0,
-    standing = string.format(ns.L["Renown %d"], level),
+    standing = ns.RenownText(level),
   }
 end
 

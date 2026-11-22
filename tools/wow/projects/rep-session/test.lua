@@ -356,3 +356,119 @@ test("the client's standing names are used when it has them", function(wow)
   eq(ns.StandingName(7), "Revered")
   eq(ns.StandingName(9), "?")
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+local P = "|cffffd100Rep Session:|r "
+local GREY = "|cff9d9d9d"
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and the words it has (GlobalStrings). The stand-in client has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  FACTION, RESET, RENOWN_LEVEL_LABEL, LARGE_NUMBER_SEPERATOR = "Fraktion", "Rücksetzen", "Ruhmstufe %d", "."
+  FACTION_STANDING_LABEL5, FACTION_STANDING_LABEL6, FACTION_STANDING_LABEL8 = "Freundlich", "Wohlwollend", "Ehrfürchtig"
+end
+
+test("renown, faction and the reset button come from the game, English when the client has none", function(wow)
+  local ns = boot(wow)
+  eq(ns.RenownText(12), "Renown 12")
+  germanClient(wow)
+  eq(ns.RenownText(12), "Ruhmstufe 12")
+  RENOWN_LEVEL_LABEL = "Ruhmstufe"
+  eq(ns.RenownText(3), "Renown 3", "a text without its number is not used")
+  RENOWN_LEVEL_LABEL = ""
+  eq(ns.RenownText(3), "Renown 3", "an empty one stays English")
+  FACTION = { secret = true }
+  eq(ns.Lines(nil)[1][1], "Faction", "so does anything that is not a text")
+end)
+
+test("German client: the report in German with the game's names", function(wow)
+  germanClient(wow)
+  local ns = boot(wow)
+  wow.slash("/rs")
+  eq(wow.chat[1], P .. "Fraktion: " .. GREY .. "Du beobachtest keine Fraktion. Wähle eine im Ruffenster aus.|r")
+  rep.watched = standard(2600, "Die Durchtrennten Fäden", 5, 4000, 3000, 9000)
+  wow.fire("UPDATE_FACTION")
+  wow.clock = wow.clock + 60
+  gain(wow, 4250)
+  wow.chat = {}
+  wow.slash("/rs")
+  eq(#wow.chat, 4)
+  eq(wow.chat[1], P .. "Fraktion: Die Durchtrennten Fäden " .. GREY .. "(Freundlich)|r")
+  eq(wow.chat[2], P .. "Diese Sitzung: |cff40ff40+250|r " .. GREY .. "in 1m|r")
+  eq(wow.chat[3], P .. "Pro Stunde: " .. GREY .. "nach 5 Minuten|r")
+  eq(wow.chat[4], P .. "Nächster Rang: noch 4.750")
+  wow.clock = wow.clock + 540
+  gain(wow, 9300, 6, 9000, 21000)
+  wow.chat = {}
+  wow.slash("/rs")
+  eq(wow.chat[1], P .. "Fraktion: Die Durchtrennten Fäden " .. GREY .. "(Wohlwollend)|r")
+  eq(wow.chat[2], P .. "Diese Sitzung: |cff40ff40+5.300|r " .. GREY .. "in 10m|r")
+  eq(wow.chat[3], P .. "Pro Stunde: +31.800")
+  eq(wow.chat[4], P .. "Nächster Rang: noch 11.700, etwa 22m")
+  wow.slash("/rs reset")
+  eq(wow.chat[5], P .. "Neue Sitzung gestartet.")
+  wow.slash("/rs zeigen")
+  eq(wow.chat[6], P .. "/rs zeigt die beobachtete Fraktion im Chat, /rs show öffnet das Fenster, /rs reset startet eine neue Sitzung.",
+    "German command words are not commands")
+end)
+
+test("German client: renown, the top standing and the window in German", function(wow)
+  germanClient(wow)
+  local ns = boot(wow)
+  rep.watched = standard(2590, "Rat von Dornogal", 8, 0, 0, 0)
+  rep.major[2590] = { name = "Rat von Dornogal", renownLevel = 11, renownReputationEarned = 2300, renownLevelThreshold = 2500 }
+  wow.fire("UPDATE_FACTION")
+  wow.clock = wow.clock + 1800
+  rep.major[2590] = { name = "Rat von Dornogal", renownLevel = 12, renownReputationEarned = 400, renownLevelThreshold = 2500 }
+  wow.fire("UPDATE_FACTION")
+  wow.slash("/rs show")
+  local f = RepSessionFrame
+  eq(f.lines[1].left:GetText(), "Fraktion")
+  eq(f.lines[1].right:GetText(), "Rat von Dornogal " .. GREY .. "(Ruhmstufe 12)|r")
+  eq(f.lines[2].left:GetText(), "Diese Sitzung")
+  eq(f.lines[2].right:GetText(), "|cff40ff40+600|r " .. GREY .. "in 30m|r")
+  eq(f.lines[3].left:GetText(), "Pro Stunde")
+  eq(f.lines[4].left:GetText(), "Nächster Rang")
+  eq(f.lines[4].right:GetText(), "noch 2.100, etwa 1h 45m")
+  eq(f.reset:GetText(), "Rücksetzen")
+  f.reset:Click()
+  eq(f.lines[2].right:GetText(), GREY .. "0|r " .. GREY .. "in unter einer Minute|r")
+  rep.maxRenown[2590] = true
+  wow.fire("UPDATE_FACTION")
+  eq(f.lines[4].right:GetText(), GREY .. "max.|r")
+  eq(ns.FormatDuration(3600 * 27), "1d 3h")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 16, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts and the game's English names", function(wow)
+  wow.locale = "enUS"
+  FACTION, RESET, RENOWN_LEVEL_LABEL = "Faction", "Reset", "Renown %d"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  rep.watched = standard(2590, "Council of Dornogal", 8, 0, 0, 0)
+  rep.major[2590] = { name = "Council of Dornogal", renownLevel = 12, renownReputationEarned = 400, renownLevelThreshold = 2500 }
+  wow.fire("UPDATE_FACTION")
+  wow.slash("/rs")
+  eq(wow.chat[1], P .. "Faction: Council of Dornogal " .. GREY .. "(Renown 12)|r")
+  eq(wow.chat[4], P .. "Next standing: 2,100 to go")
+  wow.slash("/rs show")
+  eq(RepSessionFrame.reset:GetText(), "Reset")
+end)

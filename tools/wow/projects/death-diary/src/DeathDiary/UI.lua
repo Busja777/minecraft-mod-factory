@@ -58,8 +58,8 @@ local function create()
   f.title:SetPoint("TOP", 0, -5)
   f.title:SetText(L["Death Diary"])
 
-  f.zones = column(f, 16, L["Zone"])
-  f.levels = column(f, 200, L["Level"])
+  f.zones = column(f, 16, ns.GameText("ZONE", "Zone"))
+  f.levels = column(f, 200, ns.GameText("LEVEL", "Level"))
   f.total = text(f, "GameFontNormalSmall")
   f.total:SetPoint("BOTTOMLEFT", 16, 30)
   f.last = text(f, "GameFontHighlightSmall")
@@ -93,7 +93,7 @@ function ns.WindowData(list)
   for _, b in ipairs(brackets) do
     data.levels[#data.levels + 1] = { string.format(L["%d-%d"], b.from, b.to), b.count }
   end
-  if unknown > 0 then data.levels[#data.levels + 1] = { L["Unknown"], unknown } end
+  if unknown > 0 then data.levels[#data.levels + 1] = { ns.GameText("UNKNOWN", "Unknown"), unknown } end
   while #data.levels > ROWS do table.remove(data.levels, 1) end -- the lowest brackets go first
   data.last = list[#list] and ns.EntryText(list[#list]) or nil
   return data

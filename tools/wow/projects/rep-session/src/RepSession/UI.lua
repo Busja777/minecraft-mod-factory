@@ -8,7 +8,7 @@ local ui
 -- The four lines the window and the chat report show: { label, value } each.
 function ns.Lines(view)
   if not view then
-    return { { L["Faction"], GREY .. L["No faction is watched. Pick one in the reputation panel."] .. "|r" } }
+    return { { ns.GameText("FACTION", "Faction"), GREY .. L["No faction is watched. Pick one in the reputation panel."] .. "|r" } }
   end
   local gained = view.gained == 0 and (GREY .. "0|r") or ((view.gained > 0 and GREEN or RED) .. ns.Signed(view.gained) .. "|r")
   local perHour = view.perHour and ns.Signed(view.perHour)
@@ -22,7 +22,7 @@ function ns.Lines(view)
     nextText = string.format(L["%s to go"], ns.FormatNumber(view.needed))
   end
   return {
-    { L["Faction"], view.name .. " " .. GREY .. "(" .. view.standing .. ")|r" },
+    { ns.GameText("FACTION", "Faction"), view.name .. " " .. GREY .. "(" .. view.standing .. ")|r" },
     { L["This session"], gained .. " " .. GREY .. string.format(L["in %s"], ns.FormatDuration(view.seconds)) .. "|r" },
     { L["Per hour"], perHour },
     { L["Next standing"], nextText },
@@ -72,7 +72,7 @@ local function create()
   local reset = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
   reset:SetSize(80, 22)
   reset:SetPoint("BOTTOM", 0, 10)
-  reset:SetText(L["Reset"])
+  reset:SetText(ns.GameText("RESET", "Reset"))
   reset:SetScript("OnClick", function() ns.Reset() end)
   f.reset = reset
 

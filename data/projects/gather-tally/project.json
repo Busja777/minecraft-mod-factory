@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "GatherTally-1.1.zip",
+      "changelog": "## Gather Tally 1.1\n\n- Gather Tally now speaks **German**: the small display, its tooltip and every chat line. On clients in other languages it stays in English.\n- Item names and links come from the game itself, in your client's language, as before.\n- The commands stay the same in every language, for example `/gt reset` or `/gt hide`.\n- Your display position and your hide or show setting from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

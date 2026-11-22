@@ -306,3 +306,98 @@ test("a reload keeps the all-time totals and starts a new session", function(wow
   eq(FishingLogDB.zones.Hallowfall.catches, 1)
   eq(FishingLogDB.zones.Dornogal.catches, 1)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+local P = "|cffffd100Fishing Log:|r "
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and its word for an unknown zone (GlobalStrings). The stand-in client
+-- has none; zone names come from GetRealZoneText in the client's language.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  UNKNOWN = "Unbekannt"
+end
+
+test("an unknown zone reads like the game's word for it, the saved key stays Unknown", function(wow)
+  local ns = boot(wow)
+  eq(ns.ZoneLabel("Unknown"), "Unknown")
+  eq(ns.ZoneLabel("Dornogal"), "Dornogal")
+  germanClient(wow)
+  eq(ns.ZoneLabel("Unknown"), "Unbekannt")
+  eq(ns.ZoneLabel("Dornogal"), "Dornogal")
+  UNKNOWN = ""
+  eq(ns.ZoneLabel("Unknown"), "Unknown", "an empty one stays English")
+  UNKNOWN = { secret = true }
+  eq(ns.ZoneLabel("Unknown"), "Unknown", "so does anything that is not a text")
+end)
+
+test("German client: the session, the help and a reset in German", function(wow)
+  germanClient(wow)
+  local ns = boot(wow, { zone = "Heilsturz" })
+  wow.slash("/fl")
+  eq(wow.chat[1], P .. "In dieser Sitzung noch keine Fänge.")
+  catch(wow, { fish("A", 2) })
+  wow.clock = wow.clock + 20
+  game.zone = nil
+  catch(wow)
+  wow.slash("/fl")
+  eq(wow.chat[2], P .. "Diese Sitzung: 2 Fänge, 3 Gegenstände, – pro Stunde.")
+  eq(wow.chat[3], P .. "Häufigste Zonen: Heilsturz 1, Unbekannt 1.")
+  eq(wow.chat[4], P .. "|cff9d9d9dDie Fänge pro Stunde erscheinen nach zwei Fängen und fünf Minuten Angeln.|r")
+  eq(FishingLogDB.zones.Unknown.catches, 1, "saved under the same key as before")
+  wow.clock = wow.clock + 580
+  wow.slash("/fl")
+  eq(wow.chat[5], P .. "Diese Sitzung: 2 Fänge, 3 Gegenstände, 12 pro Stunde.")
+  eq(#wow.chat, 6, "no hint once the rate shows")
+  wow.slash("/fl reset")
+  eq(wow.chat[7], P .. "Neue Sitzung gestartet.")
+  wow.slash("/fl zonen")
+  eq(wow.chat[8], P .. "/fl zeigt diese Sitzung, /fl zones listet alle Fänge pro Zone auf, /fl reset startet eine neue Sitzung.",
+    "German command words are not commands")
+end)
+
+test("German client: all catches per zone in German, the command words stay English", function(wow)
+  germanClient(wow)
+  local ns = boot(wow)
+  wow.slash("/fl zones")
+  eq(wow.chat[1], P .. "Noch keine Fänge notiert.")
+  FishingLogDB.zones.Unknown = { catches = 1, items = 1 }
+  catch(wow, { fish("A", 2) }, "Heilsturz")
+  catch(wow, nil, "Heilsturz")
+  wow.slash("/fl zones")
+  eq(wow.chat[2], P .. "Alle bisherigen Fänge pro Zone (3 Fänge, 4 Gegenstände):")
+  eq(wow.chat[3], P .. "  Heilsturz: 2 Fänge, 3 Gegenstände")
+  eq(wow.chat[4], P .. "  Unbekannt: 1 Fänge, 1 Gegenstände")
+  eq(#wow.chat, 4)
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 10, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts and the game's English word", function(wow)
+  wow.locale = "enUS"
+  UNKNOWN = "Unknown"
+  local ns = boot(wow, { zone = "" })
+  eq(next(ns.L), nil)
+  catch(wow)
+  wow.slash("/fl")
+  eq(wow.chat[1], P .. "This session: 1 catches, 1 items, – per hour.")
+  eq(wow.chat[2], P .. "Top zones: Unknown 1.")
+  wow.slash("/fl zones")
+  eq(wow.chat[5], P .. "  Unknown: 1 catches, 1 items")
+end)
