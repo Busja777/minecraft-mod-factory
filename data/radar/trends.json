@@ -1,0 +1,1414 @@
+{
+  "checked": "2026-11-21",
+  "window": "30 days",
+  "note": "New projects per row and class, ranked by downloads per day since they were created. Ideas, not orders: a trend only becomes a project when it fits the series and is not a copy of someone else's project.",
+  "rows": {
+    "wow": {
+      "Addons": {
+        "newProjects": 400,
+        "top": [
+          {
+            "name": "MasterCrafter Forever",
+            "slug": "mastercrafter-forever",
+            "created": "2026-11-20",
+            "downloads": 1347,
+            "perDay": 1347,
+            "categories": [
+              "Professions"
+            ]
+          },
+          {
+            "name": "YAVO Data: Forever Paket 3 (German|Deutsch)",
+            "slug": "yavo-data-forever-paket-3-german-deutsch",
+            "created": "2026-11-20",
+            "downloads": 436,
+            "perDay": 436,
+            "categories": [
+              "Audio & Video",
+              "Roleplay"
+            ]
+          },
+          {
+            "name": "Spoken Italian Audio: Places",
+            "slug": "spoken-italian-audio-places",
+            "created": "2026-11-20",
+            "downloads": 376,
+            "perDay": 376,
+            "categories": [
+              "Audio & Video",
+              "Miscellaneous",
+              "Roleplay"
+            ]
+          },
+          {
+            "name": "OpenMapMinimap",
+            "slug": "openmapminimap",
+            "created": "2026-11-20",
+            "downloads": 266,
+            "perDay": 266,
+            "categories": [
+              "Map & Minimap"
+            ]
+          },
+          {
+            "name": "Good Move UI: Move Anything - Frame Mover & Edit Mode for Unit Frames, Action Bars, Windows",
+            "slug": "good-move-ui-move-anything-frame-mover-edit-mode",
+            "created": "2026-11-20",
+            "downloads": 213,
+            "perDay": 213,
+            "categories": [
+              "Action Bars",
+              "Buffs & Debuffs",
+              "HUDs",
+              "Map & Minimap",
+              "Unit Frames"
+            ]
+          },
+          {
+            "name": "SteveBook",
+            "slug": "stevebook",
+            "created": "2026-11-20",
+            "downloads": 181,
+            "perDay": 181,
+            "categories": [
+              "Auction & Economy"
+            ]
+          },
+          {
+            "name": "GearPilot Forever",
+            "slug": "gearpilot-forever",
+            "created": "2026-11-20",
+            "downloads": 159,
+            "perDay": 159,
+            "categories": [
+              "Auction & Economy",
+              "Bags & Inventory",
+              "Quests & Leveling"
+            ]
+          },
+          {
+            "name": "Gatherly - Terrain Aware Gathering Routes & Node Tracking",
+            "slug": "gatherly",
+            "created": "2026-11-20",
+            "downloads": 155,
+            "perDay": 155,
+            "categories": [
+              "Herbalism",
+              "Mining",
+              "Professions"
+            ]
+          },
+          {
+            "name": "Auctionator: Vendor Sniper & Crafting",
+            "slug": "auctionator-vendor-sniper-crafting",
+            "created": "2026-11-20",
+            "downloads": 151,
+            "perDay": 151,
+            "categories": [
+              "Auction & Economy",
+              "Bags & Inventory",
+              "Professions",
+              "Tooltip"
+            ]
+          },
+          {
+            "name": "Forever Coop",
+            "slug": "forever-coop",
+            "created": "2026-11-20",
+            "downloads": 127,
+            "perDay": 127,
+            "categories": [
+              "Auction & Economy",
+              "Map & Minimap",
+              "Quests & Leveling",
+              "Unit Frames"
+            ]
+          },
+          {
+            "name": "GatherMate2 QuickMenu",
+            "slug": "gathermate2-quickmenu",
+            "created": "2026-11-20",
+            "downloads": 122,
+            "perDay": 122,
+            "categories": [
+              "Map & Minimap"
+            ]
+          },
+          {
+            "name": "Carbonite Forever",
+            "slug": "carbonite-forever",
+            "created": "2026-11-20",
+            "downloads": 114,
+            "perDay": 114,
+            "categories": [
+              "Map & Minimap",
+              "Quests & Leveling",
+              "Tooltip"
+            ]
+          },
+          {
+            "name": "OpenGroup",
+            "slug": "opengroup",
+            "created": "2026-11-20",
+            "downloads": 113,
+            "perDay": 113,
+            "categories": [
+              "Chat & Communication",
+              "PvP",
+              "Quests & Leveling"
+            ]
+          },
+          {
+            "name": "Quest Advisor Forever",
+            "slug": "quest-advisor",
+            "created": "2026-11-20",
+            "downloads": 109,
+            "perDay": 109,
+            "categories": [
+              "Map & Minimap",
+              "Quests & Leveling"
+            ]
+          },
+          {
+            "name": "Quest Planner",
+            "slug": "quest-planner",
+            "created": "2026-11-20",
+            "downloads": 108,
+            "perDay": 108,
+            "categories": [
+              "Quests & Leveling"
+            ]
+          }
+        ],
+        "categories": [
+          {
+            "name": "Professions",
+            "projects": 55,
+            "perDay": 2485
+          },
+          {
+            "name": "Quests & Leveling",
+            "projects": 74,
+            "perDay": 1787
+          },
+          {
+            "name": "Map & Minimap",
+            "projects": 58,
+            "perDay": 1771
+          },
+          {
+            "name": "Miscellaneous",
+            "projects": 84,
+            "perDay": 1325
+          },
+          {
+            "name": "Auction & Economy",
+            "projects": 48,
+            "perDay": 1268
+          },
+          {
+            "name": "Roleplay",
+            "projects": 23,
+            "perDay": 1027
+          },
+          {
+            "name": "Audio & Video",
+            "projects": 13,
+            "perDay": 1014
+          },
+          {
+            "name": "Bags & Inventory",
+            "projects": 55,
+            "perDay": 998
+          },
+          {
+            "name": "Action Bars",
+            "projects": 45,
+            "perDay": 858
+          },
+          {
+            "name": "Unit Frames",
+            "projects": 32,
+            "perDay": 847
+          }
+        ],
+        "hotWords": [
+          {
+            "word": "forever",
+            "count": 6
+          }
+        ]
+      }
+    },
+    "java": {
+      "Data Packs": {
+        "newProjects": 276,
+        "top": [
+          {
+            "name": "Aquamirae Recipe Tweaks - easier Graveyard Echoes",
+            "slug": "aquamirae-recipe-tweaks-easier-graveyard-echoes",
+            "created": "2026-11-04",
+            "downloads": 70391,
+            "perDay": 4193.1,
+            "categories": [
+              "Mod Support",
+              "Utility"
+            ]
+          },
+          {
+            "name": "Simply Swords - Awakening fix",
+            "slug": "simply-swords-awakening-fix",
+            "created": "2026-11-09",
+            "downloads": 37484,
+            "perDay": 3167.9,
+            "categories": [
+              "Magic",
+              "Mod Support",
+              "Utility"
+            ]
+          },
+          {
+            "name": "Universal Dragon Colors",
+            "slug": "universal-dragon-colors",
+            "created": "2026-11-17",
+            "downloads": 1382,
+            "perDay": 359.9,
+            "categories": [
+              "Adventure",
+              "Fantasy",
+              "Miscellaneous"
+            ]
+          },
+          {
+            "name": "ZS Tensura Gateways",
+            "slug": "zs-tensura-gateways",
+            "created": "2026-11-08",
+            "downloads": 1751,
+            "perDay": 136.2,
+            "categories": [
+              "Mod Support"
+            ]
+          },
+          {
+            "name": "SPM Boss Recipes [READ DESC]",
+            "slug": "spm-boss-recipes",
+            "created": "2026-10-28",
+            "downloads": 1536,
+            "perDay": 64.5,
+            "categories": [
+              "Miscellaneous",
+              "Mod Support",
+              "Utility"
+            ]
+          },
+          {
+            "name": "SPMGacha",
+            "slug": "spmgacha",
+            "created": "2026-10-28",
+            "downloads": 1536,
+            "perDay": 64.5,
+            "categories": [
+              "Fantasy",
+              "Magic",
+              "Miscellaneous",
+              "Mod Support",
+              "Utility"
+            ]
+          },
+          {
+            "name": "SPM DarkRoot Recipe",
+            "slug": "spm-darkroot-recipe",
+            "created": "2026-11-01",
+            "downloads": 1201,
+            "perDay": 59.9,
+            "categories": [
+              "Fantasy",
+              "Magic",
+              "Utility"
+            ]
+          },
+          {
+            "name": "FAUNA Memory Fix (unofficial)",
+            "slug": "fauna-memory-fix-unofficial",
+            "created": "2026-11-15",
+            "downloads": 231,
+            "perDay": 39,
+            "categories": [
+              "Mod Support",
+              "Utility"
+            ]
+          },
+          {
+            "name": "Runic Roots",
+            "slug": "runic-roots",
+            "created": "2026-11-01",
+            "downloads": 575,
+            "perDay": 28.7,
+            "categories": [
+              "Fantasy"
+            ]
+          },
+          {
+            "name": "Mahoraga: Wheel of Adaptation",
+            "slug": "mahoraga-wheel-of-adaptation",
+            "created": "2026-11-19",
+            "downloads": 31,
+            "perDay": 16.6,
+            "categories": [
+              "Adventure",
+              "Fantasy",
+              "Magic"
+            ]
+          },
+          {
+            "name": "Fast Leaf Decay",
+            "slug": "fast-leaf-decay",
+            "created": "2026-10-23",
+            "downloads": 437,
+            "perDay": 15.1,
+            "categories": [
+              "Utility"
+            ]
+          },
+          {
+            "name": "Townstead Roots: Skeletownies",
+            "slug": "townstead-roots-skeletownies",
+            "created": "2026-10-30",
+            "downloads": 330,
+            "perDay": 15.1,
+            "categories": [
+              "Fantasy"
+            ]
+          },
+          {
+            "name": "[TaCZ] Military Structures",
+            "slug": "tacz-military-structures",
+            "created": "2026-11-17",
+            "downloads": 54,
+            "perDay": 14.1,
+            "categories": [
+              "Adventure",
+              "Miscellaneous",
+              "Mod Support",
+              "Tech",
+              "Utility"
+            ]
+          },
+          {
+            "name": "Townstead Roots: Webster",
+            "slug": "townstead-roots-webster",
+            "created": "2026-11-01",
+            "downloads": 274,
+            "perDay": 13.7,
+            "categories": [
+              "Fantasy"
+            ]
+          },
+          {
+            "name": "Simple Vein Miner",
+            "slug": "simple-vein-miner",
+            "created": "2026-10-25",
+            "downloads": 359,
+            "perDay": 13.3,
+            "categories": [
+              "Tech",
+              "Utility"
+            ]
+          }
+        ],
+        "categories": [
+          {
+            "name": "Utility",
+            "projects": 159,
+            "perDay": 7945.5
+          },
+          {
+            "name": "Mod Support",
+            "projects": 57,
+            "perDay": 7801.7
+          },
+          {
+            "name": "Magic",
+            "projects": 38,
+            "perDay": 3377.8
+          },
+          {
+            "name": "Miscellaneous",
+            "projects": 97,
+            "perDay": 683.7
+          },
+          {
+            "name": "Fantasy",
+            "projects": 48,
+            "perDay": 654.2
+          },
+          {
+            "name": "Adventure",
+            "projects": 112,
+            "perDay": 628.9
+          },
+          {
+            "name": "Tech",
+            "projects": 36,
+            "perDay": 112.6
+          },
+          {
+            "name": "Library",
+            "projects": 10,
+            "perDay": 13.2
+          }
+        ],
+        "hotWords": [
+          {
+            "word": "roots",
+            "count": 3
+          }
+        ]
+      },
+      "Resource Packs": {
+        "newProjects": 400,
+        "top": [
+          {
+            "name": "Outlined Ores (Glowing/Visible Ores)",
+            "slug": "outlined-ores-by-peakmc-6725-glowing-visible-ores",
+            "created": "2026-11-08",
+            "downloads": 4687,
+            "perDay": 362.7,
+            "categories": [
+              "16x",
+              "Miscellaneous"
+            ]
+          },
+          {
+            "name": "Cat Girl Totem",
+            "slug": "cat-girl-totem",
+            "created": "2026-11-19",
+            "downloads": 249,
+            "perDay": 131.2,
+            "categories": [
+              "512x and Higher",
+              "Miscellaneous"
+            ]
+          },
+          {
+            "name": "X-Ray By PeakMC6725",
+            "slug": "x-ray-by-peakmc6725",
+            "created": "2026-11-19",
+            "downloads": 217,
+            "perDay": 114.2,
+            "categories": [
+              "16x",
+              "Miscellaneous",
+              "Traditional"
+            ]
+          },
+          {
+            "name": "Sword PvP Pack - 32x HD Swords",
+            "slug": "sword-pvp-pack",
+            "created": "2026-11-12",
+            "downloads": 942,
+            "perDay": 104.1,
+            "categories": [
+              "16x",
+              "Traditional"
+            ]
+          },
+          {
+            "name": "Ultimate Fullbright  Night Vision & Bright Lightmap",
+            "slug": "ultimate-fullbright-night-vision-bright-lightmap",
+            "created": "2026-11-15",
+            "downloads": 566,
+            "perDay": 95.1,
+            "categories": [
+              "16x",
+              "Miscellaneous"
+            ]
+          },
+          {
+            "name": "Item Physics Lite",
+            "slug": "item-physics-lite",
+            "created": "2026-11-12",
+            "downloads": 724,
+            "perDay": 80,
+            "categories": [
+              "Animated",
+              "Data Packs",
+              "Miscellaneous",
+              "Photo Realistic"
+            ]
+          },
+          {
+            "name": "Better Bushier Leaves+",
+            "slug": "better-bushier-leaves",
+            "created": "2026-11-18",
+            "downloads": 232,
+            "perDay": 78.9,
+            "categories": [
+              "16x",
+              "Miscellaneous",
+              "Mod Support",
+              "Photo Realistic"
+            ]
+          },
+          {
+            "name": "Archie's Dinosaurs Legacy Pack",
+            "slug": "archies-dinosaurs-legacy-pack",
+            "created": "2026-11-14",
+            "downloads": 463,
+            "perDay": 66.1,
+            "categories": [
+              "16x",
+              "Mod Support"
+            ]
+          },
+          {
+            "name": "Creeper Girls x Fresh animations",
+            "slug": "creeper-girls-x-fresh-animations",
+            "created": "2026-11-20",
+            "downloads": 60,
+            "perDay": 60,
+            "categories": [
+              "16x"
+            ]
+          },
+          {
+            "name": "Fennix Clean GUI Dark",
+            "slug": "fennix-clean-ui-dark",
+            "created": "2026-11-17",
+            "downloads": 215,
+            "perDay": 55.9,
+            "categories": [
+              "16x"
+            ]
+          },
+          {
+            "name": "Fennix Clean GUI Light",
+            "slug": "fennix-clean-ui-light",
+            "created": "2026-11-17",
+            "downloads": 206,
+            "perDay": 53.6,
+            "categories": [
+              "16x"
+            ]
+          },
+          {
+            "name": "Spider Girls",
+            "slug": "spider-girls",
+            "created": "2026-11-12",
+            "downloads": 379,
+            "perDay": 41.9,
+            "categories": [
+              "16x",
+              "Animated"
+            ]
+          },
+          {
+            "name": "Blade - Throwing Disc",
+            "slug": "blade-throwing-disc",
+            "created": "2026-11-19",
+            "downloads": 77,
+            "perDay": 40.6,
+            "categories": [
+              "32x"
+            ]
+          },
+          {
+            "name": "Minimal PVP",
+            "slug": "minimal-pvp",
+            "created": "2026-11-19",
+            "downloads": 76,
+            "perDay": 40,
+            "categories": [
+              "16x",
+              "Animated",
+              "Miscellaneous",
+              "Mod Support",
+              "Traditional"
+            ]
+          },
+          {
+            "name": "Minimal Fire",
+            "slug": "minimal-fire",
+            "created": "2026-11-19",
+            "downloads": 75,
+            "perDay": 39.4,
+            "categories": [
+              "16x",
+              "Animated",
+              "Miscellaneous",
+              "Mod Support",
+              "Traditional"
+            ]
+          }
+        ],
+        "categories": [
+          {
+            "name": "16x",
+            "projects": 257,
+            "perDay": 2706
+          },
+          {
+            "name": "Miscellaneous",
+            "projects": 130,
+            "perDay": 1754.1
+          },
+          {
+            "name": "Traditional",
+            "projects": 71,
+            "perDay": 799.5
+          },
+          {
+            "name": "Mod Support",
+            "projects": 83,
+            "perDay": 639.3
+          },
+          {
+            "name": "Animated",
+            "projects": 40,
+            "perDay": 483.8
+          },
+          {
+            "name": "512x and Higher",
+            "projects": 23,
+            "perDay": 388.9
+          },
+          {
+            "name": "Modern",
+            "projects": 56,
+            "perDay": 385.2
+          },
+          {
+            "name": "Data Packs",
+            "projects": 33,
+            "perDay": 268.9
+          },
+          {
+            "name": "32x",
+            "projects": 28,
+            "perDay": 256.1
+          },
+          {
+            "name": "Photo Realistic",
+            "projects": 10,
+            "perDay": 237.9
+          }
+        ],
+        "hotWords": []
+      },
+      "Mods": {
+        "newProjects": 400,
+        "top": [
+          {
+            "name": "AtariKafa: Core - Shared Library for AtariKafa Mods",
+            "slug": "atarikafa-core",
+            "created": "2026-11-20",
+            "downloads": 387,
+            "perDay": 387,
+            "categories": [
+              "API and Library",
+              "Utility & QoL"
+            ]
+          },
+          {
+            "name": "AtariKafa: Maps - Minimap, World Map & Waypoints",
+            "slug": "atarikafa-maps",
+            "created": "2026-11-20",
+            "downloads": 348,
+            "perDay": 348,
+            "categories": [
+              "Map and Information",
+              "Utility & QoL",
+              "World Gen"
+            ]
+          },
+          {
+            "name": "Tradewise",
+            "slug": "tradewise",
+            "created": "2026-11-21",
+            "downloads": 229,
+            "perDay": 229,
+            "categories": [
+              "Map and Information",
+              "Utility & QoL"
+            ]
+          },
+          {
+            "name": "PackForesight",
+            "slug": "packforesight",
+            "created": "2026-11-21",
+            "downloads": 226,
+            "perDay": 226,
+            "categories": [
+              "Server Utility"
+            ]
+          },
+          {
+            "name": "Remote Bot Fetch",
+            "slug": "remote-bot-fetch",
+            "created": "2026-11-21",
+            "downloads": 226,
+            "perDay": 226,
+            "categories": [
+              "Redstone",
+              "Server Utility",
+              "Storage"
+            ]
+          },
+          {
+            "name": "BuildReprise",
+            "slug": "buildreprise",
+            "created": "2026-11-21",
+            "downloads": 225,
+            "perDay": 225,
+            "categories": [
+              "Server Utility"
+            ]
+          },
+          {
+            "name": "AtariKafa: Roads - Village and Dungeon Roads, Bridges & Signposts",
+            "slug": "atarikafa-roads",
+            "created": "2026-11-20",
+            "downloads": 203,
+            "perDay": 203,
+            "categories": [
+              "Utility & QoL",
+              "World Gen"
+            ]
+          },
+          {
+            "name": "Scorched Guns: Scrap Guns",
+            "slug": "scorched-guns-scrap-guns",
+            "created": "2026-11-20",
+            "downloads": 197,
+            "perDay": 191.3,
+            "categories": [
+              "Addons",
+              "Adventure and RPG",
+              "Armor, Tools, and Weapons",
+              "Mobs"
+            ]
+          },
+          {
+            "name": "Beezz Craft (Extended)",
+            "slug": "beezz-craft-extended",
+            "created": "2026-11-21",
+            "downloads": 177,
+            "perDay": 177,
+            "categories": [
+              "API and Library",
+              "Utility & QoL"
+            ]
+          },
+          {
+            "name": "Workshop OG - All-in-One Workbench & Multi Furnace",
+            "slug": "workshop-og-all-in-one-workbench-multi-furnace",
+            "created": "2026-11-21",
+            "downloads": 175,
+            "perDay": 175,
+            "categories": [
+              "Processing",
+              "Utility & QoL"
+            ]
+          },
+          {
+            "name": "AtariKafa: Backpacks - Wearable, Upgradeable Backpacks",
+            "slug": "atarikafa-backpacks",
+            "created": "2026-11-20",
+            "downloads": 154,
+            "perDay": 154,
+            "categories": [
+              "Energy, Fluid, and Item Transport",
+              "Storage"
+            ]
+          },
+          {
+            "name": "Better Server Browser ( In Game Server List)",
+            "slug": "better-server-browser-in-game-server-list",
+            "created": "2026-11-21",
+            "downloads": 107,
+            "perDay": 107,
+            "categories": [
+              "Processing",
+              "Server Utility",
+              "Structures",
+              "Utility & QoL"
+            ]
+          },
+          {
+            "name": "Natural Disaster Mod By Phnhh_8's",
+            "slug": "natural-disaster-mod-by-phnhh-8s",
+            "created": "2026-11-20",
+            "downloads": 88,
+            "perDay": 88,
+            "categories": [
+              "Miscellaneous"
+            ]
+          },
+          {
+            "name": "Copper Workforce",
+            "slug": "copper-workforce",
+            "created": "2026-11-20",
+            "downloads": 81,
+            "perDay": 81,
+            "categories": [
+              "Armor, Tools, and Weapons",
+              "Automation",
+              "Food",
+              "Technology"
+            ]
+          },
+          {
+            "name": "[TaCZ] Scope Glint",
+            "slug": "tacz-scope-glint",
+            "created": "2026-11-20",
+            "downloads": 72,
+            "perDay": 72,
+            "categories": [
+              "Addons"
+            ]
+          }
+        ],
+        "categories": [
+          {
+            "name": "Utility & QoL",
+            "projects": 94,
+            "perDay": 2344
+          },
+          {
+            "name": "Server Utility",
+            "projects": 30,
+            "perDay": 1070.3
+          },
+          {
+            "name": "Adventure and RPG",
+            "projects": 90,
+            "perDay": 769.7
+          },
+          {
+            "name": "Addons",
+            "projects": 85,
+            "perDay": 738.6
+          },
+          {
+            "name": "Map and Information",
+            "projects": 17,
+            "perDay": 723
+          },
+          {
+            "name": "World Gen",
+            "projects": 28,
+            "perDay": 656.3
+          },
+          {
+            "name": "API and Library",
+            "projects": 12,
+            "perDay": 610.6
+          },
+          {
+            "name": "Mobs",
+            "projects": 69,
+            "perDay": 594.8
+          },
+          {
+            "name": "Armor, Tools, and Weapons",
+            "projects": 63,
+            "perDay": 589.5
+          },
+          {
+            "name": "Storage",
+            "projects": 14,
+            "perDay": 476
+          }
+        ],
+        "hotWords": [
+          {
+            "word": "atarikafa",
+            "count": 4
+          }
+        ]
+      }
+    },
+    "bedrock": {
+      "Addons": {
+        "newProjects": 400,
+        "top": [
+          {
+            "name": "🇻🇳Relic Minimap",
+            "slug": "relic-minimap",
+            "created": "2026-11-17",
+            "downloads": 5409,
+            "perDay": 1414.4,
+            "categories": [
+              "Data Packs",
+              "Fantasy",
+              "Multiplayer",
+              "Performance",
+              "Survival"
+            ]
+          },
+          {
+            "name": "Throwing Disc Recreation",
+            "slug": "throwing-disc-recreation",
+            "created": "2026-11-17",
+            "downloads": 3351,
+            "perDay": 862.4,
+            "categories": [
+              "Armor, Tools, and Weapons",
+              "Multiplayer",
+              "PvP",
+              "Survival",
+              "Vanilla+"
+            ]
+          },
+          {
+            "name": "Hamzah's Tacz Guns Mod",
+            "slug": "hamzahs-tacz-guns-mod",
+            "created": "2026-11-19",
+            "downloads": 1667,
+            "perDay": 823,
+            "categories": [
+              "Armor, Tools, and Weapons",
+              "PvP",
+              "Realistic"
+            ]
+          },
+          {
+            "name": "The Creator Pe",
+            "slug": "the-creator-pe",
+            "created": "2026-11-17",
+            "downloads": 2113,
+            "perDay": 540.4,
+            "categories": [
+              "Horror",
+              "Roleplay"
+            ]
+          },
+          {
+            "name": "True Seasons | Autumn Leaves & Winter Snow",
+            "slug": "true-seasons",
+            "created": "2026-11-17",
+            "downloads": 1998,
+            "perDay": 523.3,
+            "categories": [
+              "Cosmetics",
+              "Realistic",
+              "Survival",
+              "Texture Packs",
+              "Vanilla+"
+            ]
+          },
+          {
+            "name": "Lighting Era  Survival",
+            "slug": "lighting-era-survival",
+            "created": "2026-11-19",
+            "downloads": 964,
+            "perDay": 480.2,
+            "categories": [
+              "Armor, Tools, and Weapons",
+              "Data Packs",
+              "Fantasy",
+              "Maps",
+              "Vanilla+"
+            ]
+          },
+          {
+            "name": "Sit",
+            "slug": "sit",
+            "created": "2026-11-17",
+            "downloads": 1829,
+            "perDay": 478.3,
+            "categories": [
+              "Utility"
+            ]
+          },
+          {
+            "name": "Update | Discs and Off Hand",
+            "slug": "update-discs-and-off-hand",
+            "created": "2026-11-19",
+            "downloads": 946,
+            "perDay": 467,
+            "categories": [
+              "Multiplayer",
+              "Performance",
+              "Survival",
+              "Technology",
+              "Utility"
+            ]
+          },
+          {
+            "name": "RB Build Your Vehicle",
+            "slug": "rb-build-your-vehicle",
+            "created": "2026-11-17",
+            "downloads": 1569,
+            "perDay": 401.2,
+            "categories": [
+              "Cosmetics",
+              "Miscellaneous",
+              "Realistic",
+              "Roleplay",
+              "Technology"
+            ]
+          },
+          {
+            "name": "Mahoraga: Wheel of Adaptation",
+            "slug": "mahoraga-wheel-of-adaptation",
+            "created": "2026-11-19",
+            "downloads": 717,
+            "perDay": 359.4,
+            "categories": [
+              "Data Packs",
+              "Fantasy",
+              "Survival"
+            ]
+          },
+          {
+            "name": "Throwing Disc",
+            "slug": "throwing-dis",
+            "created": "2026-11-19",
+            "downloads": 709,
+            "perDay": 348.9,
+            "categories": [
+              "Armor, Tools, and Weapons"
+            ]
+          },
+          {
+            "name": "Smooth FreeCam",
+            "slug": "smooth-freecam",
+            "created": "2026-11-17",
+            "downloads": 1233,
+            "perDay": 322.4,
+            "categories": [
+              "Utility"
+            ]
+          },
+          {
+            "name": "Saitama: One Punch Man",
+            "slug": "saitama-one-punch-man",
+            "created": "2026-11-19",
+            "downloads": 642,
+            "perDay": 321.8,
+            "categories": [
+              "Armor, Tools, and Weapons",
+              "Data Packs",
+              "Fantasy",
+              "Mobs"
+            ]
+          },
+          {
+            "name": "Future Trees",
+            "slug": "future-trees",
+            "created": "2026-11-17",
+            "downloads": 1233,
+            "perDay": 316.4,
+            "categories": [
+              "Realistic",
+              "Simplistic",
+              "Themed",
+              "Vanilla+"
+            ]
+          },
+          {
+            "name": "The One In The Dark",
+            "slug": "the-one-in-the-dark",
+            "created": "2026-11-17",
+            "downloads": 1196,
+            "perDay": 307.9,
+            "categories": [
+              "Horror",
+              "Multiplayer",
+              "Roleplay",
+              "Survival"
+            ]
+          }
+        ],
+        "categories": [
+          {
+            "name": "Survival",
+            "projects": 168,
+            "perDay": 10404.3
+          },
+          {
+            "name": "Armor, Tools, and Weapons",
+            "projects": 102,
+            "perDay": 7113.4
+          },
+          {
+            "name": "Multiplayer",
+            "projects": 86,
+            "perDay": 6411.5
+          },
+          {
+            "name": "Vanilla+",
+            "projects": 98,
+            "perDay": 5627.9
+          },
+          {
+            "name": "Fantasy",
+            "projects": 61,
+            "perDay": 4895.4
+          },
+          {
+            "name": "Utility",
+            "projects": 112,
+            "perDay": 4436.5
+          },
+          {
+            "name": "Data Packs",
+            "projects": 45,
+            "perDay": 4326.1
+          },
+          {
+            "name": "Mobs",
+            "projects": 78,
+            "perDay": 3941
+          },
+          {
+            "name": "PvP",
+            "projects": 42,
+            "perDay": 3766.4
+          },
+          {
+            "name": "Roleplay",
+            "projects": 39,
+            "perDay": 3161.3
+          }
+        ],
+        "hotWords": []
+      }
+    },
+    "stardew": {
+      "Mods": {
+        "newProjects": 31,
+        "top": [
+          {
+            "name": "The Pretty Valley Project ",
+            "slug": "the-pretty-valley-project",
+            "created": "2026-10-23",
+            "downloads": 734,
+            "perDay": 25.4,
+            "categories": [
+              "Items",
+              "Misc",
+              "Player",
+              "UI",
+              "Visuals"
+            ]
+          },
+          {
+            "name": "Bigger Ores",
+            "slug": "bigger-ores",
+            "created": "2026-11-09",
+            "downloads": 180,
+            "perDay": 14.9,
+            "categories": [
+              "Gameplay Basics",
+              "Loot"
+            ]
+          },
+          {
+            "name": "[FS]Oriyado's Clothing pack0030",
+            "slug": "fs-oriyados-clothing-pack0030",
+            "created": "2026-11-20",
+            "downloads": 13,
+            "perDay": 13,
+            "categories": [
+              "Clothing"
+            ]
+          },
+          {
+            "name": "Industrial Fishing",
+            "slug": "industrial-fishing",
+            "created": "2026-11-11",
+            "downloads": 119,
+            "perDay": 11.9,
+            "categories": [
+              "Fishing",
+              "Food",
+              "Furniture"
+            ]
+          },
+          {
+            "name": "Bundle Highlighter & Item Encyclopedia",
+            "slug": "bundle-highlighter-item-encyclopedia",
+            "created": "2026-10-23",
+            "downloads": 324,
+            "perDay": 11.2,
+            "categories": [
+              "Crops",
+              "Fishing",
+              "Gameplay Basics",
+              "Items"
+            ]
+          },
+          {
+            "name": "Auto Tool Swap & Return",
+            "slug": "auto-tool-swap-return",
+            "created": "2026-10-26",
+            "downloads": 276,
+            "perDay": 10.6,
+            "categories": [
+              "Gameplay Basics",
+              "Player"
+            ]
+          },
+          {
+            "name": "No More Robin",
+            "slug": "no-more-robin",
+            "created": "2026-10-29",
+            "downloads": 215,
+            "perDay": 9.3,
+            "categories": [
+              "Buildings",
+              "Co-op",
+              "Crafting",
+              "Gameplay Basics",
+              "Items"
+            ]
+          },
+          {
+            "name": "Rustic Lanterns",
+            "slug": "rustic-lanterns",
+            "created": "2026-11-08",
+            "downloads": 110,
+            "perDay": 8.4,
+            "categories": [
+              "Crafting",
+              "Furniture"
+            ]
+          },
+          {
+            "name": "Farm Factory",
+            "slug": "farm-factory",
+            "created": "2026-11-09",
+            "downloads": 100,
+            "perDay": 8.3,
+            "categories": [
+              "Crafting",
+              "Gameplay Basics",
+              "Items"
+            ]
+          },
+          {
+            "name": "CP - Molamole's Countertops And Cabinets",
+            "slug": "cp-molamoles-countertops-and-cabinets",
+            "created": "2026-10-26",
+            "downloads": 215,
+            "perDay": 8.2,
+            "categories": [
+              "Furniture",
+              "Visuals"
+            ]
+          },
+          {
+            "name": "[CP] Pokehaan Dew - Expert - Main Menu",
+            "slug": "cp-pokehaan-dew-expert-main-menu",
+            "created": "2026-11-03",
+            "downloads": 131,
+            "perDay": 7.3,
+            "categories": [
+              "UI",
+              "Visuals"
+            ]
+          },
+          {
+            "name": "Daily Adventures",
+            "slug": "daily-adventures",
+            "created": "2026-10-28",
+            "downloads": 175,
+            "perDay": 7.3,
+            "categories": [
+              "Events",
+              "Gameplay Basics"
+            ]
+          },
+          {
+            "name": "Vampire Masquerade",
+            "slug": "vampire-masquerade",
+            "created": "2026-11-16",
+            "downloads": 32,
+            "perDay": 6.3,
+            "categories": [
+              "Furniture"
+            ]
+          },
+          {
+            "name": "Valley Drone",
+            "slug": "valley-drone",
+            "created": "2026-11-04",
+            "downloads": 98,
+            "perDay": 5.8,
+            "categories": [
+              "Cheats",
+              "Crops",
+              "Gameplay Basics"
+            ]
+          },
+          {
+            "name": "Mystical Fish",
+            "slug": "mystical-fish",
+            "created": "2026-11-08",
+            "downloads": 68,
+            "perDay": 5.2,
+            "categories": [
+              "Fishing",
+              "Misc"
+            ]
+          }
+        ],
+        "categories": [
+          {
+            "name": "Gameplay Basics",
+            "projects": 14,
+            "perDay": 86.4
+          },
+          {
+            "name": "Items",
+            "projects": 7,
+            "perDay": 60.4
+          },
+          {
+            "name": "Visuals",
+            "projects": 4,
+            "perDay": 44.1
+          },
+          {
+            "name": "Player",
+            "projects": 5,
+            "perDay": 41.8
+          },
+          {
+            "name": "UI",
+            "projects": 5,
+            "perDay": 36.9
+          },
+          {
+            "name": "Furniture",
+            "projects": 4,
+            "perDay": 34.8
+          },
+          {
+            "name": "Misc",
+            "projects": 2,
+            "perDay": 30.6
+          },
+          {
+            "name": "Fishing",
+            "projects": 3,
+            "perDay": 28.3
+          },
+          {
+            "name": "Crafting",
+            "projects": 3,
+            "perDay": 26
+          },
+          {
+            "name": "Crops",
+            "projects": 3,
+            "perDay": 17.8
+          }
+        ],
+        "hotWords": []
+      }
+    }
+  }
+}
