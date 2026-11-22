@@ -1,0 +1,37 @@
+{
+  "name": "Anglers Haul",
+  "summary": "Your fishing rod reels in enchanted books, name tags and saddles more often and soggy boots and sticks less often.",
+  "class": "Addons",
+  "category": "Vanilla+",
+  "logoPrompt": "A wooden fishing rod pulling a glowing treasure chest out of blue water, an enchanted book and a name tag sparkling above it, a small fish jumping beside it, in blocky voxel style",
+  "cover": {
+    "tagline": "Less junk on the line, more treasure.",
+    "bullets": [
+      "Treasure up from 5% to 8%",
+      "Junk down from 10% to 7%",
+      "Fish catches stay the same"
+    ]
+  },
+  "description": [
+    "**Anglers Haul makes fishing more rewarding: the rod brings up treasure more often and junk less often.**",
+    "",
+    "## Features",
+    "- Treasure such as enchanted books, bows, name tags, saddles and nautilus shells: 8% of all catches instead of 5%.",
+    "- Junk such as old boots, sticks and bowls: 7% instead of 10%.",
+    "- Fish stay at 85%, so food from fishing does not change.",
+    "- Luck of the Sea still helps on top: at level III about 14% treasure and only 1% junk.",
+    "",
+    "## How to use",
+    "Import the .mcpack, then turn it on under Behavior Packs when you create or edit a world. Then go fishing as usual.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft Bedrock 26.60 and newer. It can be added to or removed from an existing world at any time.",
+    "- The items themselves are unchanged; jungles keep their own fish and junk.",
+    "- Like every behavior pack, it turns off achievements in the world it is added to.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

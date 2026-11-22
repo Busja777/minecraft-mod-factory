@@ -1,0 +1,39 @@
+{
+  "name": "Fair Villager Trades",
+  "summary": "Villagers want fewer emeralds for what they sell, while the price they pay you for your goods stays as it was.",
+  "class": "Addons",
+  "category": "Vanilla+",
+  "logoPrompt": "A small wooden market stall with a striped awning, a brass balance scale on the counter resting perfectly level with one shiny green emerald on each pan, warm light, in blocky voxel style",
+  "cover": {
+    "tagline": "Honest prices at every market stall.",
+    "bullets": [
+      "About a third off what villagers sell",
+      "Selling to villagers stays vanilla",
+      "Every level and profession"
+    ]
+  },
+  "description": [
+    "**Fair Villager Trades lowers what villagers charge: everything they sell costs about a third fewer emeralds.**",
+    "",
+    "## Features",
+    "- Lower prices at the armorer, cartographer, cleric, farmer, fisherman, fletcher, leather worker, librarian, shepherd, toolsmith and weaponsmith.",
+    "- A diamond chestplate costs 11 emeralds instead of 16, a bell 24 instead of 36, a bookshelf 6 instead of 9.",
+    "- A price of one emerald stays one emerald; butchers and masons already sell everything for one.",
+    "- What villagers pay for your crops and materials does not change, so emerald farming gets no easier.",
+    "- Levels, experience, restocking and curing discounts work as before.",
+    "",
+    "## How to use",
+    "Import the .mcpack, then turn it on under Behavior Packs when you create or edit a world. New villagers and newly unlocked levels use the fair prices.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft Bedrock 26.60 and newer; no experimental features needed.",
+    "- Enchanted books and the wandering trader keep their vanilla prices for now.",
+    "- Other packs that change villager trades may clash with this one.",
+    "- Like every behavior pack, it turns off achievements in the world it is added to.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}

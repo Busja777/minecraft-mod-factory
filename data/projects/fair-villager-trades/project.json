@@ -1,0 +1,18 @@
+{
+  "slug": "fair-villager-trades",
+  "game": "bedrockaddons",
+  "name": "Fair Villager Trades",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FairVillagerTrades-1.0.mcpack",
+      "changelog": "## Fair Villager Trades 1.0\n\nFirst release.\n\n- Everything villagers sell costs about a third fewer emeralds (rounded, never below one).\n- Covers the armorer, cartographer, cleric, farmer, fisherman, fletcher, leather worker, librarian, shepherd, toolsmith and weaponsmith; butchers and masons already sell everything for one emerald.\n- What villagers pay for your goods stays vanilla, as do trade levels, experience, uses and curing discounts.\n- Enchanted books and the wandering trader keep their vanilla prices for now.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}

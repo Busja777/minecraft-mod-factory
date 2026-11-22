@@ -1,0 +1,7 @@
+{
+  "kind": "behavior",
+  "name": "Uncraft Kit",
+  "description": "Packed blocks back into their pieces",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}
