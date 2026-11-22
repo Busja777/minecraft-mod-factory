@@ -1,0 +1,18 @@
+{
+  "slug": "death-diary",
+  "game": "wow",
+  "name": "Death Diary",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "DeathDiary-1.0.zip",
+      "changelog": "## Death Diary 1.0\n\nFirst release.\n\n- Notes each of your deaths with zone, sub-zone, character level and time.\n- `/dd` or `/deathdiary` shows how often this character has died, your top five zones and your deaths per level bracket (1-10, 11-20 and so on).\n- `/dd last` lists your last 10 deaths, newest first.\n- `/dd window` opens a small window with deaths per zone, per level bracket and your last death. Drag it anywhere, its position is remembered.\n- One chat line after each death. `/dd quiet on` switches it off, `/dd quiet off` brings it back.\n- `/dd reset confirm` clears the diary of the character you are playing. Other characters keep theirs.\n- Every character has its own diary, the newest 500 deaths are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

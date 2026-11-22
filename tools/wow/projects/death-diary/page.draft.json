@@ -1,0 +1,33 @@
+{
+  "name": "Death Diary",
+  "summary": "Keeps a record of where and at which level each of your characters died, so you see which zones are the most dangerous for you.",
+  "category": "Miscellaneous",
+  "logoPrompt": "An old leather-bound diary lying open with a small pale skull resting on its pages and a red ribbon bookmark hanging out",
+  "cover": {
+    "tagline": "Where you died, and at which level.",
+    "bullets": ["Every death with zone and level", "Your most deadly zones", "Deaths per level bracket"]
+  },
+  "description": [
+    "**Death Diary notes every death of your character with the zone, the spot and the level, and shows you where you die most.**",
+    "",
+    "## Features",
+    "- Each death is noted with zone, sub-zone, character level and time.",
+    "- A summary of your deaths, your top zones and your deaths per level bracket.",
+    "- A list of your last 10 deaths.",
+    "- A small window with deaths per zone and per level.",
+    "- Every character keeps its own diary.",
+    "",
+    "## How to use",
+    "It starts on its own. Type `/dd` for the summary and all commands. `/dd last` lists your last deaths, `/dd window` opens the window, `/dd quiet on` turns off the chat line after a death, `/dd reset confirm` clears the diary of this character.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- It does not know what killed you: it never reads combat data, only where and when you died.",
+    "- The newest 500 deaths per character are kept.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

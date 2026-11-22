@@ -1,0 +1,31 @@
+{
+  "name": "Fishing Log",
+  "summary": "Keep count of your fishing catches in every zone and see how many you pull in per hour.",
+  "category": "Professions",
+  "logoPrompt": "A small open fisherman's logbook with a feather quill resting on its pages, a red and white fishing bobber and a silver fish lying beside it on weathered wooden planks",
+  "cover": {
+    "tagline": "Every cast counted, every zone noted.",
+    "bullets": ["Catches per zone", "Catches per hour this session", "All-time totals kept"]
+  },
+  "description": [
+    "**Fishing Log writes down every catch you make, so you know where you fished most and how fast the fish are biting right now.**",
+    "",
+    "## Features",
+    "- Counts every catch and the items it brought, the moment the fishing loot window opens.",
+    "- Catches per zone for the current session and for all time.",
+    "- Catches per hour for the session, so you can compare spots.",
+    "- All-time totals are shared by every character of your account.",
+    "",
+    "## How to use",
+    "Just fish. Type `/fl` (or `/fishinglog`) to see the session in chat: catches, items, catches per hour and your top zones. `/fl zones` lists all your catches per zone, `/fl reset` starts a new session.",
+    "",
+    "## Good to know",
+    "- Works on Retail. It counts loot windows that the game marks as fishing loot and reads no combat data and no chat.",
+    "- The rate appears after two catches and five minutes of fishing. A new session starts at login, after a reload or with `/fl reset`.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

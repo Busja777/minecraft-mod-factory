@@ -1,0 +1,33 @@
+{
+  "name": "Rep Session",
+  "summary": "Track the reputation you earn this session, your reputation per hour and how long until the next standing with your watched faction.",
+  "category": "Quests & Leveling",
+  "logoPrompt": "A small brass hourglass standing upright in the centre, its falling sand glowing gold, with a silk ribbon banner wrapped around its middle",
+  "cover": {
+    "tagline": "Know when the next standing arrives.",
+    "bullets": ["Reputation gained this session", "Reputation per hour", "Time to your next standing"]
+  },
+  "description": [
+    "**Rep Session watches the faction on your reputation bar and tells you how fast you are earning with it and when you reach the next standing.**",
+    "",
+    "## Features",
+    "- Reputation gained this session with your watched faction.",
+    "- Reputation per hour and the estimated time until the next standing.",
+    "- Regular, renown and friendship factions, counted correctly across a new standing or renown level.",
+    "- Each faction keeps its own count, so switching the watched faction loses nothing.",
+    "",
+    "## How to use",
+    "Watch a faction in the reputation panel. Type `/rs` (or `/repsession`) to see the numbers in chat, `/rs show` for a small window and `/rs reset` to start over.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and no chat parsing.",
+    "- The rate and the time appear after five minutes, so a single quest reward does not distort them.",
+    "- At the highest standing it shows max. Paragon rewards are not counted.",
+    "- A session starts at login or after a reload.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

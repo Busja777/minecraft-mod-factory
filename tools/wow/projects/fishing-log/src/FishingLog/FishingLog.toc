@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Fishing Log
+## Notes: Counts your fishing catches per zone and your catches per hour.
+## Version: @version@
+## SavedVariables: FishingLogDB
+## IconTexture: Interface\Icons\Trade_Fishing
+
+Locale.lua
+Core.lua
+Tracker.lua
+Commands.lua
