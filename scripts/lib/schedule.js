@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 export const BUCKET_MINUTES = 10;   // the evening cron fires every 10 min inside the window
 export const SLOT_MARGIN_MINUTES = 20; // keep the slot this far from the window end
-// The daily wake-up call (Claude routine "Abend-Wecker", 15:50 UTC) starts the evening workflow
+// The daily wake-up call (Claude routine "Abend-Wecker", 15:50 UTC, by a comment on the issue labelled "abend-wecker") starts the evening workflow
 // before the window; its legs sleep until their slot. GitHub's own cron is only the fallback: since
 // 2026-11-21 it arrives hours late or not at all. Bounded by GitHub's 6-hour job limit.
 export const WAKE_UP_BUCKET_MINUTES = 240;

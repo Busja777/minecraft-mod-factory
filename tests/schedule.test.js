@@ -115,8 +115,13 @@ test('the update job outlasts the longest wait of a wake-up call', async () => {
   assert.ok(timeout >= longestSleep + 75, `update job: ${timeout} min must cover ${longestSleep} min of waiting plus 75 min of work`);
   assert.ok(timeout <= 360, 'GitHub stops every job after 6 hours');
   assert.ok(longestSleep <= WAKE_UP_BUCKET_MINUTES);
-  assert.match(yml, /waitForSlot:/, 'workflow_dispatch input for the wake-up call');
-  assert.match(yml, /WAIT_FOR_SLOT: \$\{\{ inputs\.waitForSlot/, 'the gate gets the wake-up flag');
+  assert.match(yml, /waitForSlot:/, 'workflow_dispatch input for a wake-up call by hand');
+  assert.match(yml, /issue_comment:\n\s+types: \[created\]/, 'the routine wakes the workflow with a comment');
+  assert.match(yml, /WAIT_FOR_SLOT: \$\{\{ \(inputs\.waitForSlot \|\| github\.event_name == 'issue_comment'\)/, 'the gate gets the wake-up flag');
+  const gate = yml.slice(yml.indexOf('\n  gate:'), yml.indexOf('\n  update:'));
+  assert.match(gate, /contains\(github\.event\.issue\.labels\.\*\.name, 'abend-wecker'\)/, 'only the wake-up issue counts');
+  assert.match(gate, /github\.event\.comment\.user\.login == github\.repository_owner/, 'only the owner (or the routine acting for the owner) wakes the run');
+  assert.doesNotMatch(yml, /github\.event\.comment\.body|github\.event\.issue\.title/, 'comment text never reaches a command');
 });
 
 test('the evening cron fires every BUCKET_MINUTES, off the full and half hour, across the whole window', async () => {
