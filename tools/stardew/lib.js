@@ -189,10 +189,25 @@ export function checkPack(pack, files, ref = loadRef(), schemas = null) {
   const i18n = json['i18n/default.json'];
   const used = new Set();
   for (const { value } of strings(content)) for (const m of value.matchAll(/\{\{\s*i18n\s*:\s*([^|}\s]+)/gi)) used.add(m[1]);
+  // Config texts (Content Patcher config.md, "Translations"): config.<field>.name / .description,
+  // config.<field>.values.<value> for an AllowValues value, config.section.<section>.name /
+  // .description. Content Patcher reads them itself; keys are not case-sensitive.
+  const configKeys = new Map();
+  const configKey = k => configKeys.set(k.toLowerCase(), k);
+  for (const [field, def] of Object.entries(content.ConfigSchema || {})) {
+    for (const part of ['name', 'description']) configKey(`config.${field}.${part}`);
+    for (const v of String(def?.AllowValues || '').split(',').map(x => x.trim()).filter(Boolean)) configKey(`config.${field}.values.${v}`);
+    if (def?.Section) for (const part of ['name', 'description']) configKey(`config.section.${def.Section}.${part}`);
+  }
+  const isConfigKey = k => configKeys.has(k.toLowerCase());
   if (used.size && !i18n) add('i18n/default.json is missing but content.json uses {{i18n}}');
   if (i18n) {
     for (const k of used) if (!(k in i18n)) add(`content.json: i18n key "${k}" is missing in i18n/default.json`);
-    for (const k of Object.keys(i18n)) if (!used.has(k)) add(`i18n/default.json: key "${k}" is never used`);
+    for (const k of Object.keys(i18n)) {
+      if (used.has(k) || isConfigKey(k)) continue;
+      if (/^config\./i.test(k)) add(`i18n/default.json: key "${k}" names no ConfigSchema field, AllowValues value or section`);
+      else add(`i18n/default.json: key "${k}" is never used`);
+    }
     for (const [k, v] of Object.entries(i18n)) if (typeof v !== 'string' || !v.trim()) add(`i18n/default.json: "${k}" must be a non-empty text`);
     for (const [p, tr] of Object.entries(json)) if (p.startsWith('i18n/') && p !== 'i18n/default.json') for (const k of Object.keys(tr)) if (!(k in i18n)) add(`${p}: key "${k}" is not in default.json`);
   }

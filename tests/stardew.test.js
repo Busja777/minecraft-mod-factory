@@ -92,6 +92,31 @@ for (const slug of listPacks()) {
   });
 }
 
+test('Stardew: config texts can be translated (Content Patcher config.md, Translations)', () => {
+  const pack = { uniqueId: 'SevEvolution.Config', contentPatcher: '2.9.0' };
+  const manifest = { Name: 'Config', Author: 'SevEvolution', Version: '1.0.0', Description: 'x', UniqueID: 'SevEvolution.Config', UpdateKeys: [], ContentPackFor: { UniqueID: 'Pathoschild.ContentPatcher', MinimumVersion: '2.9.0' } };
+  const files = (keys, de = keys) => ({
+    'manifest.json': buf(manifest),
+    'content.json': buf({
+      Format: '2.9.0',
+      ConfigSchema: { Surcharge: { AllowValues: '25, 50, 100', Default: '50', Section: 'Prices' } },
+      Changes: [{ Action: 'EditData', Target: 'Data/mail', Entries: { '{{ModId}}_A': '{{i18n:letter.a}}[#]A' } }]
+    }),
+    'i18n/default.json': buf({ 'letter.a': 'hi', ...keys }),
+    'i18n/de.json': buf({ 'letter.a': 'hallo', ...de })
+  });
+  const ok = {
+    'config.Surcharge.name': 'Surcharge', 'config.surcharge.description': 'Extra cost',
+    'config.Surcharge.values.25': '+25 %', 'config.Surcharge.values.100': '+100 %',
+    'config.section.Prices.name': 'Prices'
+  };
+  assert.deepEqual(checkPack(pack, files(ok), ref, null).filter(p => /i18n/.test(p)), []);
+  const bad = checkPack(pack, files({ 'config.Surcharges.name': 'x', 'config.Surcharge.values.75': 'x', 'config.section.Other.name': 'x' }), ref, null);
+  for (const k of ['config.Surcharges.name', 'config.Surcharge.values.75', 'config.section.Other.name']) {
+    assert.ok(bad.some(p => p.includes(`"${k}" names no ConfigSchema field`)), `${k}\n${bad.join('\n')}`);
+  }
+});
+
 test('Stardew: the checks catch packs the game or Content Patcher would reject', () => {
   const pack = { uniqueId: 'SevEvolution.Broken', contentPatcher: '2.9.0' };
   const manifest = { Name: 'Broken', Author: 'SevEvolution', Version: '1.0.0', Description: 'x', UniqueID: 'SevEvolution.Broken', UpdateKeys: [], ContentPackFor: { UniqueID: 'Pathoschild.ContentPatcher', MinimumVersion: '2.9.0' } };
