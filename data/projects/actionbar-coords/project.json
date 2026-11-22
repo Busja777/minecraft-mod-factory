@@ -37,6 +37,17 @@
         "1.21.1",
         "26.3"
       ]
+    },
+    {
+      "version": "1.3",
+      "file": "ActionbarCoords-1.3.zip",
+      "changelog": "## Actionbar Coords 1.3\n\nCoordinates only, if you like it short.\n\n- New: a compact line that shows only your coordinates, for example `X 120  Y 64  Z -33`, without the direction and the clock.\n- `/trigger coords set 3` switches between the compact line and the full line. Each player picks their own; no operator rights needed.\n- The compact line keeps the colour style you picked with `/trigger coords set 2`.\n- Any other number, for example `/trigger coords set 9`, now explains all three: 1 shows or hides the line, 2 picks the next colour style, 3 switches the compact line on or off.\n- Everyone keeps the full line until they switch, so nothing changes unless you want it to.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
     }
   ]
 }

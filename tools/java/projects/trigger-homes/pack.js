@@ -1,4 +1,4 @@
-// Trigger Homes: /trigger sethome, /trigger home and /trigger spawn for every player, no operator
+// Trigger Homes: /trigger sethome, /trigger home, /trigger spawn, /trigger back and /trigger homes for every player, no operator
 // rights needed. Plain functions and scoreboards, the same files for 1.21.1 and 26.3 (both read the
 // commands below the same way; checked against reports/commands.json of each version).
 //
@@ -33,13 +33,16 @@
 //   vanilla dimensions; a death below the dimension's bottom (fell into the void) and a death spot
 //   in lava are refused, nothing is used up then.
 // - home, spawn and back share one cooldown (also across homes); sethome has none.
+// - homes (since V1.3): lists the player's set homes, one tellraw each with the position, the
+//   dimension and the command that goes there ("No homes yet" when none is set), the cooldown left
+//   if any, and a hint with the commands. No teleport, so it neither needs nor starts the cooldown.
 // Text components are written so that both the JSON reader of 1.21.1 and the SNBT reader of 26.x
 // accept them: quoted keys, strings only, lists that hold only compounds.
 const NS = 'trigger_homes';
 const fn = name => `${NS}:${name}`;
 
 export const COOLDOWN_SECONDS = 30;
-export const TRIGGERS = ['sethome', 'home', 'spawn', 'back'];
+export const TRIGGERS = ['sethome', 'home', 'spawn', 'back', 'homes'];
 // [score, dimension id, name in messages, lowest block (vanilla dimension types)]
 export const DIMENSIONS = [
   [1, 'minecraft:overworld', 'the Overworld', -64],
@@ -97,6 +100,7 @@ export function functions() {
     // Not "at @s": the server's own position is the world spawn.
     `execute as @a[scores={spawn=1..}] run function ${fn('spawn')}`,
     `execute as @a[scores={back=1..}] run function ${fn('back')}`,
+    `execute as @a[scores={homes=1..}] run function ${fn('homes')}`,
     ...TRIGGERS.map(name => `scoreboard players set @a[scores={${name}=..-1}] ${name} 0`),
     ...TRIGGERS.map(name => `scoreboard players enable @a ${name}`)
   ];
@@ -171,6 +175,18 @@ export function functions() {
     '$execute positioned $(x) $(y) $(z) if block ~ ~1 ~ minecraft:lava run return 0',
     '$tp @s $(x) $(y) $(z)',
     'return 1'
+  ];
+  // Since V1.3: the list of homes. Any positive value lists them; th.tmp counts the set homes.
+  const isSet = k => `if score @s ${homeObj(k).dim} matches 1..${DIMENSIONS.length}`;
+  f.homes = [
+    'scoreboard players set @s homes 0',
+    `scoreboard players set @s ${OBJ.tmp} 0`,
+    ...HOMES.map(k => `execute ${isSet(k)} run scoreboard players add @s ${OBJ.tmp} 1`),
+    `execute if score @s ${OBJ.tmp} matches 0 run ${tell('yellow', 'No homes yet. Stand where you want one and type /trigger sethome.')}`,
+    `execute if score @s ${OBJ.tmp} matches 1.. run ${tell('gold', 'Your homes:')}`,
+    ...HOMES.flatMap(k => DIMENSIONS.map(([n, , name]) => `execute if score @s ${homeObj(k).dim} matches ${n} run ${tell('green', `Home ${k}: `, [...position(k), t(` in ${name} (${typed('home', k)})`)])}`)),
+    `execute if score @s ${OBJ.cd} matches 1.. run function ${fn('cooldown')}`,
+    tell('gray', 'Commands: /trigger home, /trigger sethome, /trigger back, /trigger spawn. For homes 2 and 3 add set 2 or set 3, for example /trigger home set 2.')
   ];
   f.cooldown = [
     // seconds left, rounded up

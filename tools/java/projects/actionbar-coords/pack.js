@@ -30,6 +30,10 @@
 //   next style and names it, other values print a short help. show picks one of
 //   STYLES × DIRECTIONS lines through #sel = style * 8 + direction, so it stays one actionbar
 //   command per player and update.
+// - Compact line (since V1.3): ac.compact per player (unset = 0 = the full line of 1.0 to 1.2,
+//   1 = only "X 120  Y 64  Z -33" in the player's colour style). /trigger coords set 3 switches it.
+//   show sends the compact line right after reading the position and returns, so the direction
+//   is not worked out for those players. Values 4 and up print the help, which names 1, 2 and 3.
 // Text components are written so that the JSON reader of 1.21.1 and the SNBT reader of 26.x both
 // accept them: quoted keys, strings only, lists that hold only compounds. Every command line is
 // checked against reports/commands.json of the version it is built for (checkCommands below).
@@ -41,7 +45,7 @@ const fn = name => `${NS}:${name}`;
 
 export const UPDATE_TICKS = 5; // four updates per second; the actionbar itself stays for 3 s
 export const TRIGGER = 'coords';
-export const OBJ = { hide: 'ac.hide', tmp: 'ac.tmp', style: 'ac.style' };
+export const OBJ = { hide: 'ac.hide', tmp: 'ac.tmp', style: 'ac.style', compact: 'ac.compact' };
 const STORAGE = `${NS}:pos`;
 const CONSTANTS = [6, 8, 10, 24, 60, 1000];
 
@@ -80,14 +84,20 @@ const score = (name, color) => ({ score: { name, objective: OBJ.tmp }, color });
 const json = parts => JSON.stringify([t(''), ...parts]);
 const tell = (color, text) => `tellraw @s ${JSON.stringify(t(text, color))}`;
 
+// The coordinates part of the line in one colour style: "X 120  Y 64  Z -33".
+const coords = ([, lab, num]) => [
+  t('X ', lab), score('#x', num),
+  t('  Y ', lab), score('#y', num),
+  t('  Z ', lab), score('#z', num)
+];
+// The compact line (since V1.3): only the coordinates.
+export const compactLine = (style = STYLES[0]) => json(coords(style));
+
 // One actionbar line for one direction and colour style; the time is four one-digit scores (hh:mm).
 export function line(dir, style = STYLES[0]) {
-  const [, lab, num, dirC, time, sep] = style;
-  const label = s => t(s, lab);
+  const [, , , dirC, time, sep] = style;
   return json([
-    label('X '), score('#x', num),
-    label('  Y '), score('#y', num),
-    label('  Z '), score('#z', num),
+    ...coords(style),
     t(' · ', sep), t(dir, dirC), t(' · ', sep),
     score('#h10', time), score('#h1', time), t(':', time), score('#m10', time), score('#m1', time)
   ]);
@@ -124,20 +134,35 @@ export function functions(query) {
     `data modify storage ${STORAGE} p set from entity @s Pos`,
     // data get floors a double, so -32.3 becomes -33, the block the player stands in (as on F3)
     ...['x', 'y', 'z'].map((axis, i) => `execute store result score #${axis} ${OBJ.tmp} run data get storage ${STORAGE} p[${i}]`),
-    ...DIRECTIONS.map(([, range], i) => `execute if entity @s[y_rotation=${range}] run scoreboard players set #dir ${OBJ.tmp} ${i}`),
-    // #sel = style * 8 + direction (style unset counts as 0)
+    // #sel = the style (unset counts as 0)
     `scoreboard players set #sel ${OBJ.tmp} 0`,
     `execute if score @s ${OBJ.style} matches 1..${STYLES.length - 1} run scoreboard players operation #sel ${OBJ.tmp} = @s ${OBJ.style}`,
+    // compact line (V1.3): one line per style, then done for this player
+    ...STYLES.map((style, s) => `execute if score @s ${OBJ.compact} matches 1 if score #sel ${OBJ.tmp} matches ${s} run title @s actionbar ${compactLine(style)}`),
+    `execute if score @s ${OBJ.compact} matches 1 run return 0`,
+    ...DIRECTIONS.map(([, range], i) => `execute if entity @s[y_rotation=${range}] run scoreboard players set #dir ${OBJ.tmp} ${i}`),
+    // #sel = style * 8 + direction
     `scoreboard players operation #sel ${OBJ.tmp} *= #8 ${OBJ.tmp}`,
     `scoreboard players operation #sel ${OBJ.tmp} += #dir ${OBJ.tmp}`,
     ...STYLES.flatMap((style, s) => DIRECTIONS.map(([name], i) => `execute if score #sel ${OBJ.tmp} matches ${s * DIRECTIONS.length + i} run title @s actionbar ${line(name, style)}`))
   ];
-  // /trigger coords → 1 switches the display, set 2 → next colour style, anything else → help.
+  // /trigger coords → 1 switches the display, set 2 → next colour style, set 3 → compact line on
+  // or off, anything else → help.
   f.trigger = [
     `execute if score @s ${TRIGGER} matches 1 run function ${fn('toggle')}`,
     `execute if score @s ${TRIGGER} matches 2 run function ${fn('style')}`,
-    `execute if score @s ${TRIGGER} matches 3.. run ${tell('gray', 'Type /trigger coords to show or hide the coordinates, /trigger coords set 2 for the next colour style.')}`,
+    `execute if score @s ${TRIGGER} matches 3 run function ${fn('compact')}`,
+    `execute if score @s ${TRIGGER} matches 4.. run ${tell('gray', 'Type /trigger coords set <number>: 1 = show or hide the line, 2 = next colour style, 3 = coordinates only on or off. /trigger coords alone is the same as 1.')}`,
     `scoreboard players set @s ${TRIGGER} 0`
+  ];
+  f.compact = [
+    `execute unless score @s ${OBJ.compact} matches 0..1 run scoreboard players set @s ${OBJ.compact} 0`,
+    // 0 (full) + 1 = 1 (compact); compact + 1 = 2, back to 0 (full)
+    `scoreboard players add @s ${OBJ.compact} 1`,
+    `execute if score @s ${OBJ.compact} matches 2.. run scoreboard players set @s ${OBJ.compact} 0`,
+    `execute if score @s ${OBJ.compact} matches 1 run ${tell('gray', 'Compact line: coordinates only. Type /trigger coords set 3 for the full line again.')}`,
+    `execute if score @s ${OBJ.compact} matches 0 run ${tell('gray', 'Full line: coordinates, direction and time. Type /trigger coords set 3 for coordinates only.')}`,
+    `execute if score @s ${OBJ.hide} matches 1 run ${tell('gray', 'The line is hidden at the moment. Type /trigger coords to show it.')}`
   ];
   f.style = [
     `execute unless score @s ${OBJ.style} matches 0..${STYLES.length - 1} run scoreboard players set @s ${OBJ.style} 0`,
@@ -152,7 +177,7 @@ export function functions(query) {
     `execute if score @s ${OBJ.hide} matches 2.. run scoreboard players set @s ${OBJ.hide} 0`,
     `execute if score @s ${OBJ.hide} matches 1 run title @s actionbar ${JSON.stringify(t(''))}`,
     `execute if score @s ${OBJ.hide} matches 1 run ${tell('gray', 'Coordinates hidden. Type /trigger coords to show them again.')}`,
-    `execute if score @s ${OBJ.hide} matches 0 run ${tell('gray', 'Coordinates shown. Type /trigger coords to hide them, /trigger coords set 2 for another colour style.')}`
+    `execute if score @s ${OBJ.hide} matches 0 run ${tell('gray', 'Coordinates shown. Type /trigger coords to hide them, /trigger coords set 2 for another colour style, /trigger coords set 3 for coordinates only.')}`
   ];
   return f;
 }
