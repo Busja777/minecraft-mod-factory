@@ -10,7 +10,7 @@ import { findProject, newEntry } from './cf-projects.js';
 // its stock in data/projects/<slug>/ (lib/releases.js), also before its CurseForge page exists.
 
 export const SERIE_ROOT = './data/serie';
-export const REIHEN = ['wow', 'java', 'stardew', 'sims4'];
+export const REIHEN = ['wow', 'java', 'stardew', 'bedrock'];
 
 export function loadReihe(key, root = SERIE_ROOT) {
   const file = path.join(root, `${key}.json`);

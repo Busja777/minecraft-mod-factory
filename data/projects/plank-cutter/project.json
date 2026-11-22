@@ -1,0 +1,18 @@
+{
+  "slug": "plank-cutter",
+  "game": "bedrockaddons",
+  "name": "Plank Cutter",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "PlankCutter-1.0.mcpack",
+      "changelog": "## Plank Cutter 1.0\n\nFirst release.\n\n- Cut planks into stairs, slabs, fences, fence gates, doors, trapdoors and pressure plates in the stonecutter.\n- Works for all twelve woods: oak, spruce, birch, jungle, acacia, dark oak, mangrove, cherry, pale oak, bamboo, crimson and warped planks: 84 recipes.\n- One plank gives two slabs or one of everything else.",
+      "status": "due",
+      "gameVersions": [
+        "26.60"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "kind": "resource",
+  "name": "Hushed World",
+  "description": "Quieter villagers, cows, portals and rain",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}

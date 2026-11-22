@@ -9,6 +9,8 @@ import { listReleaseProjects, loadReleaseProject, releaseFile } from '../scripts
 import * as wow from '../tools/wow/lib.js';
 import * as java from '../tools/java/lib.js';
 import * as stardew from '../tools/stardew/lib.js';
+import * as bedrock from '../tools/bedrock/lib.js';
+import { samplesReady, samplesOf } from '../tools/bedrock/samples.js';
 import { versionDir } from '../tools/java/vanilla.js';
 
 // What goes online is the file in the stock, not the source. For the newest version of every
@@ -55,6 +57,12 @@ for (const reihe of loadReihen()) {
           same(entries(file), entries(await java.buildZip(pack, files, newest.version, tmp(), more)), label);
         });
       }
+    } else if (reihe.reihe === 'bedrock') {
+      const pack = bedrock.packOf(project.slug);
+      test(`stock = source: ${label}`, { skip: !samplesReady(pack.samples) && 'bedrock-samples not downloaded yet' }, async () => {
+        const files = await bedrock.generate(pack, samplesOf(pack.samples));
+        same(entries(file), entries(await bedrock.buildPack(pack, files, newest.version, tmp())), label);
+      });
     } else if (reihe.reihe === 'stardew') {
       test(`stock = source: ${label}`, async () => {
         const pack = stardew.packOf(project.slug);
