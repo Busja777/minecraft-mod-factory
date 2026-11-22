@@ -39,7 +39,7 @@ export function newReleaseProject({ slug, game, name, projectId }) {
   return { slug, game, name, cfProjectId: projectId, lastGameVersions: [], versions: [] };
 }
 
-export function addVersion(project, { version, file, changelog, displayName, gameVersions }) {
+export function addVersion(project, { version, file, changelog, displayName, gameVersions, preferFrom }) {
   if (!version) throw new Error('A version needs a version number');
   if (project.versions.some(v => v.version === version)) throw new Error(`${project.slug} already has a version ${version}`);
   if (!file) throw new Error(`Version ${version} needs a file`);
@@ -48,6 +48,10 @@ export function addVersion(project, { version, file, changelog, displayName, gam
   const v = { version, file, changelog: changelog.trim(), status: 'due' };
   if (displayName) v.displayName = displayName;
   if (gameVersions?.length) v.gameVersions = gameVersions;
+  if (preferFrom) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(preferFrom)) throw new Error(`Version ${version}: preferFrom must be YYYY-MM-DD, not ${preferFrom}`);
+    v.preferFrom = preferFrom;
+  }
   project.versions.push(v);
   return v;
 }

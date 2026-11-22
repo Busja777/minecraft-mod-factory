@@ -54,6 +54,23 @@ the release in `pack.json`, remove `"waitsFor"` in both files, build V1.0 agains
 building against the newest test version: when the radar reports a problem for it, fix it like
 any other project.
 
+## Season calendar
+
+A season update (winter lines, a holiday care package …) is built at least three weeks before its
+season and put into the stock with `--ab <YYYY-MM-DD>` (`npm run serie -- vorrat … --ab 2026-12-01`).
+It does not go up before that day, and the project's later versions wait behind it. Seasons:
+
+| Season | Upload from | Build by |
+|---|---|---|
+| Winter | 2026-12-01 | 2026-11-10 |
+| New Year | 2026-12-28 | 2026-12-07 |
+| Valentine's Day | 2027-02-07 | 2027-01-17 |
+| Easter (2027-03-28) | 2027-03-14 | 2027-02-21 |
+| Summer | 2027-06-15 | 2027-05-25 |
+
+A season update is only for a project where the season fits its content (splashes, letters, care
+packages, decorations); never invent a season change just to fill a slot.
+
 ## Rules that keep the series alive
 
 - Nothing unchecked goes into the stock. A project you could not check stays out.

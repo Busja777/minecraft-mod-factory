@@ -70,6 +70,10 @@ test('config.json: every game is complete and every project belongs to a known g
   assert.equal(gameOf(real, 'bedrock').gameEndpoint, real.bedrock.gameEndpoint);
   assert.notEqual(gameOf(real, 'java').account, gameOf(real, 'bedrock').account, 'Java and Bedrock are two legs: one upload per day each');
   assert.equal(gameOf(real, 'java').tokenEnv, gameOf(real, 'bedrock').tokenEnv, 'but they share the Minecraft account\'s token');
+  // The Bedrock add-on series is a third leg of the same account: its own upload per day, same token.
+  assert.notEqual(gameOf(real, 'bedrockaddons').account, gameOf(real, 'bedrock').account);
+  assert.equal(gameOf(real, 'bedrockaddons').tokenEnv, gameOf(real, 'bedrock').tokenEnv);
+  assert.equal(gameOf(real, 'bedrockaddons').gameEndpoint, gameOf(real, 'bedrock').gameEndpoint);
   assert.equal(gameOf(real, 'java').carryNewer, false, 'a Java file only fits the versions it was built for');
   for (const p of JSON.parse(fs.readFileSync('./data/cf-projects.json', 'utf-8'))) gameOf(real, gameKeyOf(p));
 });

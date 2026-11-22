@@ -1,0 +1,7 @@
+{
+  "kind": "behavior",
+  "name": "Tidy Endermen",
+  "description": "Endermen no longer pick up or place blocks",
+  "minEngine": [1, 26, 60],
+  "gameVersions": ["26.60"]
+}

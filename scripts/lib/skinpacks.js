@@ -72,8 +72,21 @@ export function renumberStages(stages) {
 }
 
 export const publishedVersions = pack => pack.versions.filter(v => v.status === 'published');
-export const nextDueVersion = pack => pack.versions.find(v => v.status === 'due') || null;
-export const hasDueVersion = pack => !!nextDueVersion(pack);
+// The next version to upload. A version can wait for its season: with `preferFrom`
+// (YYYY-MM-DD) it is not due before that day, and the versions after it wait too, because every
+// stock file contains everything before it and the order never changes. Other projects of the
+// same leg go up in the meantime.
+const day = now => new Date(now).toISOString().slice(0, 10);
+export const nextDueVersion = (pack, now = new Date()) => {
+  const v = pack.versions.find(x => x.status === 'due') || null;
+  return v?.preferFrom && day(now) < v.preferFrom ? null : v;
+};
+export const hasDueVersion = (pack, now = new Date()) => !!nextDueVersion(pack, now);
+// A version waiting for its season: { version, preferFrom } or null.
+export const seasonHold = (pack, now = new Date()) => {
+  const v = pack.versions.find(x => x.status === 'due');
+  return v?.preferFrom && day(now) < v.preferFrom ? { version: v.version, preferFrom: v.preferFrom } : null;
+};
 
 export function markVersionPublished(pack, version, { fileId = null, now = new Date(), manual = false } = {}) {
   const v = pack.versions.find(x => x.version === version);

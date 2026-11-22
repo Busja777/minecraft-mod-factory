@@ -22,6 +22,8 @@ import { CHROME_BIN, helperLaunchOptions, plainChromeArgs, profileInUse } from '
 import { arg } from './lib/github-output.js';
 import { getDescription } from './platforms/curseforge-core.js';
 import { pageState, pageBehind, tracksPage } from './lib/page-state.js';
+import { loadReihen, findSerieProject, registerProject, outDir as serieOutDir, projectDir as serieProjectDir } from './lib/serie.js';
+import { serieTasks, serieFields, buildSerieSteps, profileFor } from './lib/cf-browser/serie.js';
 
 // CurseForge browser helper: fills in the forms that have no API and stops before the final click.
 //   npm run cf                                   menu with open tasks
@@ -35,6 +37,9 @@ import { pageState, pageBehind, tracksPage } from './lib/page-state.js';
 //   npm run cf -- media  --skinpack <slug> | --mod <id>
 //   npm run cf -- update --skinpack <slug> [--version x]
 //   npm run cf -- seite  [--skinpack <slug>]     description after an update (all open ones, or one); the gallery is left alone
+//   npm run cf -- serie [--reihe <r>] [--dry-run] the series: fills "Create Project" for every built project of
+//                                                this account's games (you click Create and Apply); then the
+//                                                project id is entered (= your Go for the first file)
 //   npm run cf -- login                          log in once (the profile remembers it)
 //   npm run cf -- inspect                        save the structure of open pages (to calibrate selectors.js)
 //   --account <name>                             a separate Chrome profile (login) per CurseForge account
@@ -411,6 +416,55 @@ async function inspect() {
   closeInput();
 }
 
+// The series: every built project of the games this Chrome profile is logged in for, one after
+// the other. Before each form the page is rebuilt and checked (npm run serie -- seite); a page that
+// is not green is skipped. After "Create" the id is entered exactly like `npm run serie -- id`.
+async function serieRun() {
+  const only = arg(argv, '--reihe');
+  const reihen = loadReihen().filter(r => !only || r.reihe === only);
+  const all = serieTasks({ reihen, cfProjects: loadProjects() });
+  const mine = all.filter(t => profileFor(config, t.game) === account);
+  const others = all.filter(t => !mine.includes(t));
+  console.log(`\nSerie: ${mine.length ? `${mine.length} ${mine.length === 1 ? 'Projekt wartet' : 'Projekte warten'} auf „Create“` : 'in diesem Konto wartet nichts'}`);
+  mine.forEach((t, i) => console.log(`  ${i + 1}) ${t.label}`));
+  const byProfile = {};
+  for (const t of others) (byProfile[profileFor(config, t.game)] ||= []).push(t);
+  for (const [profile, list] of Object.entries(byProfile)) console.log(`  · ${list.length} für das Konto „${profile}“: npm run cf -- serie --account ${profile}`);
+  if (argv.includes('--dry-run') || !mine.length) { closeInput(); return; }
+  if (!handsFree) {
+    const a = (await ask('Enter = Go (alle nacheinander) · q = Beenden:')).trim().toLowerCase();
+    if (a === 'q') process.exit(0);
+  }
+  console.log('\n▶ Go. Chrome öffnet sich gleich. Der Helfer füllt aus; Create und Apply klickst du.\n  Bitte nicht in das Fenster klicken, solange Schritte laufen.');
+  const context = await openBrowser();
+  const page = await pageOf(context);
+  const done = [];
+  for (const task of mine) {
+    const seite = spawnSync(process.execPath, ['scripts/serie.js', 'seite', task.id], { encoding: 'utf-8' });
+    if (seite.status !== 0) { done.push(`✗ ${task.label}: Seite nicht grün (npm run serie -- seite ${task.id})`); continue; }
+    try {
+      const { reihe, project } = findSerieProject(loadReihen(), task.id);
+      const pageJson = JSON.parse(fs.readFileSync(path.join(serieProjectDir(reihe.reihe, project.slug), 'page.json'), 'utf-8'));
+      const dir = serieOutDir(reihe.reihe, project);
+      const plan = buildSerieSteps(task, serieFields({ reihe, project, page: pageJson, files: fs.readdirSync(dir) }));
+      console.log(`\n── ${plan.title} ──`);
+      const { results, context: found } = await runSteps(page, plan.steps, { ask, handsFree });
+      console.log(formatSummary(results, plan.notes));
+      if (!found.projectId) { done.push(`… ${task.label}: keine Projekt-ID gesehen`); continue; }
+      const projects = loadProjects();
+      registerProject(reihe, project, found.projectId, { cfProjects: projects, cfName: pageJson.name });
+      saveProjects(projects);
+      rememberProjectUrl(found);
+      const pushed = commitData(`chore(serie): ${task.id} project ${found.projectId}`);
+      done.push(`✓ ${task.label}: Projekt-ID ${found.projectId} eingetragen${pushed === 'pushed' ? ' und gepusht' : pushed === 'not-main' ? ' (nicht auf main: bitte committen und pushen)' : ''}`);
+    } catch (e) {
+      done.push(`✗ ${task.label}: ${e.message.split('\n')[0]}`);
+    }
+  }
+  console.log(`\nSerie erledigt:\n${done.map(d => `  ${d}`).join('\n')}\nDie erste Datei jedes eingetragenen Projekts geht am Abend von selbst hoch, eine pro Reihe und Tag.`);
+  await finish(context);
+}
+
 let choice = command;
 if (command === 'heute') choice = (await today()) || 'done';
 if (choice === 'menu') choice = await chooseTask();
@@ -423,5 +477,6 @@ else if (choice === 'seite') {
   await syncPages(packs);
   await runPages(pageTasks(packs, arg(argv, '--skinpack')));
 }
+else if (choice === 'serie') await serieRun();
 else if (['publish', 'new', 'media', 'update'].includes(choice)) await runTask(taskFromArgs());
-else fail(`Unbekannter Befehl "${choice}". Möglich: heute, publish, new, media, update, seite, login, inspect (oder ohne Befehl für das Menü).`);
+else fail(`Unbekannter Befehl "${choice}". Möglich: heute, serie, publish, new, media, update, seite, login, inspect (oder ohne Befehl für das Menü).`);
