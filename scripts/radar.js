@@ -17,7 +17,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { latestJava, latestBedrockSamples, changes, merged, nextContent, compatLine } from './lib/radar.js';
+import { latestJava, latestBedrockSamples, changes, merged, nextContent, compatLine, waitingFor } from './lib/radar.js';
 import { listPacks, packOf, generate, checkPack, buildZip, isMod } from '../tools/java/lib.js';
 import { ensureVanilla, registry, javaFor } from '../tools/java/vanilla.js';
 import { supportsLoadTest, loadTest } from '../tools/java/loadtest.js';
@@ -91,7 +91,8 @@ if (!noBuild && targets.length) {
     report.packs[pack.slug] = { kind: pack.kind, serves: [pack.mc, ...(pack.also || [])] };
     for (const version of targets) {
       if (!vanillas[version]) continue;
-      const result = await tryPack(pack, version, vanillas[version]);
+      const waits = waitingFor(pack, version);
+      const result = waits ? { ok: null, waiting: waits } : await tryPack(pack, version, vanillas[version]);
       report.packs[pack.slug][version] = result;
       console.log(compatLine(pack.slug, version, result));
     }

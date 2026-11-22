@@ -47,7 +47,21 @@ export function nextContent(before, after) {
 }
 
 // One line per pack and version for the console and the report issue.
+// Whether Minecraft version a ("26.4-snapshot-10" counts as 26.4) is older than b.
+export function olderThan(a, b) {
+  const [x, y] = [a, b].map(v => String(v).split('-')[0].split('.').map(Number));
+  for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) < (y[i] ?? 0);
+  return false;
+}
+
+// A pack built ahead for a coming version (pack.json "waitsFor") is not checked against older
+// versions: it cannot load there and is not meant to. → the version it waits for, or null.
+export function waitingFor(pack, version) {
+  return pack.waitsFor && olderThan(version, pack.waitsFor) ? pack.waitsFor : null;
+}
+
 export function compatLine(slug, version, result) {
+  if (result.waiting) return `… ${slug} on ${version}: waits for ${result.waiting}`;
   if (result.ok) return `✓ ${slug} on ${version}${result.loaded ? ' (loaded by the game)' : ' (checked against the data)'}`;
   return `✗ ${slug} on ${version}: ${result.problems.length + (result.more || 0)} problem(s), first: ${String(result.problems[0]).slice(0, 200)}`;
 }
