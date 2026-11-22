@@ -23,6 +23,12 @@
 //   Shipping Bin, Pet Bowl) stay instant, every other building needs at least 1 day.
 // - The level is a config option (author-guide/config.md: ConfigSchema with AllowValues/Default)
 //   and selects one patch through "When" (author-guide.md#conditions).
+// - 1.1, config texts: i18n keys config.CostPercent.name / .description / .values.<value> in
+//   i18n/default.json (English, CONFIG_TEXT below) and i18n/de.json (German, CONFIG_DE in de.js).
+//   Content Patcher reads them itself for the config menu (author-guide/config.md, "Translations":
+//   all keys optional, not case-sensitive) and picks the file of the game language
+//   (translations.md). The ConfigSchema Description stays as it was and is also the English
+//   description text.
 //
 // Vanilla values: https://stardewvalleywiki.com/Carpenter's_Shop (section "Farm Buildings", columns
 // Cost and Construction Time, revision 195197), cross-checked with the building pages Barn
@@ -41,6 +47,8 @@
 // Left out on purpose: Cabin (100g, no materials, instant since 1.6, styles are skins that may
 // override the cost), farmhouse upgrades and community upgrades (not in Data/Buildings), and the
 // Wizard's buildings.
+
+import { CONFIG_DE } from './de.js';
 
 // Materials used by the vanilla buildings → qualified item ID (items.json).
 export const MATERIALS = {
@@ -90,6 +98,42 @@ export const goldOf = (gold, share) => Math.ceil(gold * share);
 export const amountOf = (amount, share) => Math.max(1, Math.ceil(amount * share));
 export const daysOf = (days, share) => (days === 0 ? 0 : Math.max(1, Math.round(days * share)));
 
+export const CONFIG = {
+  CostPercent: {
+    AllowValues: Object.keys(SHARES).sort((a, b) => b - a).join(', '),
+    Default: DEFAULT,
+    Description: 'Share of the normal gold, materials and construction days for the farm buildings from the carpenter, in percent. Gold and materials are rounded up, construction takes at least one day. Magical buildings are not changed.'
+  }
+};
+// Config menu texts (1.1): English name and value labels, the description is the ConfigSchema
+// Description. German in de.js. Every label starts with "<value> %".
+export const CONFIG_TEXT = {
+  CostPercent: {
+    name: 'Building cost',
+    values: { 75: '75 %', 50: '50 % (half)', 25: '25 % (a quarter)' }
+  }
+};
+
+// texts: field → { name, description, values: { <AllowValues value>: label } }
+// → { 'config.<field>.name', 'config.<field>.description', 'config.<field>.values.<value>' }
+export function configKeys(schema, texts, lang) {
+  const keys = {};
+  if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts must cover exactly the ConfigSchema fields`);
+  for (const [field, def] of Object.entries(schema)) {
+    const t = texts[field];
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    if (!t.name?.trim() || !t.description?.trim()) throw new Error(`${lang} config ${field}: name or description missing`);
+    if (Object.keys(t.values).sort().join() !== [...values].sort().join()) throw new Error(`${lang} config ${field}: labels must cover exactly ${values.join(', ')}`);
+    keys[`config.${field}.name`] = t.name;
+    keys[`config.${field}.description`] = t.description;
+    for (const v of values) {
+      if (!t.values[v]?.trim()) throw new Error(`${lang} config ${field}: label of ${v} missing`);
+      keys[`config.${field}.values.${v}`] = t.values[v];
+    }
+  }
+  return keys;
+}
+
 export default async function ({ items }) {
   if (!(DEFAULT in SHARES)) throw new Error(`default ${DEFAULT} is not an allowed value`);
   if (Object.keys(SHARES).sort((a, b) => b - a)[1] !== DEFAULT) throw new Error('the default must be the middle level');
@@ -133,17 +177,21 @@ export default async function ({ items }) {
       When: { CostPercent: value }
     };
   });
+  const i18n = configKeys(CONFIG, { CostPercent: { ...CONFIG_TEXT.CostPercent, description: CONFIG.CostPercent.Description } }, 'English');
+  const de = configKeys(CONFIG, CONFIG_DE, 'German');
+  for (const value of Object.keys(SHARES)) {
+    for (const [lang, keys] of [['English', i18n], ['German', de]]) {
+      if (!keys[`config.CostPercent.values.${value}`].startsWith(`${value} %`)) throw new Error(`${lang} label of ${value} must start with ${value} %`);
+    }
+  }
+  for (const [key, text] of Object.entries(de)) if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(text)) throw new Error(`${key}: German config texts use the Du-form`);
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        CostPercent: {
-          AllowValues: Object.keys(SHARES).sort((a, b) => b - a).join(', '),
-          Default: DEFAULT,
-          Description: 'Share of the normal gold, materials and construction days for the farm buildings from the carpenter, in percent. Gold and materials are rounded up, construction takes at least one day. Magical buildings are not changed.'
-        }
-      },
+      ConfigSchema: CONFIG,
       Changes: changes
-    }
+    },
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

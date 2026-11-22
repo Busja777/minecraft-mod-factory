@@ -37,8 +37,12 @@
 // - 1.3, German: i18n/de.json has every letter and title in German (de.js: two templates and the
 //   table villager → official German item name, each with its wiki source). Content Patcher picks
 //   the file that matches the game language and falls back to default.json for anything missing
-//   (author-guide/translations.md); every key here has a German text. The config text (DayBefore)
-//   stays English.
+//   (author-guide/translations.md); every key here has a German text.
+// - 1.4, config texts: the keys config.DayBefore.name / .description / .values.<value> in
+//   default.json (English, CONFIG_TEXT below) and de.json (German, CONFIG_DE in de.js). Content
+//   Patcher reads them itself for the config menu (author-guide/config.md, "Translations": all keys
+//   optional, not case-sensitive). The ConfigSchema Description stays as it was and is also the
+//   English description text. The letter keys are unchanged.
 // - The eve letters can be switched off: config option "DayBefore" ("true, false", default true;
 //   author-guide/config.md: "true, false" is a boolean and shows as a checkbox). Only the trigger
 //   patch carries "When": { "DayBefore": "true" } (author-guide.md#conditions). The eve letter texts
@@ -51,7 +55,40 @@
 // Data/NPCGiftTastes (raw data as of 1.6.15 on the wiki) and its name in the villager page's
 // "favorites"; both are in tools/stardew/data/npcs.json and checked below.
 
-import { DE_GIFTS, letterDe, eveLetterDe, titleDe, eveTitleDe } from './de.js';
+import { DE_GIFTS, letterDe, eveLetterDe, titleDe, eveTitleDe, CONFIG_DE } from './de.js';
+
+// Config (1.1) and its texts for the config menu (1.4): English name and value labels here, the
+// English description is the ConfigSchema Description; German in de.js (CONFIG_DE).
+export const CONFIG = {
+  DayBefore: {
+    AllowValues: 'true, false',
+    Default: 'true',
+    Description: 'Also send a short reminder letter the morning before each birthday, with the same gift idea. The letter on the birthday itself always comes.'
+  }
+};
+export const CONFIG_TEXT = {
+  DayBefore: { name: 'Reminder the day before', values: { true: 'On', false: 'Off' } }
+};
+
+// texts: field → { name, description, values: { <AllowValues value>: label } }
+// → { 'config.<field>.name', 'config.<field>.description', 'config.<field>.values.<value>' }
+export function configKeys(schema, texts, lang) {
+  const keys = {};
+  if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts must cover exactly the ConfigSchema fields`);
+  for (const [field, def] of Object.entries(schema)) {
+    const t = texts[field];
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    if (!t.name?.trim() || !t.description?.trim()) throw new Error(`${lang} config ${field}: name or description missing`);
+    if (Object.keys(t.values).sort().join() !== [...values].sort().join()) throw new Error(`${lang} config ${field}: labels must cover exactly ${values.join(', ')}`);
+    keys[`config.${field}.name`] = t.name;
+    keys[`config.${field}.description`] = t.description;
+    for (const v of values) {
+      if (!t.values[v]?.trim()) throw new Error(`${lang} config ${field}: label of ${v} missing`);
+      keys[`config.${field}.values.${v}`] = t.values[v];
+    }
+  }
+  return keys;
+}
 
 // name → [gift ID, how the letter names it, how the letter calls the villager]
 export const GIFTS = {
@@ -191,6 +228,13 @@ export default async function ({ items, npcs }) {
   if (missing.length) throw new Error(`no letter for ${missing.join(', ')}`);
   const extra = Object.keys(DE_GIFTS).filter(n => !GIFTS[n] && !ISLAND_GIFTS[n]);
   if (extra.length) throw new Error(`de.js has villagers without a letter: ${extra.join(', ')}`);
+  // 1.4: config texts, after the letters (whose keys and texts stay exactly as in 1.3)
+  const en = Object.fromEntries(Object.entries(CONFIG_TEXT).map(([f, t]) => [f, { ...t, description: CONFIG[f].Description }]));
+  Object.assign(i18n, configKeys(CONFIG, en, 'English'));
+  for (const [key, text] of Object.entries(configKeys(CONFIG, CONFIG_DE, 'German'))) {
+    if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(text)) throw new Error(`${key}: German config texts use the Du-form`);
+    de[key] = text;
+  }
   if (Object.keys(de).sort().join() !== Object.keys(i18n).sort().join()) throw new Error('i18n/de.json must have exactly the keys of default.json');
   const patches = ({ mail, triggers, eveMail, eveTriggers }, who) => [
     { LogName: `Birthday letters${who}`, Action: 'EditData', Target: 'Data/mail', Entries: mail },
@@ -201,13 +245,7 @@ export default async function ({ items, npcs }) {
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        DayBefore: {
-          AllowValues: 'true, false',
-          Default: 'true',
-          Description: 'Also send a short reminder letter the morning before each birthday, with the same gift idea. The letter on the birthday itself always comes.'
-        }
-      },
+      ConfigSchema: CONFIG,
       Changes: [...patches(valley, ''), ...patches(island, ' (Ginger Island)')]
     },
     'i18n/default.json': i18n,

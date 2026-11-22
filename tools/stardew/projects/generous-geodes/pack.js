@@ -38,9 +38,17 @@
 // - The level is a config option (author-guide/config.md: ConfigSchema with AllowValues/Default)
 //   and selects one patch via "When" (author-guide.md#conditions). {{ModId}} keeps the entry ID
 //   unique (tokens.md#ModId).
+// - 1.1, config texts: i18n keys config.Generosity.name / .description / .values.<value> in
+//   i18n/default.json (English, CONFIG_TEXT below) and i18n/de.json (German, CONFIG_DE in de.js).
+//   Content Patcher reads them itself for the config menu (author-guide/config.md, "Translations":
+//   all keys optional, not case-sensitive) and picks the file of the game language
+//   (translations.md). The ConfigSchema Description stays as it was and is also the English
+//   description text.
 //
 // Item IDs: tools/stardew/data/items.json (wiki Modding:Objects/Object sprites); the names below are
 // resolved through it, so a wrong name fails the build.
+
+import { CONFIG_DE } from './de.js';
 
 // geode → { item: the geode, foraged: its foraged mineral (resource half, for the page only),
 //           drops: the vanilla minerals + artifact of the wiki "Geode Contents" tables, odds: 1/n each }
@@ -69,6 +77,52 @@ export const VANILLA_SHARE = 0.5;
 
 // Chance of one particular mineral at a share (the list is a uniform pick).
 export const perItem = (geode, share) => share / GEODES[geode].drops.length;
+
+export const CONFIG = {
+  Generosity: {
+    AllowValues: Object.keys(LEVELS).join(', '),
+    Default: DEFAULT,
+    Description: 'How often geodes, frozen geodes and magma geodes hold a mineral or artifact instead of stone, clay or ore. Gentle 60 %, Generous 70 %, Lavish 80 % (normal game: 50 %).'
+  }
+};
+// Config menu texts (1.1): English name and level words; the share is added to each label
+// ("Gentle (60 %)"), the description is the ConfigSchema Description. German in de.js.
+export const CONFIG_TEXT = {
+  Generosity: { name: 'Geode generosity', values: { Gentle: 'Gentle', Generous: 'Generous', Lavish: 'Lavish' } }
+};
+export const percent = share => `${Math.round(share * 100)} %`;
+
+// texts: field → { name, description, values: { <AllowValues value>: label } }
+// → { 'config.<field>.name', 'config.<field>.description', 'config.<field>.values.<value>' }
+export function configKeys(schema, texts, lang) {
+  const keys = {};
+  if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts must cover exactly the ConfigSchema fields`);
+  for (const [field, def] of Object.entries(schema)) {
+    const t = texts[field];
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    if (!t.name?.trim() || !t.description?.trim()) throw new Error(`${lang} config ${field}: name or description missing`);
+    if (Object.keys(t.values).sort().join() !== [...values].sort().join()) throw new Error(`${lang} config ${field}: labels must cover exactly ${values.join(', ')}`);
+    keys[`config.${field}.name`] = t.name;
+    keys[`config.${field}.description`] = t.description;
+    for (const v of values) {
+      if (!t.values[v]?.trim()) throw new Error(`${lang} config ${field}: label of ${v} missing`);
+      keys[`config.${field}.values.${v}`] = t.values[v];
+    }
+  }
+  return keys;
+}
+
+// One language: level word + share in every label, and the description must name each level with
+// its share (so the texts cannot drift from LEVELS).
+function levelTexts(texts, description, lang) {
+  const t = texts.Generosity;
+  for (const [level, share] of Object.entries(LEVELS)) {
+    if (!description.includes(`${t.values[level]} ${percent(share)}`)) throw new Error(`${lang} description must name ${t.values[level]} ${percent(share)}`);
+  }
+  if (!description.includes(percent(VANILLA_SHARE))) throw new Error(`${lang} description must name the normal ${percent(VANILLA_SHARE)}`);
+  const values = Object.fromEntries(Object.entries(t.values).map(([level, word]) => [level, `${word} (${percent(LEVELS[level])})`]));
+  return { Generosity: { name: t.name, description, values } };
+}
 
 export default async function ({ items }) {
   const idOf = {};
@@ -105,17 +159,16 @@ export default async function ({ items }) {
       When: { Generosity: level }
     };
   });
+  const i18n = configKeys(CONFIG, levelTexts(CONFIG_TEXT, CONFIG.Generosity.Description, 'English'), 'English');
+  const de = configKeys(CONFIG, levelTexts(CONFIG_DE, CONFIG_DE.Generosity.description, 'German'), 'German');
+  for (const [key, text] of Object.entries(de)) if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(text)) throw new Error(`${key}: German config texts use the Du-form`);
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Generosity: {
-          AllowValues: Object.keys(LEVELS).join(', '),
-          Default: DEFAULT,
-          Description: 'How often geodes, frozen geodes and magma geodes hold a mineral or artifact instead of stone, clay or ore. Gentle 60 %, Generous 70 %, Lavish 80 % (normal game: 50 %).'
-        }
-      },
+      ConfigSchema: CONFIG,
       Changes: changes
-    }
+    },
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

@@ -70,3 +70,14 @@ export const eveLetterDe = (call, gift) =>
 
 export const titleDe = call => `${cap(call)} hat Geburtstag`;
 export const eveTitleDe = call => `Morgen hat ${call} Geburtstag`;
+
+// Config texts (since 1.4), the German half of CONFIG_TEXT in pack.js: field name, tooltip and the
+// labels of the AllowValues values (Content Patcher author-guide/config.md, "Translations").
+// No game names; "Geschenk-Tipp" as in the letters above.
+export const CONFIG_DE = {
+  DayBefore: {
+    name: 'Erinnerung am Vortag',
+    description: 'Du bekommst am Morgen vor jedem Geburtstag zusätzlich einen kurzen Erinnerungsbrief mit demselben Geschenk-Tipp. Der Brief am Geburtstag selbst kommt immer.',
+    values: { true: 'An', false: 'Aus' }
+  }
+};

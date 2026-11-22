@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "RobinsFairPrices-1.1.zip",
+      "changelog": "## Robin's Fair Prices 1.1\n\nThe settings are now in German too.\n\n- The cost setting has a readable name, description and value names in the in-game config menu (Generic Mod Config Menu): \"Building cost\" (75 %, 50 % (half), 25 % (a quarter)) in English, \"Baukosten\" in German. Players with the game set to German see the setting in German; everyone else keeps the English one.\n- Same buildings, same costs and construction days; your setting carries over and nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

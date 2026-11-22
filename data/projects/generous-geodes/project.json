@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "GenerousGeodes-1.1.zip",
+      "changelog": "## Generous Geodes 1.1\n\nThe settings are now in German too.\n\n- The level setting has a readable name, description and level names in the in-game config menu (Generic Mod Config Menu): \"Geode generosity\" with Gentle (60 %), Generous (70 %) and Lavish (80 %) in English, \"Großzügigkeit der Geoden\" with Sanft, Großzügig and Üppig in German. Players with the game set to German see the setting in German; everyone else keeps the English one.\n- Same levels, same chances; your setting carries over and nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

@@ -25,6 +25,12 @@
 //   price (Sunflower Seeds cost 200g at Pierre, far above their sell price).
 //   ApplyProfitMargins stays at its default, like Pierre's entries.
 // - The surcharge is a config option (author-guide/config.md) and selects one patch via "When".
+// - 1.2, config texts: i18n keys config.Surcharge.name / .description / .values.<value> in
+//   i18n/default.json (English, CONFIG_TEXT below) and i18n/de.json (German, CONFIG_DE in de.js).
+//   Content Patcher reads them itself for the config menu (author-guide/config.md, "Translations":
+//   all keys optional, not case-sensitive) and picks the file of the game language
+//   (translations.md). The ConfigSchema Description stays as it was and is also the English
+//   description text.
 //
 // Seeds and in-season prices: https://stardewvalleywiki.com/Pierre%27s_General_Store (Spring, Summer
 // and Fall Stock, revision 195226). Pierre sells no seasonal seeds in winter; Strawberry Seeds
@@ -41,6 +47,8 @@
 // pages, so the season limit is taken from them. If she sold one of the three all year after all,
 // AvoidRepeat keeps this pack's entry out (her own entries come first): nothing appears twice and
 // her price stays. Pierre's Missing Stocklist only affects Pierre's store (Modding:Shops).
+
+import { CONFIG_DE } from './de.js';
 
 // name → [seasons Pierre sells it in, his in-season price, only from year 2]
 export const SEEDS = {
@@ -98,6 +106,42 @@ export const priceWith = (base, surcharge) => Math.round(base * (100 + Number(su
 export const conditionOf = (seasons, year2) => [`!SEASON ${seasons.join(' ')}`, ...(year2 ? ['YEAR 2'] : [])].join(', ');
 const keyOf = name => name.replace(/[^A-Za-z]/g, '');
 
+export const CONFIG = {
+  Surcharge: {
+    AllowValues: SURCHARGES.join(', '),
+    Default: DEFAULT,
+    Description: 'Extra cost in percent for seeds Pierre and Sandy sell outside their season. Seeds still only grow in their own season.'
+  }
+};
+// Config menu texts (1.2): English name and value labels, the description is the ConfigSchema
+// Description. German in de.js. Every label starts with "+<value> %".
+export const CONFIG_TEXT = {
+  Surcharge: {
+    name: 'Out-of-season surcharge',
+    values: { 25: '+25 %', 50: '+50 %', 100: '+100 % (double price)' }
+  }
+};
+
+// texts: field → { name, description, values: { <AllowValues value>: label } }
+// → { 'config.<field>.name', 'config.<field>.description', 'config.<field>.values.<value>' }
+export function configKeys(schema, texts, lang) {
+  const keys = {};
+  if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts must cover exactly the ConfigSchema fields`);
+  for (const [field, def] of Object.entries(schema)) {
+    const t = texts[field];
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    if (!t.name?.trim() || !t.description?.trim()) throw new Error(`${lang} config ${field}: name or description missing`);
+    if (Object.keys(t.values).sort().join() !== [...values].sort().join()) throw new Error(`${lang} config ${field}: labels must cover exactly ${values.join(', ')}`);
+    keys[`config.${field}.name`] = t.name;
+    keys[`config.${field}.description`] = t.description;
+    for (const v of values) {
+      if (!t.values[v]?.trim()) throw new Error(`${lang} config ${field}: label of ${v} missing`);
+      keys[`config.${field}.values.${v}`] = t.values[v];
+    }
+  }
+  return keys;
+}
+
 export default async function ({ items }) {
   const idOf = {};
   for (const [id, name] of Object.entries(items.items)) if (/^\(O\)/.test(id)) idOf[name] = id;
@@ -135,17 +179,21 @@ export default async function ({ items }) {
       });
     }
   }
+  const i18n = configKeys(CONFIG, { Surcharge: { ...CONFIG_TEXT.Surcharge, description: CONFIG.Surcharge.Description } }, 'English');
+  const de = configKeys(CONFIG, CONFIG_DE, 'German');
+  for (const value of SURCHARGES) {
+    for (const [lang, keys] of [['English', i18n], ['German', de]]) {
+      if (!keys[`config.Surcharge.values.${value}`].startsWith(`+${value} %`)) throw new Error(`${lang} label of ${value} must start with +${value} %`);
+    }
+  }
+  for (const [key, text] of Object.entries(de)) if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(text)) throw new Error(`${key}: German config texts use the Du-form`);
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Surcharge: {
-          AllowValues: SURCHARGES.join(', '),
-          Default: DEFAULT,
-          Description: 'Extra cost in percent for seeds Pierre and Sandy sell outside their season. Seeds still only grow in their own season.'
-        }
-      },
+      ConfigSchema: CONFIG,
       Changes: changes
-    }
+    },
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }
