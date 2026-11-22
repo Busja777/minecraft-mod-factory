@@ -83,15 +83,29 @@ export async function generate(pack, vanilla, version = pack.mc) {
 const strip = id => String(id).replace(/^minecraft:/, '');
 const isVanilla = id => !String(id).includes(':') || String(id).startsWith('minecraft:');
 
+// A loot function whose "id" names a potion, not an item (vanilla: stray and bogged arrows).
+const POTION_ID = o => /^(minecraft:)?set_potion$/.test(o.function || o.type || '');
+
 // Every item id or tag found under the given keys anywhere in a JSON value.
 function collect(value, keys, found = []) {
   if (Array.isArray(value)) value.forEach(v => collect(v, keys, found));
   else if (value && typeof value === 'object') {
     for (const [k, v] of Object.entries(value)) {
+      if (k === 'id' && POTION_ID(value)) continue;
       if (keys.includes(k) && typeof v === 'string') found.push({ key: k, value: v });
       else if (keys.includes(k) && Array.isArray(v) && v.every(x => typeof x === 'string')) v.forEach(x => found.push({ key: k, value: x }));
       else collect(v, keys, found);
     }
+  }
+  return found;
+}
+
+// The potion ids of every set_potion function in a JSON value.
+function potionIds(value, found = []) {
+  if (Array.isArray(value)) value.forEach(v => potionIds(v, found));
+  else if (value && typeof value === 'object') {
+    if (POTION_ID(value) && typeof value.id === 'string') found.push(value.id);
+    Object.values(value).forEach(v => potionIds(v, found));
   }
   return found;
 }
@@ -107,6 +121,7 @@ export function checkPack(pack, files, vanilla, { foreign = false } = {}) {
   const triggers = registry(vanilla, 'trigger_type');
   const serializers = registry(vanilla, 'recipe_serializer');
   const soundEvents = registry(vanilla, 'sound_event');
+  const potions = registry(vanilla, 'potion');
   const ownAdvancements = new Set();
   // Newer versions bring new data folders (villager_trade, timeline …): whatever vanilla itself uses is known.
   const vanillaData = path.join(vanilla.data, 'minecraft');
@@ -142,6 +157,7 @@ export function checkPack(pack, files, vanilla, { foreign = false } = {}) {
       if (key === 'id' && !/\/(recipe|advancement|loot_table)\//.test(p)) continue;
       if (isVanilla(value) && !items.has(strip(value))) problems.push(`${p}: unknown item ${value}`);
     }
+    for (const id of potionIds(j)) if (isVanilla(id) && !potions.has(strip(id))) problems.push(`${p}: unknown potion ${id}`);
     for (const { value } of collect(j, ['block', 'blocks'])) {
       if (!value.startsWith('#') && isVanilla(value) && !blocks.has(strip(value))) problems.push(`${p}: unknown block ${value}`);
     }

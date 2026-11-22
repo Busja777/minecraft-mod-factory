@@ -73,6 +73,11 @@ test('Java: the checks catch what the game would ignore or reject', { skip }, ()
   has(/d.json: display.icon needs an "id"/);
   has(/d.json: parent minecraft:husbandry\/nope does not exist/);
   has(/E.json: paths must be lowercase/);
+  // a set_potion function names a potion: checked against the potion registry, not the items
+  const potion = (id, item = 'minecraft:tipped_arrow') => buf({ type: 'minecraft:entity', pools: [{ rolls: 1, entries: [{ type: 'minecraft:item', name: item, functions: [{ function: 'minecraft:set_potion', id }] }] }] });
+  const potionProblems = checkPack(data, { 'data/x/loot_table/p.json': potion('minecraft:slowness'), 'data/x/loot_table/q.json': potion('minecraft:slowmess') }, vanilla);
+  assert.ok(!potionProblems.some(p => /p\.json/.test(p)), potionProblems.join('\n'));
+  assert.ok(potionProblems.some(p => /q\.json: unknown potion minecraft:slowmess/.test(p)), potionProblems.join('\n'));
   has(/f.json: not valid JSON/);
   has(/assets\/minecraft\/sounds.json: a data pack only has data\//);
 
