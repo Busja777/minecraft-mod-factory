@@ -24,6 +24,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.2",
+      "file": "MachineTempo-1.2.zip",
+      "changelog": "## Machine Tempo 1.2\n\nThe settings are now in German too.\n\n- The speed setting has a readable name, description and value names in the in-game config menu (Generic Mod Config Menu): \"Machine speed\" in English (from \"Normal speed (1.0)\" to \"Twice as fast (2.0)\"), \"Maschinentempo\" in German (from \"Normales Tempo (1,0)\" to \"Doppelt so schnell (2,0)\"). Players with the game set to German see the setting in German; everyone else keeps the English one.\n- Same machines, same speeds; your setting carries over and nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }

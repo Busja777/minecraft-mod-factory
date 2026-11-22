@@ -17,8 +17,8 @@
       "was": "Brief am Morgen jedes Geburtstags mit Geschenk-Tipp",
       "updates": [
         "Geschenk-Tipp nach Freundschaftsstufe",
-        "Deutsch (Einstellungstext DayBefore, nach PR #75)",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Balance nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -104,9 +104,9 @@
       "art": "CP",
       "was": "Saat ganzjährig, Aufpreis einstellbar",
       "updates": [
-        "Einstellungstexte auf Deutsch (nach PR #75)",
         "Aufpreis-Stufe 0 % für entspannte Spielstände",
-        "Feinschliff nach Kommentaren"
+        "Feinschliff nach Kommentaren",
+        "Balance nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",
@@ -362,7 +362,7 @@
       "updates": [
         "Junimo-Hütte optional ZUSAMMEN mit einer Änderung, die alle Spieler spüren (allein wäre es mit Standard „aus“ Füllmaterial; Obelisken haben keine belegten IDs)",
         "Insel-Gebäude, falls belegbar",
-        "Deutsch (Einstellungstexte)"
+        "Feinschliff nach Kommentaren"
       ],
       "banner": {
         "from": "chatgpt",

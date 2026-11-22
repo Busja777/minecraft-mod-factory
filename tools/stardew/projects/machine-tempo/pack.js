@@ -21,6 +21,12 @@
 // - The factor is a config option (author-guide/config.md: ConfigSchema with AllowValues/Default)
 //   and selects one patch through "When" (author-guide.md#conditions). At 1.0 no patch applies, so
 //   the game data stays exactly vanilla. {{ModId}} keeps the modifier ID unique (tokens.md#ModId).
+// - 1.2, config texts: i18n keys config.Speed.name / .description / .values.<value> in
+//   i18n/default.json (English, CONFIG_TEXT below) and i18n/de.json (German, CONFIG_DE in de.js).
+//   Content Patcher reads them itself for the config menu (author-guide/config.md, "Translations":
+//   all keys optional, not case-sensitive) and picks the file of the game language
+//   (translations.md). The ConfigSchema Description stays as it was and is also the English
+//   description text. Every label shows its factor (German with a decimal comma).
 //
 // Machine IDs (big craftables, Data/BigCraftables): Keg = (BC)12, Preserves Jar = (BC)15,
 // Cheese Press = (BC)16, Loom = (BC)17. Source: the raw Data/CraftingRecipes "as of 1.6.15" on
@@ -33,6 +39,8 @@
 // https://stardewvalleywiki.com/Preserves_Jar, https://stardewvalleywiki.com/Cheese_Press#Products
 // and https://stardewvalleywiki.com/Loom#Products (product tables, revisions 195253, 195389,
 // 183811, 190254; the loom's "4 Hours" = 240 minutes).
+
+import { CONFIG_DE } from './de.js';
 
 export const MACHINES = {
   '(BC)12': {
@@ -63,6 +71,47 @@ export const DEFAULT = '1.5';
 // the game is not documented).
 export const readyMinutes = (minutes, factor) => Math.floor(minutes / factor);
 
+export const CONFIG = {
+  Speed: {
+    AllowValues: Object.keys(FACTORS).join(', '),
+    Default: DEFAULT,
+    Description: 'How much faster kegs, preserves jars, cheese presses and looms work. 1.0 is the normal speed, 2.0 halves the time.'
+  }
+};
+// Config menu texts (1.2): English name and value labels, the description is the ConfigSchema
+// Description. German in de.js.
+export const CONFIG_TEXT = {
+  Speed: {
+    name: 'Machine speed',
+    values: {
+      '1.0': 'Normal speed (1.0)',
+      '1.25': '1.25 times as fast',
+      '1.5': '1.5 times as fast',
+      '2.0': 'Twice as fast (2.0)'
+    }
+  }
+};
+
+// texts: field → { name, description, values: { <AllowValues value>: label } }
+// → { 'config.<field>.name', 'config.<field>.description', 'config.<field>.values.<value>' }
+export function configKeys(schema, texts, lang) {
+  const keys = {};
+  if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts must cover exactly the ConfigSchema fields`);
+  for (const [field, def] of Object.entries(schema)) {
+    const t = texts[field];
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    if (!t.name?.trim() || !t.description?.trim()) throw new Error(`${lang} config ${field}: name or description missing`);
+    if (Object.keys(t.values).sort().join() !== [...values].sort().join()) throw new Error(`${lang} config ${field}: labels must cover exactly ${values.join(', ')}`);
+    keys[`config.${field}.name`] = t.name;
+    keys[`config.${field}.description`] = t.description;
+    for (const v of values) {
+      if (!t.values[v]?.trim()) throw new Error(`${lang} config ${field}: label of ${v} missing`);
+      keys[`config.${field}.values.${v}`] = t.values[v];
+    }
+  }
+  return keys;
+}
+
 export default async function () {
   if (!(DEFAULT in FACTORS)) throw new Error(`default ${DEFAULT} is not an allowed value`);
   for (const [id, { name }] of Object.entries(MACHINES)) {
@@ -88,17 +137,21 @@ export default async function () {
       When: { Speed: value }
     });
   }
+  const i18n = configKeys(CONFIG, { Speed: { ...CONFIG_TEXT.Speed, description: CONFIG.Speed.Description } }, 'English');
+  const de = configKeys(CONFIG, CONFIG_DE, 'German');
+  for (const value of Object.keys(FACTORS)) {
+    // every label shows its factor: "1.5" in English, "1,5" in German
+    if (!i18n[`config.Speed.values.${value}`].includes(value)) throw new Error(`English label of ${value} must show the factor`);
+    if (!de[`config.Speed.values.${value}`].includes(value.replace('.', ','))) throw new Error(`German label of ${value} must show the factor`);
+  }
+  for (const [key, text] of Object.entries(de)) if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(text)) throw new Error(`${key}: German config texts use the Du-form`);
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Speed: {
-          AllowValues: Object.keys(FACTORS).join(', '),
-          Default: DEFAULT,
-          Description: 'How much faster kegs, preserves jars, cheese presses and looms work. 1.0 is the normal speed, 2.0 halves the time.'
-        }
-      },
+      ConfigSchema: CONFIG,
       Changes: changes
-    }
+    },
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

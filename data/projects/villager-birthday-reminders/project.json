@@ -44,6 +44,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.4",
+      "file": "VillagerBirthdayReminders-1.4.zip",
+      "changelog": "## Villager Birthday Reminders 1.4\n\nThe setting is now in German too.\n\n- The \"DayBefore\" switch has a readable name and description in the in-game config menu (Generic Mod Config Menu): \"Reminder the day before\" in English, \"Erinnerung am Vortag\" in German. Players with the game set to German see the setting in German; everyone else keeps the English one.\n- Same letters, same gift ideas, same dates; your setting carries over and nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }
