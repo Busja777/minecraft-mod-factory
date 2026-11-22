@@ -1,0 +1,36 @@
+{
+  "name": "Numbered Hotbar Slots",
+  "summary": "Shows a small number on every hotbar slot, so you always know which key picks which slot.",
+  "class": "Resource Packs",
+  "category": "16x",
+  "logoPrompt": "A chunky stone-grey hotbar slot frame seen from the front, holding a small golden key, with a tiny glowing white pixel marker in its top-left corner",
+  "cover": {
+    "tagline": "Know your hotbar keys at a glance.",
+    "bullets": [
+      "Digits 1 to 9 on every slot",
+      "Vanilla look, pixel-exact",
+      "Items stay fully visible"
+    ]
+  },
+  "description": [
+    "**Numbered Hotbar Slots puts a small digit from 1 to 9 into the corner of each hotbar slot, so you can see which number key picks which slot.**",
+    "",
+    "## Features",
+    "- Every hotbar slot shows its number in the top-left corner, in light grey with a dark shadow like the game's own text.",
+    "- The digits are tiny and pixel-exact, so the hotbar keeps its vanilla look.",
+    "- Items are drawn on top of the numbers, so no icon, stack count or durability bar is ever covered.",
+    "- The selection frame is untouched, and the number stays visible inside it.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs. Press the number keys and watch the frame jump to the matching slot.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only replaces the hotbar texture, so you can add or remove it at any time.",
+    "- An item that fills the corner of its slot hides part of the number; empty slots always show it.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

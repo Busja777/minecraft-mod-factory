@@ -1,0 +1,36 @@
+{
+  "name": "Fresh Splashes",
+  "summary": "Swaps the yellow title screen splash texts for hundreds of new, original lines about mining, mobs, farming and life in a blocky world.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A bright yellow speech bubble made of glowing blocks, tilted at an angle and bursting with small sparkles, floating above a single grass block",
+  "cover": {
+    "tagline": "Hundreds of new title screen splashes.",
+    "bullets": [
+      "Hundreds of original lines",
+      "Mobs, mining, farms and more",
+      "Short and family-friendly"
+    ]
+  },
+  "description": [
+    "**Fresh Splashes gives the title screen hundreds of new yellow splash texts, so the line next to the logo surprises you again.**",
+    "",
+    "## Features",
+    "- Replaces the vanilla splash list with a long list of new lines written for this pack.",
+    "- Covers mining, farming, animals, monsters, villages, the Nether, the End, redstone and building.",
+    "- Every line is short enough to read at a glance and suits players of all ages.",
+    "- The special date splashes of the game still show up on their days.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game and turn it on under Options > Resource Packs. A new splash is picked each time the game starts or you return to the title screen from a world.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only changes one text file, so you can add or remove it at any time.",
+    "- Each player sees the splashes of their own resource packs.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Have an idea for a splash? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

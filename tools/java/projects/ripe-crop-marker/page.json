@@ -1,0 +1,36 @@
+{
+  "name": "Ripe Crop Marker",
+  "summary": "Puts a tiny sparkle on top of every fully grown crop, so you can spot what is ready to harvest from across the field.",
+  "class": "Resource Packs",
+  "category": "16x",
+  "logoPrompt": "A single ripe golden wheat stalk on a small block of tilled farmland with a bright four-pointed pixel sparkle at its tip",
+  "cover": {
+    "tagline": "See which crops are ready at a glance.",
+    "bullets": [
+      "Sparkle on ripe crops only",
+      "Wheat, carrots, potatoes",
+      "Beetroots and nether wart"
+    ]
+  },
+  "description": [
+    "**Ripe Crop Marker adds a small sparkle to the top of every fully grown crop, so you can tell at a glance which plants are ready to harvest.**",
+    "",
+    "## Features",
+    "- Wheat, carrots, potatoes, beetroots and nether wart show a five-pixel sparkle once they reach their last growth stage.",
+    "- Every earlier stage looks exactly like vanilla, so a half-grown field never shows a false sparkle.",
+    "- The sparkle is the same warm white and gold on every crop and lighter than any leaf or ear, so it stands out on grass, soil and soul sand.",
+    "- It is drawn onto the vanilla textures, pixel for pixel, and keeps the vanilla look.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs. Walk along your farm and harvest the plants that sparkle.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only replaces five crop textures, so you can add or remove it at any time.",
+    "- Items, seeds, growth speed and drops stay vanilla.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Missing a crop or want a different marker? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

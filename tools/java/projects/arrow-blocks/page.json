@@ -1,0 +1,36 @@
+{
+  "name": "Arrow Blocks",
+  "summary": "Adds a clear arrow to hoppers, droppers, dispensers and observers that points where items or the redstone signal come out.",
+  "class": "Resource Packs",
+  "category": "16x",
+  "logoPrompt": "A chunky grey cobblestone dropper block seen from a three-quarter angle, with a bold dark arrow carved into its top face pointing towards its front",
+  "cover": {
+    "tagline": "See which way your redstone blocks face.",
+    "bullets": [
+      "Hoppers point at their spout",
+      "Droppers and dispensers too",
+      "Observers show their output"
+    ]
+  },
+  "description": [
+    "**Arrow Blocks paints a small arrow on hoppers, droppers, dispensers and observers, so you see which way each one pushes items or sends its signal.**",
+    "",
+    "## Features",
+    "- A hopper that feeds sideways shows an arrow on the floor of its bowl, pointing at its spout. A hopper that drops straight down shows a small ring there instead.",
+    "- Droppers and dispensers carry arrows on the top, the bottom and both sides, all pointing towards the front they shoot from.",
+    "- Observers keep their vanilla arrow on top and get matching arrows on both sides, pointing to the back where the signal comes out.",
+    "- The arrows turn with the block, also when it faces up or down.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs. Place the blocks as usual.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. The arrows are drawn onto the vanilla textures in the same grey pixel style.",
+    "- Furnaces stay unchanged, even though droppers and dispensers borrow their stone textures.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

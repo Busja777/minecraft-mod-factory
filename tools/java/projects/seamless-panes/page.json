@@ -1,0 +1,36 @@
+{
+  "name": "Seamless Panes",
+  "summary": "Removes the light frame from glass blocks and panes, so big windows and glass walls look like one clear surface.",
+  "class": "Resource Packs",
+  "category": "16x",
+  "logoPrompt": "A single clear glass window block with no frame, showing only two small white diagonal shine streaks, floating in front of a soft blue sky",
+  "cover": {
+    "tagline": "Glass walls without the grid.",
+    "bullets": [
+      "No frame on glass blocks",
+      "Clear glass pane windows",
+      "Vanilla shine streaks kept"
+    ]
+  },
+  "description": [
+    "**Seamless Panes takes the frame off plain glass, so a wall or window of glass shows the view instead of a grid of squares.**",
+    "",
+    "## Features",
+    "- Glass blocks and the faces of glass panes lose the light one-pixel frame around every square.",
+    "- The two small diagonal shine streaks stay, so you can still tell where the glass is.",
+    "- Made from the vanilla glass texture, pixel for pixel.",
+    "- The thin edge of a glass pane keeps its vanilla look, and stained and tinted glass stay untouched.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs. Look through any glass window or wall.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only replaces the glass texture, so you can add or remove it at any time.",
+    "- There are no connected textures: a single glass block loses its frame too, and the glass item and pane item icons only show the shine. The beacon's glass shell uses the same texture.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Want another kind of glass without frames? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
