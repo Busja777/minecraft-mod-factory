@@ -5,6 +5,11 @@
 // chests, bug meat) stay exactly as rare as in vanilla. Legendary fish are not touched.
 // 1.0: 23 river and ocean fish whose only vanilla produce is roe. 1.1: 7 more fish (Catfish,
 // Sunfish, Rainbow Trout, Spook Fish, Dorado, Lingcod, Pike). 1.2: config option "Boost".
+// 1.3: the config menu shows a readable name, description and value labels, in English
+// (i18n/default.json) and German (i18n/de.json, texts in de.js). Content Patcher reads the keys
+// config.<field>.name, config.<field>.description and config.<field>.values.<value> itself
+// (author-guide/config.md, "Translations"); the ConfigSchema Description stays as it is and is the
+// English description. Nothing else changes.
 //
 // How it works (Stardew Valley 1.6, documented on the wiki, not run in the game):
 // - Data/FishPondData is a list of entries { Id, RequiredTags, Precedence, SpawnTime,
@@ -82,6 +87,8 @@
 // object with a text ID that is not in that list; it is only matched by its name tag (item_goby,
 // Goby page "Fish Pond": 4 days, same quests as the other river fish, "The only possible output is
 // orange Goby Roe").
+
+import { DE } from './de.js';
 
 // Quest groups: wiki "Population Quest Occurs at" → items as [name, min, max?] (min 1 = one item).
 export const QUESTS = {
@@ -220,6 +227,35 @@ export const PRODUCE = LEVELS[DEFAULT];
 export const PRECEDENCE = -10;
 export const BASE_CHANCE = { min: 0.15, max: 0.95 };
 
+// 1.3: English config texts (the description is the ConfigSchema Description); German in de.js.
+export const CONFIG_EN = {
+  Boost: { name: 'Roe boost', values: { Gentle: 'Gentle', Normal: 'Normal', Generous: 'Generous' } }
+};
+
+// Config menu texts (Content Patcher author-guide/config.md, "Translations"): for every field
+// config.<field>.name, config.<field>.description and config.<field>.values.<value>, in
+// i18n/default.json (English, the description is the ConfigSchema Description itself) and
+// i18n/de.json. Every field and value needs its text in both languages, and every number of the
+// English description must be in the German one too (decimal comma).
+export function configI18n(schema, en, de) {
+  const files = { 'i18n/default.json': {}, 'i18n/de.json': {} };
+  for (const [lang, texts] of [['en', en], ['de', de]]) {
+    if (Object.keys(texts).sort().join() !== Object.keys(schema).sort().join()) throw new Error(`${lang}: config texts for ${Object.keys(texts).join(', ')}, settings are ${Object.keys(schema).join(', ')}`);
+  }
+  for (const [field, def] of Object.entries(schema)) {
+    const values = def.AllowValues.split(',').map(v => v.trim());
+    for (const [file, texts, description] of [['i18n/default.json', en[field], def.Description], ['i18n/de.json', de[field], de[field].description]]) {
+      if (!texts.name || !description) throw new Error(`${file}: ${field} needs a name and a description`);
+      if (Object.keys(texts.values || {}).sort().join() !== [...values].sort().join()) throw new Error(`${file}: ${field} needs a label for each of ${values.join(', ')}`);
+      files[file][`config.${field}.name`] = texts.name;
+      files[file][`config.${field}.description`] = description;
+      for (const v of values) files[file][`config.${field}.values.${v}`] = texts.values[v];
+    }
+    for (const n of def.Description.match(/\d+(\.\d+)?/g) || []) if (!de[field].description.includes(n.replace('.', ','))) throw new Error(`de.js: ${field}: the German description lacks ${n}`);
+  }
+  return files;
+}
+
 export const tagOf = name => `item_${name.trim().toLowerCase().replace(/'/g, '').replace(/\s+/g, '_')}`;
 const keyOf = name => name.replace(/[^A-Za-z]/g, '');
 
@@ -338,17 +374,19 @@ export default async function ({ items }) {
       When: { Boost: level }
     });
   }
+  const schema = {
+    Boost: {
+      AllowValues: Object.keys(LEVELS).join(', '),
+      Default: DEFAULT,
+      Description: 'How much extra roe the fish ponds give. Normal is the boost of earlier versions, Gentle gives a little less, Generous a little more. Special finds, quests and the daily chance to produce stay as in the normal game.'
+    }
+  };
   return {
     'content.json': {
       Format: '2.9.0',
-      ConfigSchema: {
-        Boost: {
-          AllowValues: Object.keys(LEVELS).join(', '),
-          Default: DEFAULT,
-          Description: 'How much extra roe the fish ponds give. Normal is the boost of earlier versions, Gentle gives a little less, Generous a little more. Special finds, quests and the daily chance to produce stay as in the normal game.'
-        }
-      },
+      ConfigSchema: schema,
       Changes: changes
-    }
+    },
+    ...configI18n(schema, CONFIG_EN, DE)
   };
 }
