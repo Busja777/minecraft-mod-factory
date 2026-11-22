@@ -1,0 +1,32 @@
+{
+  "name": "Gather Tally",
+  "summary": "Keeps count of the herbs and ores you pick up while farming and tells you how many you get per hour.",
+  "category": "Professions",
+  "logoPrompt": "A small woven basket filled with green leafy herbs and a few chunks of copper and silver ore, with a little wooden tally board leaning against its side",
+  "cover": {
+    "tagline": "See what a gathering run brings in.",
+    "bullets": ["Herbs and ores this session", "Per hour for each kind", "Your most gathered items"]
+  },
+  "description": [
+    "**Gather Tally counts the herbs and ores you loot while you farm, so you see at a glance how well a route pays off.**",
+    "",
+    "## Features",
+    "- Counts every herb and ore you loot this session, item by item.",
+    "- Herbs per hour and ores per hour, measured from the first item you gather.",
+    "- A small display that appears with your first herb or ore. Mouse over it to see your most gathered items.",
+    "- A short summary in chat whenever you want it.",
+    "",
+    "## How to use",
+    "It starts on its own when you log in. Drag the display where you like it. Type `/gt` (or `/gathertally`) for the session in chat, `/gt reset` to start a new session, `/gt hide` and `/gt show` to hide or show the display.",
+    "",
+    "## Good to know",
+    "- Works on Retail. It reads the loot window only, autoloot included, and no combat data.",
+    "- Every herb and ore you loot counts, mostly from gathering nodes.",
+    "- The per-hour rate appears after 5 minutes, so a single early node does not show a wild number.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

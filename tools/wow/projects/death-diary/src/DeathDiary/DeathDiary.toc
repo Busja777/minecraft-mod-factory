@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Death Diary
+## Notes: Notes where and at which level you died, grouped by zone and level.
+## Version: @version@
+## SavedVariables: DeathDiaryDB
+## IconTexture: Interface\Icons\INV_Misc_Bone_HumanSkull_01
+
+Locale.lua
+Core.lua
+Diary.lua
+UI.lua
+Commands.lua

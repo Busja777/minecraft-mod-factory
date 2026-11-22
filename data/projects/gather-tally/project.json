@@ -1,0 +1,18 @@
+{
+  "slug": "gather-tally",
+  "game": "wow",
+  "name": "Gather Tally",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "GatherTally-1.0.zip",
+      "changelog": "## Gather Tally 1.0\n\nFirst release.\n\n- Counts every herb and ore you loot this session, from the loot window (autoloot included).\n- Shows herbs and ores per hour, measured from the first herb or ore of the session. The rate appears after 5 minutes.\n- Lists the items you gathered most, with their counts.\n- Small display that appears with your first herb or ore. Drag it anywhere, its position is remembered. Mouse over it to see the top items.\n- `/gt` (or `/gathertally`) prints the session in chat, `/gt reset` starts a new session, `/gt hide` and `/gt show` hide or show the display.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

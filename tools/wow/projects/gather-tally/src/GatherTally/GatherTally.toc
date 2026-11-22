@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Gather Tally
+## Notes: Counts the herbs and ores you gather this session and per hour.
+## Version: @version@
+## SavedVariables: GatherTallyDB
+## IconTexture: Interface\Icons\INV_Misc_Herb_07
+
+Locale.lua
+Core.lua
+Tally.lua
+UI.lua
+Commands.lua
