@@ -66,6 +66,15 @@ export function planAccounts({ accounts, dateKey, windowName, salt = '', start, 
   });
 }
 
+// Second check right before the upload of a leg (after it holds the account's concurrency lock):
+// did another run of today already finish this account's update? Two triggers close together (the
+// external timer and the GitHub cron) can both pass the gate, because the first run's update job
+// only exists once its gate is done. Only finished successes count; a run queued behind this one
+// must not make it stand down. legacy: the account of the old single job named "update".
+export function updateDoneToday(jobs, account, { legacy = null } = {}) {
+  return jobs.some(j => (j.name === `update-${account}` || (account === legacy && j.name === 'update')) && j.conclusion === 'success');
+}
+
 // UTC ISO string of local midnight (start of the local day that contains `now`).
 export function localMidnightUtcIso(now, timeZone) {
   const p = localParts(now, timeZone);

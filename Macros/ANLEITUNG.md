@@ -161,6 +161,7 @@ Du kannst Projekte auch auf Vorrat anlegen, zum Beispiel sieben am Sonntag. Hoch
 | „Das CurseForge-Fenster ist schon offen“ | Das alte Fenster schließen und neu starten. |
 | Ausgeloggt / Google: „Anmeldung nicht möglich“ | Helfer-Fenster mit ⌘Q beenden, `npm run cf -- login`, im normalen Chrome einloggen, ⌘Q. |
 | Keine offenen Aufgaben, obwohl ein Issue da ist | Der Abend-Workflow hat die Version vielleicht noch nicht freigegeben. Gezielt geht es mit `npm run cf -- update --skinpack <slug> --version 1.3`. |
+| Abends geht kein Update raus | Den Abend-Lauf startet der Wecker bei cron-job.org (`ANLEITUNG-wecker.md`). Dort nach Fehlern schauen (meist ist der Schlüssel abgelaufen: 401). Ein Update von Hand: `gh workflow run evening.yml -f force=true -f modId=<slug>`. |
 | `git pull` meldet Fehler | Das Tool arbeitet mit dem lokalen Stand weiter. Den Fehler später in Ruhe klären oder Claude fragen. |
 
 ---

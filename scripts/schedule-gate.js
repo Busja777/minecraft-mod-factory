@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { localParts, parseHHMM, formatMinutes, slotFor, decide, planAccounts, localMidnightUtcIso } from './lib/schedule.js';
+import { localParts, parseHHMM, formatMinutes, slotFor, decide, planAccounts, localMidnightUtcIso, updateDoneToday } from './lib/schedule.js';
 import { loadProjects, findProject } from './lib/cf-projects.js';
 import { activeAccounts, accountOf, gameOf, gameKeyOf } from './lib/games.js';
 import { setOutputs, arg, flag } from './lib/github-output.js';
@@ -7,6 +7,9 @@ import { setOutputs, arg, flag } from './lib/github-output.js';
 // Gate for the scheduled workflows. Decides whether this 30-minute cron fire is "the one" today.
 // node scripts/schedule-gate.js --window morning|evening [--job <heavyJobName>] [--dry-run]
 // node scripts/schedule-gate.js --window evening --per-account
+// node scripts/schedule-gate.js --window evening --recheck <account>
+//   Inside a leg, right before the upload: writes done=true when another run already finished this
+//   account's update today (see updateDoneToday).
 //   One leg per CurseForge account (config.games.<key>.account) that owns a published project: every
 //   account draws its own slot and gets at most one update per day. Never sleeps; writes the legs
 //   that start in this fire as `matrix` ([{ account, tokenEnv, sleep }], sleep in minutes) and `any`.
@@ -18,6 +21,7 @@ const windowName = arg(argv, '--window');
 if (!windowName) throw new Error('Usage: node scripts/schedule-gate.js --window morning|evening');
 const dryRun = flag(argv, '--dry-run');
 const perAccount = flag(argv, '--per-account');
+const recheck = arg(argv, '--recheck');
 
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 const timeZone = config.timezone || 'Europe/Berlin';
@@ -31,7 +35,7 @@ const local = localParts(now, timeZone);
 const repo = process.env.GITHUB_REPOSITORY || 'local';
 const slot = slotFor({ dateKey: local.dateKey, windowName, salt: repo, start, end });
 
-if (!perAccount) console.log(`Gate ${windowName}: local ${local.dateKey} ${formatMinutes(local.minutesOfDay)} (${timeZone}), window ${win[0]}-${win[1]}, today's slot ${formatMinutes(slot)}`);
+if (!perAccount && !recheck) console.log(`Gate ${windowName}: local ${local.dateKey} ${formatMinutes(local.minutesOfDay)} (${timeZone}), window ${win[0]}-${win[1]}, today's slot ${formatMinutes(slot)}`);
 
 if (perAccount) console.log(`Gate ${windowName}, one leg per account: local ${local.dateKey} ${formatMinutes(local.minutesOfDay)} (${timeZone}), window ${win[0]}-${win[1]}`);
 
@@ -54,6 +58,14 @@ async function jobsToday() {
     if (jr.ok) all.push(...((await jr.json()).jobs || []));
   }
   return all;
+}
+
+if (recheck) {
+  const legacy = config.games?.bedrock ? gameOf(config, 'bedrock').account : null;
+  const done = updateDoneToday(await jobsToday(), recheck, { legacy });
+  console.log(done ? `${recheck}: another run already finished today's update — standing down` : `${recheck}: no finished update today — go ahead`);
+  setOutputs({ done: String(done) });
+  process.exit(0);
 }
 
 if (perAccount) {
