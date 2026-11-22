@@ -1,0 +1,18 @@
+{
+  "slug": "fishing-log",
+  "game": "wow",
+  "name": "Fishing Log",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FishingLog-1.0.zip",
+      "changelog": "## Fishing Log 1.0\n\nFirst release.\n\n- Counts every catch: each loot window from fishing is one catch, together with the number of items in it.\n- Keeps your catches per zone, for the current session and for all time.\n- Shows your catches per hour for the session, once you have two catches and five minutes of fishing.\n- Type `/fl` (or `/fishinglog`) for the session in chat, `/fl zones` for all your catches per zone, `/fl reset` to start a new session.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
