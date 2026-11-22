@@ -1,0 +1,37 @@
+{
+  "name": "Grandpa's Letters",
+  "summary": "Warm notes from Grandpa find their way to your mailbox during your first year, each with a kind word for the season ahead.",
+  "class": "Mods",
+  "category": "Events",
+  "logoPrompt": "An old cream-colored envelope with slightly worn edges, sealed with a red wax seal shaped like an acorn",
+  "cover": {
+    "tagline": "A little company through your first year.",
+    "bullets": [
+      "Five letters in year one",
+      "Gentle tips for each season",
+      "Small keepsakes to plant"
+    ]
+  },
+  "description": [
+    "**Grandpa's Letters sends you short, warm letters from Grandpa through your first year on the farm.**",
+    "",
+    "## Features",
+    "- Five letters: early spring, the first day of summer, fall and winter, and the last day of the year.",
+    "- Each one has a gentle tip for the season ahead, from watering to planning the last harvest.",
+    "- The seasonal letters hold a tiny keepsake to plant, like an acorn or a maple seed.",
+    "- Written to fit Grandpa's own story in the game, without changing or spoiling it.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Start a new farm, or keep playing one in its first year, and check your mailbox.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. It only adds letters: no new items, no changes to events.",
+    "- Letters only come in year one; dates that have already passed are skipped.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo and banner are AI-generated.)*"
+  ]
+}
