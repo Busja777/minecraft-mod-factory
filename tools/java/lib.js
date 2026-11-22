@@ -9,6 +9,8 @@ import { registry, itemTagExists, packFormat } from './vanilla.js';
 // Layout: tools/java/projects/<slug>/
 //   pack.json      { kind: 'data' | 'resource', name, description, mc: '1.21.1', gameVersions: ['1.21', '1.21.1'] }
 //                  optional "also": ['26.3'] — more Minecraft versions the same zip serves (see buildZip)
+//                  with "also": "alsoLoads": { '1.21.1': ['1.21.2', …], '26.3': [ … ], broken: [ … ] } — every
+//                  release between them and which file set it reads (see planTiers)
 //                  or { kind: 'mod', name, description, mc, modId, gameVersions: ['1.21.1', 'Fabric', 'Java 21', 'Server', 'Client'] }
 //   pack.js        export default async ({ vanilla, version, format }) => ({ 'data/<ns>/recipe/x.json': {…}, … })
 //                  It is called once per Minecraft version; `format` is that version's pack format, so
@@ -21,9 +23,19 @@ import { registry, itemTagExists, packFormat } from './vanilla.js';
 export const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const PROJECTS = path.join(HERE, 'projects');
 
-// pack_format per Minecraft version (data, resource). Source: the version.json inside the jars.
-// Versions that are not listed here are read from the downloaded jar (vanilla.js → packFormat).
-export const PACK_FORMAT = { '1.21.1': { data: 48, resource: 34 }, '26.3': { data: 121, resource: 97 } };
+// Pack format (major) of every Minecraft release from 1.21 on (data, resource). Source: the
+// version.json inside the jars. Versions that are not listed here (snapshots, newer releases) are
+// read from the downloaded jar (vanilla.js → packFormat). A new release belongs in this list: the
+// releases in it are the ones a zip's declared range is checked against (planTiers).
+export const PACK_FORMAT = {
+  '1.21': { data: 48, resource: 34 }, '1.21.1': { data: 48, resource: 34 },
+  '1.21.2': { data: 57, resource: 42 }, '1.21.3': { data: 57, resource: 42 }, '1.21.4': { data: 61, resource: 46 },
+  '1.21.5': { data: 71, resource: 55 }, '1.21.6': { data: 80, resource: 63 }, '1.21.7': { data: 81, resource: 64 }, '1.21.8': { data: 81, resource: 64 },
+  '1.21.9': { data: 88, resource: 69 }, '1.21.10': { data: 88, resource: 69 }, '1.21.11': { data: 94, resource: 75 },
+  '26.1': { data: 101, resource: 84 }, '26.1.1': { data: 101, resource: 84 }, '26.1.2': { data: 101, resource: 84 },
+  '26.2': { data: 107, resource: 88 }, '26.3': { data: 121, resource: 97 }
+};
+export const RELEASES = Object.keys(PACK_FORMAT);
 export const formatOf = (mc, kind) => PACK_FORMAT[mc]?.[kind] ?? packFormat(mc, kind)[0];
 // From these formats on (Minecraft 1.21.9) pack.mcmeta declares min_format / max_format instead of pack_format.
 export const RANGE_FORMAT = { data: 82, resource: 65 };
@@ -51,6 +63,8 @@ export function packOf(slug, root = PROJECTS) {
   if (!KINDS.includes(meta.kind)) throw new Error(`${slug}: kind must be data, resource or mod`);
   if (!/^\d+\.\d+/.test(meta.mc || '')) throw new Error(`${slug}: "mc" must be a Minecraft version`);
   if (meta.also && (meta.kind === 'mod' || !Array.isArray(meta.also) || meta.also.some(v => !/^\d+\.\d+/.test(v)))) throw new Error(`${slug}: "also" is a list of Minecraft versions (packs only)`);
+  const lists = meta.alsoLoads && typeof meta.alsoLoads === 'object' && !Array.isArray(meta.alsoLoads) ? Object.values(meta.alsoLoads) : null;
+  if (meta.alsoLoads && (meta.kind === 'mod' || !lists || lists.some(l => !Array.isArray(l) || l.some(v => !/^\d+\.\d+/.test(v))))) throw new Error(`${slug}: "alsoLoads" maps a version of the pack (or "broken") to a list of Minecraft versions (packs only)`);
   if (meta.kind === 'mod' && !/^[a-z][a-z0-9_]{1,63}$/.test(meta.modId || '')) throw new Error(`${slug}: a mod needs a modId (lowercase letters, digits, _)`);
   return { slug, dir, ...meta };
 }
@@ -83,7 +97,10 @@ function collect(value, keys, found = []) {
 }
 
 // Checks a generated pack against the vanilla data of its version. → [problem texts]
-export function checkPack(pack, files, vanilla) {
+// foreign: the files were written for another version and this one only reads them (pack.alsoLoads).
+// A sound event this version does not have is then left alone: nothing in it plays the event, the
+// game only notes the missing files in its log.
+export function checkPack(pack, files, vanilla, { foreign = false } = {}) {
   const problems = [];
   const items = registry(vanilla, 'item');
   const blocks = registry(vanilla, 'block');
@@ -136,6 +153,7 @@ export function checkPack(pack, files, vanilla) {
   if (sounds) {
     const index = JSON.parse(fs.readFileSync(path.join(vanilla.dir, 'asset-index.json'), 'utf-8')).objects;
     for (const [event, def] of Object.entries(sounds)) {
+      if (foreign && !soundEvents.has(event)) continue;
       if (!soundEvents.has(event)) problems.push(`sounds.json: unknown sound event ${event}`);
       for (const s of def.sounds || []) {
         const name = typeof s === 'string' ? s : s.name;
@@ -158,9 +176,20 @@ export const jarName = (pack, version) => `${pack.name.replace(/[^A-Za-z0-9]+/g,
 //   one new format:    min_format / max_format
 //   old and new:       both spellings (the old game reads pack_format / supported_formats /
 //                      formats, the new one min_format / max_format)
-// The game refuses "formats" on an overlay that starts at format 82 or later, and the old game
-// needs it on every overlay. So a pack that still serves a version before 1.21.9 can only have
-// overlays for those old versions: all newer versions share the root.
+// What the game accepts (tried with hand-made packs on 1.21.5, 1.21.11, 26.1, 26.2 and 26.3, and
+// with the game's own Pack.readPackMetadata of 26.1 to 26.3):
+// - Before 1.21.9 the game reads pack_format and supported_formats and ignores min/max_format.
+// - From 1.21.9 on, a pack whose min_format is below 82 must have pack_format and supported_formats,
+//   and supported_formats must end where max_format ends ("declaration mismatch" otherwise); a pack
+//   from 82 on must not have supported_formats, and pack_format must lie inside min..max_format.
+//   Otherwise the game cannot read the metadata. So both spellings always declare the same single
+//   range: a zip for 1.21.1 and 26.3 declares 48–121, every version in between included.
+// - A whole number in max_format means every minor format of it (121 covers 121.x).
+// - The game refuses "formats" on an overlay that starts at format 82 or later, and every overlay
+//   needs it while the pack serves a version before 1.21.9. So such a pack can only have overlays
+//   that start before format 82; they may reach past it.
+// - The game's headless test server loads every pack it is given, whatever range it declares: the
+//   load test checks the files, not the range.
 export function mcmeta({ kind, description, min, max, overlays = [] }) {
   const limit = RANGE_FORMAT[kind];
   const old = min < limit;
@@ -179,23 +208,72 @@ export function mcmeta({ kind, description, min, max, overlays = [] }) {
 
 export const overlayDir = mc => `mc_${releaseName(mc).replace(/[^a-z0-9]+/gi, '_').toLowerCase()}`;
 
+// Which files every Minecraft release inside a zip's range reads. Because the zip has to declare
+// one range from its oldest to its newest version (see mcmeta), each release in between accepts it
+// too, so pack.json accounts for every one of them in "alsoLoads":
+//   { "<one of the pack's own versions>": [releases that read its files], "broken": [releases] }
+// A release goes under the file set it was checked with (the game's load test where the version has
+// one, otherwise the vanilla checks); "broken" holds releases on which no file set works yet (the
+// build names them every time). Releases with the same format as one of the pack's own versions
+// read what that version reads and need no entry. The newest version's files lie in the root;
+// every older file set gets an overlay from its own format up to the newest release listed under it.
+// mcs: the pack's own versions. → { tiers: [{ mc, format, to, loads: [{ mc, format }] }] ascending, broken: [{ mc, format }] }
+export function planTiers(pack, mcs = versionsOf(pack)) {
+  const tiers = mcs.map(mc => ({ mc, format: formatOf(mc, pack.kind), loads: [] })).sort((a, b) => a.format - b.format);
+  const [min, max] = [tiers[0].format, tiers.at(-1).format];
+  const root = tiers.at(-1);
+  const seen = new Set(mcs);
+  const broken = [];
+  for (const [key, list] of Object.entries(pack.alsoLoads || {})) {
+    const tier = tiers.find(t => t.mc === key);
+    if (!tier && key !== 'broken') throw new Error(`${pack.slug}: alsoLoads "${key}" is not one of the versions the zip is built for (${mcs.join(', ')})`);
+    for (const mc of list) {
+      if (seen.has(mc)) throw new Error(`${pack.slug}: Minecraft ${mc} is listed twice (alsoLoads, mc, also)`);
+      seen.add(mc);
+      const format = formatOf(mc, pack.kind);
+      if (format < min || format > max) throw new Error(`${pack.slug}: Minecraft ${mc} (format ${format}) lies outside the range of the zip (${min}–${max})`);
+      (tier ? tier.loads : broken).push({ mc, format });
+    }
+  }
+  tiers.forEach((t, i) => {
+    t.to = t === root ? max : Math.max(t.format, ...t.loads.map(l => l.format));
+    if (t === root) return;
+    const early = t.loads.find(l => l.format < t.format);
+    if (early) throw new Error(`${pack.slug}: Minecraft ${early.mc} (format ${early.format}) is older than ${t.mc} and cannot read its overlay`);
+    if (t.to >= tiers[i + 1].format) throw new Error(`${pack.slug}: the files of ${t.mc} would reach up to format ${t.to}, past ${tiers[i + 1].mc} (format ${tiers[i + 1].format})`);
+  });
+  const reads = format => tiers.find(t => t !== root && format >= t.format && format <= t.to) || root;
+  for (const t of tiers) for (const l of t.loads) {
+    if (reads(l.format) !== t) throw new Error(`${pack.slug}: Minecraft ${l.mc} (format ${l.format}) would read the files of ${reads(l.format).mc}, not those of ${t.mc}`);
+  }
+  const formats = new Set(tiers.map(t => t.format));
+  const missing = RELEASES.filter(r => !seen.has(r) && !formats.has(PACK_FORMAT[r][pack.kind]) && PACK_FORMAT[r][pack.kind] >= min && PACK_FORMAT[r][pack.kind] <= max);
+  if (missing.length) throw new Error(`${pack.slug}: the zip declares formats ${min}–${max}, so Minecraft ${missing.join(', ')} accept it too. Check which files work there and list them in pack.json "alsoLoads" (or under "broken")`);
+  return { tiers, broken };
+}
+
+// The releases a pack serves besides its own versions: [{ mc, tier }] (tier: the version whose files it reads).
+export const loadsOf = pack => planTiers(pack).tiers.flatMap(t => t.loads.map(l => ({ mc: l.mc, tier: t.mc })));
+
 // files: the pack for its base version (pack.mc). more: [{ mc, files }] for the newer versions in
 // pack.also. The newest version's files go into the root; each older version gets an overlay
-// folder with the files it needs in its own spelling. Files that are the same everywhere are
-// stored once. With one version the zip is what it always was.
+// folder with the files it needs in its own spelling, for its own format and the releases
+// pack.alsoLoads puts under it (planTiers). Files that are the same everywhere are stored once.
+// With one version the zip is what it always was.
 export async function buildZip(pack, files, version, outDir, more = []) {
   if (!/^\d+\.\d+(\.\d+)?$/.test(version)) throw new Error(`Invalid version "${version}"`);
   const zip = new AdmZip();
   const tiers = [{ mc: pack.mc, files }, ...more].map(t => ({ ...t, format: formatOf(t.mc, pack.kind), directory: overlayDir(t.mc) })).sort((a, b) => a.format - b.format);
   if (tiers[0].mc !== pack.mc) throw new Error(`${pack.slug}: "also" lists a version older than the base version ${pack.mc}`);
+  const plan = planTiers(pack, tiers.map(t => t.mc)).tiers;
   const root = tiers.at(-1);
   const overlays = tiers.slice(0, -1).map(t => {
     const extra = Object.keys(root.files).filter(p => !(p in t.files));
     if (extra.length) throw new Error(`${pack.slug}: ${extra.slice(0, 3).join(', ')} only exist for ${root.mc}; Minecraft ${t.mc} would read them too (an overlay can replace files, not hide them)`);
     const own = Object.keys(t.files).filter(p => !root.files[p] || !root.files[p].equals(t.files[p]));
-    // The overlay covers exactly the format it was checked against. Versions in between (and newer
-    // ones) read the root, the newest spelling, which is what later versions are most likely to accept.
-    return { ...t, to: t.format, files: Object.fromEntries(own.map(p => [p, t.files[p]])) };
+    // The overlay covers the format it was built for and the releases alsoLoads puts under it;
+    // every other version reads the root.
+    return { ...t, to: plan.find(p => p.mc === t.mc).to, files: Object.fromEntries(own.map(p => [p, t.files[p]])) };
   }).filter(o => Object.keys(o.files).length);   // a version that reads everything like the root needs no folder
   const meta = mcmeta({ kind: pack.kind, description: `${pack.description} (v${version})`, min: tiers[0].format, max: root.format, overlays });
   zip.addFile('pack.mcmeta', Buffer.from(JSON.stringify(meta, null, 2) + '\n'));

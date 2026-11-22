@@ -57,7 +57,7 @@ async function tryPack(pack, version, vanilla) {
   const problems = checkPack(pack, files, vanilla);
   let loaded = false;
   if (!problems.length && pack.kind === 'data' && supportsLoadTest(version)) {
-    const zip = await buildZip({ ...pack, mc: version, also: undefined }, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'radar-')));
+    const zip = await buildZip({ ...pack, mc: version, also: undefined, alsoLoads: undefined }, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'radar-')));
     const r = loadTest(version, [zip]);
     loaded = true;
     for (const e of r.errors) problems.push([e.registry, e.element, e.message].filter(Boolean).join(' · '));

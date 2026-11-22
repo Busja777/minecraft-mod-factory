@@ -3,7 +3,7 @@
 //
 //   npm run java -- bau <slug> --version 1.0     → Output/serie/java/<slug>/<Name>-1.0.zip (mod: .jar)
 //   npm run java -- test [<slug>]                → generate and check only (mod: JUnit tests and game tests)
-//   options: --out <folder>
+//   options: --out <folder>, --zwischen (also check the releases in between, see below)
 //
 // Mods are built by the shared Gradle build in tools/java/fabric/ (Gradle 8.8, Loom, Java 21).
 //
@@ -13,12 +13,17 @@
 // A pack can serve more Minecraft versions in the same zip ("also" in pack.json). It is generated
 // and checked once per version; where the game ships its headless test entry point (1.21.5 and
 // newer, tools/java/loadtest.js) the finished data pack is also loaded by the game itself.
+// Such a zip declares every release between its versions too (the game allows only one range), so
+// pack.json says which files each release in between reads ("alsoLoads", see planTiers in lib.js).
+// That list is always validated and always decides the overlay ranges; with --zwischen each listed
+// release is also checked with the files it reads and loaded by the game (downloads its vanilla
+// data once). Without it nothing beyond the pack's own versions is downloaded or started.
 // Minecraft 26.x needs Java 25 (brew install openjdk@25 or newer).
 import AdmZip from 'adm-zip';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { HERE, listPacks, packOf, generate, checkPack, buildZip, isMod, jarName, versionsOf } from './lib.js';
+import { HERE, listPacks, packOf, generate, checkPack, buildZip, isMod, jarName, versionsOf, planTiers, loadsOf } from './lib.js';
 import { ensureVanilla } from './vanilla.js';
 import { supportsLoadTest, loadTest } from './loadtest.js';
 import { FABRIC, gradle, builtJar, hasGameTests } from './fabric/gradle.js';
@@ -26,6 +31,7 @@ import { FABRIC, gradle, builtJar, hasGameTests } from './fabric/gradle.js';
 const args = process.argv.slice(2);
 const [cmd, slugArg] = args;
 const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : def; };
+const zwischen = args.includes('--zwischen');
 const fail = msg => { console.error(`✗ ${msg}`); process.exit(1); };
 
 const list = (slug, problems) => `${slug}: ${problems.slice(0, 25).join(`\n✗ ${slug}: `)}${problems.length > 25 ? `\n✗ … and ${problems.length - 25} more` : ''}`;
@@ -42,18 +48,33 @@ async function check(slug) {
     built.push({ mc, files });
   }
   console.log(`${slug}: ${Object.keys(built[0].files).length} files, checked against Minecraft ${versionsOf(pack).join(', ')}`);
+  // The releases in between read the files of one of those versions: checked with exactly those (--zwischen).
+  const loads = zwischen ? loadsOf(pack) : [];
+  for (const { mc, tier } of loads) {
+    const problems = checkPack(pack, built.find(b => b.mc === tier).files, await ensureVanilla(mc), { foreign: true });
+    if (problems.length) fail(list(`${slug} (files of ${tier}, read by Minecraft ${mc})`, problems));
+  }
+  if (loads.length) console.log(`${slug}: also read by Minecraft ${loads.map(l => l.mc).join(', ')}, checked with the files each one reads`);
+  const { broken } = planTiers(pack);   // validates alsoLoads, pure
+  if (broken.length) console.log(`⚠ ${slug}: the zip also claims Minecraft ${broken.map(b => b.mc).join(', ')}, where no file set works yet (alsoLoads.broken)`);
   return { pack, files: built[0].files, more: built.slice(1) };
 }
+
+// The versions the game loads the zip for: its own, with --zwischen also the releases in between
+// (alsoLoads, not the broken ones).
+const servedBy = pack => [...versionsOf(pack), ...(zwischen ? loadsOf(pack).map(l => l.mc) : [])];
 
 // The finished zip, loaded by the game for every version that can do it without a window.
 function loadInGame(pack, zip) {
   if (pack.kind !== 'data') return;
-  for (const mc of versionsOf(pack)) {
-    if (!supportsLoadTest(mc)) continue;
+  const untested = [];
+  for (const mc of servedBy(pack)) {
+    if (!supportsLoadTest(mc)) { untested.push(mc); continue; }
     const r = loadTest(mc, [zip]);
     if (!r.ok) fail(list(`${pack.slug} (loaded by Minecraft ${mc})`, r.errors.map(e => [e.registry, e.element, e.message].filter(Boolean).join(' · '))));
     console.log(`${pack.slug}: loaded by Minecraft ${mc} without errors`);
   }
+  if (zwischen && untested.length) console.log(`${pack.slug}: Minecraft ${untested.join(', ')} have no headless load test, only the vanilla checks`);
 }
 
 // Gradle's output is only shown when it fails (the game test server logs a lot).
@@ -97,7 +118,7 @@ if (cmd === 'test') {
     if (isMod(pack)) testMod(pack);
     else {
       const { files, more } = await check(slug);
-      if (pack.kind === 'data' && versionsOf(pack).some(supportsLoadTest)) loadInGame(pack, await buildZip(pack, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'java-test-')), more));
+      if (pack.kind === 'data' && servedBy(pack).some(supportsLoadTest)) loadInGame(pack, await buildZip(pack, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'java-test-')), more));
     }
   }
 } else if (cmd === 'bau') {
@@ -114,5 +135,5 @@ if (cmd === 'test') {
   }
   console.log(`  Game versions for the stock: ${pack.gameVersions.join(',')}`);
 } else {
-  fail('Aufruf: npm run java -- bau <slug> --version 1.0 | test [<slug>]');
+  fail('Aufruf: npm run java -- bau <slug> --version 1.0 | test [<slug>] (--zwischen)');
 }

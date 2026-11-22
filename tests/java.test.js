@@ -4,7 +4,7 @@ import AdmZip from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { listPacks, packOf, generate, checkPack, buildZip, PACK_FORMAT, isMod, mcmeta, versionsOf, releaseName, formatOf } from '../tools/java/lib.js';
+import { listPacks, packOf, generate, checkPack, buildZip, PACK_FORMAT, RELEASES, isMod, mcmeta, versionsOf, releaseName, formatOf, planTiers } from '../tools/java/lib.js';
 import { versionDir, javaFor } from '../tools/java/vanilla.js';
 import { parseLoadLog, loadTest } from '../tools/java/loadtest.js';
 
@@ -87,6 +87,11 @@ test('Java: the checks catch what the game would ignore or reject', { skip }, ()
   assert.ok(sounds.some(p => /unknown sound event entity.cow.mooo/.test(p)));
   assert.ok(sounds.some(p => /volume 2 outside/.test(p)));
   assert.ok(!sounds.some(p => /idle1/.test(p)), 'a real sound passes');
+  // files written for a newer version and only read by this one: its unknown events are inert, the rest still counts
+  const foreign = checkPack({ kind: 'resource', mc: '1.21.1' }, {
+    'assets/minecraft/sounds.json': buf({ 'entity.pig_big.ambient': { sounds: ['mob/pig/big/ambient1'] }, 'entity.villager.ambient': { sounds: ['mob/villager/idle9'] } })
+  }, vanilla, { foreign: true });
+  assert.deepEqual(foreign, ['sounds.json: entity.villager.ambient points to missing sound mob/villager/idle9']);
 });
 
 // ── More than one Minecraft version in one zip ────────────────────────────────────────────────
@@ -98,6 +103,9 @@ test('Java: pack.mcmeta is written the way each version reads it', () => {
     pack: { pack_format: 48, description: 'd', supported_formats: { min_inclusive: 48, max_inclusive: 121 }, min_format: 48, max_format: 121 },
     overlays: { entries: [{ formats: { min_inclusive: 48, max_inclusive: 48 }, min_format: 48, max_format: 48, directory: 'mc_1_21_1' }] }
   });
+  // an overlay that starts before format 82 may reach past it (1.21.1's files up to 1.21.11): both spellings
+  assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 48, max: 121, overlays: [{ format: 48, to: 94, directory: 'mc_1_21_1' }] }).overlays.entries,
+    [{ formats: { min_inclusive: 48, max_inclusive: 94 }, min_format: 48, max_format: 94, directory: 'mc_1_21_1' }]);
   // new versions only: no "formats" (Minecraft 26.3 refuses it on overlays from format 82 on)
   assert.deepEqual(mcmeta({ kind: 'data', description: 'd', min: 121, max: 128, overlays: [{ format: 121, to: 127, directory: 'mc_26_3' }] }).overlays.entries, [{ min_format: 121, max_format: 127, directory: 'mc_26_3' }]);
   // an old game cannot read an overlay entry without "formats", the new game refuses one with it
@@ -105,8 +113,11 @@ test('Java: pack.mcmeta is written the way each version reads it', () => {
   assert.equal(mcmeta({ kind: 'resource', description: 'd', min: 34, max: 34 }).pack.pack_format, 34);
 });
 
+// Every release between 1.21.1 and 26.3 (1.21.2 … 26.2): a zip for both declares them too.
+const BETWEEN = RELEASES.slice(RELEASES.indexOf('1.21.2'), RELEASES.indexOf('26.3'));
+
 test('Java: a pack for two versions keeps the newest files in the root and the old ones in an overlay', async () => {
-  const pack = { slug: 'probe', name: 'Probe', description: 'Probe', kind: 'data', mc: '1.21.1', dir: fs.mkdtempSync(path.join(os.tmpdir(), 'java-probe-')) };
+  const pack = { slug: 'probe', name: 'Probe', description: 'Probe', kind: 'data', mc: '1.21.1', alsoLoads: { '26.3': BETWEEN }, dir: fs.mkdtempSync(path.join(os.tmpdir(), 'java-probe-')) };
   const oldFiles = { 'data/p/recipe/a.json': buf({ ingredient: { item: 'minecraft:stone' } }), 'data/p/recipe/same.json': buf({ same: true }), 'data/p/recipe/old_only.json': buf({ old: true }) };
   const newFiles = { 'data/p/recipe/a.json': buf({ ingredient: 'minecraft:stone' }), 'data/p/recipe/same.json': buf({ same: true }) };
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'java-zip-'));
@@ -118,8 +129,12 @@ test('Java: a pack for two versions keeps the newest files in the root and the o
   assert.equal(meta.pack.pack_format, PACK_FORMAT['1.21.1'].data);
   assert.equal(meta.pack.max_format, PACK_FORMAT['26.3'].data);
   assert.equal(meta.overlays.entries[0].directory, 'mc_1_21_1');
-  // only the format it was checked for: 1.21.2 to 26.2 read the root, the newer spelling
+  // only the format it was checked for: 1.21.2 to 26.2 read the root, as alsoLoads says
   assert.deepEqual([meta.overlays.entries[0].min_format, meta.overlays.entries[0].max_format], [48, 48]);
+  // the old files for 1.21.2 to 1.21.11: the overlay reaches up to 1.21.11 (format 94), in both spellings
+  const wide = { ...pack, alsoLoads: { '1.21.1': BETWEEN.slice(0, 10), '26.3': BETWEEN.slice(10) } };
+  const entry = JSON.parse(new AdmZip(await buildZip(wide, oldFiles, '1.1', out, [{ mc: '26.3', files: newFiles }])).readAsText('pack.mcmeta')).overlays.entries[0];
+  assert.deepEqual(entry, { formats: { min_inclusive: 48, max_inclusive: 94 }, min_format: 48, max_format: 94, directory: 'mc_1_21_1' });
 
   // nothing differs: no overlay folder, only the wider range
   const same = new AdmZip(await buildZip(pack, newFiles, '1.2', out, [{ mc: '26.3', files: newFiles }]));
@@ -128,6 +143,29 @@ test('Java: a pack for two versions keeps the newest files in the root and the o
   // a file only the new version has would also be read by the old game
   await assert.rejects(buildZip(pack, { 'data/p/recipe/a.json': oldFiles['data/p/recipe/a.json'] }, '1.3', out, [{ mc: '26.3', files: newFiles }]), /only exist for 26.3/);
   await assert.rejects(buildZip({ ...pack, mc: '26.3' }, newFiles, '1.3', out, [{ mc: '1.21.1', files: oldFiles }]), /older than the base version/);
+});
+
+test('Java: every release inside the declared range is accounted for', () => {
+  const pack = (alsoLoads, kind = 'data') => ({ slug: 'probe', kind, mc: '1.21.1', also: ['26.3'], alsoLoads });
+  // without alsoLoads a 1.21.1 + 26.3 zip would claim 1.21.2 … 26.2 unchecked
+  assert.throws(() => planTiers(pack(undefined)), /Minecraft 1\.21\.2, 1\.21\.3, .*26\.2 accept it too/);
+  assert.throws(() => planTiers(pack({ '26.3': BETWEEN.slice(1) })), /Minecraft 1\.21\.2 accept it too/);
+  // 1.21 has the format of 1.21.1 and reads what it reads: no entry needed
+  const { tiers, broken } = planTiers(pack({ '1.21.1': ['1.21.2', '1.21.3', '1.21.4'], '26.3': BETWEEN.slice(3, -1), broken: ['26.2'] }));
+  assert.deepEqual(tiers.map(t => [t.mc, t.format, t.to, t.loads.length]), [['1.21.1', 48, 61, 3], ['26.3', 121, 121, 10]]);
+  assert.deepEqual(broken.map(b => b.mc), ['26.2']);
+  // a release cannot read the old files while an older one reads the root: one overlay is one range
+  assert.throws(() => planTiers(pack({ '1.21.1': ['1.21.2', '1.21.5'], '26.3': BETWEEN.filter(v => !['1.21.2', '1.21.5'].includes(v)) })), /Minecraft 1\.21\.3 \(format 57\) would read the files of 1\.21\.1, not those of 26\.3/);
+  // 1.21.7 and 1.21.8 share format 81, so they read the same files
+  assert.throws(() => planTiers(pack({ '1.21.1': BETWEEN.slice(0, 6), '26.3': BETWEEN.slice(6) })), /1\.21\.8 \(format 81\) would read the files of 1\.21\.1/);
+  assert.throws(() => planTiers(pack({ '26.2': BETWEEN })), /alsoLoads "26\.2" is not one of the versions/);
+  assert.throws(() => planTiers(pack({ '26.3': [...BETWEEN, '1.21.5'] })), /1\.21\.5 is listed twice/);
+  assert.throws(() => planTiers(pack({ '26.3': [...BETWEEN, '26.3'] })), /26\.3 is listed twice/);
+  assert.throws(() => planTiers({ slug: 'probe', kind: 'data', mc: '1.21.4', alsoLoads: { '1.21.4': ['1.21.5'] } }), /1\.21\.5 \(format 71\) lies outside the range of the zip \(61–61\)/);
+  // resource packs count in resource formats: 1.21.2 to 1.21.4 (42–46) read the old sounds
+  assert.deepEqual(planTiers(pack({ '1.21.1': ['1.21.2', '1.21.3', '1.21.4'], '26.3': BETWEEN.slice(3) }, 'resource')).tiers.map(t => [t.format, t.to]), [[34, 46], [97, 97]]);
+  // one version alone declares only its own format
+  assert.deepEqual(planTiers({ slug: 'probe', kind: 'data', mc: '1.21.1' }).tiers.map(t => [t.format, t.to]), [[48, 48]]);
 });
 
 test('Java: the game\'s load report becomes a list of problems', () => {
@@ -157,7 +195,7 @@ test('Java: the game\'s load report becomes a list of problems', () => {
 // headless test server loads the zip (tools/java/loadtest.js).
 const noLoadTest = (!ready('26.3') && 'Minecraft 26.3 not downloaded yet (npm run radar)') || (!javaFor(25) && 'needs Java 25');
 test('Java: Minecraft 26.3 loads a two-version pack and reports a wrong one', { skip: noLoadTest }, async () => {
-  const pack = { slug: 'probe', name: 'Probe', description: 'Probe', kind: 'data', mc: '1.21.1', dir: fs.mkdtempSync(path.join(os.tmpdir(), 'java-probe-')) };
+  const pack = { slug: 'probe', name: 'Probe', description: 'Probe', kind: 'data', mc: '1.21.1', alsoLoads: { '26.3': BETWEEN }, dir: fs.mkdtempSync(path.join(os.tmpdir(), 'java-probe-')) };
   const recipe = ingredient => buf({ type: 'minecraft:stonecutting', ingredient, result: { id: 'minecraft:oak_stairs', count: 1 } });
   const oldFiles = { 'data/probe/recipe/oak_stairs.json': recipe({ item: 'minecraft:oak_planks' }) };
   const newFiles = { 'data/probe/recipe/oak_stairs.json': recipe('minecraft:oak_planks') };
