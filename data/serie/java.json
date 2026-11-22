@@ -442,14 +442,14 @@
     },
     {
       "nr": 31,
-      "slug": "glint-colors",
-      "name": "Glint Colors",
+      "slug": "clear-overlays",
+      "name": "Clear Overlays",
       "art": "R",
-      "was": "Verzauberungs-Schimmer in 8 Farben",
+      "was": "Kürbis-Sicht und Pulverschnee-Frost durchsichtiger (ersetzt „Glint Colors“ am 22.11.: der Schimmer hat nur eine Textur für alle Gegenstände, 8 Farben gehen ohne Mod nicht)",
       "updates": [
-        "mehr Farben",
-        "dezent",
-        "26.1"
+        "Fernrohr mit schmalerem Rand (mehr Sicht)",
+        "Unterwasser-Schleier heller",
+        "Feinschliff nach Kommentaren"
       ]
     },
     {

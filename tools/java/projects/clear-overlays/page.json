@@ -1,0 +1,36 @@
+{
+  "name": "Clear Overlays",
+  "summary": "Makes the carved pumpkin view and the powder snow frost lighter, so you still see the world behind them.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A single carved pumpkin with a glowing see-through face, light shining through it onto soft blue snow, floating on a dark background",
+  "cover": {
+    "tagline": "See the world behind the pumpkin.",
+    "bullets": [
+      "Lighter carved pumpkin view",
+      "Fainter powder snow frost",
+      "Shapes stay vanilla"
+    ]
+  },
+  "description": [
+    "**Clear Overlays lightens the two screen overlays that hide the most, so a pumpkin on your head or a step into powder snow no longer blacks out your view.**",
+    "",
+    "## Features",
+    "- Wearing a carved pumpkin keeps its face shape, but the dark part covers only 40 percent of the screen instead of all of it.",
+    "- The frost of powder snow keeps its crystals at the edges, at half strength.",
+    "- Both are made from the vanilla textures, pixel for pixel: only how strongly they cover the world changes.",
+    "- The frost still fades in while you freeze, so you notice the danger in time.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs. Put on a carved pumpkin or walk into powder snow.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only replaces two textures, so you can add or remove it at any time.",
+    "- Endermen still ignore you while you wear the pumpkin. Nothing else about the game changes.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Which overlay should get lighter next? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
