@@ -1,8 +1,29 @@
 {
-  "checked": "2026-11-21",
+  "checked": "2026-11-22",
   "release": "26.3",
   "snapshot": "26.4-snapshot-10",
   "packs": {
+    "actionbar-coords": {
+      "kind": "data",
+      "serves": [
+        "1.21.1",
+        "26.3"
+      ],
+      "26.3": {
+        "ok": true,
+        "loaded": true,
+        "files": 7,
+        "problems": [],
+        "more": 0
+      },
+      "26.4-snapshot-10": {
+        "ok": true,
+        "loaded": true,
+        "files": 7,
+        "problems": [],
+        "more": 0
+      }
+    },
     "anglers-loot": {
       "kind": "data",
       "serves": [
@@ -12,14 +33,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 2,
+        "files": 17,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 2,
+        "files": 17,
         "problems": [],
         "more": 0
       }
@@ -33,14 +54,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 31,
+        "files": 61,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 31,
+        "files": 61,
         "problems": [],
         "more": 0
       }
@@ -96,14 +117,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 10,
+        "files": 20,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 10,
+        "files": 20,
         "problems": [],
         "more": 0
       }
@@ -117,14 +138,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 18,
+        "files": 23,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 18,
+        "files": 23,
         "problems": [],
         "more": 0
       }
@@ -138,14 +159,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 9,
+        "files": 13,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 9,
+        "files": 13,
         "problems": [],
         "more": 0
       }
@@ -159,14 +180,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 56,
+        "files": 424,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 56,
+        "files": 424,
         "problems": [],
         "more": 0
       }
@@ -180,14 +201,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 9,
+        "files": 11,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 9,
+        "files": 11,
         "problems": [],
         "more": 0
       }
@@ -201,14 +222,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 58,
+        "files": 252,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 58,
+        "files": 252,
         "problems": [],
         "more": 0
       }
@@ -222,20 +243,32 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 1,
+        "files": 8,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 1,
+        "files": 8,
         "problems": [],
         "more": 0
       }
     }
   },
   "mods": {
+    "afk-tag": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "fast-leaf-fall": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "owner-safe-pets": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
     "replant-click": {
       "mc": "1.21.1",
       "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
