@@ -31,6 +31,12 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 - **Später möglich:** Die sieben Packs, die überall laden, könnten auf CurseForge auch 1.21.5 bis 26.2 angeben. Das bringt mehr Reichweite, braucht aber einen eigenen Schritt im Upload.
 - **Speicherplatz:** Auf deinem Mac sind nur noch etwa 14 GB frei. Der Zwischenspeicher `~/.cache/mod-factory/minecraft/` enthält jetzt 14 weitere Versionen (3,4 GB). Die Ordner 1.21.2 bis 26.2 dürfen jederzeit weg; `--zwischen` lädt sie bei Bedarf neu.
 
+## Nacht-Sitzung läuft (22.11.)
+
+- Erster Lauf erfolgreich (#102, von selbst gemergt). Claude hat den Code gegengelesen: keine Kampfdaten (Death Diary nutzt nur `PLAYER_DEAD`).
+- **#101 braucht dich:** (1) Neue Projekte landen nachts nur mit `page.draft.json`, weil der Test für jede `page.json` ein Logo verlangt und die Nacht keine Bilder macht. Lösung: Logo-Prüfung als Warnung, solange ein Projekt nicht angelegt ist, oder der Bilder-Workflow (#27). (2) Die Cloud-Umgebung sperrt `maven.fabricmc.net`, daher keine Fabric-Mods nachts; Freigabe in den Netzwerk-Einstellungen der Umgebung oder Test ohne Netz überspringen.
+- Die vier neuen Addons sind englisch; Deutsch nach dem Muster von heute kann als erstes Update folgen.
+
 ## WoW auf Deutsch (21.11. abends)
 
 - Alle 12 WoW-Addons sprechen jetzt Deutsch (#96 bis #99). Spielbegriffe wie Slot-Namen, Taschenarten, „Schlachtfeld“ oder „Rückkauf“ kommen aus den Textkonstanten des Spiels (GlobalStrings), mit englischem Rückfall. Sie sind gegen die echten enUS- und deDE-Texte geprüft. Befehle bleiben englisch.
@@ -95,7 +101,7 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 6. [ ] Bedrock-Reihe statt Sims: `tools/bedrock/`, die ersten sieben Packs, Sims aus `data/serie/` entfernen.
 7. [ ] Saisonkalender mit Winter-Updates, danach der wöchentliche Trend-Radar.
 8. [ ] An einem echten Abend prüfen, ob der Abend-Lauf zwischen 18 und 21 Uhr startet.
-9. [ ] Ersten Lauf der Nacht-Sitzung lesen (PR da, Tests grün, von selbst gemergt?).
+9. [x] Ersten Lauf der Nacht-Sitzung lesen: am 22.11. um 1:54 Uhr gelaufen, vier neue WoW-Addons (Fishing Log, Gather Tally, Rep Session, Death Diary) mit Tests und V1.0 im Vorrat, PR #102 von selbst gemergt. Offene Punkte in #101 (siehe oben).
 
 ## Freiwillig: WoW-Screenshots (braucht deinen PC)
 
