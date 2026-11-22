@@ -1,0 +1,18 @@
+{
+  "slug": "rep-session",
+  "game": "wow",
+  "name": "Rep Session",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "RepSession-1.0.zip",
+      "changelog": "## Rep Session 1.0\n\nFirst release.\n\n- Shows the reputation you gained this session with the faction on your reputation bar.\n- Shows your reputation per hour and estimates the time until your next standing, once you have played five minutes.\n- Works with regular factions, renown factions and friendship factions, counted correctly across a new standing or renown level.\n- Switch the watched faction as often as you like: each faction keeps its own count for the session.\n- At the highest standing it says max instead of showing a time.\n- `/rs` or `/repsession` prints it to chat, `/rs show` opens a small window, `/rs reset` starts a new session.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
