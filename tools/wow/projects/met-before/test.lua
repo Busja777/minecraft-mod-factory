@@ -430,3 +430,111 @@ test("/mb and /mb help show the commands, nothing runs before login", function(w
   wow.slash("/mb whatever")
   eq(has(lastChat(wow), "/mb list shows the last 10 players"), true)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and the words it has (GlobalStrings). The stand-in client has none.
+local function germanClient(wow)
+  wow.locale = "deDE"
+  NOTE_COLON = "Notiz:"
+end
+
+test("the note label comes from the game, English when the client has none", function(wow)
+  local ns = boot(wow)
+  eq(select(2, ns.TooltipLines({ note = "x" }, 0)), "Note: x")
+  germanClient(wow)
+  eq(select(2, ns.TooltipLines({ note = "x" }, 0)), "Notiz: x")
+  NOTE_COLON = ""
+  eq(select(2, ns.TooltipLines({ note = "x" }, 0)), "Note: x", "an empty one stays English")
+  NOTE_COLON = SECRET
+  eq(select(2, ns.TooltipLines({ note = "100% sure" }, 0)), "Note: 100% sure", "so does anything that is not a text")
+end)
+
+test("German client: the tooltip and the time texts in German", function(wow)
+  germanClient(wow)
+  local ns = boot(wow, { zone = "Silbermond" })
+  party(wow, { { "Grumbash", "Argent Dawn" } })
+  leave(wow)
+  wow.now = wow.now + 2 * 86400 + 100
+  party(wow, { { "Grumbash", "Argent Dawn" } })
+  leave(wow)
+  wow.now = wow.now + 2 * 86400 + 5
+  wow.slash("/mb note Grumbash Guter Tank, kennt jeden Weg")
+  game.units.mouseover = { "Grumbash", "Argent Dawn" }
+  local lines = hover("mouseover")
+  eq(lines[1], "Schon getroffen: 2-mal, zuletzt vor 2 Tagen")
+  eq(lines[2], "Notiz: Guter Tank, kennt jeden Weg")
+  eq(ns.AgoText(10), "gerade eben")
+  eq(ns.AgoText(3600), "vor 1 Stunde")
+  eq(ns.AgoText(5 * 3600), "vor 5 Stunden")
+  eq(ns.AgoText(86400), "vor 1 Tag")
+  eq(ns.TimesText(1), "1-mal")
+  eq(ns.MetText({ times = 1, last = 0 }, 3600), "Schon getroffen: 1-mal, zuletzt vor 1 Stunde")
+end)
+
+test("German client: notes, forget and list in German, the command words stay English", function(wow)
+  germanClient(wow)
+  boot(wow, { zone = "Silbermond" })
+  wow.slash("/mb list")
+  eq(lastChat(wow), P .. "Noch keine Spieler gemerkt. Tritt einer Gruppe bei, dann erscheinen sie hier.")
+  party(wow, { { "Ohm", "Argent Dawn" }, { "Ohm", "Kazzak" }, { "Grumbash", "Argent Dawn" } })
+  wow.slash("/mb note Ohm hallo")
+  eq(lastChat(wow), P .. "Mehrere Spieler heißen Ohm, gib den Realm mit an: Ohm-Argent Dawn, Ohm-Kazzak.")
+  wow.slash("/mb note Grumbash Guter Tank")
+  eq(lastChat(wow), P .. "Notiz zu Grumbash-Argent Dawn: Guter Tank")
+  wow.slash("/mb note Grumbash")
+  eq(lastChat(wow), P .. "Notiz zu Grumbash-Argent Dawn gelöscht.")
+  wow.slash("/mb note Niemand")
+  eq(lastChat(wow), P .. "Zu Niemand gibt es keine Notiz zum Löschen.")
+  wow.slash("/mb note -Kazzak x")
+  eq(lastChat(wow), P .. "-Kazzak ist kein Name, den das Addon verwenden kann.")
+  wow.slash("/mb note target x")
+  eq(lastChat(wow), P .. "Dein Ziel ist kein Spieler, dessen Namen das Spiel gerade zeigt.")
+  wow.slash("/mb vergessen Ohm-Kazzak")
+  eq(people()["ohm-kazzak"] ~= nil, true, "German command words are not commands")
+  eq(lastChat(wow), P .. "/mb list zeigt die letzten 10 Spieler aus deinen Gruppen, /mb note Name-Realm Text setzt deine Notiz (ohne Text wird sie gelöscht), /mb note target Text notiert etwas zu deinem Ziel, /mb forget Name-Realm entfernt einen Spieler.")
+  wow.slash("/mb forget Ohm-Kazzak")
+  eq(lastChat(wow), P .. "Ohm-Kazzak vergessen.")
+  wow.slash("/mb forget Niemand")
+  eq(lastChat(wow), P .. "Kein gemerkter Spieler heißt Niemand.")
+  wow.slash("/mb note Mira-Kazzak hat mir ein Haustier verkauft")
+  leave(wow)
+  wow.now = wow.now + 3 * 3600
+  local from = #wow.chat
+  wow.slash("/mb list")
+  eq(wow.chat[from + 1], P .. "Die letzten 3 Spieler aus deinen Gruppen, neueste zuerst:")
+  eq(wow.chat[from + 2], P .. "Grumbash-Argent Dawn: 1-mal, zuletzt vor 3 Stunden in Silbermond")
+  eq(wow.chat[from + 4], P .. "Mira-Kazzak: noch nicht getroffen - hat mir ein Haustier verkauft")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 25, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts and the game's English words", function(wow)
+  wow.locale = "enUS"
+  NOTE_COLON = "Note:"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  party(wow, { { "Grumbash", "Argent Dawn" } })
+  wow.slash("/mb note Grumbash Great tank")
+  eq(lastChat(wow), P .. "Note on Grumbash-Argent Dawn: Great tank")
+  game.units.mouseover = { "Grumbash", "Argent Dawn" }
+  local lines = hover("mouseover")
+  eq(lines[1], "Met before: 1 time, last just now")
+  eq(lines[2], "Note: Great tank")
+end)

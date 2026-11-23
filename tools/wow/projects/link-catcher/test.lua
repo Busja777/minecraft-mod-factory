@@ -327,3 +327,89 @@ test("help lists the commands", function(wow)
   eq(lastChat(wow):find("/lc copy", 1, true) ~= nil, true)
   eq(lastChat(wow):find("/lc off", 1, true) ~= nil, true)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+local P = "|c" .. "ff3fa9f5" .. "Link Catcher:|r "
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+local function german(wow, opts, saved)
+  wow.locale = "deDE"
+  return boot(wow, opts, saved)
+end
+
+test("German client: the help and the switches in German, the command words stay English", function(wow)
+  german(wow)
+  wow.slash("/lc")
+  eq(lastChat(wow), P .. "/lc copy zeigt die letzten Zeilen deines Hauptchatfensters zum Kopieren (/lc copy 50 für 50 Zeilen), /lc on und /lc off schalten die anklickbaren Links ein und aus. Klicke auf einen Link im Chat, um ihn zu kopieren.")
+  wow.slash("/lc aus")
+  eq(LinkCatcherDB.enabled, true, "German command words are not commands")
+  wow.slash("/lc off")
+  eq(lastChat(wow), P .. "Weblinks im Chat bleiben einfacher Text.")
+  wow.slash("/lc")
+  eq(lastChat(wow), P .. "Anklickbare Links sind gerade ausgeschaltet.")
+  wow.slash("/lc on")
+  eq(lastChat(wow), P .. "Weblinks im Chat sind anklickbar.")
+  ChatFrame_AddMessageEventFilter = nil -- a client without chat filters
+  german(wow, { noFilters = true })
+  wow.slash("/lc")
+  eq(lastChat(wow), P .. "Diese Spielversion lässt Addons keine Chatzeilen ändern, deshalb bleiben Links einfacher Text.")
+end)
+
+test("German client: the link box and an old link in German", function(wow)
+  local ns = german(wow)
+  local msg = say("CHAT_MSG_SAY", "schau auf www.example.de nach")
+  eq(msg, "schau auf " .. ns.Link(1, "www.example.de") .. " nach", "German messages get their links too")
+  SetItemRef(linkOf(msg), msg, "LeftButton")
+  local f = ns.Window()
+  eq(f.title:GetText(), "Link Catcher")
+  eq(f.box:GetText(), "www.example.de")
+  eq(f.hint:GetText(), "Drücke Strg+C (Cmd+C am Mac) zum Kopieren, Esc zum Schließen.")
+  wow.clock = wow.clock + 1
+  SetItemRef("addon:LinkCatcher:99", nil, "LeftButton")
+  eq(lastChat(wow), P .. "Dieser Link ist zu alt, er lässt sich nicht mehr öffnen.")
+end)
+
+test("German client: copying the chat in German", function(wow)
+  local ns = german(wow)
+  wow.slash("/lc copy")
+  eq(lastChat(wow), P .. "Es gibt nichts zu kopieren.")
+  game.lines = { "eins", { secret = true }, "[|Kq12|k]: hallo" }
+  wow.slash("/lc copy")
+  local f = ns.Window()
+  eq(f.title:GetText(), "Chat kopieren")
+  eq(f.box:GetText(), "eins\n[(Name)]: hallo")
+  eq(f.hint:GetText(), "1 verborgene Zeilen ausgelassen. Drücke Strg+C (Cmd+C am Mac) zum Kopieren, Esc zum Schließen.")
+  DEFAULT_CHAT_FRAME.GetMessageInfo = nil
+  wow.slash("/lc copy")
+  eq(lastChat(wow), P .. "Das Chatfenster lässt sich nicht lesen.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 13, "every text on screen has its German one")
+  eq(ns.L["%d hidden lines left out. "]:sub(-1), " ", "the hint after it keeps its space")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  game.lines = { "one", { secret = true } }
+  wow.slash("/lc copy")
+  eq(ns.Window().title:GetText(), "Copy chat")
+  eq(ns.Window().hint:GetText(), "1 hidden lines left out. Press Ctrl+C (Cmd+C on a Mac) to copy, Escape to close.")
+  wow.slash("/lc off")
+  eq(lastChat(wow), P .. "Web links in chat stay plain text.")
+end)
