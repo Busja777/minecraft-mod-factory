@@ -75,6 +75,7 @@ async function logo() {
 
 function handover(reihe, project, page, zips) {
   const game = gameOf(config, reihe.game);
+  const shots = fs.existsSync(path.join(outDir(reihe.reihe, project), 'shot-1.png'));
   return [
     `# ${page.name}: Projekt auf CurseForge anlegen`,
     '',
@@ -84,8 +85,8 @@ function handover(reihe, project, page, zips) {
     '2. Name, Summary und Kategorie von unten eintragen. Im Beschreibungs-Editor auf **Markdown** stellen und die Beschreibung einfügen.',
     '3. `logo.png` als Logo hochladen.',
     reihe.banner === false
-      ? '4. Unter **Images** `cover.png` hochladen und als Hauptbild markieren.'
-      : `4. Unter **Images** \`banner.png\` hochladen und als Hauptbild markieren, dazu \`cover.png\`${fs.existsSync(path.join(outDir(reihe.reihe, project), 'shot-1.png')) ? ' und die `shot-*.png`' : ''}.`,
+      ? `4. Unter **Images** \`cover.png\` hochladen und als Hauptbild markieren${shots ? ', dazu die `shot-*.png`' : ''}.`
+      : `4. Unter **Images** \`banner.png\` hochladen und als Hauptbild markieren, dazu \`cover.png\`${shots ? ' und die `shot-*.png`' : ''}.`,
     '5. **Keine Datei hochladen.** Lizenz: All Rights Reserved.',
     `6. Projekt-ID eintragen: \`npm run serie -- id ${project.slug} <Projekt-ID>\`. Das ist dein Go, die erste Datei geht abends von selbst hoch.`,
     '',
@@ -131,6 +132,7 @@ async function seite() {
     else if (fs.existsSync(path.join(dir, 'banner.png'))) fs.rmSync(path.join(dir, 'banner.png'));
   }
   const shotDir = path.join(src, 'shots');
+  for (const old of fs.readdirSync(dir).filter(f => /^shot-\d+\.png$/.test(f))) fs.rmSync(path.join(dir, old)); // a removed shot must not linger
   if (fs.existsSync(shotDir)) fs.readdirSync(shotDir).filter(f => f.endsWith('.png')).sort().forEach((f, i) => fs.copyFileSync(path.join(shotDir, f), path.join(dir, `shot-${i + 1}.png`)));
   const zips = listReleaseProjects().includes(project.slug) ? loadReleaseProject(project.slug).versions.map(v => `V${v.version}: ${v.file} (${v.status === 'due' ? 'wartet' : 'online'})`) : [];
   fs.writeFileSync(path.join(dir, 'curseforge.md'), handover(reihe, project, page, zips));
