@@ -1,0 +1,37 @@
+{
+  "name": "Bountiful Forage",
+  "summary": "Cindersap Forest and the beach fill up with more wild forage, always the same seasonal finds as before.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small woven wicker basket overflowing with wild forage: a yellow dandelion, a mushroom, a red berry sprig and a striped clam shell",
+  "cover": {
+    "tagline": "More to find in the forest and on the beach.",
+    "bullets": [
+      "More forage in the forest",
+      "More shells on the beach",
+      "Choose +25 %, +50 % or +100 %"
+    ]
+  },
+  "description": [
+    "**Bountiful Forage lets more wild forage appear in Cindersap Forest and on the beach, so a walk there pays off more often.**",
+    "",
+    "## Features",
+    "- The forage limit of both maps rises from 6 to 9 items with the default setting.",
+    "- More spawn attempts each night, so the extra forage shows up sooner.",
+    "- Choose +25 %, +50 % (default) or +100 % in the config, in English or German.",
+    "- Only the items the base game already spawns there, in their own seasons: no new items, no new places.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Visit the forest and the beach as usual.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. Prices, seasons and item chances stay as they are.",
+    "- Gatherer and Botanist work on the extra forage like on any other. Tide pool items and spring onions are not changed.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
