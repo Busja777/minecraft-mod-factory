@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "doubledoorbuddy",
+  "version": "${version}",
+  "name": "Double Door Buddy",
+  "description": "Right-click one door of a double door and its partner opens or closes with it. Sneak to move only one door. Works on the server alone; players need nothing installed.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "mixins": ["doubledoorbuddy.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
