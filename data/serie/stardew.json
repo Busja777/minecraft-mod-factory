@@ -238,7 +238,7 @@
       "slug": "fresh-farm-tv-tips",
       "name": "Fresh Farm TV Tips",
       "art": "CP",
-      "was": "Neue Tipps in der Fernsehsendung",
+      "was": "Neue Tipps in der Fernsehsendung. ZURÜCKGESTELLT (23.11.): Laut Wiki (Livin' Off The Land, Revision 193970) ist jeder Sendetag beider Jahre schon mit einem Tipp belegt, ein neuer Tipp würde nie gezeigt; Vanilla-Tipps überschreiben wir nicht, und `Data/TV/TipChannel` ist kein geprüftes Ziel. Ersatz-Idee nur mit Fair-Play-Abgleich gegen die Post-Projekte.",
       "updates": [
         "Jahr 2",
         "Angel-Tipps",
