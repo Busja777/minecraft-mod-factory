@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Reset Clock
+## Notes: Counts down to the daily and weekly reset and runs a simple timer.
+## Version: @version@
+## SavedVariables: ResetClockDB
+## IconTexture: Interface\Icons\INV_Misc_PocketWatch_01
+
+Locale.lua
+Core.lua
+Clock.lua
+UI.lua
+Commands.lua
