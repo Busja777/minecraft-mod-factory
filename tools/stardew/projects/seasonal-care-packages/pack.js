@@ -23,6 +23,13 @@
 // Fairness: every choice is worth at most 300g at its base sell price (prices from each item's wiki
 // page, checked 2026-11-21), less than a single early-game crop harvest, and the senders are villagers
 // the player meets in town during the first days.
+//
+// 1.1, German: i18n/de.json has every letter and title in German (texts and the German names with
+// their wiki sources in de.js). Content Patcher picks the file for the game language and falls back
+// to default.json (author-guide/translations.md); every key here has a German text. Same parcels,
+// same senders, same day; the English texts stay as in 1.0.
+
+import { DE, SEASONS_DE } from './de.js';
 
 export const DAY = 10; // no festival falls on day 10 of any season (https://stardewvalleywiki.com/Festivals)
 export const MAX_VALUE = 300;
@@ -69,6 +76,7 @@ export default async function ({ items, npcs }) {
   const mail = {};
   const triggers = {};
   const i18n = {};
+  const de = {};
   if (Object.keys(PACKAGES).join() !== 'spring,summer,fall,winter') throw new Error('one parcel per season, in order');
   for (const [season, p] of Object.entries(PACKAGES)) {
     if (!npcs.npcs[p.from]) throw new Error(`${p.from} is not in npcs.json`);
@@ -84,6 +92,16 @@ export default async function ({ items, npcs }) {
     const parcel = p.items.map(([item, count]) => `${item} ${count}`).join(' ');
     i18n[`letter.${season}`] = p.text;
     i18n[`title.${season}`] = p.title;
+    // German (since 1.1): same sender, greeting, Du-form, no mail commands (as in Joja Junk Mail).
+    const [deText, deTitle] = DE[season] || [];
+    if (!deText || !deTitle) throw new Error(`${season}: German text missing in de.js`);
+    if (/[%[\]¦{}#$]/.test(deText + deTitle)) throw new Error(`${season}: mail command characters in the German text`);
+    if (!deText.startsWith('Hallo @')) throw new Error(`${season}: the German letter must greet the player ("Hallo @,")`);
+    if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(deText)) throw new Error(`${season}: German letters use the Du-form`);
+    if (!new RegExp(`(-|\\s)${p.from}$`).test(deText)) throw new Error(`${season}: the German letter is not signed by ${p.from}`);
+    if (!deTitle.includes(SEASONS_DE[season]) || !deTitle.endsWith(` ${p.from}`)) throw new Error(`${season}: the German title must name ${SEASONS_DE[season]} and ${p.from}`);
+    de[`letter.${season}`] = deText;
+    de[`title.${season}`] = deTitle;
     mail[id] = `{{i18n:letter.${season}}}%item id ${parcel} %%[#]{{i18n:title.${season}}}`;
     triggers[id] = {
       Id: id,
@@ -92,6 +110,8 @@ export default async function ({ items, npcs }) {
       Actions: [`AddMail Current ${id} Now`]
     };
   }
+  if (Object.keys(DE).join() !== Object.keys(PACKAGES).join()) throw new Error('de.js must have exactly the seasons of PACKAGES');
+  if (Object.keys(de).sort().join() !== Object.keys(i18n).sort().join()) throw new Error('i18n/de.json must have exactly the keys of default.json');
   return {
     'content.json': {
       Format: '2.9.0',
@@ -100,6 +120,7 @@ export default async function ({ items, npcs }) {
         { LogName: 'Send a parcel on day 10 of each season', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers }
       ]
     },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

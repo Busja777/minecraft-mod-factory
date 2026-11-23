@@ -43,6 +43,13 @@
 //   {{ModId}} keeps every order and string ID unique (tokens.md#ModId), all text comes from i18n
 //   (translations.md).
 // - No order uses a drop box, so none can block or be blocked by a vanilla order's drop box.
+// - 1.1, German: i18n/de.json has the title, note and objective line of every order in German (texts
+//   and the German names with their wiki sources in de.js). Content Patcher picks the file for the
+//   game language and falls back to default.json (author-guide/translations.md); the strings in
+//   Strings/SpecialOrderStrings are i18n tokens, so they follow the game language too. Same orders,
+//   same counts and rewards; the English texts stay as in 1.0.
+
+import { DE } from './de.js';
 
 // Documented values (Modding:Special_orders#Format).
 export const DURATIONS = ['OneDay', 'ThreeDays', 'Week', 'TwoWeeks', 'Month'];
@@ -134,10 +141,26 @@ export function checkOrder(key, o, npcs) {
   if (type === 'Deliver' && !o.goal.includes(o.requester)) throw new Error(`${where}: goal must name ${o.requester}`);
 }
 
+// The German texts get the same checks as the English ones (checkOrder), in the Du-form.
+export function checkOrderDe(key, o, d) {
+  const where = `order ${key} (de.js)`;
+  if (!d) throw new Error(`${where}: German texts missing`);
+  if (Object.keys(d).sort().join() !== 'goal,name,text') throw new Error(`${where}: needs exactly name, text and goal`);
+  for (const f of ['name', 'text', 'goal']) {
+    if (!d[f] || /[[\]{}^@#%$|¦]/.test(d[f])) throw new Error(`${where}: ${f} is empty or has command characters`);
+    if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(d[f])) throw new Error(`${where}: ${f} must use the Du-form`);
+  }
+  if (d.name.length > 30) throw new Error(`${where}: name too long for the board`);
+  const [type, count] = o.objective;
+  if (!d.text.includes(String(count)) || !d.goal.includes(String(count))) throw new Error(`${where}: text and goal must name ${count}`);
+  if (type === 'Deliver' && !d.goal.includes(o.requester)) throw new Error(`${where}: goal must name ${o.requester}`);
+}
+
 export default async function ({ npcs }) {
   const strings = {};
   const orders = {};
   const i18n = {};
+  const de = {};
   const requesters = new Set();
   for (const [key, o] of Object.entries(ORDERS)) {
     checkOrder(key, o, npcs.npcs);
@@ -151,6 +174,10 @@ export default async function ({ npcs }) {
     i18n[`order.${key}.Name`] = o.name;
     i18n[`order.${key}.Text`] = o.text;
     i18n[`order.${key}.Objective_0_Text`] = o.goal;
+    checkOrderDe(key, o, DE[key]);
+    de[`order.${key}.Name`] = DE[key].name;
+    de[`order.${key}.Text`] = DE[key].text;
+    de[`order.${key}.Objective_0_Text`] = DE[key].goal;
     const [type, count, tags] = o.objective;
     orders[id] = {
       Name: str('Name'),
@@ -178,6 +205,8 @@ export default async function ({ npcs }) {
     };
   }
   if (Object.keys(orders).length !== 6) throw new Error('the pack has six orders');
+  if (Object.keys(DE).sort().join() !== Object.keys(ORDERS).sort().join()) throw new Error('de.js must have exactly the orders of ORDERS');
+  if (Object.keys(de).sort().join() !== Object.keys(i18n).sort().join()) throw new Error('i18n/de.json must have exactly the keys of default.json');
   return {
     'content.json': {
       Format: '2.9.0',
@@ -186,6 +215,7 @@ export default async function ({ npcs }) {
         { LogName: 'Six farm orders on the town board', Action: 'EditData', Target: 'Data/SpecialOrders', Entries: orders }
       ]
     },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }
