@@ -1,0 +1,38 @@
+{
+  "name": "Stack More",
+  "summary": "Drinkable potions, eggs and snowballs fit many more to a slot, so brewing sessions and chicken farms need fewer chests.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A small tower of three identical glass potion bottles with pink liquid stacked neatly on top of each other, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "More potions, eggs and snowballs per slot.",
+    "bullets": [
+      "Potions stack up to 16",
+      "Eggs and snowballs up to 64",
+      "Only identical potions stack"
+    ]
+  },
+  "description": [
+    "**Stack More lets drinkable potions, eggs and snowballs share a slot, so your inventory and chests hold more of them.**",
+    "",
+    "## Features",
+    "- Drinkable potions stack up to 16, water bottles included.",
+    "- Eggs stack up to 64 instead of 16.",
+    "- Snowballs stack up to 64 instead of 16.",
+    "- Only identical potions stack: a different effect, duration, strength or name keeps its own slot.",
+    "- Drinking from a stack gives the empty bottle back; with a full inventory it drops at your feet.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Collect and brew as usual; matching items stack by themselves in your inventory, chests and hoppers.",
+    "",
+    "## Good to know",
+    "- Made for Fabric Loader on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Install it on the server and on every player's game. Stack sizes are not sent over the network, so a game without the mod still expects the old ones. In singleplayer your own game is enough.",
+    "- Splash and lingering potions stay at one per slot, and the brewing stand still holds one bottle per slot.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
