@@ -407,3 +407,134 @@ test("the same zone twice in a row is one arrival, the SamePlace rule", function
   eq(ns.SamePlace({ key = 125, name = "Dalaran" }, 627, "Dalaran"), false)
   eq(ns.SamePlace({ key = 37, name = "Elwynn Forest" }, 52, "Westfall"), false)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language. Zone names come from the game in German.
+local GERMAN = { ["Elwynn Forest"] = "Wald von Elwynn" }
+local function germanClient(wow)
+  wow.locale = "deDE"
+end
+-- After boot: the maps of the test world answer with their German names.
+local function germanMaps()
+  local info = C_Map.GetMapInfo
+  C_Map.GetMapInfo = function(id)
+    local m = info(id)
+    if m then m.name = GERMAN[m.name] or m.name end
+    return m
+  end
+end
+
+test("German client: adding, listing and removing notes in German", function(wow)
+  germanClient(wow)
+  boot(wow, { zone = "Wald von Elwynn" })
+  germanMaps()
+  wow.slash("/zn add Kräuter hinter dem Gasthaus")
+  eq(lastChat(wow), P .. "Notiz 1 für Wald von Elwynn gespeichert.")
+  eq(ZoneNotesDB.zones[37].name, "Wald von Elwynn", "the zone name as the game gives it")
+  wow.slash("/zn add")
+  eq(lastChat(wow), P .. "Schreib die Notiz hinter den Befehl: /zn add <Text>.")
+  wow.slash("/zn add " .. string.rep("a", 250))
+  eq(lastChat(wow), P .. "Notizen haben höchstens 200 Zeichen, der Rest wurde abgeschnitten.")
+  for i = 3, 10 do wow.slash("/zn add Notiz " .. i) end
+  wow.slash("/zn add Elf")
+  eq(lastChat(wow), P .. "Diese Zone hat schon 10 Notizen. Lösche zuerst eine mit /zn remove <Nummer>.")
+  wow.slash("/zn remove 11")
+  eq(lastChat(wow), P .. "Nutze /zn remove <Nummer> mit einer Zahl von 1 bis 10, siehe /zn list.")
+  wow.slash("/zn remove 1")
+  eq(lastChat(wow), P .. "Gelöscht: Kräuter hinter dem Gasthaus")
+  local from = #wow.chat
+  wow.slash("/zn list")
+  local out = chatSince(wow, from)
+  eq(out[1], P .. "Deine Notizen für Wald von Elwynn:")
+  eq(out[3], P .. "2. Notiz 3")
+  from = #wow.chat
+  wow.slash("/zn all")
+  out = chatSince(wow, from)
+  eq(out[1], P .. "Zonen mit Notizen: 1")
+  eq(out[2], P .. "Wald von Elwynn: 9")
+end)
+
+test("German client: help, settings and messages in German, the command words stay English", function(wow)
+  germanClient(wow)
+  boot(wow, { map = 52, zone = "Westfall" })
+  germanMaps()
+  local from = #wow.chat
+  wow.slash("/zn")
+  local out = chatSince(wow, from)
+  eq(out[1], P .. "Noch keine Notizen für Westfall. Füge eine mit /zn add <Text> hinzu.")
+  eq(out[2], P .. "/zn add <Text> notiert etwas für diese Zone, /zn list zeigt ihre Notizen, /zn remove <Nummer> löscht eine, /zn all zeigt alle Zonen mit Notizen, /zn window öffnet das Notizfenster, /zn popup on oder off schaltet das Fenster beim Betreten einer Zone ein oder aus, /zn quiet on oder off schaltet die Chatzeilen beim Betreten aus oder ein.")
+  wow.slash("/zn all")
+  eq(lastChat(wow), P .. "Du hast noch keine Notizen. Füge eine mit /zn add <Text> hinzu.")
+  wow.slash("/zn popup aus")
+  eq(lastChat(wow), P .. "Nutze /zn popup on oder /zn popup off.", "German command words are not commands")
+  eq(ZoneNotesDB.settings.popup, true)
+  wow.slash("/zn popup off")
+  eq(lastChat(wow), P .. "Das Notizfenster bleibt geschlossen, wenn du eine Zone betrittst.")
+  wow.slash("/zn popup on")
+  eq(lastChat(wow), P .. "Das Notizfenster öffnet sich, wenn du eine Zone mit Notizen betrittst.")
+  wow.slash("/zn quiet an")
+  eq(lastChat(wow), P .. "Nutze /zn quiet on oder /zn quiet off.")
+  wow.slash("/zn quiet on")
+  eq(lastChat(wow), P .. "Keine Chatzeilen, wenn du eine Zone betrittst.")
+  wow.slash("/zn quiet off")
+  eq(lastChat(wow), P .. "Deine Notizen erscheinen im Chat, wenn du eine Zone betrittst.")
+  from = #wow.chat
+  wow.slash("/zn hinzufügen Bauernhof")
+  eq(ZoneNotesDB.zones[52], nil, "a German command word adds nothing")
+  eq(chatSince(wow, from)[1], P .. "Noch keine Notizen für Westfall. Füge eine mit /zn add <Text> hinzu.")
+  game.map, game.zone = SECRET, SECRET
+  wow.slash("/zn add Etwas")
+  eq(lastChat(wow), P .. "Das Spiel verrät gerade nicht, in welcher Zone du bist. Versuch es gleich noch einmal.")
+end)
+
+test("German client: arrival and the window in German", function(wow)
+  germanClient(wow)
+  local saved = { zones = { [37] = { name = "Elwynn Forest", notes = { { text = "Kräuter hinter dem Gasthaus", t = 1 } } } } }
+  local ns = boot(wow, { map = 52, zone = "Westfall" }, saved)
+  germanMaps()
+  wow.fire("PLAYER_ENTERING_WORLD")
+  go(wow, { map = 37, zone = "Wald von Elwynn" })
+  eq(wow.chat[1], P .. "Deine Notizen für Wald von Elwynn:", "a name saved in English follows the game's German name")
+  eq(wow.chat[2], P .. "1. Kräuter hinter dem Gasthaus")
+  local f = ZoneNotesFrame
+  eq(f.title:GetText(), "Wald von Elwynn")
+  eq(f.body:GetText(), "1. Kräuter hinter dem Gasthaus")
+  wow.slash("/zn window")
+  go(wow, { map = 52, zone = "Westfall" })
+  wow.slash("/zn window")
+  eq(f.body:GetText(), "Noch keine Notizen für diese Zone. Füge eine mit /zn add <Text> hinzu.")
+  eq(ns.WindowData(nil, nil).title, "Unbekannte Zone")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("<", "")), select(2, text:gsub("<", "")), "the hints in brackets stay: " .. key)
+  end
+  eq(n, 23, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow, nil, copy(ELWYNN))
+  eq(next(ns.L), nil)
+  wow.fire("PLAYER_ENTERING_WORLD")
+  eq(wow.chat[1], P .. "Your notes for Elwynn Forest:")
+  wow.slash("/zn add Third")
+  eq(lastChat(wow), P .. "Note 3 for Elwynn Forest saved.")
+  wow.slash("/zn quiet on")
+  eq(lastChat(wow), P .. "No chat lines when you enter a zone.")
+  eq(ns.WindowData(nil, nil).title, "Unknown zone")
+end)

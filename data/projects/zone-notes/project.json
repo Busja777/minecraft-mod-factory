@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "ZoneNotes-1.1.zip",
+      "changelog": "## Zone Notes 1.1\n\n- Zone Notes now speaks **German**: the notes in chat, the window and every answer to a command. On clients in other languages it stays in English.\n- Zone names come from the game itself, so they read exactly like in your client's language.\n- The commands stay the same in every language, for example `/zn add <text>` or `/zn quiet on`.\n- Your notes, your popup and quiet settings and the window position from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

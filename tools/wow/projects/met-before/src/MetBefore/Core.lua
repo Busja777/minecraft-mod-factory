@@ -18,6 +18,14 @@ function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
 end
 
+-- 1.1: a word the game itself has (a GlobalStrings constant such as NOTE_COLON), in the client's
+-- language; the English word when the client lacks it.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
 -- A text read from the game; nil when it is secret, missing or empty.
 function ns.CleanText(value)
   if value == nil or ns.IsSecret(value) or type(value) ~= "string" then return nil end
@@ -229,7 +237,7 @@ end
 -- The tooltip lines of a player: { met line or nil, note line or nil }.
 function ns.TooltipLines(p, now)
   if not p then return nil, nil end
-  local note = p.note and string.format(L["Note: %s"], p.note) or nil
+  local note = p.note and (ns.GameText("NOTE_COLON", "Note:") .. " " .. p.note) or nil
   return ns.MetText(p, now), note
 end
 

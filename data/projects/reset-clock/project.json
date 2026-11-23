@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "ResetClock-1.1.zip",
+      "changelog": "## Reset Clock 1.1\n\n- Reset Clock now speaks **German**: the countdowns, the timer, the raid warning when it runs out, the window and every answer to a command. On clients in other languages it stays in English.\n- The window is a little wider, so the longer German names of the resets fit. In English it looks the same, only with more room.\n- The commands and the time letters stay the same in every language, for example `/rc timer 10m` or `/rc cancel`.\n- A running timer and the window position from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

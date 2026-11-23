@@ -5,7 +5,8 @@ local L = ns.L
 
 local GREY = "|cff9d9d9d"
 local NOTHING = GREY .. "-|r"
-local SIZE = { 220, 100 }
+local SIZE = { 260, 100 } -- 1.1: 40 wider, room for "Wöchentliche Zurücksetzung"
+local LABEL = 160         -- width of the names on the left
 
 local ui
 
@@ -48,7 +49,7 @@ local function create()
     local y = -32 - (i - 1) * 18
     local left = text(f, "GameFontNormalSmall")
     left:SetPoint("TOPLEFT", 16, y)
-    left:SetWidth(120) -- a long timer label ends in "..." instead of running into the time
+    left:SetWidth(LABEL) -- a long timer label ends in "..." instead of running into the time
     left:SetWordWrap(false)
     local right = text(f, "GameFontHighlightSmall", "RIGHT")
     right:SetPoint("TOPRIGHT", -16, y)

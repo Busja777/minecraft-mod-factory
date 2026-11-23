@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "LinkCatcher-1.1.zip",
+      "changelog": "## Link Catcher 1.1\n\n- Link Catcher now speaks **German**: the copy box, its hint and every answer to a command. On clients in other languages it stays in English.\n- The hint names the keys as on a German keyboard: Strg+C to copy, Esc to close.\n- The commands stay the same in every language, for example `/lc copy 50` or `/lc off`.\n- Your on/off setting from 1.0 is kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

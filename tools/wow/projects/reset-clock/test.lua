@@ -321,3 +321,107 @@ test("slash commands before login do nothing, unknown words show the help", func
   wow.slash("/rc what")
   eq(has(last(wow), "/rc timer 10m tea starts a timer with a label"), true)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+local P = "|cffffd100Reset Clock:|r "
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+local function german(wow)
+  wow.locale = "deDE"
+  return boot(wow)
+end
+
+test("German client: the countdowns and the help in German", function(wow)
+  german(wow)
+  wow.slash("/rc")
+  eq(wow.chat[1], P .. "Tägliche Zurücksetzung in 3h 12m.")
+  eq(wow.chat[2], P .. "Wöchentliche Zurücksetzung in 2d 5h.")
+  C_DateAndTime = nil
+  wow.slash("/rc")
+  eq(wow.chat[3], P .. "Tägliche Zurücksetzung: nicht verfügbar.")
+  eq(wow.chat[4], P .. "Wöchentliche Zurücksetzung: nicht verfügbar.")
+  wow.slash("/rc hilfe")
+  eq(last(wow), P .. "/rc timer 10m Tee startet einen Timer mit Namen, /rc timer zeigt die verbleibende Zeit, /rc cancel beendet ihn, /rc window öffnet das Fenster.")
+end)
+
+test("German client: the timer in German, the command words and time letters stay English", function(wow)
+  local ns = german(wow)
+  wow.slash("/rc timer")
+  eq(last(wow), P .. "Es läuft kein Timer. /rc timer 10m startet einen.")
+  wow.slash("/rc timer 10m")
+  eq(last(wow), P .. "Timer gestartet: 10m 0s.")
+  wow.slash("/rc timer 1h30m Tee")
+  eq(last(wow), P .. "Timer „Tee“ gestartet: 1h 30m. Er ersetzt den Timer, der lief.")
+  pass(wow, ns, 150)
+  wow.slash("/rc timer")
+  eq(last(wow), P .. "Timer „Tee“: noch 1h 27m von 1h 30m.")
+  wow.slash("/rc abbrechen")
+  eq(ResetClockDB.timer ~= nil, true, "German command words are not commands")
+  eq(has(last(wow), "/rc cancel beendet ihn"), true)
+  wow.slash("/rc cancel")
+  eq(last(wow), P .. "Timer „Tee“ beendet.")
+  wow.slash("/rc cancel")
+  eq(last(wow), P .. "Es läuft kein Timer.")
+  wow.slash("/rc timer 2m")
+  wow.slash("/rc cancel")
+  eq(last(wow), P .. "Timer beendet.")
+  wow.slash("/rc timer bald")
+  eq(last(wow), P .. "Gib die Zeit so an: 10m, 1h30m, 90s oder 15 (Minuten), zum Beispiel /rc timer 10m Tee.")
+  wow.slash("/rc timer 25h")
+  eq(last(wow), P .. "Ein Timer läuft höchstens 24 Stunden.")
+  wow.slash("/rc timer 0")
+  eq(last(wow), P .. "Ein Timer braucht mindestens eine Sekunde.")
+  wow.slash("/rc timer 5s Brot")
+  pass(wow, ns, 5)
+  eq(last(wow), P .. "Timer „Brot“ ist abgelaufen!")
+  eq(game.warnings[1], "Timer „Brot“ ist abgelaufen!", "the raid warning in German too")
+end)
+
+test("German client: a timer that ran out while logged out, and the window in German", function(wow)
+  wow.locale = "deDE"
+  ResetClockDB = { version = 1, settings = {}, timer = { endsAt = wow.now - 30, seconds = 600 } }
+  local ns = boot(wow)
+  eq(wow.chat[1], P .. "Timer ist abgelaufen, während du weg warst.")
+  wow.slash("/rc window")
+  local f = ResetClockFrame
+  eq(f.title:GetText(), "Reset Clock")
+  eq(f.lines[1].left:GetText(), "Tägliche Zurücksetzung")
+  eq(f.lines[1].right:GetText(), "3h 12m")
+  eq(f.lines[2].left:GetText(), "Wöchentliche Zurücksetzung")
+  eq(f.lines[3].left:GetText(), "Timer")
+  wow.slash("/rc timer 2m Tee")
+  pass(wow, ns, 1)
+  eq(f.lines[3].left:GetText(), "Tee")
+  eq(f.lines[3].right:GetText(), "1m 59s")
+  eq(ResetClockDB.timer.label, "Tee", "the timer is saved the same way as in 1.0")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+  end
+  eq(n, 24, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  wow.slash("/rc")
+  eq(wow.chat[1], P .. "Daily reset in 3h 12m.")
+  wow.slash("/rc timer 5s pot")
+  pass(wow, ns, 5)
+  eq(last(wow), P .. "Timer \"pot\" is up!")
+  wow.slash("/rc window")
+  eq(ResetClockFrame.lines[2].left:GetText(), "Weekly reset")
+end)
