@@ -1,0 +1,33 @@
+{
+  "name": "Reset Clock",
+  "summary": "Know at a glance how long until the daily and weekly reset, and set a quick timer that rings in chat when it runs out.",
+  "category": "Miscellaneous",
+  "logoPrompt": "A round brass stopwatch with a glowing blue clock face and a small circular arrow wrapped around its crown",
+  "cover": {
+    "tagline": "Never guess when the reset comes.",
+    "bullets": ["Daily and weekly reset countdown", "A timer with a label and sound", "Small window, updated live"]
+  },
+  "description": [
+    "**Reset Clock tells you how long it is until the daily and the weekly reset, and gives you a simple timer for everything else.**",
+    "",
+    "## Features",
+    "- Countdowns to the daily and the weekly reset of your region.",
+    "- A timer with an optional label, from a few seconds up to 24 hours.",
+    "- When the timer runs out: a line in chat, a raid warning on screen and a sound.",
+    "- A running timer keeps going through a reload or a logout.",
+    "- A small movable window with both countdowns and the timer, updated every second.",
+    "",
+    "## How to use",
+    "Type `/rc` (or `/resetclock`) to see both countdowns. `/rc timer 10m tea` starts a timer, `/rc timer` shows the time left, `/rc cancel` stops it and `/rc window` opens or closes the window.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- One timer runs at a time; a new one replaces it. It is shared by all your characters.",
+    "- A timer that ran out while you were offline is reported at your next login.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

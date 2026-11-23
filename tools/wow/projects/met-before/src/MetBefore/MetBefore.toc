@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Met Before
+## Notes: Remembers the players you grouped with and shows your note on them.
+## Version: @version@
+## SavedVariables: MetBeforeDB
+## IconTexture: Interface\Icons\INV_Misc_Book_09
+
+Locale.lua
+Core.lua
+Roster.lua
+Tooltip.lua
+Commands.lua

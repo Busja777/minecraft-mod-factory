@@ -1,0 +1,18 @@
+{
+  "slug": "met-before",
+  "game": "wow",
+  "name": "Met Before",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MetBefore-1.0.zip",
+      "changelog": "## Met Before 1.0\n\nFirst release.\n\n- Remembers every player you share a party or raid with: when you first and last met, how often you grouped and the zone of your last meeting.\n- A meeting counts once per group, not on every change of the group. A reload inside the group does not count it again.\n- The tooltip of a player you met shows \"Met before: 3 times, last 2 days ago\" and your note on them.\n- `/mb note Name-Realm text` sets your note (no text removes it), `/mb note target text` notes your current target.\n- `/mb list` shows the last 10 players you grouped with, `/mb forget Name-Realm` removes a player.\n- The realm can be left out for players on your own realm or with a unique name.\n- Shared by all characters of your account, the 2000 players met most recently are kept, players with a note last.\n- Inside instances the game can hide player names from addons; those players are skipped there.\n- Open the help with `/mb` or `/metbefore`.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

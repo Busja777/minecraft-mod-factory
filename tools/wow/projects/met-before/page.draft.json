@@ -1,0 +1,34 @@
+{
+  "name": "Met Before",
+  "summary": "Remembers the players you grouped with and puts your own note about them right into their tooltip.",
+  "category": "Tooltip",
+  "logoPrompt": "A small brass-bound address book lying closed with a quill pen resting across its cover and a ribbon bookmark",
+  "cover": {
+    "tagline": "Who you grouped with, and what you thought.",
+    "bullets": ["How often and when you met", "Your own note in the tooltip", "Last 10 group mates in chat"]
+  },
+  "description": [
+    "**Met Before keeps track of the players you share a group with and shows you in their tooltip when you met and what you noted about them.**",
+    "",
+    "## Features",
+    "- Notes every party and raid member: first and last meeting, times grouped and the zone.",
+    "- The tooltip of a known player shows how often you met and how long ago.",
+    "- Your own short note on a player, shown in the same tooltip.",
+    "- A list of the last 10 players you grouped with.",
+    "- Shared by all characters of your account.",
+    "",
+    "## How to use",
+    "It starts on its own. Type `/mb` for all commands. `/mb note Name-Realm text` sets your note, `/mb note target text` notes your target, `/mb list` shows recent group mates, `/mb forget Name-Realm` removes a player.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- Inside instances the game can hide player names from addons, so players there may be skipped and their tooltip stays plain.",
+    "- A meeting counts once per group, not on every change.",
+    "- The 2000 players met most recently are kept.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

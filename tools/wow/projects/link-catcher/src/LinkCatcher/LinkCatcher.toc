@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Link Catcher
+## Notes: Makes web links in chat clickable so you can copy them, and copies chat text.
+## Version: @version@
+## SavedVariables: LinkCatcherDB
+## IconTexture: Interface\Icons\INV_Misc_Note_01
+
+Locale.lua
+Core.lua
+UI.lua
+Catcher.lua
