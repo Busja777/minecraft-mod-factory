@@ -1,0 +1,18 @@
+{
+  "slug": "zone-notes",
+  "game": "wow",
+  "name": "Zone Notes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ZoneNotes-1.0.zip",
+      "changelog": "## Zone Notes 1.0\n\nFirst release.\n\n- Write your own notes for the zone you are in with `/zn add <text>`, up to 10 notes per zone and 200 characters per note.\n- When you enter a zone with notes, they show in chat and in a small window. Drag the window anywhere, its position is remembered. Close it with its close button, a right-click or Escape.\n- `/zn` or `/zonenotes` shows the notes of this zone and all commands. `/zn list` shows the notes, `/zn remove <number>` deletes one, `/zn all` lists every zone with notes.\n- `/zn window` opens or closes the window. `/zn popup off` keeps it closed when you enter a zone, `/zn quiet on` turns off the chat lines.\n- Notes are shared by all characters of your account. Small maps such as caves and buildings count as the zone around them.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

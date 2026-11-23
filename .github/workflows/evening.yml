@@ -6,7 +6,16 @@ name: Evening — update a due project
 # whose slot falls into the next 10 minutes or has passed (catch-up). Each account updates at most
 # one project per day: its projects take turns (longest without an update first), each at least 23 days after its last
 # upload (config.updateIntervalDays). Accounts without a published project have no leg.
+#
+# Main trigger since 2026-11-22: the Claude routine "Abend-Wecker" comments every day at 15:50 UTC on
+# the open issue labelled "abend-wecker" (the Claude GitHub app may comment, but may not start workflows).
+# That comment starts this workflow as a wake-up call: every leg sleeps until its slot. Only comments
+# by the repository owner on that issue count; the gate keeps all rules (window, once a day, 23 days).
+# GitHub's own cron below stays as a fallback only: on 21 and 22 Nov 2026 it fired once at 22:36 and
+# not at all, so nothing uploaded.
 on:
+  issue_comment:
+    types: [created]
   schedule:
     # Every 10 minutes at uneven minutes: GitHub drops and delays many fires at :00 and :30
     # (until 2026-11-20 the 30-minute cron fired once a day around 02:00, never in the window).
@@ -16,6 +25,10 @@ on:
     inputs:
       force:
         description: 'Run now, ignoring the time window and the once-per-day rule (needs modId or account)'
+        type: boolean
+        default: false
+      waitForSlot:
+        description: 'Wake-up call by hand: start before the window, every account waits for its own slot'
         type: boolean
         default: false
       modId:
@@ -38,6 +51,11 @@ env:
 
 jobs:
   gate:
+    # A comment starts the run only when it is the wake-up call (see above); every other comment is skipped.
+    if: >-
+      github.event_name != 'issue_comment' ||
+      (contains(github.event.issue.labels.*.name, 'abend-wecker') &&
+       github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -56,6 +74,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE: ${{ inputs.force && 'true' || 'false' }}
+          WAIT_FOR_SLOT: ${{ (inputs.waitForSlot || github.event_name == 'issue_comment') && 'true' || 'false' }}
           INPUT_MOD_ID: ${{ inputs.modId }}
           INPUT_ACCOUNT: ${{ inputs.account }}
         run: node scripts/schedule-gate.js --window evening --per-account
@@ -66,7 +85,8 @@ jobs:
     needs: gate
     if: needs.gate.outputs.any == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    # Up to 4 hours of waiting for the slot after the wake-up call, plus 75 minutes of work.
+    timeout-minutes: 330
     strategy:
       fail-fast: false
       matrix:
