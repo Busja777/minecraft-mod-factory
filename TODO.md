@@ -1,41 +1,37 @@
 # To-dos
 
-Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
+Stand: 23.11.2026 abends. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
 
-## Auf einen Blick (21.11.)
+## Auf einen Blick (23.11.)
 
-**Fertig gebaut:**
-- auf `main`: Java 12 (davon 11 im Vorrat; Ice Cave Advancements wartet auf 26.4), Stardew 5, WoW 12;
-- in offenen PRs: Bedrock 7 (#29), Stardew 6 (#33, #39).
+**Fertig gebaut (auf `main`, mit Vorrat):** WoW 20, Java 15, Stardew 17. Bedrock 7 liegt in #29. Online ist noch nichts: Der Engpass ist das Anlegen, nicht das Bauen.
 
-**Online ist noch nichts:** Der Engpass ist das Anlegen, nicht das Bauen.
+**Heute gemergt (auf dein Wort):** #113 (Radar-Test), #107 (Abend-Wecker), #108 (Data und Resource Pack in einer Zip), #40 (diese Liste). Dazu von selbst: #111 und #112 (Deutsch für die vier neuen WoW-Addons und drei Stardew-Packs). Bis auf die Java-Packs ist jetzt jedes gebaute Projekt zweisprachig; Data Packs haben keine Sprachdateien.
+
+**Was heute schiefging:** Der Radar trägt seit #84 Packs, die für eine kommende Version gebaut sind, als „wartet“ ein (`ok: null`). Die Daten-Prüfung im Test kannte das nicht, `main` war vom Radar-Lauf in der Nacht bis zum Abend rot, und alle PRs hingen. Behoben mit #113. Lehre: Neue Datenformen des Radars bekommen ihren Test im selben PR.
 
 **Was gut läuft**
-- Helfer bauen nach `BRIEF.md`, Claude liest gegen, prüft die Bilder und baut. Die Helfer haben vier echte Fehler in Claudes Prüfungen gefunden.
-- Inhalte gehen über `serie/auto-…` von `main` ohne dich durch (#25, #32, #35, #36, #38). Die Sperre hält dicht: Ein Inhalts-PR auf einem Werkzeug-Stand bleibt offen.
-- Für Minecraft 26.x lädt das Spiel unsere Data Packs selbst und meldet jeden Fehler. Trigger Homes wurde im Testserver sogar durchgespielt.
-- Ehrlichkeit vor Menge: „Faster Fruit Trees“ ist ersetzt, weil die Wachstumszeit im Spiel fest eingebaut ist; „Gentle Ghasts“ geht in Calm Creepers auf (Fair Play).
+- Helfer bauen nach `BRIEF.md`, Claude liest gegen, prüft die Bilder und baut.
+- Inhalte gehen über `serie/auto-…` von `main` ohne dich durch, die Nacht-Sitzung baut jede Nacht (zuletzt #110: vier WoW-Addons). Die Sperre hält dicht.
+- Für Minecraft 26.x und alle Zwischenversionen ab 1.21.5 lädt das Spiel unsere Data Packs selbst (`--zwischen`).
+- Ehrlichkeit vor Menge: Spielnamen nur aus dem Wiki, kein übernommener Spieltext, keine Gewinn-Schleifen.
 
 **Was nicht gut läuft**
-- **Zu viele Werkzeug-PRs warten:** #27 Bilder, #28 WoW-Seiten, #29 Bedrock, #30 Anlegen, #31 Saison, #33 Stardew-Post, #34 Trend-Radar, #37 Trank-IDs. Ohne #29, #30 und #28 kommen Bedrock, das Anlegen in einer Minute und neue WoW-Addons nicht voran. Neue Werkzeug-PRs gibt es nur noch für Fehler, die beim Bauen auftauchen.
-- **Die Nacht-Sitzung lief noch nie:** Diese Sitzung und sie teilen sich ein Ausgabe-Limit. Claude baut tagsüber mit höchstens zwei Helfern und abends nichts Großes. Besser wäre ein höheres Limit (deine Entscheidung).
+- **Werkzeug-PRs warten weiter:** #29 Bedrock, #30 Anlegen, #28 WoW-Seiten, #27 Bilder, #31 Saison, #34 Trend-Radar, #37 Trank-IDs. #18 (externer Wecker) ist durch #107 wohl überholt und kann geschlossen werden (deine Entscheidung).
 - **Blind bleibt blind:** Stardew, Bedrock und 1.21.1 sind ungetestet im Spiel; die Seiten sagen nichts anderes.
 
-**Empfohlene Reihenfolge für deine Merges:** **#89 zuerst** (Java-Dateien für die Zwischenversionen, behebt kaputte Packs auf 1.21.5 bis 26.2) → #29 → #30 (Anlegen) → #28 → #27 → #33 → #37 → #75 → #84 → #31 → #34. Danach `npm run cf -- serie` für die 18 Minecraft-Projekte, die schon warten.
+**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #37 → #31 → #34. Danach `npm run cf -- serie` für die Minecraft-Projekte, die schon warten.
 
-## Abend 21.11.: Java-Packs auf den Zwischenversionen
+## Java-Packs auf den Zwischenversionen (seit #89)
 
-- Ein Ladetest über alle Minecraft-Versionen von 1.21.5 bis 26.2 hat gezeigt: Unsere Zwei-Versionen-Dateien nehmen jede Version dazwischen an. Drei Packs funktionierten dort nicht richtig, bei Hush wären auf 1.21.2 bis 1.21.4 die Wölfe stumm.
-- **#89** ordnet jeder Zwischenversion den Dateisatz zu, der bei ihr nachweislich lädt (`alsoLoads`). Offen bleiben Anglers Loot und Farmers Advancements auf 26.2 sowie das Rezeptbuch von Uncraft Basics auf 1.21.2 bis 26.2; dafür bräuchte es einen dritten Dateisatz (deine Entscheidung).
-- **Bis #89 gemergt ist, baut Claude keine Java-Updates**, sonst wären sie gleich wieder veraltet.
-- **Später möglich:** Die sieben Packs, die überall laden, könnten auf CurseForge auch 1.21.5 bis 26.2 angeben. Das bringt mehr Reichweite, braucht aber einen eigenen Schritt im Upload.
-- **Speicherplatz:** Auf deinem Mac sind nur noch etwa 14 GB frei. Der Zwischenspeicher `~/.cache/mod-factory/minecraft/` enthält jetzt 14 weitere Versionen (3,4 GB). Die Ordner 1.21.2 bis 26.2 dürfen jederzeit weg; `--zwischen` lädt sie bei Bedarf neu.
+- Jede Zwischenversion von 1.21.2 bis 26.2 hat ihren Dateisatz (`alsoLoads`). Offen bleiben Anglers Loot und Farmers Advancements auf 26.2 sowie das Rezeptbuch von Uncraft Basics auf 1.21.2 bis 26.2; dafür bräuchte es einen dritten Dateisatz (deine Entscheidung).
+- **Später möglich:** Die Packs, die überall laden, könnten auf CurseForge auch 1.21.5 bis 26.2 angeben. Mehr Reichweite, braucht aber einen eigenen Schritt im Upload.
+- **Speicherplatz:** Die Ordner 1.21.2 bis 26.2 in `~/.cache/mod-factory/minecraft/` (3,4 GB) dürfen jederzeit weg; `--zwischen` lädt sie bei Bedarf neu.
 
-## Nacht-Sitzung läuft (22.11.)
+## Nacht-Sitzung
 
-- Erster Lauf erfolgreich (#102, von selbst gemergt). Claude hat den Code gegengelesen: keine Kampfdaten (Death Diary nutzt nur `PLAYER_DEAD`).
+- Läuft jede Nacht um 1:30 (zuletzt #102, #110, von selbst gemergt). Claude liest den Code am Morgen gegen.
 - **#101 braucht dich:** (1) Neue Projekte landen nachts nur mit `page.draft.json`, weil der Test für jede `page.json` ein Logo verlangt und die Nacht keine Bilder macht. Lösung: Logo-Prüfung als Warnung, solange ein Projekt nicht angelegt ist, oder der Bilder-Workflow (#27). (2) Die Cloud-Umgebung sperrt `maven.fabricmc.net`, daher keine Fabric-Mods nachts; Freigabe in den Netzwerk-Einstellungen der Umgebung oder Test ohne Netz überspringen.
-- Die vier neuen Addons sind englisch; Deutsch nach dem Muster von heute kann als erstes Update folgen.
 
 ## WoW auf Deutsch (21.11. abends)
 
@@ -68,7 +64,7 @@ Stand: 21.11.2026 mittags. Ganz oben steht, was als Nächstes dran ist. Grundsat
 
 **Was nicht gut lief:** Zweimal stand im Plan ein Update, das schon gebaut war. Ein Abgleich aller 126 Pläne mit dem Code hat das aufgeräumt (#76). Ab jetzt lese ich vor jedem Auftrag die Changelogs des Projekts.
 
-**Neuer Werkzeug-PR #75 (wartet auf dich):** Die Stardew-Prüfung lässt jetzt übersetzte Einstellungstexte zu. Danach können sieben Stardew-Projekte ein Update „Deutsch“ bekommen.
+**Werkzeug-PR #75 (gemergt):** Die Stardew-Prüfung lässt übersetzte Einstellungstexte zu; alle Stardew-Packs mit Einstellungen haben sie inzwischen auf Deutsch.
 
 **Der Vorrat ist weit voraus:** WoW und viele Java-Packs haben 3 bis 5 Versionen, bei einem Update pro Bein und Tag reicht das für Monate. Neue Projekte bremsen die fehlenden Logos (OpenAI-Guthaben) und das Anlegen.
 
