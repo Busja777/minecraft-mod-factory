@@ -1,0 +1,38 @@
+{
+  "name": "Bottled Levels",
+  "summary": "Pour your experience into glass bottles at an enchanting table, keep it for later or hand it to a friend.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A single glass bottle filled with glowing green experience orbs and a cork stopper, small green sparkles around it, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Store your experience in bottles.",
+    "bullets": [
+      "Fill bottles at the table",
+      "Throw one to get it back",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Bottled Levels turns your experience into bottles you can store in a chest, carry to the next enchanting session or give to another player.**",
+    "",
+    "## Features",
+    "- Each filled bottle takes 50 experience points from you and holds 45 of them.",
+    "- Throw it, or shoot it from a dispenser, and it releases exactly the amount it holds.",
+    "- The bottle shows its amount below its name, and filled bottles stack with each other.",
+    "- Plain Bottles o' Enchanting work as before.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Hold a glass bottle, sneak and right-click an enchanting table.",
+    "",
+    "## Good to know",
+    "- 10% of the points are lost on bottling, so experience is never copied.",
+    "- With fewer than 50 points nothing happens and a short hint appears.",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players can join without installing anything.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

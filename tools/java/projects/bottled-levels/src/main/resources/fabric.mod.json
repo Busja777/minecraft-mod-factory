@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "bottledlevels",
+  "version": "${version}",
+  "name": "Bottled Levels",
+  "description": "Sneak and right-click an enchanting table with a glass bottle to fill a Bottle o' Enchanting with 50 of your experience points; thrown, it gives back 45. Works on the server alone; players need nothing installed.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.bottledlevels.BottledLevels"]
+  },
+  "mixins": ["bottledlevels.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
