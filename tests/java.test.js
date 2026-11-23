@@ -4,7 +4,7 @@ import AdmZip from 'adm-zip';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { listPacks, packOf, generate, checkPack, buildZip, PACK_FORMAT, RELEASES, isMod, mcmeta, versionsOf, releaseName, formatOf, planTiers } from '../tools/java/lib.js';
+import { listPacks, packOf, generate, checkPack, buildZip, PACK_FORMAT, RELEASES, isMod, mcmeta, versionsOf, releaseName, formatOf, planTiers, BOTH, sidesOf, zipRange } from '../tools/java/lib.js';
 import { versionDir, javaFor } from '../tools/java/vanilla.js';
 import { parseLoadLog, loadTest } from '../tools/java/loadtest.js';
 
@@ -207,4 +207,59 @@ test('Java: Minecraft 26.3 loads a two-version pack and reports a wrong one', { 
   const bad = loadTest('26.3', [await buildZip({ ...pack, name: 'Wrong' }, newFiles, '1.0', out, [{ mc: '26.3', files: oldFiles }])]);
   assert.equal(bad.ok, false);
   assert.ok(bad.errors.some(e => e.registry === 'minecraft:recipe' && e.element === 'probe:oak_stairs'), JSON.stringify(bad.errors));
+});
+
+// A data+resource pack: one zip for a world's datapacks folder and for resourcepacks.
+test('Java: a data+resource pack declares one range for both loaders and keeps each side in its own overlay', async () => {
+  assert.deepEqual(sidesOf(BOTH), ['data', 'resource']);
+  assert.deepEqual(sidesOf({ kind: 'resource' }), ['resource']);
+  assert.equal(formatOf('1.21.1', BOTH), 34);
+  const pack = { slug: 'probe', name: 'Probe', description: 'Probe', kind: BOTH, mc: '1.21.1', also: ['26.3'], alsoLoads: { '26.3': BETWEEN }, dir: fs.mkdtempSync(path.join(os.tmpdir(), 'java-probe-')) };
+  assert.deepEqual(zipRange(pack), [34, 121]);
+  // each side is planned in its own formats, inside the range of the whole zip
+  assert.deepEqual(planTiers(pack, undefined, 'data').tiers.map(t => [t.mc, t.format]), [['1.21.1', 48], ['26.3', 121]]);
+  assert.deepEqual(planTiers(pack, undefined, 'resource').tiers.map(t => [t.mc, t.format]), [['1.21.1', 34], ['26.3', 97]]);
+  assert.throws(() => planTiers({ ...pack, alsoLoads: { '26.3': BETWEEN.slice(1) } }), /Minecraft 1\.21\.2 accept it too/);
+
+  const oldFiles = {
+    'data/p/trim_material/a.json': buf({ item_model_index: 0.11 }), 'data/p/tags/item/x.json': buf({ values: [] }),
+    'assets/p/lang/en_us.json': buf({ a: 'A' }), 'assets/minecraft/models/item/iron_helmet.json': buf({ overrides: [] })
+  };
+  const newFiles = {
+    'data/p/trim_material/a.json': buf({ asset_name: 'a' }), 'data/p/tags/item/x.json': buf({ values: [] }),
+    'assets/p/lang/en_us.json': buf({ a: 'A' }), 'assets/minecraft/models/item/iron_helmet.json': buf({ parent: 'x' })
+  };
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'java-zip-'));
+  const zip = new AdmZip(await buildZip(pack, oldFiles, '1.0', out, [{ mc: '26.3', files: newFiles }]));
+  assert.deepEqual(zip.getEntries().map(e => e.entryName).sort(), [
+    'assets/minecraft/models/item/iron_helmet.json', 'assets/p/lang/en_us.json', 'data/p/tags/item/x.json', 'data/p/trim_material/a.json',
+    'mc_1_21_1_assets/assets/minecraft/models/item/iron_helmet.json', 'mc_1_21_1_data/data/p/trim_material/a.json', 'pack.mcmeta'
+  ]);
+  // the shape the 26.3 codecs read as compatible for both loaders at every format of 1.21.9 to 26.3
+  // (and 1.21.1 reads through pack_format / supported_formats / formats)
+  assert.deepEqual(JSON.parse(zip.readAsText('pack.mcmeta')), {
+    pack: { pack_format: 34, description: 'Probe (v1.0)', supported_formats: { min_inclusive: 34, max_inclusive: 121 }, min_format: 34, max_format: 121 },
+    overlays: { entries: [
+      { formats: { min_inclusive: 34, max_inclusive: 34 }, min_format: 34, max_format: 34, directory: 'mc_1_21_1_assets' },
+      { formats: { min_inclusive: 48, max_inclusive: 48 }, min_format: 48, max_format: 48, directory: 'mc_1_21_1_data' }
+    ] }
+  });
+  // a file only the new version has is still caught, per side
+  const { ['assets/p/lang/en_us.json']: _, ...noLang } = oldFiles;
+  await assert.rejects(buildZip(pack, noLang, '1.1', out, [{ mc: '26.3', files: newFiles }]), /assets\/p\/lang\/en_us\.json only exist for 26\.3/);
+  // between 65 and 82 one loader reads the old spelling, the other the new one: no such pack
+  assert.throws(() => mcmeta({ kind: BOTH, description: 'd', min: 69, max: 121 }), /cannot start at format 69/);
+  assert.deepEqual(mcmeta({ kind: BOTH, description: 'd', min: 97, max: 121 }), { pack: { description: 'd', min_format: 97, max_format: 121 } });
+});
+
+test('Java: a data+resource pack may only have data/ and assets/, and data/ follows the data pack rules', { skip }, () => {
+  const vanilla = vanillaOf('1.21.1');
+  const problems = checkPack({ kind: BOTH, mc: '1.21.1' }, {
+    'data/x/recipes/a.json': buf({}),
+    'data/x/trim_material/b.json': buf({ asset_name: 'b' }),
+    'assets/x/textures/trims/color_palettes/b.png': Buffer.from([]),
+    'other/c.json': buf({})
+  }, vanilla);
+  assert.deepEqual(problems.sort(), ['data/x/recipes/a.json: the folder is "recipe" since 1.21, "recipes" is ignored', 'other/c.json: a data+resource pack only has data/ and assets/']);
+  assert.deepEqual(checkPack({ kind: 'resource', mc: '1.21.1' }, { 'data/x/tags/item/a.json': buf({ values: [] }) }, vanilla), ['data/x/tags/item/a.json: a resource pack only has assets/']);
 });

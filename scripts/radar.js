@@ -18,7 +18,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { latestJava, latestBedrockSamples, changes, merged, nextContent, compatLine, waitingFor } from './lib/radar.js';
-import { listPacks, packOf, generate, checkPack, buildZip, isMod } from '../tools/java/lib.js';
+import { listPacks, packOf, generate, checkPack, buildZip, isMod, sidesOf } from '../tools/java/lib.js';
 import { ensureVanilla, registry, javaFor } from '../tools/java/vanilla.js';
 import { supportsLoadTest, loadTest } from '../tools/java/loadtest.js';
 
@@ -56,7 +56,7 @@ async function tryPack(pack, version, vanilla) {
   try { files = await generate(pack, vanilla, version); } catch (e) { return { ok: false, loaded: false, files: 0, problems: [`the generator fails: ${e.message}`] }; }
   const problems = checkPack(pack, files, vanilla);
   let loaded = false;
-  if (!problems.length && pack.kind === 'data' && supportsLoadTest(version)) {
+  if (!problems.length && sidesOf(pack).includes('data') && supportsLoadTest(version)) {
     const zip = await buildZip({ ...pack, mc: version, also: undefined, alsoLoads: undefined }, files, '0.0', fs.mkdtempSync(path.join(os.tmpdir(), 'radar-')));
     const r = loadTest(version, [zip]);
     loaded = true;

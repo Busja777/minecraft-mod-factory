@@ -56,6 +56,17 @@ those releases reads (`{ "1.21.1": [ … ], "26.3": [ … ], "broken": [ … ] }
 lets the game load them. Put a release under a file set only after that check passes; "broken"
 is for releases where no file set works yet.
 
+## Data pack and resource pack in one zip
+Some content needs both sides: a new registry entry in data/ (a trim material, a painting, a
+jukebox song) is useless without its texture, model or name in assets/. Such a pack has
+`"kind": "data+resource"`: one zip that the player puts into the world's `datapacks` folder and
+into `resourcepacks`; the data loader reads only data/, the resource loader only assets/. `pack.js`
+returns files under both and gets `format` as `{ data, resource }` (1.21.1: 48 and 34, 26.3: 121
+and 97). Everything else works as above: data/ is checked like a data pack and loaded by the game's
+test server, assets/ like a resource pack, and each side gets its own overlay folder. The page must
+tell the player to put the zip into both folders. Use this kind only when the content does not
+work without both sides.
+
 ## Files to deliver (all under tools/java/projects/<slug>/)
 - `pack.json`: `{ kind, name, description (short, shown in the game's pack list), mc: "1.21.1", gameVersions: ["1.21", "1.21.1"] }`
 - `pack.js`
