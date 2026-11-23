@@ -25,6 +25,13 @@
 // of the new season wither when it changes, going to bed by midnight restores full energy (Day Cycle
 // page), rain waters crops, several summer crops keep producing after the first harvest (Crops page),
 // and wild trees do not grow in winter (Trees page).
+//
+// 1.1, German: i18n/de.json has every letter and title in German (texts and the German names with
+// their wiki sources in de.js). Content Patcher picks the file for the game language and falls back
+// to default.json (author-guide/translations.md); every key here has a German text. Same keepsakes,
+// same dates; the English texts stay as in 1.0.
+
+import { DE, SIGN } from './de.js';
 
 // [season, day, keepsake item ID or null, letter text, title]
 export const LETTERS = [
@@ -47,11 +54,14 @@ export const LETTERS = [
 
 // the game's own Grandpa story must not be contradicted (see above)
 const FORBIDDEN = /evaluat|shrine|candle|year (two|three|3)|come back|return|watching over|judge/i;
+// the same for the German letters (Auswertung, Schrein, Kerzen, Jahr 3, zurückkommen …)
+const FORBIDDEN_DE = /auswert|bewert|schrein|kerze|geist|jahr (zwei|drei|3)|(zweiten|dritten) jahr|zurück|wiederkomm|rückkehr|wach(e|t) über|urteil/i;
 
 export default async function ({ items }) {
   const mail = {};
   const triggers = {};
   const i18n = {};
+  const de = {};
   const seen = new Set();
   for (const [season, day, keepsake, text, title] of LETTERS) {
     const name = `${season}${day}`;
@@ -66,6 +76,19 @@ export default async function ({ items }) {
     const id = `{{ModId}}_${season[0].toUpperCase()}${season.slice(1)}${day}`;
     i18n[`letter.${name}`] = text;
     i18n[`title.${name}`] = title;
+
+    // German (since 1.1): same keepsake, named with its German game name, signed by Opa.
+    const [deKeepsake, deItem, deText, deTitle] = DE[name] || [];
+    if (!deText || !deTitle) throw new Error(`${name}: German text missing in de.js`);
+    if (deKeepsake !== keepsake) throw new Error(`${name}: de.js must name the same keepsake ${keepsake}`);
+    if (keepsake && !deText.includes(deItem)) throw new Error(`${name}: the German letter does not name its keepsake ${deItem}`);
+    if (FORBIDDEN_DE.test(deText + deTitle)) throw new Error(`${name}: "${(deText + deTitle).match(FORBIDDEN_DE)[0]}" touches Grandpa's evaluation story`);
+    if (/[%[\]¦{}#$]/.test(deText + deTitle)) throw new Error(`${name}: mail command characters in the German text`);
+    if (!/^(Mein liebes|Liebes) Enkelkind @,\^\^/.test(deText)) throw new Error(`${name}: the German letter must greet the player ("Liebes Enkelkind @,")`);
+    if (/\b(Sie|Ihnen|Ihr|Ihre)\b/.test(deText)) throw new Error(`${name}: German letters use the Du-form`);
+    if ((deText.match(/@/g) || []).length !== (text.match(/@/g) || []).length) throw new Error(`${name}: the German letter has another number of @ than the English one`);
+    de[`letter.${name}`] = `${deText}${deText.endsWith('^') ? '' : '^^'}${SIGN}`;
+    de[`title.${name}`] = deTitle;
     mail[id] = `{{i18n:letter.${name}}}${keepsake ? `%item id ${keepsake} 1 %%` : ''}[#]{{i18n:title.${name}}}`;
     triggers[id] = {
       Id: id,
@@ -74,6 +97,9 @@ export default async function ({ items }) {
       Actions: [`AddMail Current ${id} Now`]
     };
   }
+  const extra = Object.keys(DE).filter(n => !seen.has(n));
+  if (extra.length) throw new Error(`de.js has letters pack.js does not send: ${extra.join(', ')}`);
+  if (Object.keys(de).sort().join() !== Object.keys(i18n).sort().join()) throw new Error('i18n/de.json must have exactly the keys of default.json');
   return {
     'content.json': {
       Format: '2.9.0',
@@ -82,6 +108,7 @@ export default async function ({ items }) {
         { LogName: 'Send them through the first year', Action: 'EditData', Target: 'Data/TriggerActions', Entries: triggers }
       ]
     },
-    'i18n/default.json': i18n
+    'i18n/default.json': i18n,
+    'i18n/de.json': de
   };
 }

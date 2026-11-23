@@ -14,6 +14,16 @@
         "1.6.14",
         "1.6.15"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "SeasonalCarePackages-1.1.zip",
+      "changelog": "## Seasonal Care Packages 1.1\n\nNow in German too.\n\n- All four letters and their titles are translated into German. Players with the game set to German get the German letters; everyone else keeps the English ones.\n- Same senders, same parcels, same day 10 of each season; nothing else changes.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
     }
   ]
 }
