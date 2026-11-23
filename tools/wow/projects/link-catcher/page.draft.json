@@ -1,0 +1,32 @@
+{
+  "name": "Link Catcher",
+  "summary": "Turns web addresses in chat into links you can click and copy, and lets you copy whole chat lines as plain text.",
+  "category": "Chat & Communication",
+  "logoPrompt": "A small butterfly net made of wood and gold mesh, holding a glowing blue chain link inside it",
+  "cover": {
+    "tagline": "Copy web links straight from chat.",
+    "bullets": ["Clickable web links in chat", "One click, then Ctrl+C", "Copy chat as plain text"]
+  },
+  "description": [
+    "**Link Catcher makes the web addresses other players post in chat clickable, so you can copy a guide or an invite without typing it out.**",
+    "",
+    "## Features",
+    "- Web addresses in chat turn into blue links: full addresses, ones starting with www. and short ones without it.",
+    "- A click opens a small box with the address already selected, ready to copy.",
+    "- Copy the last lines of your main chat window as plain text, without colours or icons.",
+    "- Item links, colours and numbers like 1.5 in a message stay as they are.",
+    "",
+    "## How to use",
+    "Click a blue link in chat, press Ctrl+C (Cmd+C on a Mac) and paste it in your browser. Type `/lc copy` to copy chat, `/lc copy 50` for fewer lines. `/lc off` and `/lc on` switch the links, `/lc` lists all commands.",
+    "",
+    "## Good to know",
+    "- Works on Retail. It works in say, whispers, party, raid, guild, channels and Battle.net whispers.",
+    "- Messages the game keeps hidden inside instances are left untouched.",
+    "- It never opens a browser by itself; you copy and paste.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
