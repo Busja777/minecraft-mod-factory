@@ -1,5 +1,5 @@
 {
-  "checked": "2026-11-22",
+  "checked": "2026-11-23",
   "release": "26.3",
   "snapshot": "26.4-snapshot-10",
   "packs": {
@@ -12,14 +12,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 7,
+        "files": 8,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 7,
+        "files": 8,
         "problems": [],
         "more": 0
       }
@@ -93,12 +93,8 @@
         "26.4-snapshot-10"
       ],
       "26.3": {
-        "ok": false,
-        "loaded": false,
-        "files": 0,
-        "problems": [
-          "the generator fails: this version has no frostbite"
-        ]
+        "ok": null,
+        "waiting": "26.4"
       },
       "26.4-snapshot-10": {
         "ok": true,
@@ -201,14 +197,14 @@
       "26.3": {
         "ok": true,
         "loaded": true,
-        "files": 11,
+        "files": 12,
         "problems": [],
         "more": 0
       },
       "26.4-snapshot-10": {
         "ok": true,
         "loaded": true,
-        "files": 11,
+        "files": 12,
         "problems": [],
         "more": 0
       }
