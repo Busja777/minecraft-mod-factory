@@ -182,3 +182,22 @@ test('schedule-gate --per-account: one leg per account, a forced run starts exac
   assert.throws(() => run(dir, 'schedule-gate.js', ['--window', 'evening', '--per-account'], { FORCE: 'true' }), /FORCE needs a modId or an account/);
   assert.throws(() => run(dir, 'schedule-gate.js', ['--window', 'evening', '--per-account'], { FORCE: 'true', INPUT_ACCOUNT: 'tetris' }), /Unknown account "tetris"/);
 });
+
+test('select-mode: one upload per account and day, even after a run that failed after its upload', () => {
+  const dir = repo();
+  const file = path.join(dir, 'data', 'cf-projects.json');
+  const entries = JSON.parse(fs.readFileSync(file, 'utf-8'));
+  // Another project of the same account went up at 18:05 Berlin today (NOW is 19:30 Berlin).
+  entries.push({ modId: 'barn-paint', kind: 'file', game: 'stardewvalley', name: 'Barn Paint', projectId: 4343, status: 'published', version: '1.1', lastPublishedAt: '2026-11-20T17:05:00.000Z', nextUpdateDue: null, updateCount: 1, files: [] });
+  fs.writeFileSync(file, JSON.stringify(entries, null, 2));
+  const blocked = run(dir, 'select-mode.js', [], { MODE: 'update', ACCOUNT: 'stardewvalley' });
+  assert.match(blocked, /barn-paint went up today already/);
+  assert.match(blocked, /::output mode=skip/);
+  assert.match(blocked, /::output reason=already-uploaded-today/);
+  // the operator's word (a run started with a modId) still uploads
+  assert.match(run(dir, 'select-mode.js', [], { MODE: 'update', ACCOUNT: 'stardewvalley', INPUT_MOD_ID: 'cozy-farm' }), /::output modId=cozy-farm/);
+  // an upload in another account does not block this one
+  entries.find(e => e.modId === 'barn-paint').game = 'bedrock';
+  fs.writeFileSync(file, JSON.stringify(entries, null, 2));
+  assert.match(run(dir, 'select-mode.js', [], { MODE: 'update', ACCOUNT: 'stardewvalley' }), /::output modId=cozy-farm/);
+});
