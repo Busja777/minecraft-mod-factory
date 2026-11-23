@@ -54,6 +54,12 @@ test('radar: the baseline and the report in data/radar are well-formed', () => {
   for (const [slug, pack] of Object.entries(java.packs)) {
     for (const version of [java.release, java.snapshot].filter(Boolean)) {
       if (!pack[version]) continue;
+      if (pack[version].waiting) {
+        // built ahead for a coming version: not checked on older ones (scripts/radar.js)
+        assert.equal(pack[version].ok, null, `${slug} on ${version}: waiting, so not checked`);
+        assert.match(pack[version].waiting, /^\d/, `${slug} on ${version}: waits for a version`);
+        continue;
+      }
       assert.equal(typeof pack[version].ok, 'boolean', `${slug} on ${version}`);
       assert.equal(pack[version].ok, pack[version].problems.length === 0, `${slug} on ${version}: ok and problems disagree`);
     }
