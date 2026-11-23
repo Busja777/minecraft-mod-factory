@@ -9,7 +9,10 @@
       "version": "1.0",
       "file": "ResetClock-1.0.zip",
       "changelog": "## Reset Clock 1.0\n\nFirst release.\n\n- `/rc` (or `/resetclock`) shows how long it is until the daily and the weekly reset.\n- `/rc timer 10m tea` starts a timer with an optional label. Lengths like `90s`, `10m`, `1h30m` or a plain number of minutes, up to 24 hours.\n- When the timer runs out you get a line in chat, a raid warning on screen and a sound.\n- A running timer keeps going through `/reload` and logouts. `/rc timer` shows the time left, `/rc cancel` stops it.\n- `/rc window` opens a small window with both countdowns and the timer, updated every second. Drag it anywhere, its position is remembered.",
-      "status": "due"
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

@@ -1,0 +1,33 @@
+{
+  "name": "Zone Notes",
+  "summary": "Write your own reminders for any zone and get them back the moment you arrive there again, on every character.",
+  "category": "Map & Minimap",
+  "logoPrompt": "A small folded paper map with a red pushpin holding a yellow sticky note on top of it",
+  "cover": {
+    "tagline": "Your notes, waiting in every zone.",
+    "bullets": ["Notes per zone, typed in chat", "Shown when you arrive", "Shared by all characters"]
+  },
+  "description": [
+    "**Zone Notes lets you write short notes for the zone you are in and shows them again each time you enter that zone.**",
+    "",
+    "## Features",
+    "- Add a note for the current zone with one chat command.",
+    "- Your notes appear in chat when you arrive in the zone.",
+    "- A small window lists them too. Drag it anywhere or close it with a right-click.",
+    "- A list of every zone that has notes.",
+    "- Notes are shared by all characters on your account.",
+    "",
+    "## How to use",
+    "Type `/zn add` followed by your text, for example `/zn add Herbs behind the inn`. `/zn` shows the notes of this zone and all commands, `/zn remove 2` deletes the second note, `/zn all` lists your zones, `/zn popup off` keeps the window closed and `/zn quiet on` turns off the chat lines.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- Up to 10 notes per zone, 200 characters each.",
+    "- Caves and buildings count as the zone around them.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

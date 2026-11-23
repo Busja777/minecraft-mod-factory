@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Zone Notes
+## Notes: Your own notes per zone, shown when you enter the zone.
+## Version: @version@
+## SavedVariables: ZoneNotesDB
+## IconTexture: Interface\Icons\INV_Misc_Note_01
+
+Locale.lua
+Core.lua
+Notes.lua
+UI.lua
+Commands.lua
