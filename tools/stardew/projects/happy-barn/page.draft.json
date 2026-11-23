@@ -1,0 +1,37 @@
+{
+  "name": "Happy Barn",
+  "summary": "Ducks, goats, sheep, rabbits, ostriches and dinosaurs produce sooner, so a well-kept coop and barn pay off a little faster.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small red wooden barn with a heart-shaped window above its open door, a woven basket of eggs and a ball of white wool resting in front of it",
+  "cover": {
+    "tagline": "Less waiting for eggs, milk and wool.",
+    "bullets": [
+      "Ducks and goats produce daily",
+      "Slow animals one day sooner",
+      "Three levels in the config"
+    ]
+  },
+  "description": [
+    "**Happy Barn makes the slower farm animals produce sooner, so ducks, goats, sheep, rabbits, ostriches and dinosaurs pay off faster.**",
+    "",
+    "## Features",
+    "- Generous (default): every animal that takes two days or more produces one day sooner: ducks and goats daily, rabbits every 3 days, ostriches and dinosaurs every 6 days.",
+    "- Sheep grow their wool one day sooner from 1 heart on, instead of from 4.5 hearts.",
+    "- Gentle only speeds up rabbits, ostriches and dinosaurs. Abundant adds a second day for them.",
+    "- Chickens, cows and pigs already produce every day and stay as they are.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Pick the level in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. It only changes how often animals produce, not what they produce or its price.",
+    "- Animals still need food and a good mood to produce, as in the base game.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

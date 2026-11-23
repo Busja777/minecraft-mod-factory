@@ -1,0 +1,8 @@
+{
+  "name": "Happy Barn",
+  "description": "Farm animals that take two days or more between produce make it sooner, at a level picked in the config.",
+  "uniqueId": "SevEvolution.HappyBarn",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}

@@ -318,7 +318,7 @@
       "slug": "bountiful-forage",
       "name": "Bountiful Forage",
       "art": "CP",
-      "was": "Mehr Sammelgut in Wald und Strand",
+      "was": "Mehr Sammelgut in Wald und Strand. ZURÜCKGESTELLT (23.11.): gebaut (Branch park/stardew-bountiful-forage), aber V1.0 ändert nur zwei Zahlen (MaxDailyForageSpawn, MaxSpawnedForageAtOnce) an zwei Orten, zu dünn wie Trash Treasures. Erst bauen, wenn je Jahreszeit oder je Ort eigene, belegte Funde dazukommen.",
       "updates": [
         "je Jahreszeit",
         "Regler",
