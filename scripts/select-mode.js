@@ -1,6 +1,6 @@
 import './lib/load-secrets.js';
 import fs from 'fs';
-import { loadProjects, saveProjects, pickForUpdate, syncLastUpload, findUnassigned, kindOf, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
+import { loadProjects, saveProjects, pickForUpdate, syncLastUpload, uploadedToday, findUnassigned, kindOf, DEFAULT_INTERVAL_DAYS } from './lib/cf-projects.js';
 import { listFiles } from './platforms/curseforge-core.js';
 import { loadPack, hasDueVersion, listPacks } from './lib/skinpacks.js';
 import { loadReleaseProject, listReleaseProjects } from './lib/releases.js';
@@ -88,8 +88,12 @@ let result;
 if (mode === 'new') {
   result = { mode: 'new', modId: '', reason: 'manual' };
 } else if (mode === 'update') {
-  const target = pickUpdate();
-  result = target ? { mode: 'update', modId: target.modId, reason: requested ? 'manual' : target.status === 'pending' ? 'first-file' : 'due' } : { mode: 'skip', modId: '', reason: 'nothing-due' };
+  // At most one upload per account and day, checked against CurseForge (synced above). A run started
+  // with a modId is the operator's word and may upload anyway.
+  const done = requested ? null : uploadedToday(projects.filter(inAccount), { now, timeZone: config.timezone || 'Europe/Berlin' });
+  if (done) console.log(`${done.modId} went up today already (${done.lastPublishedAt}) — no second upload for this account today`);
+  const target = done ? null : pickUpdate();
+  result = target ? { mode: 'update', modId: target.modId, reason: requested ? 'manual' : target.status === 'pending' ? 'first-file' : 'due' } : { mode: 'skip', modId: '', reason: done ? 'already-uploaded-today' : 'nothing-due' };
 } else if (mode === 'scheduled-new') {
   result = scheduledNew();
 } else if (mode === 'auto') {

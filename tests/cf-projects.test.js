@@ -109,3 +109,27 @@ test('markRejected flags the project and markPublished throws on unknown modId',
   assert.equal(projects[0].status, 'rejected');
   assert.throws(() => markPublished(projects, 'nope', { fileId: 1, version: '1.0.0' }), /Unknown mod/);
 });
+
+// ── at most one upload per account and local day ──────────────────────────────────────────────
+import { uploadedToday } from '../scripts/lib/cf-projects.js';
+
+test('uploadedToday: an upload earlier on the same Berlin day blocks a second one', () => {
+  const TZ = 'Europe/Berlin';
+  const at = iso => ({ modId: 'a', status: 'published', projectId: 1, lastPublishedAt: iso });
+  const now = new Date('2026-11-24T19:30:00Z'); // 20:30 in Berlin (winter, UTC+1)
+  // 18:30 Berlin the same evening (a run that uploaded and then failed on the data push)
+  assert.equal(uploadedToday([at('2026-11-24T17:30:00Z')], { now, timeZone: TZ })?.modId, 'a');
+  // 23:30 Berlin the day before
+  assert.equal(uploadedToday([at('2026-11-23T22:30:00Z')], { now, timeZone: TZ }), null);
+  // 00:30 Berlin today is still the 23rd in UTC: counts as today
+  assert.equal(uploadedToday([at('2026-11-23T23:30:00Z')], { now, timeZone: TZ })?.modId, 'a');
+  // summer (UTC+2): 00:30 Berlin on 15 Jul is 22:30 UTC on 14 Jul
+  const summer = new Date('2027-07-15T18:00:00Z');
+  assert.equal(uploadedToday([at('2027-07-14T22:30:00Z')], { now: summer, timeZone: TZ })?.modId, 'a');
+  assert.equal(uploadedToday([at('2027-07-14T21:30:00Z')], { now: summer, timeZone: TZ }), null);
+  // never published / no date: never blocks
+  assert.equal(uploadedToday([{ modId: 'b', status: 'pending', lastPublishedAt: null }], { now, timeZone: TZ }), null);
+  assert.equal(uploadedToday([], { now, timeZone: TZ }), null);
+  // the newest of several uploads today is reported
+  assert.equal(uploadedToday([at('2026-11-24T17:30:00Z'), { ...at('2026-11-24T18:00:00Z'), modId: 'b' }], { now, timeZone: TZ })?.modId, 'b');
+});

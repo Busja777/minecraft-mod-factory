@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { localParts } from './schedule.js';
 
 // Tracking file for CurseForge projects.
 // Entry shape:
@@ -80,6 +81,17 @@ export function pickForUpdate(projects, { now = new Date(), minIntervalDays = DE
     .filter(x => x.due.getTime() <= nowMs)
     .sort((a, b) => a.last - b.last || a.due - b.due);
   return due.length ? due[0].p : null;
+}
+
+// The project uploaded on the local calendar day of `now` (newest first), or null. The evening run
+// uploads at most one file per account and day; after syncLastUpload this reflects CurseForge itself,
+// so a run that uploaded and then failed (e.g. on the data push) still blocks a second upload.
+export function uploadedToday(projects, { now = new Date(), timeZone = 'Europe/Berlin' } = {}) {
+  const today = localParts(now, timeZone).dateKey;
+  return projects
+    .filter(p => p.lastPublishedAt && Number.isFinite(Date.parse(p.lastPublishedAt)))
+    .filter(p => localParts(new Date(p.lastPublishedAt), timeZone).dateKey === today)
+    .sort((a, b) => Date.parse(b.lastPublishedAt) - Date.parse(a.lastPublishedAt))[0] || null;
 }
 
 // Takes the real last upload from the project's CurseForge files (newest first, as listFiles returns
