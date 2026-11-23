@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.factory.bonemealmore.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": ["CactusBlockMixin", "NetherWartBlockMixin", "SugarCaneBlockMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
