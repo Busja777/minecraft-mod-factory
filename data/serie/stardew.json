@@ -210,7 +210,7 @@
       "slug": "gift-secret-notes",
       "name": "Gift Secret Notes",
       "art": "CP",
-      "was": "Neue Geheimnotizen verraten Lieblingsgeschenke",
+      "was": "Neue Geheimnotizen verraten Lieblingsgeschenke. ZURÜCKGESTELLT (23.11.): `Data/SecretNotes` ist im Wiki nicht dokumentiert (keine Modding-Seite; Secret Notes, Revision 191277, verweist nur auf den Spielcode). Ob neue IDs überhaupt fallen und was sie mit der Notiz-Sammlung eines Spielstands machen, ist blind nicht prüfbar. Die Brief-Variante läge zu nah an Villager Birthday Reminders (Fair Play).",
       "updates": [
         "+10",
         "Insel-Bewohner",
@@ -442,7 +442,7 @@
       "slug": "sturdy-fences",
       "name": "Sturdy Fences",
       "art": "CP",
-      "was": "Zäune halten länger",
+      "was": "Zäune halten länger. Hinweis (23.11.): braucht `Data/Fences`, das noch nicht in `TARGETS` von `tools/stardew/lib.js` steht (Werkzeug-Änderung, braucht den Betreiber). Bis dahin nicht bauen.",
       "updates": [
         "Regler",
         "je Zaunart",
