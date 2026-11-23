@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { localParts, parseHHMM, formatMinutes, slotFor, decide, planAccounts, localMidnightUtcIso } from './lib/schedule.js';
+import { localParts, parseHHMM, formatMinutes, slotFor, decide, planAccounts, localMidnightUtcIso, WAKE_UP_BUCKET_MINUTES } from './lib/schedule.js';
 import { loadProjects, findProject } from './lib/cf-projects.js';
 import { activeAccounts, accountOf, gameOf, gameKeyOf } from './lib/games.js';
 import { setOutputs, arg, flag } from './lib/github-output.js';
@@ -11,7 +11,7 @@ import { setOutputs, arg, flag } from './lib/github-output.js';
 //   account draws its own slot and gets at most one update per day. Never sleeps; writes the legs
 //   that start in this fire as `matrix` ([{ account, tokenEnv, sleep }], sleep in minutes) and `any`.
 //   The heavy job of a leg is named update-<account>.
-// env: NOW (ISO override for tests), FORCE=true (bypass), GITHUB_TOKEN/GITHUB_REPOSITORY/GITHUB_RUN_ID/GITHUB_WORKFLOW_REF,
+// env: NOW (ISO override for tests), FORCE=true (bypass), WAIT_FOR_SLOT=true (--per-account: wake-up call, legs sleep until their slot), GITHUB_TOKEN/GITHUB_REPOSITORY/GITHUB_RUN_ID/GITHUB_WORKFLOW_REF,
 //      INPUT_MOD_ID / INPUT_ACCOUNT (--per-account: only that project's account / that account; FORCE needs one of them)
 const argv = process.argv.slice(2);
 const windowName = arg(argv, '--window');
@@ -85,7 +85,10 @@ if (perAccount) {
     const legacy = config.games?.bedrock ? gameOf(config, 'bedrock').account : null;
     const todays = await jobsToday();
     const ran = new Set(active.filter(a => todays.some(j => (j.name === `update-${a.account}` || (a.account === legacy && j.name === 'update')) && counts(j))).map(a => a.account));
-    const plan = planAccounts({ accounts: active.map(a => a.account), dateKey: local.dateKey, windowName, salt: repo, start, end, nowMinutes: local.minutesOfDay, ran })
+    // WAIT_FOR_SLOT=true: the daily wake-up call; every leg starts now and sleeps until its slot.
+    const wakeUp = process.env.WAIT_FOR_SLOT === 'true';
+    if (wakeUp) console.log(`Wake-up call: legs wait up to ${WAKE_UP_BUCKET_MINUTES} min for their slot`);
+    const plan = planAccounts({ accounts: active.map(a => a.account), dateKey: local.dateKey, windowName, salt: repo, start, end, nowMinutes: local.minutesOfDay, ran, bucket: wakeUp ? WAKE_UP_BUCKET_MINUTES : undefined })
       .filter(x => !only || x.account === only);
     for (const x of plan) console.log(`  ${x.account}: slot ${formatMinutes(x.slot)}, run=${x.run} (${x.reason})${x.sleepMinutes ? `, starts in ${x.sleepMinutes} min` : ''}`);
     if (!plan.length) console.log('  no account has a published project');

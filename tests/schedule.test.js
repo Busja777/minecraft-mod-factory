@@ -65,7 +65,7 @@ test('localMidnightUtcIso gives the UTC instant of Berlin midnight in summer and
   assert.equal(localMidnightUtcIso(new Date('2026-07-15T23:30:00Z'), TZ), '2026-07-15T22:00:00.000Z');
 });
 
-import { planAccounts } from '../scripts/lib/schedule.js';
+import { planAccounts, WAKE_UP_BUCKET_MINUTES, SLOT_MARGIN_MINUTES } from '../scripts/lib/schedule.js';
 
 test('planAccounts: every account draws its own slot and runs at most once a day', () => {
   const base = { accounts: ['minecraft', 'stardewvalley', 'wow'], dateKey: '2026-11-20', windowName: 'evening', salt: 'repo', start: 18 * 60, end: 21 * 60 };
@@ -84,6 +84,44 @@ test('planAccounts: every account draws its own slot and runs at most once a day
   assert.equal(ran[2].reason, 'already-ran-today');
   assert.ok(planAccounts({ ...base, nowMinutes: 17 * 60 }).every(x => !x.run), 'before the window nothing starts');
   assert.ok(planAccounts({ ...base, nowMinutes: 21 * 60 }).every(x => x.reason === 'window-over'));
+});
+
+test('planAccounts with a wake-up bucket: an early start waits for every slot of the day', () => {
+  // The daily wake-up call (a Claude routine, since GitHub's own cron arrives hours late or not at all)
+  // starts the workflow once before the window; every leg sleeps until its own slot.
+  const base = { accounts: ['minecraft', 'wow'], dateKey: '2026-11-23', windowName: 'evening', salt: 'repo', start: 18 * 60, end: 21 * 60 };
+  const early = planAccounts({ ...base, nowMinutes: 16 * 60 + 50, bucket: WAKE_UP_BUCKET_MINUTES });
+  for (const x of early) {
+    assert.equal(x.run, true);
+    assert.equal(x.reason, 'waiting-for-slot');
+    assert.equal(x.sleepMinutes, x.slot - (16 * 60 + 50), 'sleeps exactly until the slot');
+  }
+  const normal = planAccounts({ ...base, nowMinutes: 16 * 60 + 50 });
+  assert.deepEqual(early.map(x => x.slot), normal.map(x => x.slot), 'the wake-up call does not move the slots');
+  assert.ok(normal.every(x => !x.run), 'a cron fire before the window still waits');
+  assert.ok(planAccounts({ ...base, nowMinutes: 21 * 60 + 30, bucket: WAKE_UP_BUCKET_MINUTES }).every(x => x.reason === 'window-over'), 'late wake-up call: nothing');
+  assert.deepEqual(planAccounts({ ...base, nowMinutes: 16 * 60 + 50, bucket: WAKE_UP_BUCKET_MINUTES, ran: new Set(['wow']) }).map(x => x.run), [true, false]);
+});
+
+test('the update job outlasts the longest wait of a wake-up call', async () => {
+  const fs = await import('fs');
+  const yml = fs.readFileSync('.github/workflows/evening.yml', 'utf-8');
+  const update = yml.slice(yml.indexOf('\n  update:'));
+  const timeout = Number(/timeout-minutes: (\d+)/.exec(update)[1]);
+  const config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
+  const [, end] = config.windows.evening.map(parseHHMM);
+  // The wake-up routine fires at 15:50 UTC = 16:50 Berlin in winter (17:50 in summer).
+  const longestSleep = end - SLOT_MARGIN_MINUTES - (16 * 60 + 50);
+  assert.ok(timeout >= longestSleep + 75, `update job: ${timeout} min must cover ${longestSleep} min of waiting plus 75 min of work`);
+  assert.ok(timeout <= 360, 'GitHub stops every job after 6 hours');
+  assert.ok(longestSleep <= WAKE_UP_BUCKET_MINUTES);
+  assert.match(yml, /waitForSlot:/, 'workflow_dispatch input for a wake-up call by hand');
+  assert.match(yml, /issue_comment:\n\s+types: \[created\]/, 'the routine wakes the workflow with a comment');
+  assert.match(yml, /WAIT_FOR_SLOT: \$\{\{ \(inputs\.waitForSlot \|\| github\.event_name == 'issue_comment'\)/, 'the gate gets the wake-up flag');
+  const gate = yml.slice(yml.indexOf('\n  gate:'), yml.indexOf('\n  update:'));
+  assert.match(gate, /contains\(github\.event\.issue\.labels\.\*\.name, 'abend-wecker'\)/, 'only the wake-up issue counts');
+  assert.match(gate, /github\.event\.comment\.user\.login == github\.repository_owner/, 'only the owner (or the routine acting for the owner) wakes the run');
+  assert.doesNotMatch(yml, /github\.event\.comment\.body|github\.event\.issue\.title/, 'comment text never reaches a command');
 });
 
 test('the evening cron fires every BUCKET_MINUTES, off the full and half hour, across the whole window', async () => {

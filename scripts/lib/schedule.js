@@ -4,6 +4,10 @@ import crypto from 'crypto';
 
 export const BUCKET_MINUTES = 10;   // the evening cron fires every 10 min inside the window
 export const SLOT_MARGIN_MINUTES = 20; // keep the slot this far from the window end
+// The daily wake-up call (Claude routine "Abend-Wecker", 15:50 UTC, by a comment on the issue labelled "abend-wecker") starts the evening workflow
+// before the window; its legs sleep until their slot. GitHub's own cron is only the fallback: since
+// 2026-11-21 it arrives hours late or not at all. Bounded by GitHub's 6-hour job limit.
+export const WAKE_UP_BUCKET_MINUTES = 240;
 
 // Local wall-clock parts for an instant in a IANA timezone. weekday: 0=Sunday … 6=Saturday.
 export function localParts(now, timeZone) {
@@ -58,11 +62,12 @@ export function decide({ nowMinutes, slot, windowEnd, ranToday, bucket = BUCKET_
 
 // One leg per CurseForge account: each account draws its own slot for the day and follows the same
 // rules as decide(). ran: accounts whose update already ran (or is running) today.
+// bucket: how far ahead of a slot a leg may start and sleep (WAKE_UP_BUCKET_MINUTES for the wake-up call).
 // → [{ account, slot, run, sleepMinutes, reason }]
-export function planAccounts({ accounts, dateKey, windowName, salt = '', start, end, nowMinutes, ran = new Set() }) {
+export function planAccounts({ accounts, dateKey, windowName, salt = '', start, end, nowMinutes, ran = new Set(), bucket = BUCKET_MINUTES }) {
   return accounts.map(account => {
     const slot = slotFor({ dateKey, windowName, salt: `${salt}|${account}`, start, end });
-    return { account, slot, ...decide({ nowMinutes, slot, windowEnd: end, ranToday: ran.has(account) }) };
+    return { account, slot, ...decide({ nowMinutes, slot, windowEnd: end, ranToday: ran.has(account), bucket }) };
   });
 }
 
