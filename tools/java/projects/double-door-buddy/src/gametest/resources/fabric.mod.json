@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "doubledoorbuddy-gametest",
+  "version": "1.0.0",
+  "name": "Double Door Buddy game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.doubledoorbuddy.gametest.DoubleDoorBuddyGameTest"]
+  },
+  "depends": {
+    "doubledoorbuddy": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

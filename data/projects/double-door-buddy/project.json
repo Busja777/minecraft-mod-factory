@@ -1,0 +1,22 @@
+{
+  "slug": "double-door-buddy",
+  "game": "java",
+  "name": "Double Door Buddy",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "DoubleDoorBuddy-1.0.jar",
+      "changelog": "## Double Door Buddy 1.0\n\nFirst release.\n\n- Right-click one door of a double door and the other door opens or closes with it.\n- A double door is two doors of the same kind side by side, facing the same way, with their hinges on the outer sides, as the game places them.\n- The second door takes the state of the clicked one, so a pair that got out of step comes back in step.\n- Sneak while clicking with an empty hand to move only the clicked door.\n- Iron doors and redstone work as before: only a player's click moves both doors.\n- Only the server needs the mod: players without it see both doors move.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}

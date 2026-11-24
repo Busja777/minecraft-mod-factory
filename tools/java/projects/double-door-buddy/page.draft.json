@@ -1,0 +1,37 @@
+{
+  "name": "Double Door Buddy",
+  "summary": "Right-click one half of a double door and its twin swings open or shut too, so you walk through wide entrances in one click.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A single pair of wooden double doors standing side by side and swinging open together, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Open one door, its partner follows.",
+    "bullets": [
+      "Both doors in one click",
+      "Sneak to open just one",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Double Door Buddy opens and closes both doors of a double door with a single right-click.**",
+    "",
+    "## Features",
+    "- Click either door, top or bottom half, and the door next to it moves along.",
+    "- Pairs only real double doors: two doors of the same type, facing the same way, with mirrored hinges.",
+    "- The second door copies the state of the first, so a pair that got out of step lines up again.",
+    "- Each door plays its own opening or closing sound.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Place two doors side by side as usual and right-click one of them. Sneak with an empty hand to open only the door you click.",
+    "",
+    "## Good to know",
+    "- Made for Fabric Loader on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Iron doors and redstone behave as in the base game; only your own click moves both doors.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players can join without installing anything.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
