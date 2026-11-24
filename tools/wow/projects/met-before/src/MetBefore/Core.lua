@@ -11,7 +11,7 @@ local L = ns.L
 
 ns.MAX_PEOPLE = 2000   -- players kept; the ones met longest ago go first, players with a note last
 ns.SESSION_GAP = 3600  -- seconds offline after which a saved group session counts as over
-ns.LIST = 10           -- players shown by /mb list
+ns.LIST = 10           -- players shown by /metbefore list
 ns.MAX_NOTE = 200      -- characters of a note
 
 function ns.IsSecret(value)
@@ -241,7 +241,7 @@ function ns.TooltipLines(p, now)
   return ns.MetText(p, now), note
 end
 
--- One line of /mb list: "Grumbash-Argent Dawn: 3 times, last 2 days ago, Silvermoon City - note"
+-- One line of /metbefore list: "Grumbash-Argent Dawn: 3 times, last 2 days ago, Silvermoon City - note"
 function ns.ListText(p, now)
   local parts = { p.name or "?" }
   local text

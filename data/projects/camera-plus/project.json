@@ -8,8 +8,20 @@
     {
       "version": "1.0",
       "file": "CameraPlus-1.0.zip",
-      "changelog": "## Camera Plus 1.0\n\nFirst release.\n\n- `/cplus far` lets the camera zoom out up to the farthest distance the game allows (factor 2.6, the game's own setting `cameraDistanceMaxZoomFactor`). `/cplus far 2.2` picks a smaller step, values outside 1 to 2.6 are kept inside.\n- `/cplus off` puts back the distance you had before, or the game's default.\n- The setting is kept for your account and set again on every login.\n- In combat the change waits until the fight is over.\n- If you move the game's own camera distance slider while Camera Plus is on, Camera Plus switches off and keeps your choice.\n- Three camera positions per character: `/cplus save 1` (to 3) saves the current camera, `/cplus 1` brings it back, `/cplus forget 1` empties a slot. They use the game's views 2 to 4, so the first-person view 1 and the game's view 5 stay untouched.\n- `/cplus` or `/cameraplus` shows the current state and all commands.",
-      "status": "due"
+      "changelog": "## Camera Plus 1.0\n\nFirst release.\n\n- `/cplus far` lets the camera zoom out up to the farthest distance the game allows (factor 2.6, the game's own setting `cameraDistanceMaxZoomFactor`). `/cplus far 2.2` picks a smaller step, values outside 1 to 2.6 are kept inside.\n- `/cplus off` puts back the distance you had before, or the game's default.\n- The setting is kept for your account and set again on every login.\n- In combat the change waits until the fight is over.\n- If something else changes the game's maximum camera distance while Camera Plus is on (another addon or a console command), Camera Plus switches off and keeps that value.\n- Three camera positions per character: `/cplus save 1` (to 3) saves the current camera, `/cplus 1` brings it back, `/cplus forget 1` empties a slot. They use the game's views 2 to 4, so the first-person view 1 and the game's view 5 stay untouched.\n- `/cplus` or `/cameraplus` shows the current state and all commands.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "CameraPlus-1.1.zip",
+      "changelog": "## Camera Plus 1.1\n\n- Camera Plus now speaks **German**: the status, the help and every answer to a command, including the notes about combat and saved camera positions. On clients in other languages it stays in English.\n- The commands stay the same in every language, for example `/cplus far 2.2` or `/cplus save 1`. As before, a decimal comma works too: `/cplus far 2,2`.\n- Your camera distance setting, the value from before it and your saved camera positions from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

@@ -118,7 +118,7 @@ end
 
 function ns.TimerText(timer, now)
   local left = ns.Remaining(timer, now)
-  if not left then return L["No timer running. /rc timer 10m starts one."] end
+  if not left then return L["No timer running. /resetclock timer 10m starts one."] end
   return string.format(L["%s: %s left of %s."], named(timer), ns.FormatDuration(left), ns.FormatDuration(timer.seconds))
 end
 
@@ -136,5 +136,5 @@ end
 function ns.InvalidText(why)
   if why == "short" then return L["A timer needs at least one second."] end
   if why == "long" then return L["A timer can run at most 24 hours."] end
-  return L["Give the time like 10m, 1h30m, 90s or 15 (minutes), for example /rc timer 10m tea."]
+  return L["Give the time like 10m, 1h30m, 90s or 15 (minutes), for example /resetclock timer 10m tea."]
 end

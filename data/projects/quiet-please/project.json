@@ -9,7 +9,19 @@
       "version": "1.0",
       "file": "QuietPlease-1.0.zip",
       "changelog": "## Quiet Please 1.0\n\nFirst release.\n\n- Mutes the game sound files you list by their file ID: `/quiet add 12345 67890` takes one or several IDs at once.\n- The game forgets muted sounds when it closes; Quiet Please mutes your list again on every login.\n- `/quiet remove 12345` unmutes a file and takes it off the list, `/quiet list` shows the list.\n- `/quiet label 12345 text` gives a file your own name, so the list stays readable.\n- `/quiet play 12345` plays a file once, to check what it is before you mute it.\n- `/quiet off` lets you hear everything again, `/quiet on` mutes your list again. The choice is kept after logout.\n- `/quiet errors`, `/quiet emotes` and `/quiet pets` switch the game's error speech, emote sounds and pet sounds on or off.\n- The list is shared by all characters of your account. Only whole numbers above 0 are accepted as file IDs.\n- Open the help with `/quiet` or `/quietplease`.",
-      "status": "due"
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "QuietPlease-1.1.zip",
+      "changelog": "## Quiet Please 1.1\n\n- Quiet Please now speaks **German**: the list, the help and every answer to a command. On clients in other languages it stays in English.\n- The three sound options that `/quiet errors`, `/quiet emotes` and `/quiet pets` switch are named exactly like in the game's own sound settings, in your client's language. In English they now read Error Speech, Emote Sounds and Enable Pet Sounds.\n- The commands stay the same in every language, for example `/quiet add 12345` or `/quiet pets off`.\n- Your list of muted sounds, their labels and your on/off setting from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

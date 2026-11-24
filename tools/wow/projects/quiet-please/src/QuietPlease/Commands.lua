@@ -18,7 +18,7 @@ local function status()
   for _, t in ipairs(ns.TOGGLES) do
     local on = ns.ToggleState(t)
     if on ~= nil then
-      parts[#parts + 1] = string.format(L["%s: %s"], L[ns.TOGGLE_LABEL[t.key]], on and L["on"] or L["off"])
+      parts[#parts + 1] = string.format(L["%s: %s"], ns.ToggleName(t), on and L["on"] or L["off"])
     end
   end
   if #parts > 0 then ns.Print(table.concat(parts, ", ")) end
@@ -125,7 +125,7 @@ end
 
 local function toggle(t, word)
   local current = ns.ToggleState(t)
-  local name = L[ns.TOGGLE_LABEL[t.key]]
+  local name = ns.ToggleName(t)
   if current == nil then
     ns.Print(string.format(L["%s cannot be switched on this client."], name))
     return
