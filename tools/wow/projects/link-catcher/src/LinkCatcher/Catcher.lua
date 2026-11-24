@@ -79,7 +79,7 @@ function ns.Install()
   end
 end
 
-local HELP = L["/lc copy shows the last lines of your main chat window to copy (/lc copy 50 for 50 lines), /lc on and /lc off switch the clickable links on and off. Click a link in chat to copy it."]
+local HELP = L["/linkcatcher copy shows the last lines of your main chat window to copy (/linkcatcher copy 50 for 50 lines), /linkcatcher on and /linkcatcher off switch the clickable links on and off. Click a link in chat to copy it."]
 
 function ns.Copy(arg)
   local lines, skipped = ns.CollectLines(DEFAULT_CHAT_FRAME, ns.LineCount(arg))
@@ -105,8 +105,7 @@ function ns.Command(input)
   end
 end
 
-SLASH_LINKCATCHER1 = "/lc"
-SLASH_LINKCATCHER2 = "/linkcatcher"
+SLASH_LINKCATCHER1 = "/linkcatcher"
 SlashCmdList.LINKCATCHER = function(input) ns.Command(input) end
 
 local events = CreateFrame("Frame")

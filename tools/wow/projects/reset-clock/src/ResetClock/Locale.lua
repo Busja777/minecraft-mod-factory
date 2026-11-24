@@ -9,8 +9,8 @@ local _, ns = ...
 -- (DAY_ONELETTER_ABBR, HOUR_ONELETTER_ABBR, MINUTE_ONELETTER_ABBR, SECOND_ONELETTER_ABBR), and the
 -- timer lengths players type (10m, 1h30m, 90s) stay the same in every language.
 -- Other game terms inside sentences: Timer, Fenster (window).
--- Slash commands and their words stay English: players type them as they are (/rc timer, /rc cancel,
--- /rc window); the label of a timer is free text, so the example label is German (Tee).
+-- Slash commands and their words stay English: players type them as they are (/resetclock timer, /resetclock cancel,
+-- /resetclock window); the label of a timer is free text, so the example label is German (Tee).
 local L = setmetatable({}, { __index = function(_, key) return key end })
 ns.L = L
 
@@ -29,13 +29,13 @@ T.deDE = {
   ["%s ran out while you were away."] = "%s ist abgelaufen, während du weg warst.",
   ["Timer \"%s\" stopped."] = "Timer „%s“ beendet.", ["Timer stopped."] = "Timer beendet.",
   ["No timer is running."] = "Es läuft kein Timer.",
-  ["No timer running. /rc timer 10m starts one."] = "Es läuft kein Timer. /rc timer 10m startet einen.",
+  ["No timer running. /resetclock timer 10m starts one."] = "Es läuft kein Timer. /resetclock timer 10m startet einen.",
   ["A timer needs at least one second."] = "Ein Timer braucht mindestens eine Sekunde.",
   ["A timer can run at most 24 hours."] = "Ein Timer läuft höchstens 24 Stunden.",
-  ["Give the time like 10m, 1h30m, 90s or 15 (minutes), for example /rc timer 10m tea."] =
-    "Gib die Zeit so an: 10m, 1h30m, 90s oder 15 (Minuten), zum Beispiel /rc timer 10m Tee.",
-  ["/rc timer 10m tea starts a timer with a label, /rc timer shows the time left, /rc cancel stops it, /rc window opens the window."] =
-    "/rc timer 10m Tee startet einen Timer mit Namen, /rc timer zeigt die verbleibende Zeit, /rc cancel beendet ihn, /rc window öffnet das Fenster.",
+  ["Give the time like 10m, 1h30m, 90s or 15 (minutes), for example /resetclock timer 10m tea."] =
+    "Gib die Zeit so an: 10m, 1h30m, 90s oder 15 (Minuten), zum Beispiel /resetclock timer 10m Tee.",
+  ["/resetclock timer 10m tea starts a timer with a label, /resetclock timer shows the time left, /resetclock cancel stops it, /resetclock window opens the window."] =
+    "/resetclock timer 10m Tee startet einen Timer mit Namen, /resetclock timer zeigt die verbleibende Zeit, /resetclock cancel beendet ihn, /resetclock window öffnet das Fenster.",
 }
 
 local own = GetLocale and T[GetLocale()]

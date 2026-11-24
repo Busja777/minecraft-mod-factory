@@ -8,7 +8,7 @@ local _, ns = ...
 -- and case. Keys are written as on a German keyboard and in the German client's key bindings:
 -- Strg (CTRL_KEY_TEXT "STRG"), Esc (KEY_ESCAPE "ESC"); Cmd stays Cmd on a Mac. Other terms as the
 -- German client names them: Chat, Chatfenster (chat window), Link, Addons.
--- Slash commands and their words stay English: players type them as they are (/lc copy 50, /lc off).
+-- Slash commands and their words stay English: players type them as they are (/linkcatcher copy 50, /linkcatcher off).
 local L = setmetatable({}, { __index = function(_, key) return key end })
 ns.L = L
 
@@ -27,8 +27,8 @@ T.deDE = {
   ["Clickable links are off right now."] = "Anklickbare Links sind gerade ausgeschaltet.",
   ["This game version does not let addons change chat lines, so links stay plain text."] =
     "Diese Spielversion lässt Addons keine Chatzeilen ändern, deshalb bleiben Links einfacher Text.",
-  ["/lc copy shows the last lines of your main chat window to copy (/lc copy 50 for 50 lines), /lc on and /lc off switch the clickable links on and off. Click a link in chat to copy it."] =
-    "/lc copy zeigt die letzten Zeilen deines Hauptchatfensters zum Kopieren (/lc copy 50 für 50 Zeilen), /lc on und /lc off schalten die anklickbaren Links ein und aus. Klicke auf einen Link im Chat, um ihn zu kopieren.",
+  ["/linkcatcher copy shows the last lines of your main chat window to copy (/linkcatcher copy 50 for 50 lines), /linkcatcher on and /linkcatcher off switch the clickable links on and off. Click a link in chat to copy it."] =
+    "/linkcatcher copy zeigt die letzten Zeilen deines Hauptchatfensters zum Kopieren (/linkcatcher copy 50 für 50 Zeilen), /linkcatcher on und /linkcatcher off schalten die anklickbaren Links ein und aus. Klicke auf einen Link im Chat, um ihn zu kopieren.",
 }
 
 local own = GetLocale and T[GetLocale()]
