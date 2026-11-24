@@ -1,0 +1,9 @@
+## Interface: 120105, 120107
+## Title: Chat Calc
+## Notes: A calculator in your chat box that also counts in gold, silver and copper.
+## Version: @version@
+## IconTexture: Interface\Icons\INV_Misc_Coin_01
+
+Locale.lua
+Core.lua
+Commands.lua
