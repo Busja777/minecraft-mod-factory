@@ -1,0 +1,33 @@
+{
+  "name": "Perf Meter",
+  "summary": "A small movable meter for your framerate, home and world latency and addon memory, colour-coded so trouble stands out.",
+  "category": "Miscellaneous",
+  "logoPrompt": "A round brass speedometer gauge standing in the centre, its needle pointing into a glowing green zone next to yellow and red zones",
+  "cover": {
+    "tagline": "Your game's pulse in one small line.",
+    "bullets": ["Framerate and latency", "Addon memory with a top five", "Movable, lockable, colour-coded"]
+  },
+  "description": [
+    "**Perf Meter puts your framerate, your latency and the memory your addons use into one small line you can place anywhere on screen.**",
+    "",
+    "## Features",
+    "- Framerate, home and world latency and total addon memory in one line.",
+    "- Each value turns green, yellow or red, so problems stand out.",
+    "- Hover over the meter to see the five addons that use the most memory.",
+    "- Drag it anywhere and lock it; the place is saved for all your characters.",
+    "",
+    "## How to use",
+    "Type `/perfmeter` (or `/pm`) to show or hide the meter, `/pm lock` or `/pm unlock` to fix or free it and `/pm reset` to bring it back to the top of the screen.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data.",
+    "- Green framerate from 45 fps, red below 25. Green latency below 100 ms, red from 250 ms. Green memory below 200 MB, red from 500 MB. Yellow in between.",
+    "- Values update once per second; the game itself measures latency every 30 seconds.",
+    "- Addon memory is measured every 15 seconds and never during combat, because measuring it is expensive.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
