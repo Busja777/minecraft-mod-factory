@@ -1,0 +1,33 @@
+{
+  "name": "Screenshot Moments",
+  "summary": "Never forget to press the screenshot key again: your level ups, achievements and epic loot are captured for you.",
+  "category": "Audio & Video",
+  "logoPrompt": "A small vintage camera with a glowing golden star reflected in its round lens",
+  "cover": {
+    "tagline": "Your big moments, captured on their own.",
+    "bullets": ["A screenshot at every level up", "Achievements with their toast", "Epic loot as a keepsake"]
+  },
+  "description": [
+    "**Screenshot Moments takes a screenshot for you whenever something worth keeping happens to your character.**",
+    "",
+    "## Features",
+    "- A screenshot when you reach a new level.",
+    "- A screenshot when you earn an achievement, with the achievement toast in the picture.",
+    "- A screenshot when you loot an item of Epic quality or better.",
+    "- One line in chat names the moment: the level, the achievement or the item.",
+    "- At most one screenshot every 10 seconds, and none during a loading screen.",
+    "",
+    "## How to use",
+    "It starts on its own. Type `/smo` or `/shotmoments` to see whether it is on and to list the commands. `/smo off` switches the screenshots off, `/smo on` brings them back, `/smo test` takes a test screenshot.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- Screenshots are saved in the game's Screenshots folder, next to the ones you take by key.",
+    "- The setting counts for all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

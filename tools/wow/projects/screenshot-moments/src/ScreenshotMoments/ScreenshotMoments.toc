@@ -1,0 +1,10 @@
+## Interface: 120105, 120107
+## Title: Screenshot Moments
+## Notes: Takes a screenshot when you level up, earn an achievement or loot an epic item.
+## Version: @version@
+## SavedVariables: ScreenshotMomentsDB
+
+Locale.lua
+Core.lua
+Moments.lua
+Commands.lua
