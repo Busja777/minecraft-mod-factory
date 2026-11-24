@@ -8,7 +8,7 @@
     {
       "version": "1.0",
       "file": "LinkCatcher-1.0.zip",
-      "changelog": "## Link Catcher 1.0\n\nFirst release.\n\n- Web addresses in chat become clickable: addresses with https or http, addresses starting with www. and short ones without www. that end in a common domain such as .com, .net, .org, .io or .gg.\n- Click a link and a small box opens with the address already selected. Press Ctrl+C (Cmd+C on a Mac) to copy it, Escape closes the box.\n- Item links, colours and icons in a message stay as they are. Numbers like 1.5 and e-mail addresses are not turned into links.\n- Works in say, yell, emote, whispers, Battle.net whispers, party, raid, instance, guild, officer, channels and communities.\n- `/lc copy` shows the last 100 lines of your main chat window as plain text to copy, `/lc copy 50` the last 50 (up to 500).\n- `/lc off` and `/lc on` switch the clickable links off and on. `/lc` or `/linkcatcher` lists all commands.\n- Messages the game keeps hidden inside instances are passed on untouched and left out of the copy.",
+      "changelog": "## Link Catcher 1.0\n\nFirst release.\n\n- Web addresses in chat become clickable: addresses with https or http, addresses starting with www. and short ones without www. that end in a common domain such as .com, .net, .org, .io or .gg.\n- Click a link and a small box opens with the address already selected. Press Ctrl+C (Cmd+C on a Mac) to copy it, Escape closes the box.\n- Item links, colours and icons in a message stay as they are. Numbers like 1.5 and e-mail addresses are not turned into links.\n- Works in say, yell, emote, whispers, Battle.net whispers, party, raid, instance, guild, officer, channels and communities.\n- `/linkcatcher copy` shows the last 100 lines of your main chat window as plain text to copy, `/linkcatcher copy 50` the last 50 (up to 500).\n- `/linkcatcher off` and `/linkcatcher on` switch the clickable links off and on. `/linkcatcher` lists all commands.\n- Messages the game keeps hidden inside instances are passed on untouched and left out of the copy.",
       "status": "due",
       "gameVersions": [
         "12.1.5"
@@ -17,7 +17,7 @@
     {
       "version": "1.1",
       "file": "LinkCatcher-1.1.zip",
-      "changelog": "## Link Catcher 1.1\n\n- Link Catcher now speaks **German**: the copy box, its hint and every answer to a command. On clients in other languages it stays in English.\n- The hint names the keys as on a German keyboard: Strg+C to copy, Esc to close.\n- The commands stay the same in every language, for example `/lc copy 50` or `/lc off`.\n- Your on/off setting from 1.0 is kept.",
+      "changelog": "## Link Catcher 1.1\n\n- Link Catcher now speaks **German**: the copy box, its hint and every answer to a command. On clients in other languages it stays in English.\n- The hint names the keys as on a German keyboard: Strg+C to copy, Esc to close.\n- The commands stay the same in every language, for example `/linkcatcher copy 50` or `/linkcatcher off`.\n- Your on/off setting from 1.0 is kept.",
       "status": "due",
       "gameVersions": [
         "12.1.5"

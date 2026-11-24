@@ -1,10 +1,10 @@
 local _, ns = ...
 local L = ns.L
 
--- /rc prints both countdowns; timer, cancel and window do the rest.
+-- /resetclock prints both countdowns; timer, cancel and window do the rest.
 
 local function help()
-  ns.Print(L["/rc timer 10m tea starts a timer with a label, /rc timer shows the time left, /rc cancel stops it, /rc window opens the window."])
+  ns.Print(L["/resetclock timer 10m tea starts a timer with a label, /resetclock timer shows the time left, /resetclock cancel stops it, /resetclock window opens the window."])
 end
 
 local function countdowns()
@@ -37,7 +37,6 @@ local function cancel()
 end
 
 SLASH_RESETCLOCK1 = "/resetclock"
-SLASH_RESETCLOCK2 = "/rc"
 SlashCmdList.RESETCLOCK = function(msg)
   if not ns.db then return end
   local word, rest = strtrim(msg or ""):match("^(%S*)%s*(.-)$")
