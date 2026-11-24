@@ -1,0 +1,18 @@
+{
+  "slug": "login-bell",
+  "game": "wow",
+  "name": "Login Bell",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "LoginBell-1.0.zip",
+      "changelog": "## Login Bell 1.0\n\nFirst release.\n\n- Rings a short bell and writes a clear line in chat when a friend or guild member comes online: \"Friend online: Name\" or \"Guild member online: Name\". The name can be clicked like any player name.\n- Works with character friends, guild members and Battle.net friends. Friends who only log in to the mobile app are left out.\n- Reads the game's own online message, so it works in every client language.\n- The same person rings at most once every 5 minutes, so a reconnect does not ring again. When several people come online at once, each gets a line but the sound plays once.\n- Stays quiet for the first 15 seconds after login or a reload, while the game fills the friend and guild lists.\n- `/lb sound`, `/lb friends` and `/lb guild` switch each part on or off, `/lb test` plays the bell. `/lb` (or `/loginbell`) shows the settings. Settings are shared by all your characters.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
