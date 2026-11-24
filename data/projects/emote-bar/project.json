@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "EmoteBar-1.1.zip",
+      "changelog": "## Emote Bar 1.1\n\n- Emote Bar now speaks **German**: the tooltips, the hints on the bar and every answer to a command. On clients in other languages it stays in English.\n- As in 1.0, the buttons show your client's own emote commands, so on a German client they read /winken or /hallo, and the English /wave or /hello still work when you add or remove an emote.\n- The examples in the German help use the German emote commands, for example `/emotebar add winken`.\n- The commands stay the same in every language, for example `/emotebar add <emote>` or `/eb lock`.\n- Your emotes, the lock and the bar's position from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

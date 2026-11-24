@@ -404,3 +404,173 @@ test("slash commands before login do nothing, unknown words show the help", func
   eq(last(wow):find("|", #PREFIX + 1, true), nil, "help texts never use a pipe")
   eq(ns.db ~= nil, true)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- Every command in a text with its words: "/chores add daily, /chores done daily 2, /chores list".
+local WORDS = { add = true, done = true, remove = true, list = true, daily = true, weekly = true }
+local function commands(text)
+  local out = {}
+  for rest in text:gmatch("/chores([^,%.]*)") do
+    local cmd = "/chores"
+    for word in rest:gmatch("%S+") do
+      if not WORDS[word] and not word:match("^%d+$") then break end
+      cmd = cmd .. " " .. word
+    end
+    out[#out + 1] = cmd
+  end
+  return table.concat(out, ", ")
+end
+
+-- A German client: its language and its own words for the two lists (deDE GlobalStrings of 12.1.5).
+local function german(wow, g)
+  wow.locale = "deDE"
+  DAILY, WEEKLY = "Täglich", "Wöchentlich"
+  return boot(wow, g)
+end
+
+test("German client: the window in German, the headings are the game's own words", function(wow)
+  german(wow)
+  wow.slash("/chores")
+  local f = ChoreListFrame
+  eq(f.title:GetText(), "Chore List")
+  eq(f.headings.daily.label:GetText(), "Täglich")
+  eq(f.headings.weekly.label:GetText(), "Wöchentlich")
+  eq(f.headings.daily.empty:GetText(), "Noch nichts auf dieser Liste.")
+  eq(f.headings.daily.info:GetText(), "|cff9d9d9dZurücksetzung in 3h 0m|r")
+  eq(f.headings.weekly.info:GetText(), "|cff9d9d9dZurücksetzung in 2d 3h|r")
+  eq(f.hint:GetText(), "Neu: /chores add daily oder weekly, dann die Aufgabe.")
+  wow.slash("/chores add daily Haustier füttern")
+  wow.slash("/chores add daily Post holen")
+  f.rows[2].check:Click()
+  eq(f.rows[1].label:GetText(), "Haustier füttern", "the task stays as typed")
+  eq(f.headings.daily.info:GetText(), "|cff9d9d9d1/2, Zurücksetzung in 3h 0m|r")
+end)
+
+test("German client: headings fall back to English when the game has no word", function(wow)
+  local ns = german(wow)
+  DAILY, WEEKLY = nil, ""
+  eq(ns.Heading("daily"), "Daily")
+  eq(ns.Heading("weekly"), "Weekly", "an empty one stays English")
+  DAILY = { secret = true }
+  eq(ns.Heading("daily"), "Daily", "so does anything that is not a text")
+  DAILY = "Täglich"
+  eq(ns.Heading("daily"), "Täglich")
+  eq(ns.GameText("NO_SUCH_STRING", "English"), "English")
+end)
+
+test("German client: every answer to a command in German, the commands stay English", function(wow)
+  german(wow)
+  wow.slash("/chores add daily Haustier füttern")
+  eq(last(wow), PREFIX .. "Zu deinen täglichen Aufgaben hinzugefügt: Haustier füttern")
+  wow.slash("/chores add weekly Weltboss")
+  eq(last(wow), PREFIX .. "Zu deinen wöchentlichen Aufgaben hinzugefügt: Weltboss")
+  wow.slash("/chores add weekly weltboss")
+  eq(last(wow), PREFIX .. "Diese Aufgabe steht schon auf der Liste.")
+  wow.slash("/chores add daily")
+  eq(last(wow), PREFIX .. "Schreib die Aufgabe hinter die Liste, zum Beispiel /chores add daily Haustier füttern.")
+  wow.slash("/chores done daily 1")
+  eq(last(wow), PREFIX .. "Erledigt: Haustier füttern")
+  wow.slash("/chores done daily 1")
+  eq(last(wow), PREFIX .. "Wieder offen: Haustier füttern")
+  wow.slash("/chores done daily 1")
+  wow.slash("/chores done daily 5")
+  eq(last(wow), PREFIX .. "Diese Aufgabe gibt es nicht. /chores list zeigt die Nummern.")
+  local before = #wow.chat
+  wow.slash("/chores list")
+  eq(wow.chat[before + 1], PREFIX .. "Tägliche Aufgaben: 1 von 1 erledigt.")
+  eq(wow.chat[before + 2], PREFIX .. "1. [erledigt] Haustier füttern")
+  eq(wow.chat[before + 3], PREFIX .. "Wöchentliche Aufgaben: 0 von 1 erledigt.")
+  eq(wow.chat[before + 4], PREFIX .. "1. Weltboss")
+  wow.slash("/chores remove weekly 1")
+  eq(last(wow), PREFIX .. "Entfernt: Weltboss")
+  for i = 1, 31 do wow.slash("/chores add weekly Aufgabe " .. i) end
+  eq(last(wow), PREFIX .. "Deine wöchentliche Liste ist voll (30 Aufgaben).")
+  for i = 2, 31 do wow.slash("/chores add daily Aufgabe " .. i) end
+  eq(last(wow), PREFIX .. "Deine tägliche Liste ist voll (30 Aufgaben).")
+  local help = PREFIX .. "/chores öffnet die Liste, /chores add daily Haustier füttern fügt eine Aufgabe hinzu (oder weekly), /chores done daily 2 hakt eine Aufgabe ab, /chores remove weekly 1 entfernt eine, /chores list zeigt beide Listen im Chat."
+  wow.slash("/chores hilfe")
+  eq(last(wow), help)
+  before = #ChoreListCharDB.daily
+  wow.slash("/chores hinzufügen täglich Kochen")
+  eq(last(wow), help, "a German command word is no command word")
+  wow.slash("/chores add täglich Kochen")
+  eq(last(wow), help, "nor is a German list name")
+  eq(#ChoreListCharDB.daily, before)
+  for _, line in ipairs(wow.chat) do
+    eq(line:find("|", #PREFIX + 1, true), nil, "no | in: " .. line)
+  end
+end)
+
+test("German client: the resets in German, while playing and after being away", function(wow)
+  local ns = german(wow)
+  wow.slash("/chores add daily A")
+  wow.slash("/chores add weekly B")
+  wow.slash("/chores done daily 1")
+  wow.slash("/chores done weekly 1")
+  pass(wow, ns, 3 * 3600 + 10)
+  eq(last(wow), PREFIX .. "Tägliche Zurücksetzung: Deine täglichen Aufgaben sind wieder offen.")
+  pass(wow, ns, 2 * DAY)
+  eq(last(wow), PREFIX .. "Wöchentliche Zurücksetzung: Deine wöchentlichen Aufgaben sind wieder offen.")
+  eq(texts(ChoreListCharDB.weekly), "- B")
+  wow.slash("/chores done daily 1")
+  wow.slash("/chores done weekly 1")
+  ns = relog(wow, ns, DAY)
+  eq(last(wow), PREFIX .. "Die tägliche Zurücksetzung kam, während du weg warst: Deine täglichen Aufgaben sind wieder offen.")
+  wow.slash("/chores done daily 1")
+  ns = relog(wow, ns, 2 * WEEK)
+  eq(last(wow), PREFIX .. "Die wöchentliche Zurücksetzung kam, während du weg warst: Deine wöchentlichen Aufgaben sind wieder offen.")
+  eq(texts(ChoreListCharDB.daily), "- A")
+  eq(texts(ChoreListCharDB.weekly), "- B")
+end)
+
+test("German client: lists, ticks and the window position saved in 1.0 are kept", function(wow)
+  ChoreListCharDB = { version = 1, daily = { { text = "Feed the pet", done = true } }, weekly = { { text = "Raid" } },
+    due = { daily = wow.now + 3 * 3600 }, last = {}, point = { "TOPLEFT", "TOPLEFT", 100, -50 } }
+  german(wow)
+  eq(texts(ChoreListCharDB.daily), "x Feed the pet")
+  eq(texts(ChoreListCharDB.weekly), "- Raid")
+  wow.slash("/chores")
+  eq(ChoreListFrame.point[1], "TOPLEFT")
+  eq(ChoreListFrame.point[4], 100)
+  eq(ChoreListFrame.rows[1].label:GetText(), "|cff9d9d9dFeed the pet|r")
+  eq(ChoreListFrame.headings.daily.info:GetText(), "|cff9d9d9d1/1, Zurücksetzung in 3h 0m|r")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("/chores", "")), select(2, text:gsub("/chores", "")), "the commands stay: " .. key)
+    eq(commands(text), commands(key), "the command words stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 25, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts and words", function(wow)
+  wow.locale = "enUS"
+  DAILY, WEEKLY = "Daily", "Weekly"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  wow.slash("/chores")
+  eq(ChoreListFrame.headings.daily.label:GetText(), "Daily")
+  eq(ChoreListFrame.headings.weekly.label:GetText(), "Weekly")
+  eq(ChoreListFrame.headings.daily.info:GetText(), "|cff9d9d9dresets in 3h 0m|r")
+  eq(ChoreListFrame.hint:GetText(), "Add with /chores add daily or weekly, then the task.")
+  wow.slash("/chores add daily Feed the pet")
+  eq(last(wow), PREFIX .. "Added to your daily chores: Feed the pet")
+  pass(wow, ns, 3 * 3600 + 10)
+  wow.slash("/chores done daily 1")
+  eq(last(wow), PREFIX .. "Done: Feed the pet")
+end)

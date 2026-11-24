@@ -4,7 +4,9 @@ local L = ns.L
 -- Pure logic: no frames, no events. Everything here runs outside the game in the tests.
 
 ns.KINDS = { "daily", "weekly" }
-ns.KIND_LABEL = { daily = "Daily", weekly = "Weekly" }
+-- 1.1: the window's headings are words the game itself has (GlobalStrings), in the client's language:
+-- { global, English }.
+ns.KIND_HEADING = { daily = { "DAILY", "Daily" }, weekly = { "WEEKLY", "Weekly" } }
 ns.MAX_TASKS = 30  -- tasks per kind
 ns.MAX_TEXT = 100  -- characters of one task
 -- Two readings of the same reset can differ by a moment. A next reset closer than this to the one
@@ -13,6 +15,20 @@ ns.SAME_RESET = 60
 
 function ns.IsSecret(value)
   return issecretvalue ~= nil and issecretvalue(value) and true or false
+end
+
+-- 1.1: a word the game itself has (a GlobalStrings constant such as DAILY), in the client's language;
+-- the English word when the client lacks it.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if ns.IsSecret(text) or type(text) ~= "string" or text == "" then return english end
+  return text
+end
+
+-- The heading of a list in the window: "Daily" or "Weekly", as the client writes it.
+function ns.Heading(kind)
+  local g = ns.KIND_HEADING[kind]
+  return ns.GameText(g[1], g[2])
 end
 
 -- "daily"/"weekly" (also "day"/"week"), any case; nil for anything else.
