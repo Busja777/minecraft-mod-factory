@@ -1,0 +1,19 @@
+{
+  "slug": "happy-barn",
+  "game": "stardewvalley",
+  "name": "Happy Barn",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "HappyBarn-1.0.zip",
+      "changelog": "## Happy Barn 1.0\n\nFirst release.\n\n- Animals that take two days or more between produce make it one day sooner: ducks and goats every day, rabbits every 3 days, ostriches and dinosaurs every 6 days.\n- Sheep grow their wool one day sooner from 1 heart on, instead of from 4.5 hearts.\n- Choose the level in the config: Gentle, Generous (default) or Abundant.\n- Chickens, cows and pigs stay as they are. Produce, quality, prices and feeding are unchanged.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
