@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Roll Call
+## Notes: Collects /roll results for a short time and shows who won.
+## Version: @version@
+## SavedVariables: RollCallDB
+## IconTexture: Interface\Icons\INV_Misc_Dice_01
+
+Locale.lua
+Core.lua
+Roller.lua
+UI.lua
