@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "LoginBell-1.1.zip",
+      "changelog": "## Login Bell 1.1\n\n- Login Bell now speaks **German**: the chat line when someone comes online (\"Freund online: Name\", \"Gildenmitglied online: Name\"), the settings, the help and the bell test. On clients in other languages it stays in English.\n- As in 1.0, the online message in chat is read in your client's own wording, so on a German client \"ist jetzt online\" counts just like \"has come online\" in English.\n- The commands stay the same in every language, for example `/lb sound off` or `/lb guild on`.\n- Your settings from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }
