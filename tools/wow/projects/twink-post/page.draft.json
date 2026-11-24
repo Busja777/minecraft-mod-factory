@@ -1,0 +1,32 @@
+{
+  "name": "Twink Post",
+  "summary": "Pick one of your own characters as the mail recipient from a small menu at the mailbox instead of typing alt names.",
+  "category": "Mail",
+  "logoPrompt": "A cream-coloured envelope with a red wax seal standing upright in the centre, with a small brass key tag tied to its corner by a ribbon",
+  "cover": {
+    "tagline": "Mail your alts in one click.",
+    "bullets": ["Remembers every alt you log in", "Pick a recipient from a menu", "Connected realms included"]
+  },
+  "description": [
+    "**Twink Post adds a menu of your own characters to the Send Mail tab, so sending to an alt takes one click instead of typing its name.**",
+    "",
+    "## Features",
+    "- Remembers every character of your account when you log in: realm, class, level and faction.",
+    "- A small button next to the recipient box lists your characters in their class colours, with their level.",
+    "- A click fills in the recipient. Nothing is sent until you press Send.",
+    "- Characters on connected realms are included and filled in as Name-Realm.",
+    "",
+    "## How to use",
+    "Log in once with each character. At a mailbox, open the Send Mail tab and click the arrow next to the recipient box. `/tp` (or `/twinkpost`) lists every known character, `/tp forget Name` removes one.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data, it only reads your own character's name, realm, class, level and faction.",
+    "- Your own faction comes first. The game lets your characters mail each other across factions on the same or a connected realm.",
+    "- The character you are playing is left out.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
