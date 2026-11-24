@@ -102,7 +102,7 @@ local function create()
   f.headings = {}
   for _, kind in ipairs(ns.KINDS) do
     local h = { label = text(content, "GameFontNormal"), info = text(content, "GameFontDisableSmall", "RIGHT"), empty = text(content, "GameFontDisableSmall") }
-    h.label:SetText(L[ns.KIND_LABEL[kind]])
+    h.label:SetText(ns.Heading(kind))
     h.empty:SetText(L["Nothing on this list yet."])
     f.headings[kind] = h
   end

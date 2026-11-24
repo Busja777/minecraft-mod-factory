@@ -167,7 +167,7 @@ test("german client: german and english commands are accepted, the token is stor
   eq(labels(ns), "winken,hallo,danken,jubeln,tanzen,lachen", "the buttons show the client's own commands")
   wow.slash("/emotebar add verbeugen")
   eq(list(ns), "WAVE,HELLO,THANK,CHEER,DANCE,LAUGH,BOW")
-  eq(last(wow), "/verbeugen added as button 7.")
+  eq(last(wow), "/verbeugen als Schaltfläche 7 hinzugefügt.", "1.1: the answer in German")
   wow.slash("/emotebar remove winken")
   eq(list(ns), "HELLO,THANK,CHEER,DANCE,LAUGH,BOW")
 end)
@@ -420,4 +420,167 @@ test("commands before login do nothing", function(wow)
   eq(#wow.chat, 0)
   eq(ns.db, nil)
   eq(EmoteBarFrame, nil)
+end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- Every command in a text with its words: "/emotebar add, /emotebar remove, /eb".
+local WORDS = { add = true, remove = true, list = true, lock = true }
+local function commands(text)
+  local out = {}
+  for cmd, rest in text:gmatch("(/e[mb]%a*)([^,%.%(%)]*)") do
+    if cmd == "/emotebar" or cmd == "/eb" then
+      local word = rest:match("^ (%a+)")
+      out[#out + 1] = (word and WORDS[word]) and (cmd .. " " .. word) or cmd
+    end
+  end
+  return table.concat(out, ", ")
+end
+
+local function german(wow, opts)
+  opts = opts or {}
+  opts.list, opts.locale = GERMAN, "deDE"
+  return boot(wow, opts)
+end
+
+test("German client: every answer to a command in German, the emotes are the client's own", function(wow)
+  local ns = german(wow)
+  wow.slash("/emotebar add /wave")
+  eq(last(wow), "/winken ist schon auf der Leiste, als Schaltfläche 1.", "the English command still works")
+  wow.slash("/emotebar add Fliegen")
+  eq(last(wow), "Fliegen ist kein Emote des Spiels. Nimm seinen Chatbefehl, zum Beispiel /emotebar add winken.")
+  wow.slash("/emotebar add")
+  eq(last(wow), "Nenne das Emote, zum Beispiel /emotebar add winken.")
+  wow.slash("/emotebar add bow")
+  eq(last(wow), "/verbeugen als Schaltfläche 7 hinzugefügt.")
+  for _, e in ipairs({ "zustimmen", "tschüss" }) do wow.slash("/emotebar add " .. e) end
+  eq(last(wow), "/tschüss als Schaltfläche 9 hinzugefügt.", "letters outside A-Z as in 1.0")
+  wow.slash("/eb list")
+  eq(last(wow), "Auf der Leiste: 1 /winken, 2 /hallo, 3 /danken, 4 /jubeln, 5 /tanzen, 6 /lachen, 7 /verbeugen, 8 /zustimmen, 9 /tschüss.")
+  wow.slash("/emotebar remove danke")
+  eq(last(wow), "/danken entfernt.")
+  wow.slash("/emotebar remove 12")
+  eq(last(wow), "Es gibt keine Schaltfläche 12. Die Leiste hat 8.")
+  wow.slash("/emotebar remove thank")
+  eq(last(wow), "/danken ist nicht auf der Leiste.")
+  wow.slash("/emotebar remove fliegen")
+  eq(last(wow), "fliegen ist kein Emote des Spiels.")
+  wow.slash("/emotebar remove")
+  eq(last(wow), "Nenne das Emote oder die Nummer seiner Schaltfläche, zum Beispiel /emotebar remove winken oder /emotebar remove 2.")
+  for _, e in ipairs({ "danken", "agree", "lol", "wave" }) do wow.slash("/emotebar add " .. e) end
+  eq(#ns.db.emotes, 9, "agree, lol and wave are on the bar already")
+  wow.slash("/emotebar add Danke")
+  eq(last(wow), "/danken ist schon auf der Leiste, als Schaltfläche 9.")
+  -- four more emotes of the German client (deDE GlobalStrings of 12.1.5)
+  EMOTE3_TOKEN, EMOTE3_CMD1, EMOTE3_CMD2, EMOTE3_CMD3 = "ANGRY", "/wütend", "/sauer", "/angry"
+  EMOTE4_TOKEN, EMOTE4_CMD1, EMOTE4_CMD2, EMOTE4_CMD3 = "APOLOGIZE", "/entschuldigen", "/apologize", "/sorry"
+  EMOTE5_TOKEN, EMOTE5_CMD1, EMOTE5_CMD2 = "APPLAUD", "/applaudieren", "/applaud"
+  EMOTE57_TOKEN, EMOTE57_CMD1, EMOTE57_CMD2 = "HUG", "/umarmen", "/hug"
+  ns.index = nil
+  wow.slash("/emotebar add umarmen")
+  eq(last(wow), "/umarmen als Schaltfläche 10 hinzugefügt.")
+  wow.slash("/emotebar add angry")
+  eq(last(wow), "/wütend als Schaltfläche 11 hinzugefügt.")
+  wow.slash("/emotebar add applaudieren")
+  eq(#ns.db.emotes, 12)
+  wow.slash("/emotebar add sorry")
+  eq(last(wow), "Die Leiste ist mit 12 Emotes voll. Entferne zuerst eins mit /emotebar remove <Emote oder Nummer>.")
+end)
+
+test("German client: show, hide, lock, tooltips and the empty bar in German", function(wow)
+  local ns = german(wow)
+  wow.slash("/emotebar")
+  eq(last(wow), "Die Leiste ist ausgeblendet. /emotebar blendet sie wieder ein.")
+  eq(EmoteBarFrame:IsShown(), false)
+  wow.slash("/eb")
+  eq(last(wow), "Die Leiste ist eingeblendet.")
+  local b = ns.Buttons()[1]
+  b.scripts.OnEnter(b)
+  eq(wow.tooltip.lines[1], "/winken")
+  eq(wow.tooltip.lines[2], "Klicken, um dieses Emote bei deinem Ziel auszuführen.")
+  eq(wow.tooltip.lines[3], "Zum Verschieben ziehen. /emotebar lock sperrt die Leiste.")
+  wow.slash("/emotebar lock")
+  eq(last(wow), "Die Leiste ist gesperrt.")
+  b.scripts.OnEnter(b)
+  eq(wow.tooltip.lines[3], "Gesperrt. /emotebar lock entsperrt die Leiste.")
+  wow.slash("/emotebar lock")
+  eq(last(wow), "Die Leiste lässt sich verschieben.")
+  for _ = 1, 6 do wow.slash("/emotebar remove 1") end
+  eq(EmoteBarFrame.empty:GetText(), "Emote Bar")
+  EmoteBarFrame.scripts.OnEnter(EmoteBarFrame)
+  eq(wow.tooltip.lines[1], "Emote Bar")
+  eq(wow.tooltip.lines[2], "Füge ein Emote mit /emotebar add winken hinzu.")
+  wow.slash("/emotebar list")
+  eq(last(wow), "Die Leiste ist leer. Füge ein Emote mit /emotebar add winken hinzu.")
+end)
+
+test("German client: help, refused emotes and a missing emote list in German, commands stay English", function(wow)
+  local ns = german(wow, { refuse = true })
+  local help = "/emotebar blendet die Leiste ein oder aus, /emotebar add <Emote> fügt eine Schaltfläche hinzu (zum Beispiel /emotebar add winken), /emotebar remove <Emote oder Nummer> entfernt eine, /emotebar list zeigt alle, /emotebar lock sperrt oder entsperrt die Leiste. Kurzform: /eb."
+  wow.slash("/emotebar hilfe")
+  eq(last(wow), help)
+  local before = #ns.db.emotes
+  wow.slash("/emotebar hinzufügen verbeugen")
+  eq(last(wow), help, "a German command word is no command word")
+  wow.slash("/emotebar sperren")
+  eq(last(wow), help)
+  eq(ns.db.locked, false)
+  eq(#ns.db.emotes, before)
+  ns.Buttons()[2]:Click()
+  eq(last(wow), "Das Spiel hat /hallo gerade nicht ausgeführt.")
+  for _, line in ipairs(wow.chat) do
+    eq(line:sub(1, #PREFIX), PREFIX)
+    eq(line:find("|", #PREFIX + 1, true), nil, "no | in: " .. line)
+  end
+  ns.eventFrame.events, ns.eventFrame.scripts = {}, {}
+  EmoteBarDB = nil
+  ns = boot(wow, { noEmotes = true, locale = "deDE", saved = { emotes = { "WAVE" } } })
+  for i = 1, 102 do _G["EMOTE" .. i .. "_TOKEN"], _G["EMOTE" .. i .. "_CMD1"], _G["EMOTE" .. i .. "_CMD2"] = nil, nil, nil end
+  ns.index = nil
+  wow.slash("/emotebar add winken")
+  eq(last(wow), "Die Emote-Liste des Spiels ließ sich nicht lesen, darum kann gerade kein Emote hinzugefügt werden.")
+end)
+
+test("German client: emotes, lock, hidden state and position saved in 1.0 are kept", function(wow)
+  local ns = german(wow, { saved = { version = 1, emotes = { "BOW", "WAVE", "THANK" }, locked = true, hidden = false, point = { "TOPLEFT", "TOPLEFT", 120, -80 } } })
+  eq(list(ns), "BOW,WAVE,THANK")
+  eq(labels(ns), "verbeugen,winken,danken", "the buttons show the German commands")
+  eq(ns.db.locked, true)
+  eq(EmoteBarFrame.point[4], 120)
+  ns.Buttons()[2]:Click()
+  eq(game.performed[1].emote, "WAVE", "the button sends the same token as in English")
+end)
+
+test("German texts keep every placeholder and command of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(commands(text), commands(key), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 24, "every text on screen has its German one")
+  eq(commands("/emotebar add <emote> adds, /emotebar list lists. Short form: /eb."), "/emotebar add, /emotebar list, /eb")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  local ns = boot(wow, { locale = "enUS" })
+  eq(next(ns.L), nil)
+  wow.slash("/emotebar add bow")
+  eq(last(wow), "/bow added as button 7.")
+  wow.slash("/emotebar")
+  eq(last(wow), "The bar is hidden. /emotebar shows it again.")
+  wow.slash("/emotebar help")
+  assert(last(wow):find("/emotebar add <emote> adds a button (for example /emotebar add wave)", 1, true), "English help")
+  local b = ns.Buttons()[1]
+  b.scripts.OnEnter(b)
+  eq(wow.tooltip.lines[2], "Click to use this emote on your target.")
 end)
