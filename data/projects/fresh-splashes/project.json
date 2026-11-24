@@ -1,0 +1,20 @@
+{
+  "slug": "fresh-splashes",
+  "game": "java",
+  "name": "Fresh Splashes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FreshSplashes-1.0.zip",
+      "changelog": "## Fresh Splashes 1.0\n\nFirst release.\n\n- 300 new splash texts for the title screen, about mining, mobs, crafting, building, farming, redstone, exploring, the Nether and the End.\n- Every line is written for this pack; it replaces the vanilla splash list while the pack is turned on.\n- Works on Minecraft 1.21, 1.21.1 and 26.3 with the same zip.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}
