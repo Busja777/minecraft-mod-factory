@@ -1,0 +1,37 @@
+{
+  "name": "Fresh Splashes",
+  "summary": "Swaps the yellow lines on the title screen for a few hundred brand-new ones about blocks, mobs, caves and crafting.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A tilted, glowing yellow speech bubble made of blocky voxels bursting out of a grass block, with small yellow sparkles around it, centred, in blocky voxel style, no text",
+  "cover": {
+    "tagline": "New lines for your title screen.",
+    "bullets": [
+      "300 brand-new splashes",
+      "Mobs, blocks, caves and crafting",
+      "Family-friendly and original"
+    ]
+  },
+  "description": [
+    "**Fresh Splashes gives the yellow line on the title screen 300 new things to say, all written for this pack.**",
+    "",
+    "## Features",
+    "- 300 new splash texts about mining, mobs, crafting, building, farming, redstone and exploring.",
+    "- Little tips hide among the jokes, like bringing doors to an ocean monument.",
+    "- Short lines that stay easy to read next to the logo.",
+    "- Family-friendly and original: no line is copied from the game's own list.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs. A new splash appears each time you return to the title screen.",
+    "",
+    "## Good to know",
+    "- A resource pack for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It changes nothing in your worlds.",
+    "- It replaces the vanilla splash list, so the original splashes do not appear while the pack is on. Turn it off to get them back.",
+    "- The game's own greetings on Christmas Eve, New Year's Day and Halloween still show up.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea for a splash? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
