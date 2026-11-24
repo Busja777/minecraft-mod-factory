@@ -1,0 +1,8 @@
+{
+  "name": "Honest Sell Prices",
+  "description": "Choose the sell price of crops, animal products and artisan goods in the config, each from 75 % to 150 % of the normal price.",
+  "uniqueId": "SevEvolution.HonestSellPrices",
+  "minimumApiVersion": "4.4.0",
+  "contentPatcher": "2.9.0",
+  "gameVersions": ["1.6.14", "1.6.15"]
+}
