@@ -1,0 +1,33 @@
+{
+  "name": "Quiet Please",
+  "summary": "Keep the game sounds you never want to hear again silenced on every login, from your own list of sound file IDs.",
+  "category": "Audio & Video",
+  "logoPrompt": "A vintage brass gramophone horn with a soft red velvet ribbon tied around its bell in a neat bow",
+  "cover": {
+    "tagline": "Silence the sounds you are tired of.",
+    "bullets": ["Your own list of muted sounds", "Muted again on every login", "Error, emote and pet switches"]
+  },
+  "description": [
+    "**Quiet Please mutes the game sounds you name by their file ID and keeps them muted, login after login.**",
+    "",
+    "## Features",
+    "- Mutes one or several sound files at once by their file ID.",
+    "- The game forgets muted sounds when it closes; your list is muted again on every login.",
+    "- Your own label for each file, so the list stays readable.",
+    "- Plays a file once, so you can check what it is before you mute it.",
+    "- Quick switches for the game's error speech, emote sounds and pet sounds.",
+    "",
+    "## How to use",
+    "Type `/quiet add 12345 67890` to mute files, `/quiet remove 12345` to hear one again and `/quiet list` to see your list. `/quiet off` unmutes everything until `/quiet on`. `/quiet` shows all commands.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- It comes with no built-in list: you add the file IDs yourself, for example from lists other players share.",
+    "- The list is shared by all characters of your account.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

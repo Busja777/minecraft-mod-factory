@@ -1,0 +1,32 @@
+{
+  "name": "Chore List",
+  "summary": "Write down the things you want to do every day or every week, tick them off, and find them open again after the reset.",
+  "category": "Miscellaneous",
+  "logoPrompt": "A rolled-out parchment scroll with three ticked checkboxes drawn in ink, a quill pen resting diagonally across its lower edge",
+  "cover": {
+    "tagline": "Your own dailies and weeklies, ticked off.",
+    "bullets": ["Daily and weekly to-do lists", "Unchecks itself at the reset", "Checkboxes in a small window"]
+  },
+  "description": [
+    "**Chore List is your own to-do list for the things you want to get done each day or each week, and it clears the ticks by itself at the reset.**",
+    "",
+    "## Features",
+    "- Two lists per character: daily chores and weekly chores, up to 30 tasks each.",
+    "- A small movable window with a checkbox and a remove button for every task.",
+    "- Daily tasks are open again after the daily reset, weekly tasks after the weekly reset.",
+    "- A reset that happened while you were logged out is noticed at your next login.",
+    "",
+    "## How to use",
+    "Type `/chores add daily Feed the pet` or `/chores add weekly World boss` to add a task, then `/chores` (or `/chorelist`) to open the window. `/chores list` shows both lists in chat, `/chores done daily 2` ticks a task off and `/chores remove weekly 1` removes one.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- The reset times come from the game itself, so they match your region.",
+    "- Each character has its own lists, and the window shows when each one resets.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

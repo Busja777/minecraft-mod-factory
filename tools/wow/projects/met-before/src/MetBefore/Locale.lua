@@ -10,8 +10,8 @@ local _, ns = ...
 -- No GlobalStrings constant is spliced into a sentence: the German sentence needs its own article
 -- and case. Game terms inside sentences are written as the German client names them: Spieler (PLAYER),
 -- Ziel (TARGET), Realm (FRIENDS_LIST_REALM), Gruppe (group), Notiz (note, LABEL_NOTE), Addon.
--- Slash commands and their words stay English: players type them as they are (/mb note target,
--- /mb forget Name-Realm); "Name-Realm" reads the same in German.
+-- Slash commands and their words stay English: players type them as they are (/metbefore note target,
+-- /metbefore forget Name-Realm); "Name-Realm" reads the same in German.
 local L = setmetatable({}, { __index = function(_, key) return key end })
 ns.L = L
 
@@ -36,8 +36,8 @@ T.deDE = {
     "Dein Ziel ist kein Spieler, dessen Namen das Spiel gerade zeigt.",
   ["No player called %s is remembered."] = "Kein gemerkter Spieler heißt %s.",
   ["%s forgotten."] = "%s vergessen.",
-  ["/mb list shows the last 10 players you grouped with, /mb note Name-Realm text sets your note (no text removes it), /mb note target text notes your target, /mb forget Name-Realm removes a player."] =
-    "/mb list zeigt die letzten 10 Spieler aus deinen Gruppen, /mb note Name-Realm Text setzt deine Notiz (ohne Text wird sie gelöscht), /mb note target Text notiert etwas zu deinem Ziel, /mb forget Name-Realm entfernt einen Spieler.",
+  ["/metbefore list shows the last 10 players you grouped with, /metbefore note Name-Realm text sets your note (no text removes it), /metbefore note target text notes your target, /metbefore forget Name-Realm removes a player."] =
+    "/metbefore list zeigt die letzten 10 Spieler aus deinen Gruppen, /metbefore note Name-Realm Text setzt deine Notiz (ohne Text wird sie gelöscht), /metbefore note target Text notiert etwas zu deinem Ziel, /metbefore forget Name-Realm entfernt einen Spieler.",
 }
 
 local own = GetLocale and T[GetLocale()]

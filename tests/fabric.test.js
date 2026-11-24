@@ -61,7 +61,9 @@ test('Fabric: every mod folder is complete', () => {
     assert.ok(tests.length, `${mod.slug}: JUnit tests in src/test/java are missing`);
     for (const f of tests) assert.doesNotMatch(fs.readFileSync(f, 'utf-8'), /import net\.minecraft\./, `${path.basename(f)}: JUnit tests cover pure logic without Minecraft classes`);
 
-    const page = readJson(at('page.json'));
+    // a mod built before its logo exists keeps its page as page.draft.json (like the nightly WoW
+    // addons); the draft gets the same checks
+    const page = readJson(at(fs.existsSync(at('page.json')) ? 'page.json' : 'page.draft.json'));
     assert.equal(page.name, mod.name, `${mod.slug}: page name and pack name differ`);
     assert.equal(page.class, 'Mods', `${mod.slug}: page class must be "Mods"`);
     assert.ok(['Utility & QoL', 'Farming', 'Server Utility', 'Miscellaneous'].includes(page.category), `${mod.slug}: unknown category ${page.category}`);

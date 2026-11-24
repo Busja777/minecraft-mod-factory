@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Loot Wishes
+## Notes: Tells you when an item from your wish list drops or a merchant sells it.
+## Version: @version@
+## SavedVariables: LootWishesDB
+## IconTexture: Interface\Icons\INV_Misc_Bag_10
+
+Locale.lua
+Core.lua
+Watch.lua
+Tooltip.lua
+Commands.lua
