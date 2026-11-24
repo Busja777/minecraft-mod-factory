@@ -1,0 +1,32 @@
+{
+  "name": "Emote Bar",
+  "summary": "Wave, cheer or dance with a single click from a small bar that holds the emotes you use the most.",
+  "category": "Roleplay",
+  "logoPrompt": "A small wooden signboard with a row of round glossy buttons, each showing a simple smiling face in a different warm colour",
+  "cover": {
+    "tagline": "Your favourite emotes, one click away.",
+    "bullets": ["Up to 12 emote buttons", "Add any emote of the game", "Movable, lockable, saved"]
+  },
+  "description": [
+    "**Emote Bar puts the emotes you use the most on a small bar, so a wave, a thank you or a dance is one click away.**",
+    "",
+    "## Features",
+    "- Up to 12 buttons, each runs one emote at your target.",
+    "- Starts with wave, hello, thank, cheer, dance and laugh.",
+    "- Add any emote the game knows, typed the way you type it in chat.",
+    "- Drag the bar anywhere and lock it in place.",
+    "- Your emotes and the position are saved for your whole account.",
+    "",
+    "## How to use",
+    "Type `/emotebar add bow` to add a button and `/emotebar remove bow` (or its number) to take it away. `/emotebar` shows or hides the bar, `/emotebar lock` locks it. `/eb` is the short form.",
+    "",
+    "## Good to know",
+    "- Works on Retail, in and out of combat.",
+    "- Emote commands in your client's language work, the English ones too.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

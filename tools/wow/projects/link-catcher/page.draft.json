@@ -17,7 +17,7 @@
     "- Item links, colours and numbers like 1.5 in a message stay as they are.",
     "",
     "## How to use",
-    "Click a blue link in chat, press Ctrl+C (Cmd+C on a Mac) and paste it in your browser. Type `/lc copy` to copy chat, `/lc copy 50` for fewer lines. `/lc off` and `/lc on` switch the links, `/lc` lists all commands.",
+    "Click a blue link in chat, press Ctrl+C (Cmd+C on a Mac) and paste it in your browser. Type `/linkcatcher copy` to copy chat, `/linkcatcher copy 50` for fewer lines. `/linkcatcher off` and `/linkcatcher on` switch the links, `/linkcatcher` lists all commands.",
     "",
     "## Good to know",
     "- Works on Retail. It works in say, whispers, party, raid, guild, channels and Battle.net whispers.",
