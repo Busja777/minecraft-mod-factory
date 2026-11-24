@@ -1,0 +1,22 @@
+{
+  "slug": "stack-more",
+  "game": "java",
+  "name": "Stack More",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "StackMore-1.0.jar",
+      "changelog": "## Stack More 1.0\n\nFirst release.\n\n- Drinkable potions stack up to 16, water bottles included. Only identical potions stack: effect, duration, strength and name must match.\n- Eggs and snowballs stack up to 64 instead of 16.\n- Drinking from a stack of potions gives the empty bottle back; with a full inventory it drops at your feet.\n- Splash and lingering potions stay at one per slot, and the brewing stand still takes one bottle per slot.\n- Needed on the server and on every player's game.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}
