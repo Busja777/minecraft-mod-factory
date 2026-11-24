@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Login Bell
+## Notes: Rings a bell when a friend or guild member comes online.
+## Version: @version@
+## SavedVariables: LoginBellDB
+## IconTexture: Interface\Icons\INV_Misc_Bell_01
+
+Locale.lua
+Core.lua
+Bell.lua
+Commands.lua

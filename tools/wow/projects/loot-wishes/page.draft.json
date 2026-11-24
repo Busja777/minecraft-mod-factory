@@ -1,0 +1,34 @@
+{
+  "name": "Loot Wishes",
+  "summary": "Keep a list of the items you hope to find and get a ping in chat the moment one drops, comes up for a roll or sits at a merchant.",
+  "category": "Bags & Inventory",
+  "logoPrompt": "A small velvet drawstring pouch with a glowing golden star tied to its cord",
+  "cover": {
+    "tagline": "Your wanted items, never missed again.",
+    "bullets": ["Alert when a wish drops", "Spots loot rolls and merchants", "Add items with a shift-click"]
+  },
+  "description": [
+    "**Loot Wishes keeps a list of the items you want and tells you as soon as one of them shows up in your loot or at a merchant.**",
+    "",
+    "## Features",
+    "- A wish list of items, filled with a shift-click or an item ID.",
+    "- A chat line and a short sound when a wished item is in your loot window or up for a loot roll.",
+    "- Notes when you or another player near you receives a wished item.",
+    "- Names wished items a merchant sells as soon as you open the window.",
+    "- The item tooltip shows when an item is on your list.",
+    "",
+    "## How to use",
+    "Type `/lw add` and shift-click the item into the chat line, or type its item ID. `/lw list` shows the list, `/lw remove` takes an item off, `/lw sound off` keeps it quiet.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- An item counts in every difficulty and upgrade level.",
+    "- Inside instances the game can hide loot details from addons, so some hits may go unreported there.",
+    "- Shared by all characters of your account, up to 500 items.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

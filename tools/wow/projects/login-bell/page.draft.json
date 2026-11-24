@@ -1,0 +1,33 @@
+{
+  "name": "Login Bell",
+  "summary": "Hear a soft chime the moment a friend or guildmate logs in, with their name in chat.",
+  "category": "Chat & Communication",
+  "logoPrompt": "A small polished brass hand bell standing upright in the centre, its rim catching warm light, with soft curved sound waves rising from it",
+  "cover": {
+    "tagline": "Know when your people log in.",
+    "bullets": ["Friends, guild and Battle.net", "One sound, one clear chat line", "No spam from reconnects"]
+  },
+  "description": [
+    "**Login Bell plays a short sound and writes a clear line in chat whenever a friend or guild member comes online, so you never miss them.**",
+    "",
+    "## Features",
+    "- Rings for character friends, Battle.net friends and guild members.",
+    "- A chat line that says who it is and whether it is a friend or guild member, with a clickable name.",
+    "- Reads the game's own online message, so it works in every client language.",
+    "- No spam: the same person rings at most once every 5 minutes, and a crowd logging in at once plays one sound.",
+    "",
+    "## How to use",
+    "It starts on its own. Type `/lb` (or `/loginbell`) to see the settings. `/lb sound`, `/lb friends` and `/lb guild` switch each part on or off, `/lb test` plays the bell.",
+    "",
+    "## Good to know",
+    "- Works on Retail. No combat data and no window.",
+    "- It stays quiet for 15 seconds after login or a reload, while the game fills its lists.",
+    "- Friends who only open the mobile app are skipped.",
+    "- Settings are shared by all your characters.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

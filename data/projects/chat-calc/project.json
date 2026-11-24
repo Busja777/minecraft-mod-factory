@@ -1,0 +1,27 @@
+{
+  "slug": "chat-calc",
+  "game": "wow",
+  "name": "Chat Calc",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ChatCalc-1.0.zip",
+      "changelog": "## Chat Calc 1.0\n\nFirst release.\n\n- `/calc` followed by a sum works it out right in your chat window: `+ - * / % ^` and parentheses, with the usual order (powers first, then `* / %`, then `+ -`). `x` works as \"times\" as well.\n- Understands gold: `12g 50s 3c`, `1250000c`, `1.5g` or `2 gold 5 silver`. A result in gold is shown as gold, silver and copper with the game's coin icons, plus the amount in gold and in copper.\n- Sensible gold rules: `12g 50s * 3` and `100g / 4` stay gold, `100g / 12g 50s` gives a plain number, `10g % 3` shows the copper left over when 10 gold is split three ways.\n- Numbers may have decimals (`1.5`) and thousands separators (`1,250,000`).\n- Clear messages instead of Lua errors: division by zero, unbalanced parentheses, a missing number or operator, gold mixed with plain numbers, input over 200 characters and numbers that are too large.\n- Results go only to your own chat window, nothing is sent to other players.\n- `/calc` or `/chatcalc` on their own show a short help.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "ChatCalc-1.1.zip",
+      "changelog": "## Chat Calc 1.1\n\n- Chat Calc now speaks **German**: the help and every message about what went wrong in a sum. On clients in other languages it stays in English.\n- Answers and messages use your client's own coin letters: on a German client the amount in gold and in copper reads `(37.5G, 375,000K)`, with K for Kupfer, next to the game's coin icons. On an English client nothing changes: `g`, `s` and `c` as before.\n- Numbers are written as before in every language: the decimal point is `.` (`1.5`), the comma only separates thousands (`1,250,000`). The German help and the message for `1,5` say so.\n- Typing stays the same in every language: `/calc 12g 50s * 3` works everywhere, and on a German client `3k` for copper works as in 1.0.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
