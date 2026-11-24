@@ -1,0 +1,20 @@
+{
+  "slug": "arrow-blocks",
+  "game": "java",
+  "name": "Arrow Blocks",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ArrowBlocks-1.0.zip",
+      "changelog": "## Arrow Blocks 1.0\n\nFirst release.\n\n- Hoppers show where their items go: arrows on the sides of the funnel (all four on a hopper that points down, the two sides of a sideways one) and one on the floor inside a sideways hopper.\n- Dispensers and droppers show arrows on the four sides around the front, pointing at the front where items come out.\n- Observers show arrows on their two plain sides, pointing to the back where the signal goes out, the same way the triangle on top already does.\n- The arrows turn with the block in every direction. Fronts, backs and everything else keep their vanilla look, and the items in your inventory stay as they are.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}
