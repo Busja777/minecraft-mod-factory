@@ -18,7 +18,7 @@
     "- A small movable window with both countdowns and the timer, updated every second.",
     "",
     "## How to use",
-    "Type `/rc` (or `/resetclock`) to see both countdowns. `/rc timer 10m tea` starts a timer, `/rc timer` shows the time left, `/rc cancel` stops it and `/rc window` opens or closes the window.",
+    "Type `/resetclock` to see both countdowns. `/resetclock timer 10m tea` starts a timer, `/resetclock timer` shows the time left, `/resetclock cancel` stops it and `/resetclock window` opens or closes the window.",
     "",
     "## Good to know",
     "- Works on Retail.",

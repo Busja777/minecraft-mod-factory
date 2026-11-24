@@ -1,0 +1,27 @@
+{
+  "slug": "chore-list",
+  "game": "wow",
+  "name": "Chore List",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ChoreList-1.0.zip",
+      "changelog": "## Chore List 1.0\n\nFirst release.\n\n- Your own to-do lists for each character: one for daily chores, one for weekly chores.\n- `/chores add daily Feed the pet` or `/chores add weekly World boss` adds a task. Up to 30 tasks per list, 100 characters each.\n- `/chores` opens a small window with both lists: tick a task off with its checkbox, remove it with the x button. Drag the window anywhere, its position is remembered.\n- At the game's daily reset every daily task is open again, at the weekly reset every weekly task. A reset that came while you were logged out is noticed at your next login.\n- The window shows how many tasks are done and when each list resets.\n- From chat: `/chores done daily 2` ticks a task off, `/chores remove weekly 1` removes one, `/chores list` shows both lists. `/chorelist` works as well.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "ChoreList-1.1.zip",
+      "changelog": "## Chore List 1.1\n\n- Chore List now speaks **German**: the window, the lines at the daily and weekly reset, the list in chat and every answer to a command. On clients in other languages it stays in English.\n- The window's headings Daily and Weekly come from the game itself, so they read exactly like in your client's language. In English they stay the same words.\n- Your tasks stay exactly as you typed them.\n- The commands stay the same in every language, for example `/chores add daily Feed the pet` or `/chores done weekly 2`.\n- Your lists, ticks and the window position from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

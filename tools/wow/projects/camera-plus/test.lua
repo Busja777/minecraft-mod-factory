@@ -327,3 +327,111 @@ test("slash commands before the login do nothing", function(wow)
   eq(cvar(), 1.9)
   eq(#wow.chat, 0)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+local GP = "|cff66ccffCamera Plus:|r "
+
+test("German client: switching on and off, the status and the help in German", function(wow)
+  wow.locale = "deDE"
+  boot(wow, { cvars = { cameraDistanceMaxZoomFactor = "1.5" } })
+  wow.slash("/cplus")
+  eq(wow.chat[1], GP .. "Max. Kameraentfernung: aus, der Wert des Spiels ist 1.5.")
+  eq(wow.chat[2], GP .. "Gespeicherte Kamerapositionen: noch keine.")
+  eq(wow.chat[3], GP .. "/cplus far zoomt bis zur Grenze des Spiels heraus (oder /cplus far 2.2), /cplus off stellt deine alte Entfernung wieder her, /cplus save 1 speichert die Kamera auf Platz 1 bis 3, /cplus 1 holt sie zurück, /cplus forget 1 leert einen Platz.")
+  wow.slash("/cplus far")
+  eq(lastChat(wow), GP .. "Die maximale Kameraentfernung ist an (Faktor 2.6). Scrolle heraus, um sie zu nutzen.")
+  wow.slash("/cplus far 2,2")
+  eq(cvar(), 2.2, "a German decimal comma works as before")
+  wow.slash("/cplus far weit")
+  eq(lastChat(wow), GP .. "Nutze eine Zahl von 1 bis 2.6, zum Beispiel /cplus far 2.2.")
+  wow.chat = {}
+  wow.slash("/cplus")
+  eq(wow.chat[1], GP .. "Max. Kameraentfernung: an, Faktor 2.2.")
+  wow.slash("/cplus aus")
+  eq(CameraPlusDB.on, true, "a German command word switches nothing off")
+  wow.slash("/cplus off")
+  eq(lastChat(wow), GP .. "Die maximale Kameraentfernung ist aus. Der Wert des Spiels, 1.5, gilt wieder.")
+  wow.slash("/cplus off")
+  eq(lastChat(wow), GP .. "Die maximale Kameraentfernung ist schon aus.")
+  C_CVar.GetCVar = function() return nil end
+  wow.chat = {}
+  wow.slash("/cplus")
+  eq(wow.chat[1], GP .. "Max. Kameraentfernung: aus.")
+end)
+
+test("German client: combat, refused changes and the game's own change in German", function(wow)
+  wow.locale = "deDE"
+  boot(wow)
+  game.combat = true
+  wow.slash("/cplus far")
+  eq(lastChat(wow), GP .. "Du bist im Kampf. Die Kamera ändert sich, wenn der Kampf endet.")
+  wow.slash("/cplus")
+  eq(wow.chat[#wow.chat - 1], GP .. "Eine Kameraänderung wartet auf das Ende des Kampfes.")
+  game.combat = false
+  wow.fire("PLAYER_REGEN_ENABLED")
+  eq(lastChat(wow), GP .. "Der Kampf ist vorbei, die Kamera ist geändert.")
+  game.cvars.cameraDistanceMaxZoomFactor = "1.300000"
+  wow.fire("CVAR_UPDATE", "cameraDistanceMaxZoomFactor", "1.300000")
+  eq(lastChat(wow), GP .. "Die Kameraentfernung wurde in den Optionen des Spiels geändert. Camera Plus ist aus und behält diesen Wert.")
+  game.refuse = true
+  wow.slash("/cplus far")
+  eq(lastChat(wow), GP .. "Das Spiel hat die Änderung nicht angenommen. Versuch es gleich noch einmal.")
+end)
+
+test("German client: camera positions in German", function(wow)
+  wow.locale = "deDE"
+  boot(wow)
+  wow.slash("/cplus save 2")
+  eq(lastChat(wow), GP .. "Kameraposition 2 gespeichert. /cplus 2 holt sie zurück.")
+  wow.slash("/cplus")
+  eq(wow.chat[#wow.chat - 1], GP .. "Gespeicherte Kamerapositionen: 2.")
+  wow.slash("/cplus 3")
+  eq(lastChat(wow), GP .. "Platz 3 ist leer. Speichere zuerst die aktuelle Kamera mit /cplus save 3.")
+  wow.slash("/cplus save 4")
+  eq(lastChat(wow), GP .. "Wähle einen Platz von 1 bis 3, zum Beispiel /cplus save 1.")
+  wow.slash("/cplus view x")
+  eq(lastChat(wow), GP .. "Wähle einen Platz von 1 bis 3, zum Beispiel /cplus 1.")
+  wow.slash("/cplus forget")
+  eq(lastChat(wow), GP .. "Wähle einen Platz von 1 bis 3, zum Beispiel /cplus forget 1.")
+  wow.slash("/cplus forget 2")
+  eq(lastChat(wow), GP .. "Platz 2 ist wieder leer.")
+  wow.slash("/cplus speichern 1")
+  eq(#game.saved, 1, "a German command word saves nothing")
+  SaveView, SetView = nil, nil
+  wow.slash("/cplus save 1")
+  eq(lastChat(wow), GP .. "Diese Spielversion kann keine Kamerapositionen speichern.")
+  CameraPlusDB.views["Yubi-Silvermoon"][1] = true
+  wow.slash("/cplus 1")
+  eq(lastChat(wow), GP .. "Diese Spielversion kann keine Kamerapositionen laden.")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("/cplus", "")), select(2, text:gsub("/cplus", "")), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 24, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  wow.slash("/cplus far")
+  eq(lastChat(wow), GP .. "Maximum camera distance is on (factor 2.6). Scroll out to use it.")
+  wow.slash("/cplus save 1")
+  eq(lastChat(wow), GP .. "Camera position 1 saved. /cplus 1 brings it back.")
+end)
