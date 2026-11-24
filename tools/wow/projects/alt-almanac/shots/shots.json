@@ -1,0 +1,14 @@
+[
+  {
+    "file": "01.png",
+    "name": "all-characters-gold-level-played-time",
+    "title": "All your characters: level, gold, zone, rested XP and played time",
+    "since": "1.2"
+  },
+  {
+    "file": "02.png",
+    "name": "character-list-realm-level-filter",
+    "title": "Filter by realm or hide low-level characters",
+    "since": "1.2"
+  }
+]

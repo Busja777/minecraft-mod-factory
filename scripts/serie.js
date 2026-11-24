@@ -16,6 +16,7 @@ import { arg, flag } from './lib/github-output.js';
 //   npm run serie -- plan                        Kalender nach Output/serie/PLAN.md
 //   npm run serie -- logo <slug> [--force]       KI-Logo erzeugen (kostet OpenAI-Guthaben)
 //   npm run serie -- seite <slug>                Titelbild, Texte und Prüfung nach Output/serie/<reihe>/<nr>-<slug>/
+//   npm run serie -- mappe [<reihe>|<slug> …]   Upload-Ordner je Projekt nach Output/Hochladen/<Reihe>/<NN> <Name>/
 //   npm run serie -- banner <slug>               mein Banner (720×340) nach Output/serie/<reihe>/<nr>-<slug>/banner-claude.png
 //   npm run serie -- banner-gemalt <slug>        gemaltes Banner über die OpenAI-Schnittstelle (kostet Guthaben)
 //   npm run serie -- chatgpt [<slug> …]          Aufträge für ChatGPT nach Output/chatgpt-bilder/ (ohne Slug: alle ohne gewähltes Banner)
@@ -114,6 +115,14 @@ function handover(reihe, project, page, zips) {
 
 async function seite() {
   const { reihe, project } = findSerieProject(loadReihen(), argv[1] || '');
+  const { page, dir, results } = await buildPage(reihe, project);
+  console.log(`${page.name} (${reihe.title} ${project.nr}/33) → ${dir}`);
+  for (const r of results) console.log(`  ${MARK[r.level]} ${r.label}${r.detail ? `: ${r.detail}` : ''}`);
+  if (!pageOk(results)) process.exit(1);
+}
+
+// Logo, cover, banner, shots and curseforge.md into Output/serie/<reihe>/<nr>-<slug>/, plus the page check.
+async function buildPage(reihe, project) {
   const page = loadPage(reihe, project);
   if (!page) fail(`${project.slug}: ${path.join(projectDir(reihe.reihe, project.slug), 'page.json')} fehlt.`);
   const src = projectDir(reihe.reihe, project.slug);
@@ -137,9 +146,41 @@ async function seite() {
   const zips = listReleaseProjects().includes(project.slug) ? loadReleaseProject(project.slug).versions.map(v => `V${v.version}: ${v.file} (${v.status === 'due' ? 'wartet' : 'online'})`) : [];
   fs.writeFileSync(path.join(dir, 'curseforge.md'), handover(reihe, project, page, zips));
   const results = await checkPage(page, pageFiles(reihe, project), pageOptions(reihe, project));
-  console.log(`${page.name} (${reihe.title} ${project.nr}/33) → ${dir}`);
-  for (const r of results) console.log(`  ${MARK[r.level]} ${r.label}${r.detail ? `: ${r.detail}` : ''}`);
-  if (!pageOk(results)) process.exit(1);
+  return { page, dir, results };
+}
+
+// One folder per project that still has to be created: Output/Hochladen/<Reihe>/<NN> <Name>/
+// with the first file, the texts and all images under descriptive names. Projects without a page
+// or logo, already created ones and pages with red checks are listed but get no folder.
+async function mappe() {
+  const wanted = argv.slice(1).filter(a => !a.startsWith('--'));
+  const { planUploadFolder, writeUploadFolder, UPLOAD_ROOT } = await import('./lib/upload-folder.js');
+  const reihen = loadReihen().filter(r => !wanted.length || wanted.includes(r.reihe) || r.projects.some(p => wanted.includes(p.slug)));
+  if (!reihen.length) fail(`Unbekannt: ${wanted.join(', ')}`);
+  for (const reihe of reihen) {
+    const game = gameOf(config, reihe.game);
+    const root = path.join(UPLOAD_ROOT, reihe.title);
+    console.log(`■ ${reihe.title} → ${root}`);
+    for (const project of reihe.projects) {
+      if (wanted.length && !wanted.includes(reihe.reihe) && !wanted.includes(project.slug)) continue;
+      const src = projectDir(reihe.reihe, project.slug);
+      if (project.cfProjectId) continue; // already on CurseForge
+      if (!fs.existsSync(path.join(src, 'page.json')) || !fs.existsSync(path.join(src, 'logo.png'))) {
+        if (wanted.includes(project.slug)) console.log(`  – ${project.name}: noch ohne Seite oder Logo`);
+        continue;
+      }
+      const { page, dir, results } = await buildPage(reihe, project);
+      if (!pageOk(results)) {
+        console.log(`  ✗ ${page.name}: Seiten-Prüfung rot (${results.filter(r => r.level === 'error').map(r => r.label).join(', ')}), npm run serie -- seite ${project.slug}`);
+        continue;
+      }
+      const release = listReleaseProjects().includes(project.slug) ? { ...loadReleaseProject(project.slug), root: path.join('./data/projects', project.slug) } : null;
+      const plan = planUploadFolder({ reihe, project, page, pageDir: dir, shotDir: path.join(src, 'shots'), release, gameVersionType: game.versionTypes?.[0] });
+      writeUploadFolder(plan, root);
+      const shots = plan.files.filter(f => f.role === 'shot');
+      console.log(`  ✓ ${plan.folder}: ${release ? release.versions[0].file : 'keine Datei'}, ${shots.length} Bild(er) aus dem Spiel${shots.some(s => s.since) ? ` (davon ${shots.filter(s => s.since).length} für spätere Versionen, beschriftet)` : ''}`);
+    }
+  }
 }
 
 // Projects whose banner is not chosen yet and that have a page and a logo (or the slugs given).
@@ -368,6 +409,7 @@ else if (cmd === 'stand') stand();
 else if (cmd === 'plan') plan();
 else if (cmd === 'logo') await logo();
 else if (cmd === 'seite') await seite();
+else if (cmd === 'mappe') await mappe();
 else if (cmd === 'id') await id();
 else if (cmd === 'vorrat') vorrat();
 else if (cmd === 'namen') await namen();

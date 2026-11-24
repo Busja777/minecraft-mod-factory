@@ -1,0 +1,20 @@
+[
+  {
+    "file": "01.png",
+    "name": "xp-per-hour-time-to-level",
+    "title": "XP per hour, time to level and a history of your sessions",
+    "since": "1.1"
+  },
+  {
+    "file": "02.png",
+    "name": "leveling-session-history",
+    "title": "Your levelling sessions at a glance, right in the game",
+    "since": "1.1"
+  },
+  {
+    "file": "03.png",
+    "name": "xp-sessions-in-chat",
+    "title": "Sessions and level times in chat, too",
+    "since": "1.1"
+  }
+]

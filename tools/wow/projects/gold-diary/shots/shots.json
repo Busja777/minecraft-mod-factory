@@ -1,0 +1,26 @@
+[
+  {
+    "file": "01.png",
+    "name": "gold-tracker-session-gold-per-hour",
+    "title": "Where your gold came from this session, and your net per hour",
+    "since": "1.2"
+  },
+  {
+    "file": "02.png",
+    "name": "gold-history-two-weeks-daily",
+    "title": "History: two weeks day by day, with your average and best day",
+    "since": "1.2"
+  },
+  {
+    "file": "03.png",
+    "name": "gold-today-quest-rewards-vendor-sales",
+    "title": "Today: quest rewards and vendor sales kept apart",
+    "since": "1.2"
+  },
+  {
+    "file": "04.png",
+    "name": "gold-summary-in-chat",
+    "title": "A short gold summary in chat",
+    "since": "1.3"
+  }
+]

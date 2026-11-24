@@ -1,0 +1,8 @@
+[
+  {
+    "file": "01.png",
+    "name": "gear-durability-repair-costs",
+    "title": "Your gear condition on screen; repair costs are noted at the vendor",
+    "since": "1.2"
+  }
+]
