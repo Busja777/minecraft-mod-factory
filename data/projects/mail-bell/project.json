@@ -11,7 +11,8 @@
       "changelog": "## Mail Bell 1.0\n\nFirst release.\n\n- Rings a bell and prints one chat line when new mail arrives. The sound plays on the Master channel, so you hear it even with sound effects muted.\n- Mail that was already there when you log in does not ring, and the bell rings at most once every 30 seconds.\n- Remembers which of your characters have unread mail. A character counts as done once you have emptied its mailbox or closed it with no new mail left.\n- A few seconds after login, one chat line names your other characters with mail waiting.\n- `/mb` or `/mailbell` shows that list and the settings. `/mb sound on|off` and `/mb login on|off` switch the bell and the login list, `/mb forget Name-Realm` removes a character.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -20,7 +21,8 @@
       "changelog": "## Mail Bell 1.1\n\n- New **expiry warning**: when you open a mailbox, one chat line tells you if letters with items or gold run out within the next 3 days, for example \"2 letters with items or gold run out within 3 days, the first in 1 day.\" It comes once per session.\n- Mail Bell remembers this for every character. The list a few seconds after login now also names the characters whose items or gold run out soon, the one you are playing included, for example \"Mail with items or gold runs out soon on: Brakk in 2 days\".\n- Cash-on-delivery letters and letters without items or gold are left out.\n- `/mb expire 5` sets the days (1 to 30), `/mb expire off` switches the warning off. `/mb` shows the setting.\n- Your characters and settings from 1.0 are kept. A character's dates are known after its next visit to a mailbox.\n\n- The help text now reads \"on/off\" instead of \"on|off\", which the chat could show garbled.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -29,7 +31,8 @@
       "changelog": "## Mail Bell 1.2\n\n- New **choice of bell**: `/mb sound bell`, `chime`, `horn`, `warning` or `whisper` picks the sound for new mail and plays it once so you can hear it.\n- `bell` is the sound of 1.0 and 1.1 and stays the default. If your game does not know a sound, Mail Bell rings the old bell instead.\n- `/mb sound on/off` works as before and keeps your choice. Picking a bell switches the sound on.\n- `/mb sound` and `/mb` show the chosen bell.\n- Your characters and settings from 1.1 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "changelog": "## Mail Bell 1.3\n\n- The **expiry warning names the letters** now: when you open a mailbox, the line about items or gold running out soon tells who sent them and the subject, for example `2 letters with items or gold run out within 3 days, the first in 1 day: Auction House \"Auction successful\", Brakk \"Herbs\"`. Up to three are named, the rest are counted.\n- Mail Bell remembers the five letters with items or gold that run out first on every character.\n- At login, your current character gets its own line when one of its letters runs out soon. The game cannot read the mailbox at login, so the line says that it is based on your last mailbox visit. The list of your other characters works as before.\n- New command `/mb letters`: lists these letters on all your characters with the days left, as of each one's last mailbox visit.\n- Your characters and settings from 1.2 are kept. Senders and subjects are known after a character's next visit to a mailbox; until then, the date alone is shown.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -47,7 +51,8 @@
       "changelog": "## Mail Bell 1.4\n\n- Mail Bell now speaks **German**: the new mail line, the expiry warning, the login lines and `/mb letters`. On clients in other languages it stays in English.\n- Senders, subjects and character names keep coming from the game, so they show exactly as in your mailbox.\n- The commands stay the same in every language, for example `/mb letters` or `/mb expire off`. The bell names `bell`, `chime`, `horn`, `warning` and `whisper` stay as they are, too.\n- Your characters, letters and settings from 1.3 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     }
   ]

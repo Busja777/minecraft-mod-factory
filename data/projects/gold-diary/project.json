@@ -11,7 +11,8 @@
       "changelog": "## Gold Diary 1.0\n\nFirst release.\n\n- Tracks every change to your gold and sorts it by source: loot, quests, vendor, repairs, Auction House, mail, trainer, flight paths, trade, barber & transmog and more.\n- Window with three views: this session, today and the last 7 days.\n- Shows earned, spent and net gold, plus your net gold per hour for the session.\n- Gold you move into or out of the Warband bank or a guild bank is listed on its own and does not count as earned or spent.\n- Open it with `/gd` or `/golddiary`. `/gd reset` starts a new session.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {

@@ -11,7 +11,8 @@
       "changelog": "## Vendor Refill 1.0\n\nFirst release.\n\n- Keep a list of consumables with the count you want in your bags. Each character has its own list.\n- At every vendor that sells an item of your list, it buys just enough to reach that count, a few purchases at a time.\n- Items the vendor sells in bundles are bought in whole bundles. Items that cost a currency other than gold and sold out items are skipped.\n- One chat line tells you what was bought and what it cost. A second line tells you when your gold was not enough for everything.\n- Hold Shift while you open a vendor to skip one visit.\n- `/vr add <item> <count>`, `/vr remove <item>` and `/vr list` manage the list (item link or item ID). `/vr on` and `/vr off` switch refilling. `/vr` or `/vendorrefill` shows the state and the commands.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -20,7 +21,8 @@
       "changelog": "## Vendor Refill 1.1\n\n- New **low stock warning**: when an item of your list drops below 25 % of the count you want, one chat line tells you, for example \"Water is running low: 4 of 20 left.\" So you know to stock up before you reach the next vendor.\n- Each item warns once. It warns again only after you restocked it.\n- No warnings while a vendor window is open, and the warning keeps working when refilling is switched off.\n- `/vr warn <percent>` sets the share (1 to 90), `/vr warn off` switches the warning off, `/vr warn` shows the setting.\n- Your list and settings from 1.0 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -29,7 +31,8 @@
       "changelog": "## Vendor Refill 1.2\n\n- New: **refill from the bank**. When you open your bank, items of your list move from the bank into your bags until you have the count you want. Your character bank and your Warband bank both count. So the next vendor only buys what the bank did not have.\n- Only items on your list are moved, and never more than the count you want. Whole stacks move as they are, bigger stacks are split.\n- One chat line tells you what arrived in your bags, for example \"Taken from the bank: Water x12.\" Another one tells you when your bags were full.\n- Nothing is moved in combat or while you hold an item on the cursor. Hold Shift while you open the bank to skip one visit.\n- `/vr bank off` switches only the bank part off, `/vr bank on` back on, `/vr bank` shows the setting. It is on from the start. `/vr off` switches all refilling off, at vendors and at the bank.\n- Your list and settings from 1.1 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "changelog": "## Vendor Refill 1.3\n\n- Vendor Refill now speaks **German**. On clients in other languages it stays in English.\n- Item names keep coming from the game, so they show in your client's language as before.\n- The commands stay the same in every language, for example `/vr add` or `/vr bank on`.\n- Your list and settings from 1.2 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     }
   ]

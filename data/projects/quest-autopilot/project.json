@@ -11,7 +11,8 @@
       "changelog": "## Quest Autopilot 1.0\n\nFirst release.\n\n- Accepts a quest as soon as a quest giver offers it.\n- Hands in finished quests and takes the reward when there is nothing to choose.\n- Works through quest givers with several quests: finished ones first, then new ones.\n- Stops when a quest offers several rewards and tells you in chat, so you pick yourself.\n- Never hands in a quest that asks for gold.\n- Repeatable quests are handed in once but never taken again on their own, so your items are safe.\n- Hold Shift while you talk to someone to pause it for that conversation.\n- `/qa` or `/questautopilot` shows the state. `/qa on` and `/qa off` switch everything, `/qa accept` and `/qa turnin` switch one half.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -20,7 +21,8 @@
       "changelog": "## Quest Autopilot 1.1\n\n- New: keep chosen quests **manual**. The autopilot does not accept, hand in or pick them at a quest giver; everything else keeps running.\n- `/qa manual` keeps the quest you just saw manual, even if the autopilot has already taken it. `/qa manual` followed by a quest ID, a quest name or a shift-clicked quest link adds one by hand.\n- `/qa auto` followed by an ID or name hands a quest back to the autopilot, `/qa list` shows your list.\n- New switch `/qa dailies`: leaves all daily and weekly quests to you. It is off, so nothing changes until you type it.\n- `/qa` now also shows the daily switch and how many quests you keep manual.\n- Your settings from 1.0 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -29,7 +31,8 @@
       "changelog": "## Quest Autopilot 1.2\n\n- New switch `/qa gossip`: when a character has no quests for you and offers exactly one line of conversation, the autopilot picks it for you. Handy for long talks that are only \"Tell me more\" page after page.\n- Only plain conversation lines are picked. Shops, trainers, banks, flight maps, innkeepers, options with rewards or spells and every real choice between two or more lines stay yours.\n- If a line asks you to confirm something (gold, a skip, a trip), the game's question is left to you and the autopilot never picks that line again, also after a restart.\n- The same line is never picked twice in a row, and at most five lines per conversation.\n- Holding Shift and `/qa off` stop it, like everything else. The switch starts off, so nothing changes until you type `/qa gossip`.\n- `/qa` now also shows the new switch. Your settings and manual quests from 1.1 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "changelog": "## Quest Autopilot 1.3\n\n- New **reward hint**: when a quest lets you choose a reward, the one a vendor pays the most for gets a small coin in the reward window, and one chat line names it with its price, for example \"Highest vendor value: [Staff] (1g 20s)\".\n- A stack counts with all its items. The hint only shows when the game knows every price; if a price is still loading, it appears as soon as it arrives. When nothing is worth anything or two rewards share the top price, there is no hint.\n- It is only about the vendor price. It does not compare gear, and the autopilot still never picks a reward for you.\n- `/qa hint on` and `/qa hint off` switch it; it starts on. Holding Shift and `/qa off` stop it, like everything else.\n- `/qa` now also shows the hint switch. Your settings, manual quests and dialogue choices from 1.2 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -47,7 +51,8 @@
       "changelog": "## Quest Autopilot 1.4\n\n- Quest Autopilot now speaks **German**. On clients in other languages it stays in English.\n- The price in the reward hint uses the game's own coin letters in your client's language, for example \"1G 20S 3K\" on a German client. English clients still see \"1g 20s 3c\".\n- Quest names and reward links come from the game as before, in your client's language.\n- The commands stay the same in every language, for example `/qa manual` or `/qa hint off`.\n- Your settings, manual quests and dialogue choices from 1.3 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     }
   ]
