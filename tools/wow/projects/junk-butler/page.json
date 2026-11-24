@@ -2,6 +2,7 @@
   "name": "Junk Butler",
   "summary": "Sells your grey items and repairs your gear whenever you open a vendor, then sums it up in one chat line.",
   "category": "Bags & Inventory",
+  "additionalCategories": ["Auction & Economy"],
   "logoPrompt": "A polished brass service bell resting on top of a small worn leather sack that is tied with a rope, a few dull grey trinkets and bent coins spilling out at its base",
   "cover": {
     "tagline": "Sell the junk, fix the gear, move on.",

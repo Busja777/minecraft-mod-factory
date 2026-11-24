@@ -77,7 +77,7 @@ function uploadText({ reihe, project, page, files, first, gameVersionType }) {
     '',
     'SCHRITTE',
     `1. Bei CurseForge (${reihe.title}) ein neues Projekt anlegen${page.class ? `, Projektart: ${page.class}` : ''}.`,
-    '2. Name, Summary und Kategorie von unten eintragen. Im Beschreibungs-Editor auf Markdown stellen und die Beschreibung einfügen.',
+    '2. Name, Summary, Kategorie und Zusatzkategorien von unten eintragen. Im Beschreibungs-Editor auf Markdown stellen und die Beschreibung einfügen.',
     `3. Logo: ${by('logo')[0].to}`,
     `4. Bilder: ${main.to} hochladen und als Hauptbild markieren${gallery.length ? ', danach die übrigen Bilder in dieser Reihenfolge (Titel daneben):' : '.'}`,
     ...gallery.map((g, i) => `   ${i + 1}. ${g.to}${g.title ? `\n      Titel: ${g.title}` : ''}${g.since ? `\n      (zeigt eine Funktion ab Version ${g.since}, im Bild so beschriftet)` : ''}`),
@@ -89,7 +89,8 @@ function uploadText({ reihe, project, page, files, first, gameVersionType }) {
     '',
     line, 'NAME', line, page.name, '',
     line, 'SUMMARY', line, page.summary, '',
-    line, 'KATEGORIE', line, page.class ? `${page.class} → ${page.category}` : page.category, '',
+    line, 'KATEGORIE (Main category)', line, page.class ? `${page.class} → ${page.category}` : page.category, '',
+    ...(page.additionalCategories?.length ? [line, 'ZUSATZKATEGORIEN (Additional categories)', line, ...page.additionalCategories, ''] : []),
     line, 'DESCRIPTION (Markdown)', line, page.description.trim(), '',
     ...(first ? [line, `CHANGELOG V${first.version} (Markdown)`, line, first.changelog.trim(), ''] : [])
   ].join('\n');

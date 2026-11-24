@@ -2,6 +2,7 @@
   "name": "Durability Watch",
   "summary": "Keeps an eye on how worn your equipped gear is and warns you in time, before an item breaks in the middle of a fight.",
   "category": "Bags & Inventory",
+  "additionalCategories": ["Miscellaneous"],
   "logoPrompt": "A steel knight's helmet with a small crack and a few scratches, a glowing round gauge with a needle pointing to the red zone set in front of its lower edge",
   "cover": {
     "tagline": "Repair before your gear breaks.",

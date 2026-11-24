@@ -2,6 +2,7 @@
   "name": "Flight Minutes",
   "summary": "Learns how long your flight paths take and shows a countdown to the landing from the second flight on.",
   "category": "Map & Minimap",
+  "additionalCategories": ["Miscellaneous"],
   "logoPrompt": "A round brass pocket stopwatch with a plain dial without numerals and one glowing hand, with a pair of small feathered wings spread from its sides, tilted slightly",
   "cover": {
     "tagline": "Know when you land, on every flight path.",

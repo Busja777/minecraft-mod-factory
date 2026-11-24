@@ -2,6 +2,7 @@
   "name": "Gold Diary",
   "summary": "See where your gold comes from and where it goes, by source, for your session, the day and the week.",
   "category": "Auction & Economy",
+  "additionalCategories": ["Miscellaneous"],
   "logoPrompt": "An open leather-bound diary lying at an angle, its pages glowing softly, with a small stack of shiny gold coins resting on the lower corner and one coin standing upright",
   "cover": {
     "tagline": "Know what your play session was worth.",

@@ -50,7 +50,8 @@ tested from files alone with LuaJIT against a small stand-in for the WoW client.
   in your brief, slash commands, saved settings, "addon defines only its own globals"
 - `changelogs/1.0.md` (English, same style as Gold Diary's)
 - `page.json` with `name`, `summary`, `category` (exactly one of the CurseForge WoW categories
-  listed in your brief), `logoPrompt` (one sentence describing a single centred object for an
+  listed in your brief), `additionalCategories` (0 to 3 further names from `tools/wow/categories.json`,
+  only where they truly fit; `Miscellaneous` when nothing else does), `logoPrompt` (one sentence describing a single centred object for an
   icon; no text, no game characters, no game logos), `cover` { `tagline` ≤ 45 characters,
   `bullets`: exactly 3, each ≤ 34 characters }, `description` (array of lines) in the shape above.
   It describes only what V1.0 does, and says "Works on Retail."

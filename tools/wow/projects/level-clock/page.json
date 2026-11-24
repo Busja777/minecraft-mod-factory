@@ -2,6 +2,7 @@
   "name": "Level Clock",
   "summary": "Shows your experience per hour, the time until the next level and your rested bonus while you level.",
   "category": "Quests & Leveling",
+  "additionalCategories": ["Miscellaneous"],
   "logoPrompt": "A round brass pocket watch with its lid open, a plain glowing blue dial with two hands and simple tick marks, and a small golden arrow pointing upwards rising from behind the top of the watch",
   "cover": {
     "tagline": "See how long the next level will take.",

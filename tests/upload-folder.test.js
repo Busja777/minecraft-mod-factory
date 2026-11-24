@@ -88,3 +88,28 @@ test('every shots.json in the repo matches its images', () => {
     for (const slug of fs.readdirSync(projects)) loadShotMeta(path.join(projects, slug, 'shots'));
   }
 });
+
+test('categoryCheck: additional categories are real, few and not the main one', async () => {
+  const { categoryCheck } = await import('../scripts/lib/page-check.js');
+  const names = ['Mail', 'Audio & Video', 'PvP', 'Miscellaneous', 'Guild'];
+  const base = { category: 'Mail' };
+  assert.equal(categoryCheck({ ...base, additionalCategories: ['Audio & Video'] }, names).level, 'ok');
+  assert.equal(categoryCheck(base, names).detail, 'Mail', 'additional categories are optional');
+  assert.match(categoryCheck({ ...base, additionalCategories: ['Mail'] }, names).detail, /schon die Hauptkategorie/);
+  assert.match(categoryCheck({ ...base, additionalCategories: ['Sounds'] }, names).detail, /gibt es auf CurseForge nicht/);
+  assert.match(categoryCheck({ ...base, additionalCategories: ['PvP', 'PvP'] }, names).detail, /doppelte/);
+  assert.match(categoryCheck({ ...base, additionalCategories: ['PvP', 'Guild', 'Miscellaneous', 'Audio & Video'] }, names).detail, /höchstens 3/);
+  assert.match(categoryCheck({ category: 'Sounds' }, names).detail, /gibt es auf CurseForge nicht/);
+  assert.equal(categoryCheck({ category: 'Anything' }).level, 'ok', 'without a list only the shape is checked');
+});
+
+test('the WoW pages use only real CurseForge categories', async () => {
+  const { categoryCheck } = await import('../scripts/lib/page-check.js');
+  const names = JSON.parse(fs.readFileSync('./tools/wow/categories.json', 'utf-8')).names;
+  for (const slug of fs.readdirSync('./tools/wow/projects')) {
+    const file = path.join('./tools/wow/projects', slug, 'page.json');
+    if (!fs.existsSync(file)) continue;
+    const r = categoryCheck(JSON.parse(fs.readFileSync(file, 'utf-8')), names);
+    assert.equal(r.level, 'ok', `${slug}: ${r.detail}`);
+  }
+});

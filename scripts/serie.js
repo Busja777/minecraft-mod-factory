@@ -46,8 +46,15 @@ const pageOptions = (reihe, project) => ({
   // visual packs need a real in-game image; a pack without visuals (sounds only) says shot: false
   needsShot: reihe.reihe === 'java' && /R/.test(project.art) && project.shot !== false,
   bannerFrom: project.banner?.from || null,
-  needsBanner: reihe.banner !== false
+  needsBanner: reihe.banner !== false,
+  categories: categoryNames(reihe.reihe)
 });
+
+// CurseForge category names of a series' game, if the list is in the repo.
+function categoryNames(reiheKey) {
+  const file = path.join('./tools', reiheKey, 'categories.json');
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf-8')).names : null;
+}
 
 function pageFiles(reihe, project) {
   const dir = outDir(reihe.reihe, project);
@@ -83,7 +90,7 @@ function handover(reihe, project, page, zips) {
     `Reihe ${reihe.title}, Projekt ${project.nr} von 33, geplant für den ${de(plannedDate(reihe, project.nr))}`,
     '',
     `1. Im CurseForge-Konto für **${game.name}** ein neues Projekt anlegen${page.class ? ` (Projektart: **${page.class}**)` : ''}.`,
-    '2. Name, Summary und Kategorie von unten eintragen. Im Beschreibungs-Editor auf **Markdown** stellen und die Beschreibung einfügen.',
+    '2. Name, Summary, Kategorie und Zusatzkategorien von unten eintragen. Im Beschreibungs-Editor auf **Markdown** stellen und die Beschreibung einfügen.',
     '3. `logo.png` als Logo hochladen.',
     reihe.banner === false
       ? `4. Unter **Images** \`cover.png\` hochladen und als Hauptbild markieren${shots ? ', dazu die `shot-*.png`' : ''}.`
@@ -103,6 +110,7 @@ function handover(reihe, project, page, zips) {
     '',
     page.class ? `${page.class} → ${page.category}` : page.category,
     '',
+    ...(page.additionalCategories?.length ? ['## Additional categories', '', page.additionalCategories.join(', '), ''] : []),
     '## Description',
     '',
     page.description.trim(),
