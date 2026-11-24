@@ -1,6 +1,28 @@
 # To-dos
 
-Stand: 23.11.2026 abends. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
+Stand: 24.11.2026 früh. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
+
+## Nacht 23./24.11.: so viel bauen wie möglich
+
+Dein Auftrag am Abend: „so viel wie möglich versuchen“. Claude hat lokal gebaut, was die Nacht-Sitzung nicht kann (Fabric-Mods), und Stardew dazu; die Nacht hat WoW gebaut.
+
+**Fertig, wartet nur auf #118** (eine Zeile je Test: Projekte ohne Logo dürfen `page.draft.json` haben):
+- Java (Fabric 1.21.1): Join Greeter und Patient Anvil (#119), Griefing Rules (#120), Sky Forecast (#121), Double Door Buddy (#122), Stack More (#123), Bonemeal More (#124), Bottled Levels (#126). Jeder mit JUnit- und Spieltests (4 bis 18), gegengelesen.
+- Stardew: Happy Barn (#127), Monster Loot Refresh (#129).
+
+**Ohne dich durch:** Nacht-WoW Loot Wishes, Macro Shelf, Camera Plus, Quiet Please (#128), dazu ihr Deutsch V1.1 (#130).
+
+**Ehrlich gestoppt (Grund im Plan):**
+- Stardew Nr. 16 Fresh Farm TV Tips: jeder Sendetag beider Jahre hat schon einen Tipp.
+- Stardew Nr. 14 Gift Secret Notes: `Data/SecretNotes` ist nicht dokumentiert, neue Notizen wären blind riskant.
+- Stardew Nr. 22 Bountiful Forage: gebaut, aber nur zwei Zahlen, zu dünn (geparkt auf `park/stardew-bountiful-forage`).
+- Java Where I Died: zu nah an Trigger Homes (Rückkehr zum Todesort).
+- Stardew Nr. 31 Sturdy Fences braucht `Data/Fences` in `TARGETS` (Werkzeug, dein Wort).
+
+**Neu aufgefallen:**
+- **Die Nacht-Sitzung legt WoW-Dateien ohne Spielversion in den Vorrat** (`--game-versions` fehlt). Für die vier Addons aus #128 in #130 nachgetragen. Dauerhaft: ein Satz in `tools/serie/NACHT.md` oder eine Prüfung in `tests/vorrat.test.js` (Werkzeug, dein Wort).
+- **Stardew 1.7 kommt:** Das Wiki hat schon einen Umstiegs-Leitfaden. `Data/Monsters` wird ein Datenmodell (betrifft Monster Loot Refresh), andere Formate können folgen. Alle Stardew-Pakete sind nur für 1.6.14 und 1.6.15 ausgewiesen; der Radar sollte melden, sobald SMAPI 1.7 unterstützt.
+- **Camera Plus** sprach von einem Schieberegler, den Retail 12.x nicht mehr zeigt; korrigiert in #130.
 
 ## Auf einen Blick (23.11.)
 
@@ -20,7 +42,7 @@ Stand: 23.11.2026 abends. Ganz oben steht, was als Nächstes dran ist. Grundsatz
 - **Werkzeug-PRs warten weiter:** #29 Bedrock, #30 Anlegen, #28 WoW-Seiten, #27 Bilder, #31 Saison, #34 Trend-Radar, #37 Trank-IDs. #18 (externer Wecker) ist durch #107 wohl überholt und kann geschlossen werden (deine Entscheidung).
 - **Blind bleibt blind:** Stardew, Bedrock und 1.21.1 sind ungetestet im Spiel; die Seiten sagen nichts anderes.
 
-**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #37 → #31 → #34. Danach `npm run cf -- serie` für die Minecraft-Projekte, die schon warten.
+**Empfohlene Reihenfolge für deine Merges:** **#118 zuerst** (neun fertige Projekte warten darauf) → #29 → #30 (Anlegen) → #28 → #27 → #37 → #31 → #34. Danach `npm run cf -- serie` für die Minecraft-Projekte, die schon warten.
 
 ## Java-Packs auf den Zwischenversionen (seit #89)
 
