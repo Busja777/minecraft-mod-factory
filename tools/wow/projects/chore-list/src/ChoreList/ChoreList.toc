@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Chore List
+## Notes: Your own daily and weekly to-do list that unchecks itself at the reset.
+## Version: @version@
+## SavedVariablesPerCharacter: ChoreListCharDB
+## IconTexture: Interface\Icons\INV_Misc_Note_01
+
+Locale.lua
+Core.lua
+Chores.lua
+UI.lua
+Commands.lua
