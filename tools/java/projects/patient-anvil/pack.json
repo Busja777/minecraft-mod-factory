@@ -1,0 +1,8 @@
+{
+  "kind": "mod",
+  "name": "Patient Anvil",
+  "description": "No more \"Too Expensive!\": the anvil works at any cost you can pay",
+  "mc": "1.21.1",
+  "modId": "patientanvil",
+  "gameVersions": ["1.21.1", "Fabric", "Java 21", "Server", "Client"]
+}

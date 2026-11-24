@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "patientanvil",
+  "version": "${version}",
+  "name": "Patient Anvil",
+  "description": "Removes the anvil's \"Too Expensive!\" limit of 40 levels. The cost stays the vanilla cost; you only need the levels to pay it. Needed on the server; on the client it shows the real cost instead of \"Too Expensive!\".",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.patientanvil.PatientAnvil"]
+  },
+  "mixins": ["patientanvil.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
