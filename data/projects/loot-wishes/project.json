@@ -1,0 +1,27 @@
+{
+  "slug": "loot-wishes",
+  "game": "wow",
+  "name": "Loot Wishes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "LootWishes-1.0.zip",
+      "changelog": "## Loot Wishes 1.0\n\nFirst release.\n\n- Keep a wish list of items. Add one with `/lw add` and shift-click the item into the chat line, or type its item ID (`/lw add 19019`). An item link or a Wowhead address works too.\n- When a wished item is in your loot window or comes up for a loot roll, a chat line and a short alert sound tell you.\n- When you receive a wished item, or another player near you loots it, the chat says so. Items you got are marked on the list.\n- When you open a merchant who sells a wished item, the chat names it, once per visit.\n- The tooltip of a wished item shows \"On your wish list\".\n- `/lw list` shows your list with how often and how long ago each item showed up, `/lw remove <item or number>` takes an item off, `/lw sound off` keeps the alerts silent.\n- An item counts in every version: each difficulty and upgrade level of it is a hit.\n- Shared by all characters of your account, up to 500 items.\n- Open the help with `/lw` or `/lootwishes`.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    },
+    {
+      "version": "1.1",
+      "file": "LootWishes-1.1.zip",
+      "changelog": "## Loot Wishes 1.1\n\n- Loot Wishes now speaks **German**: the alerts in chat, the wish list, the tooltip line and every answer to a command. On clients in other languages it stays in English.\n- As in 1.0, loot lines in chat are read in your client's own wording, so on a German client \"Ihr erhaltet Beute\" counts just like \"You receive loot\" in English.\n- The commands stay the same in every language, for example `/lw add <item>` or `/lw sound off`.\n- Your wish list, its hits and your sound setting from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

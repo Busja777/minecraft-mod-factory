@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Camera Plus
+## Notes: Lets the camera zoom out further and remembers camera positions.
+## Version: @version@
+## SavedVariables: CameraPlusDB
+## IconTexture: Interface\Icons\INV_Misc_Spyglass_03
+
+Locale.lua
+Core.lua
+Camera.lua
+Commands.lua
