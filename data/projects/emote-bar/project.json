@@ -1,0 +1,18 @@
+{
+  "slug": "emote-bar",
+  "game": "wow",
+  "name": "Emote Bar",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "EmoteBar-1.0.zip",
+      "changelog": "## Emote Bar 1.0\n\nFirst release.\n\n- A small bar with your favourite emotes as buttons. One click runs the emote, at your target if you have one.\n- Starts with six friendly emotes: wave, hello, thank, cheer, dance and laugh.\n- `/emotebar add <emote>` adds a button, up to 12. Type the emote the way you type it in chat, with or without the slash: `/emotebar add bow` or `/emotebar add /hi`.\n- Only emotes the game itself knows are accepted. On a client in another language its own emote commands work too, and the English ones still do.\n- `/emotebar remove <emote or number>` removes a button, by its emote or its place on the bar. `/emotebar list` lists them with their numbers.\n- Drag the bar anywhere; `/emotebar lock` locks or unlocks it. `/emotebar` shows or hides it.\n- Your emotes, the position and the lock are saved for your whole account.\n- The bar works in and out of combat. If the game refuses an emote at a moment, the bar says so in chat.\n- `/eb` is the short form.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
