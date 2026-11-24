@@ -1,0 +1,36 @@
+{
+  "name": "Shield Down Low",
+  "summary": "Lowers the shield in your first-person view so it hides less of what is in front of you, while blocking too.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A wooden shield with an iron rim tilted low at the bottom of the frame, with a small downward arrow beside it",
+  "cover": {
+    "tagline": "Your shield, out of the way.",
+    "bullets": [
+      "Shield sits lower in first person",
+      "Blocking stays easy to see",
+      "Other players see no change"
+    ]
+  },
+  "description": [
+    "**Shield Down Low moves the shield further down in your first-person view, so you see more of the fight in front of you.**",
+    "",
+    "## Features",
+    "- The held shield sits lower in either hand and covers less of the screen.",
+    "- When you block, it still comes up and turns towards the middle as usual, just from a lower spot, so you always know you are blocking.",
+    "- Banner patterns on your shield show as before.",
+    "- Only the first-person view changes: third person, the inventory, item frames and dropped shields look like vanilla.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs.",
+    "",
+    "## Good to know",
+    "- Resource pack for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only moves the shield in your own view, so blocking works exactly as in vanilla.",
+    "- Works on servers too; only you see the change.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or want it even lower? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
