@@ -10,7 +10,7 @@ const png = (dir, name) => fs.writeFileSync(path.join(dir, name), 'png');
 
 const reihe = { reihe: 'wow', title: 'World of Warcraft', banner: false };
 const project = { nr: 1, slug: 'gold-diary' };
-const page = { name: 'Gold Diary', summary: 'See where your gold goes.', category: 'Auction & Economy', description: '**Bold.**\n\n## Features\n- a' };
+const page = { name: 'Gold Diary', summary: 'See where your gold goes.', cover: { tagline: 'Know your gold.' }, category: 'Auction & Economy', description: '**Bold.**\n\n## Features\n- a' };
 const release = { root: '/stock/gold-diary', versions: [
   { version: '1.0', file: 'GoldDiary-1.0.zip', changelog: '## Gold Diary 1.0\n\nFirst release.', gameVersions: ['12.1.5'] },
   { version: '1.2', file: 'GoldDiary-1.2.zip', changelog: 'x' }
@@ -30,12 +30,16 @@ test('loadShotMeta: every image needs exactly one entry with a clean name', () =
   const dir = tmp();
   png(dir, '01.png');
   assert.deepEqual(loadShotMeta(dir).map(m => m.name), ['01'], 'without shots.json the plain list');
-  fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'gold-per-hour' }, { file: '02.png', name: 'x' }]));
+  fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'gold-per-hour', title: 't', description: 'd' }, { file: '02.png', name: 'x', title: 't', description: 'd' }]));
   assert.throws(() => loadShotMeta(dir), /02\.png gibt es nicht/);
   fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'Gold per hour' }]));
   assert.throws(() => loadShotMeta(dir), /Kleinbuchstaben/);
+  fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'a', title: 'Gold' }]));
+  assert.throws(() => loadShotMeta(dir), /title und description/);
+  fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'a', title: 'Gold', description: 'Für dich' }]));
+  assert.throws(() => loadShotMeta(dir), /auf Englisch/);
   png(dir, '02.png');
-  fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'a' }]));
+  fs.writeFileSync(path.join(dir, 'shots.json'), JSON.stringify([{ file: '01.png', name: 'a', title: 't', description: 'd' }]));
   assert.throws(() => loadShotMeta(dir), /02\.png fehlt/);
 });
 
@@ -43,8 +47,8 @@ test('planUploadFolder: first file, descriptive image names, later-version shots
   const shotDir = tmp();
   png(shotDir, '01.png'); png(shotDir, '02.png');
   fs.writeFileSync(path.join(shotDir, 'shots.json'), JSON.stringify([
-    { file: '02.png', name: 'history-view', title: 'History', since: '1.2' },
-    { file: '01.png', name: 'session-view', title: 'Session', since: '1.0' }
+    { file: '02.png', name: 'history-view', title: 'History', description: 'Thirteen days.', since: '1.2' },
+    { file: '01.png', name: 'session-view', title: 'Session', description: 'Your session.', since: '1.0' }
   ]));
   const plan = planUploadFolder({ reihe, project, page, pageDir: '/page', shotDir, release, gameVersionType: 'WoW Retail' });
   assert.equal(plan.folder, '01 Gold Diary');
@@ -59,8 +63,11 @@ test('planUploadFolder: first file, descriptive image names, later-version shots
   assert.match(plan.text, /First release\./);
   assert.match(plan.text, /Auction & Economy/);
   assert.match(plan.text, /ab Version 1\.2/);
+  assert.match(plan.text, /Title: History\n\s+Description: Thirteen days\. Shown here with version 1\.2\./);
+  assert.match(plan.text, /Title: Session\n\s+Description: Your session\.\n/, 'no version note when the first file has it');
   assert.match(plan.text, /npm run serie -- id gold-diary/);
   assert.doesNotMatch(plan.text, /banner/i, 'WoW has no banner');
+  assert.match(plan.text, /cover\.png hochladen und als Hauptbild markieren\n\s+Title: Know your gold\.\n\s+Description: See where your gold goes\./);
 });
 
 test('planUploadFolder: with a banner it is the main image; without stock no file', () => {

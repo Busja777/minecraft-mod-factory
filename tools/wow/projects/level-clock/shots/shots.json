@@ -3,18 +3,21 @@
     "file": "01.png",
     "name": "xp-per-hour-time-to-level",
     "title": "XP per hour, time to level and a history of your sessions",
+    "description": "The clock shows your XP per hour, the time to your next level and your rested bonus; the History view lists your recent sessions.",
     "since": "1.1"
   },
   {
     "file": "02.png",
     "name": "leveling-session-history",
     "title": "Your levelling sessions at a glance, right in the game",
+    "description": "Your sessions in the game: when each one started, how long it lasted, XP gained, XP per hour and levels gained.",
     "since": "1.1"
   },
   {
     "file": "03.png",
     "name": "xp-sessions-in-chat",
     "title": "Sessions and level times in chat, too",
+    "description": "/lc history lists your recent levelling sessions in the chat.",
     "since": "1.1"
   }
 ]

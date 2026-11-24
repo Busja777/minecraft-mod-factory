@@ -7,7 +7,8 @@ import path from 'path';
 //     <first file>.zip                   the first version from the stock, under its stock name
 //     <slug>-<seo>-logo.png, -cover.png  and one image per in-game shot, with a descriptive file name
 // Shot metadata lives next to the shots: tools/<reihe>/projects/<slug>/shots/shots.json
-//   [{ file: "01.png", name: "session-gold-per-hour", title: "Caption", since: "1.2" }]
+//   [{ file: "01.png", name: "session-gold-per-hour", title: "Caption", description: "One or two sentences", since: "1.2" }]
+// title and description go into CurseForge's image fields (English).
 // since: first version that has what the image shows (left out = the first file has it already).
 
 export const UPLOAD_ROOT = './Output/Hochladen';
@@ -27,13 +28,17 @@ export function loadShotMeta(shotDir) {
   if (!fs.existsSync(shotDir)) return [];
   const pngs = fs.readdirSync(shotDir).filter(f => f.endsWith('.png')).sort();
   const metaFile = path.join(shotDir, 'shots.json');
-  if (!fs.existsSync(metaFile)) return pngs.map(file => ({ file, name: path.basename(file, '.png'), title: null, since: null }));
+  if (!fs.existsSync(metaFile)) return pngs.map(file => ({ file, name: path.basename(file, '.png'), title: null, description: null, since: null }));
   const meta = JSON.parse(fs.readFileSync(metaFile, 'utf-8'));
   const listed = meta.map(m => m.file);
   const missing = pngs.filter(f => !listed.includes(f));
   const extra = listed.filter(f => !pngs.includes(f));
   if (missing.length || extra.length) throw new Error(`${metaFile}: ${[...missing.map(f => `${f} fehlt in der Liste`), ...extra.map(f => `${f} gibt es nicht`)].join(', ')}`);
-  for (const m of meta) if (!m.name || seoSlug(m.name) !== m.name) throw new Error(`${metaFile}: ${m.file} braucht einen Namen aus Kleinbuchstaben und Bindestrichen`);
+  for (const m of meta) {
+    if (!m.name || seoSlug(m.name) !== m.name) throw new Error(`${metaFile}: ${m.file} braucht einen Namen aus Kleinbuchstaben und Bindestrichen`);
+    if (!String(m.title || '').trim() || !String(m.description || '').trim()) throw new Error(`${metaFile}: ${m.file} braucht title und description`);
+    if (/[äöüÄÖÜß]/.test(m.title + m.description)) throw new Error(`${metaFile}: ${m.file}: title und description auf Englisch`);
+  }
   return [...meta].sort((a, b) => a.file.localeCompare(b.file));
 }
 
@@ -58,11 +63,23 @@ export function planUploadFolder({ reihe, project, page, pageDir, shotDir, relea
     to: `${project.slug}-${m.name}.png`,
     role: 'shot',
     title: m.title,
+    description: m.description,
     since: first && m.since && newer(m.since, first.version) ? m.since : null
   }));
+  const cover = images.find(i => i.role === 'cover');
+  if (page.cover?.tagline) Object.assign(cover, { title: page.cover.tagline, description: page.summary });
   const files = [...images, ...shots];
   if (first) files.push({ from: path.join(release.root, 'files', first.file), to: first.file, role: 'file' });
   return { folder: folderName(project, page), files, text: uploadText({ reihe, project, page, files, first, gameVersionType }) };
+}
+
+// Title and Description for CurseForge's image fields, plus the version note for the operator.
+function imageFields(img) {
+  return [
+    img.title && `\n      Title: ${img.title}`,
+    img.description && `\n      Description: ${img.description}${img.since ? ` Shown here with version ${img.since}.` : ''}`,
+    img.since && `\n      (zeigt eine Funktion ab Version ${img.since}, im Bild so beschriftet)`
+  ].filter(Boolean).join('');
 }
 
 function uploadText({ reihe, project, page, files, first, gameVersionType }) {
@@ -79,8 +96,9 @@ function uploadText({ reihe, project, page, files, first, gameVersionType }) {
     `1. Bei CurseForge (${reihe.title}) ein neues Projekt anlegen${page.class ? `, Projektart: ${page.class}` : ''}.`,
     '2. Name, Summary, Kategorie und Zusatzkategorien von unten eintragen. Im Beschreibungs-Editor auf Markdown stellen und die Beschreibung einfügen.',
     `3. Logo: ${by('logo')[0].to}`,
-    `4. Bilder: ${main.to} hochladen und als Hauptbild markieren${gallery.length ? ', danach die übrigen Bilder in dieser Reihenfolge (Titel daneben):' : '.'}`,
-    ...gallery.map((g, i) => `   ${i + 1}. ${g.to}${g.title ? `\n      Titel: ${g.title}` : ''}${g.since ? `\n      (zeigt eine Funktion ab Version ${g.since}, im Bild so beschriftet)` : ''}`),
+    `4. Bilder: ${main.to} hochladen und als Hauptbild markieren${imageFields(main)}`,
+    ...(gallery.length ? ['   Danach die übrigen Bilder in dieser Reihenfolge, jeweils mit Title und Description:'] : []),
+    ...gallery.map((g, i) => `   ${i + 1}. ${g.to}${imageFields(g)}`),
     ...(later.length ? ['', `   ${later.length === by('shot').length ? 'Alle Bilder aus dem Spiel zeigen' : `${later.length} der Bilder zeigen`} Funktionen, die erst mit einem Update kommen. Sie sind im Bild mit der Version beschriftet, du kannst sie also gleich mit hochladen.`] : []),
     first
       ? `5. Datei: ${first.file} hochladen. Release-Typ: Release. Spielversion: ${(first.gameVersions || []).join(', ') || '(die neueste)'}${gameVersionType ? ` (${gameVersionType})` : ''}. Den Changelog von unten einfügen.\n   Den Dateinamen nicht ändern, daran erkennt der Abend-Lauf, dass V${first.version} schon online ist.\n   Lizenz: All Rights Reserved.`

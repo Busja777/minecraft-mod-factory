@@ -3,24 +3,28 @@
     "file": "01.png",
     "name": "gold-tracker-session-gold-per-hour",
     "title": "Where your gold came from this session, and your net per hour",
+    "description": "Every gold change of your play session, sorted by source: earned, spent, net and your net gold per hour.",
     "since": "1.2"
   },
   {
     "file": "02.png",
     "name": "gold-history-two-weeks-daily",
     "title": "History: two weeks day by day, with your average and best day",
+    "description": "The History view lists the last 13 days with gold earned and spent, plus your net, the average per active day and your best day.",
     "since": "1.2"
   },
   {
     "file": "03.png",
     "name": "gold-today-quest-rewards-vendor-sales",
     "title": "Today: quest rewards and vendor sales kept apart",
+    "description": "The Today view keeps quest rewards, vendor sales and every other source apart, so you see what the day was worth.",
     "since": "1.2"
   },
   {
     "file": "04.png",
     "name": "gold-summary-in-chat",
     "title": "A short gold summary in chat",
+    "description": "/gd report prints today's gold and the result of your session to the chat.",
     "since": "1.3"
   }
 ]

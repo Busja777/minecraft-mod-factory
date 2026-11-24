@@ -3,11 +3,13 @@
     "file": "01.png",
     "name": "ready-check-screen-flash-alert",
     "title": "A coloured flash at the screen edges for a ready check",
+    "description": "A coloured glow at the screen edges for a ready check, so you notice the alert even with the sound off.",
     "since": "1.2"
   },
   {
     "file": "02.png",
     "name": "queue-pop-alert-test",
-    "title": "Test the alert any time"
+    "title": "Test the alert any time",
+    "description": "/qh test shows the alert any time, so you know how it looks and sounds before the next queue pops."
   }
 ]

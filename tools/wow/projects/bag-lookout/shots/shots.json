@@ -3,6 +3,7 @@
     "file": "01.png",
     "name": "free-bag-slots-cheapest-items",
     "title": "Free bag slots on screen, and the cheapest items to throw away",
+    "description": "The counter shows your free bag slots at all times, and /bl cheap names the five items worth the least, so you know what to throw out first.",
     "since": "1.3"
   }
 ]

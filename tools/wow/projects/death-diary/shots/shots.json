@@ -2,6 +2,7 @@
   {
     "file": "01.png",
     "name": "death-log-by-zone-and-level",
-    "title": "Every death noted, by zone and by level range"
+    "title": "Every death noted, by zone and by level range",
+    "description": "Every death is noted, with counts by zone and by level range."
   }
 ]
