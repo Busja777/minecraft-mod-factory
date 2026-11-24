@@ -68,16 +68,20 @@ function ns.Backup()
   local now = ns.ReadMacros()
   local at = time()
   local lines = {}
-  local function save(old, list, label)
+  -- 1.1: one whole sentence per place instead of "account"/"character" spliced into one, so each
+  -- language can word it its own way (German: allgemeine Makros, Charaktermakros). English is unchanged.
+  local function save(old, list, keptText, savedText)
     if #list == 0 and old and #(old.macros or {}) > 0 then
-      lines[#lines + 1] = string.format(L["No %s macros found right now, the older backup of %d was kept."], label, #old.macros)
+      lines[#lines + 1] = string.format(keptText, #old.macros)
       return old
     end
-    lines[#lines + 1] = string.format(L["Saved %d %s macros."], #list, label)
+    lines[#lines + 1] = string.format(savedText, #list)
     return { at = at, macros = ns.CopyList(list) }
   end
-  ns.db.account = save(ns.db.account, now.account, L["account"])
-  ns.db.chars[ns.CharKey()] = save(ns.db.chars[ns.CharKey()], now.character, L["character"])
+  ns.db.account = save(ns.db.account, now.account,
+    L["No account macros found right now, the older backup of %d was kept."], L["Saved %d account macros."])
+  ns.db.chars[ns.CharKey()] = save(ns.db.chars[ns.CharKey()], now.character,
+    L["No character macros found right now, the older backup of %d was kept."], L["Saved %d character macros."])
   return lines
 end
 
@@ -142,12 +146,15 @@ function ns.Import(text)
 end
 
 -- "12 account macros from 2026-11-20 18:00" for the help and the window.
+-- 1.1: one text per place, and the date written the way the player's language writes it.
 function ns.BackupStatus()
-  local function one(b, label)
-    if not b or not b.at then return string.format(L["no %s backup"], label) end
-    return string.format(L["%d %s macros from %s"], #(b.macros or {}), label, date("%Y-%m-%d %H:%M", b.at))
+  local function one(b, noneText, fromText)
+    if not b or not b.at then return noneText end
+    return string.format(fromText, #(b.macros or {}), date(L["%Y-%m-%d %H:%M"], b.at))
   end
-  return string.format(L["Backup: %s, %s."], one(ns.db.account, L["account"]), one(ns.db.chars[ns.CharKey()], L["character"]))
+  return string.format(L["Backup: %s, %s."],
+    one(ns.db.account, L["no account backup"], L["%d account macros from %s"]),
+    one(ns.db.chars[ns.CharKey()], L["no character backup"], L["%d character macros from %s"]))
 end
 
 local function onLogin()

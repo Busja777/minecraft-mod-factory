@@ -10,15 +10,30 @@ ns.MAX_LABEL = 60      -- characters of a label
 ns.PER_LINE = 8        -- file IDs per chat line in /quiet list
 
 -- Sound categories the game itself can switch off (settings saved by the game, not by the addon).
--- key is the word after /quiet; TOGGLE_LABEL is the text shown in chat.
+-- key is the word after /quiet; name is the option's name in chat.
+-- 1.1: the name is the one the game's own sound settings give the option (a GlobalStrings constant,
+-- in the player's language), with the English name for a client without it.
 ns.TOGGLES = {
-  { key = "errors", cvar = "Sound_EnableErrorSpeech" },
-  { key = "emotes", cvar = "Sound_EnableEmoteSounds" },
-  { key = "pets", cvar = "Sound_EnablePetSounds" },
+  { key = "errors", cvar = "Sound_EnableErrorSpeech", name = { "ENABLE_ERROR_SPEECH", "Error Speech" } },
+  { key = "emotes", cvar = "Sound_EnableEmoteSounds", name = { "ENABLE_EMOTE_SOUNDS", "Emote Sounds" } },
+  { key = "pets", cvar = "Sound_EnablePetSounds", name = { "ENABLE_PET_SOUNDS", "Enable Pet Sounds" } },
 }
-ns.TOGGLE_LABEL = {
-  errors = "Error speech", emotes = "Emote sounds", pets = "Pet sounds",
-}
+
+function ns.IsSecret(value)
+  return issecretvalue ~= nil and issecretvalue(value) and true or false
+end
+
+-- A text the game has in the player's language (a GlobalStrings constant); the English one otherwise.
+function ns.GameText(global, english)
+  local text = _G[global]
+  if type(text) ~= "string" or text == "" or ns.IsSecret(text) then return english end
+  return text
+end
+
+-- The name of a sound category, as the game's sound settings write it.
+function ns.ToggleName(toggle)
+  return ns.GameText(toggle.name[1], toggle.name[2])
+end
 
 function ns.FindToggle(key)
   for _, t in ipairs(ns.TOGGLES) do

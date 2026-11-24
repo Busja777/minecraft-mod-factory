@@ -422,3 +422,135 @@ test("help, unknown commands and commands before login", function(wow)
   eq(has(wow.chat[#wow.chat - 1], "Your wish list is empty"), true)
   eq(has(lastChat(wow), "/lw add <item>"), true, "/lw alone shows the list and the help")
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and its own loot lines (deDE GlobalStrings of 12.1.5).
+local function germanClient(wow)
+  wow.locale = "deDE"
+end
+local function germanLootLines()
+  LOOT_ITEM_SELF = "Ihr erhaltet Beute: %s"
+  LOOT_ITEM_SELF_MULTIPLE = "Ihr erhaltet Beute: %sx%d"
+  LOOT_ITEM = "%s bekommt Beute: %s."
+  LOOT_ITEM_MULTIPLE = "%s erhält Beute: %sx%d."
+end
+local GP = "|cffffd100Loot Wishes:|r "
+
+test("German client: adding, listing and removing wishes in German", function(wow)
+  germanClient(wow)
+  boot(wow)
+  wow.slash("/lw add " .. SWORD)
+  eq(lastChat(wow), GP .. "Auf deine Wunschliste gesetzt: " .. SWORD)
+  wow.slash("/lw add " .. SWORD)
+  eq(lastChat(wow), GP .. SWORD .. " steht schon auf deiner Wunschliste.")
+  C_Item.RequestLoadItemDataByID = nil
+  wow.now = wow.now + 1
+  wow.slash("/lw add 4540")
+  eq(lastChat(wow), GP .. "Auf deine Wunschliste gesetzt: Gegenstand 4540")
+  wow.slash("/lw add")
+  eq(lastChat(wow), GP .. "Umschalt-klicke einen Gegenstand hinter /lw add in die Chateingabe oder gib seine Gegenstands-ID ein: /lw add 19019.")
+  local from = #wow.chat
+  wow.slash("/lw list")
+  eq(chatSince(wow, from), table.concat({
+    GP .. "Deine Wunschliste (2 Gegenstände):",
+    GP .. "1. " .. SWORD .. " (ID 19019) - noch nicht gesehen",
+    GP .. "2. Gegenstand 4540 (ID 4540) - noch nicht gesehen",
+  }, "\n"))
+  wow.slash("/lw remove 2")
+  eq(lastChat(wow), GP .. "Von deiner Wunschliste genommen: Gegenstand 4540")
+  wow.slash("/lw remove 2")
+  eq(lastChat(wow), GP .. "Dieser Gegenstand steht nicht auf deiner Wunschliste. Die Nummern zeigt /lw list.")
+  wow.slash("/lw remove 1")
+  wow.slash("/lw list")
+  eq(lastChat(wow), GP .. "Deine Wunschliste ist leer. Füge einen Gegenstand mit /lw add hinzu und umschalt-klicke ihn in die Chateingabe.")
+  for i = 1, 500 do wishes()[100000 + i] = { id = 100000 + i, added = i, hits = 0 } end
+  wow.slash("/lw add " .. CLOAK)
+  eq(lastChat(wow), GP .. "Deine Wunschliste ist voll (500 Gegenstände). Nimm zuerst einen mit /lw remove herunter.")
+end)
+
+test("German client: hits in the loot window, rolls, German loot lines and at the merchant", function(wow)
+  germanClient(wow)
+  boot(wow)
+  germanLootLines()
+  wow.slash("/lw add " .. SWORD)
+  wow.slash("/lw add " .. CLOAK)
+  game.loot = { SWORD }
+  wow.fire("LOOT_READY")
+  eq(lastChat(wow), GP .. SWORD .. " ist in dieser Beute.")
+  game.rolls[3] = CLOAK
+  wow.fire("START_LOOT_ROLL", 3, 60000)
+  eq(lastChat(wow), GP .. "Um " .. CLOAK .. " wird gewürfelt.")
+  wow.fire("CHAT_MSG_LOOT", "Ihr erhaltet Beute: " .. SWORD)
+  eq(lastChat(wow), GP .. "Du hast " .. SWORD .. " bekommen.", "the German client's own loot line")
+  eq(wishes()[19019].got, wow.now)
+  wow.fire("CHAT_MSG_LOOT", "Grumbash bekommt Beute: " .. CLOAK .. ".")
+  eq(lastChat(wow), GP .. "Grumbash hat " .. CLOAK .. " bekommen.")
+  wow.fire("CHAT_MSG_LOOT", "Grumbash erhält Beute: " .. CLOAK .. "x2.")
+  eq(lastChat(wow), GP .. "Grumbash hat " .. CLOAK .. " bekommen.", "the German line with a count")
+  eq(wishes()[212446].got, nil)
+  game.merchant = { { 212446, CLOAK } }
+  wow.fire("MERCHANT_SHOW")
+  eq(lastChat(wow), GP .. "Dieser Händler verkauft " .. CLOAK .. ".")
+  wow.slash("/lw sound off")
+  eq(lastChat(wow), GP .. "Kein Ton, nur die Zeile im Chat.")
+  wow.slash("/lw sound aus")
+  eq(lastChat(wow), GP .. "Nutze /lw sound on oder /lw sound off.", "German command words are not commands")
+  eq(LootWishesDB.settings.sound, false)
+  wow.slash("/lw sound on")
+  eq(lastChat(wow), GP .. "Ein Alarmton erklingt, wenn ein gewünschter Gegenstand auftaucht.")
+  eq(hover({ id = 19019 })[1], "Auf deiner Wunschliste")
+end)
+
+test("German client: the list with hits and times, unknown IDs and the help", function(wow)
+  germanClient(wow)
+  local ns = boot(wow)
+  local w = { id = 19019, link = SWORD, hits = 0 }
+  ns.Record(w, "loot", 1000)
+  eq(ns.ListText(1, w, 1000 + 60), "1. " .. SWORD .. " (ID 19019) - einmal gesehen, gerade eben")
+  ns.Record(w, "merchant", 1000)
+  eq(ns.ListText(1, w, 1000 + 3600), "1. " .. SWORD .. " (ID 19019) - 2-mal gesehen, zuletzt vor 1 Stunde")
+  eq(ns.ListText(1, w, 1000 + 5 * 3600), "1. " .. SWORD .. " (ID 19019) - 2-mal gesehen, zuletzt vor 5 Stunden")
+  ns.Record(w, "got", 1000)
+  eq(ns.ListText(1, w, 1000 + 86400), "1. " .. SWORD .. " (ID 19019) - 3-mal gesehen, zuletzt vor 1 Tag, du hast ihn bekommen")
+  eq(ns.AgoText(3 * 86400), "vor 3 Tagen")
+  wow.slash("/lw add 99999999")
+  wow.fire("GET_ITEM_INFO_RECEIVED", 99999999, false)
+  eq(lastChat(wow), GP .. "Es gibt keinen Gegenstand mit der ID 99999999, er wurde nicht hinzugefügt.")
+  wow.slash("/lw hinzufügen 19019")
+  eq(lastChat(wow), GP .. "/lw add <Gegenstand> setzt einen Gegenstand auf deine Wunschliste (umschalt-klicke ihn in die Chateingabe oder gib seine Gegenstands-ID ein), /lw remove <Gegenstand oder Nummer> nimmt ihn herunter, /lw list zeigt die Liste, /lw sound on oder off schaltet den Alarmton ein oder aus.")
+  eq(wishes()[19019], nil, "a German command word adds nothing")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("<", "")), select(2, text:gsub("<", "")), "the hints in brackets stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 31, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  wow.slash("/lw add " .. SWORD)
+  eq(lastChat(wow), P .. "Added to your wish list: " .. SWORD)
+  game.loot = { SWORD }
+  wow.fire("LOOT_READY")
+  eq(lastChat(wow), P .. SWORD .. " is in this loot.")
+  eq(hover({ id = 19019 })[1], "On your wish list")
+  eq(ns.AgoText(2 * 86400), "2 days ago")
+end)

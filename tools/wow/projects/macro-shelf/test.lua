@@ -441,3 +441,186 @@ test("nothing happens before login", function(wow)
   eq(ns.Window(), nil)
   eq(#game.created, 0)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+local function count(text, plain)
+  local n, at = 0, 1
+  while true do
+    local i = text:find(plain, at, true)
+    if not i then return n end
+    n, at = n + 1, i + #plain
+  end
+end
+
+local GP = "|cffffd100Macro Shelf:|r "
+
+test("German client: the window, its buttons and hints in German", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow, { account = { { "Pull", 135808, "/cast Fireball" } } })
+  wow.slash("/macroshelf")
+  local ui = ns.Window()
+  eq(ui.title:GetText(), "Macro Shelf")
+  eq(ui.exportButton:GetText(), "Exportieren")
+  eq(ui.importButton:GetText(), "Importieren")
+  eq(ui.backupButton:GetText(), "Sichern")
+  eq(ui.restoreButton:GetText(), "Wiederherstellen")
+  eq(ui.create:GetText(), "Makros erstellen")
+  eq(ui.hint:GetText(), "Kopiere mit Strg+C (Mac: Cmd+C) und füge es bei einem anderen Charakter unter Importieren ein.")
+  eq(ui.status:GetText(), "Sicherung: keine Sicherung der allgemeinen Makros, keine Sicherung der Charaktermakros.")
+  wow.slash("/mshelf import")
+  eq(ui.hint:GetText(), "Füge hier einen Export ein und klicke auf Makros erstellen. Vorhandene Makros bleiben unverändert.")
+  ns = boot(wow)
+  ns.ShowExport()
+  eq(ns.Window().hint:GetText(), "Du hast noch keine Makros zum Exportieren.")
+end)
+
+test("German client: the export keeps its English words and reads back on any client", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow, {
+    account = { { "Pull", 135808, "/cast Fireball\n/say Pulling!" } },
+    character = { { "Reittier", 134400, "/cast Schneller Greif" } },
+  })
+  local text = ns.ExportText(ns.CurrentList())
+  local lines = {}
+  for line in (text .. "\n"):gmatch("(.-)\n") do lines[#lines + 1] = line end
+  eq(lines[1], "# Macro-Shelf-Export, 2 Makros. Füge ihn mit /macroshelf import ein.")
+  eq(lines[3], "[macro] account 135808 Pull")
+  eq(lines[8], "[macro] character 134400 Reittier")
+  eq(lines[10], "[end]")
+  local back = ns.Parse(text)
+  eq(#back, 2, "a German export reads back")
+  eq(back[2].name, "Reittier")
+  eq(#ns.Parse(EXAMPLE), 2, "an export from an English client reads too")
+  wow.locale = "enUS"
+  local en = boot(wow)
+  eq(#en.Parse(text), 2, "and a German export on an English client")
+end)
+
+test("German client: mistakes in the text, with line numbers, in German", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local _, errors = ns.Parse(table.concat({
+    "[macro] konto 1 Name",
+    ">/wave",
+    "[end]",
+    "Hallo",
+    "[macro] account 1 Pipe|Name",
+    ">/x \\q",
+    "/say ohne Zeichen",
+    "[end]",
+    "[macro] account 1 " .. rep("z", 17),
+    ">x",
+    "[end]",
+    "[macro] account",
+    "[macro] account kein-symbol? Name",
+  }, "\n"))
+  eq(errors[1], "Zeile 1: der Ort muss account oder character sein.")
+  eq(errors[2], "Zeile 4: diese Zeile gehört zu keinem Makro.")
+  eq(errors[3], "Zeile 5: schreib \\! statt |.")
+  eq(errors[4], "Zeile 6: auf ein \\ muss \\ oder ! folgen.")
+  eq(errors[5], "Zeile 7: jede Zeile eines Makros beginnt mit >, und [end] schließt das Makro ab.")
+  eq(errors[6], "Zeile 9: der Name ist länger als 16 Zeichen.")
+  eq(errors[7], "Zeile 12: ein Makro beginnt mit [macro], dem Ort, dem Symbol und dem Namen.")
+  eq(errors[8], "Zeile 13: jede Zeile eines Makros beginnt mit >, und [end] schließt das Makro ab.")
+  eq(errors[9], "Zeile 12: das Makro wird nicht mit [end] abgeschlossen.", "the open macro of line 12 is never closed")
+  local lines = ns.Import("[macro] account 1 A\n>" .. rep("x", 256) .. "\n[end]")
+  eq(lines[1], "Nichts wurde importiert:")
+  eq(lines[2], "Zeile 1: der Makrotext ist länger als 255 Zeichen.")
+  eq(ns.Import("# nur ein Kommentar")[2], "Der Text enthält keine Makros.")
+  eq(ns.Import(SECRET)[2], "Es gibt keinen Text zum Lesen.")
+end)
+
+test("German client: import, restore and backup report in German", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow, { account = { { "Pull", 135808, "/cast Frostblitz" } }, maxCharacter = 0 })
+  local lines = ns.Import(EXAMPLE)
+  eq(lines[1], "0 Makros erstellt.")
+  eq(lines[2], "Übersprungen, es gibt schon ein anderes Makro mit diesem Namen (benenne eins um, um beide zu behalten): Pull.")
+  eq(lines[3], "Kein freier Makroplatz mehr für: Mount.")
+  eq(ns.Restore()[1], "Es gibt noch keine Sicherung. Gib zuerst /macroshelf backup ein.")
+  local from = #wow.chat
+  wow.slash("/mshelf backup")
+  eq(chatSince(wow, from), GP .. "Allgemeine Makros gesichert: 1.\n" .. GP .. "Charaktermakros gesichert: 0.")
+  eq(ns.BackupStatus(), "Sicherung: allgemeine Makros (1) vom " .. date("%d.%m.%Y %H:%M", wow.now)
+    .. ", Charaktermakros (0) vom " .. date("%d.%m.%Y %H:%M", wow.now) .. ".")
+  eq(date("%d.%m.%Y %H:%M", wow.now), "20.11.2026 18:00")
+  game.account = {}
+  eq(ns.Backup()[1], "Gerade keine allgemeinen Makros gefunden, die ältere Sicherung mit 1 bleibt erhalten.")
+  game.account = { { "Pull", 135808, "/cast Frostblitz" } }
+  game.character = { { "Heal", 1, "/cast Heilen" } }
+  ns.Backup()
+  game.character = {}
+  eq(ns.Backup()[2], "Gerade keine Charaktermakros gefunden, die ältere Sicherung mit 1 bleibt erhalten.")
+  game.maxCharacter = 18
+  MAX_CHARACTER_MACROS = 18
+  table.remove(game.account, 1)
+  lines = ns.Restore()
+  eq(lines[1], "2 Makros erstellt.")
+  lines = ns.Restore()
+  eq(lines[1], "0 Makros erstellt.")
+  eq(lines[2], "Schon vorhanden: Pull, Heal.")
+  game.combat = true
+  eq(ns.Restore()[1], "Im Kampf lassen sich keine Makros erstellen. Versuch es nach dem Kampf noch einmal.")
+  game.combat = false
+  game.refuse = true
+  game.account, game.character = {}, {}
+  eq(ns.Restore()[2], "Das Spiel hat abgelehnt: Pull, Heal.")
+  CreateMacro = nil
+  eq(ns.Restore()[1], "Dieser Spielclient lässt Addons keine Makros erstellen.")
+end)
+
+test("German client: long lists, broken backups and the help", function(wow)
+  wow.locale = "deDE"
+  local list = {}
+  for i = 1, 12 do list[i] = { name = "M" .. i, icon = 1, body = "x" } end
+  list[13] = { name = rep("z", 20), icon = 1, body = "x" }
+  local ns = boot(wow, { maxAccount = 0 }, { chars = {}, account = { at = 1, macros = list } })
+  local lines = ns.Restore()
+  eq(lines[2], "Kein freier Makroplatz mehr für: M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, und 2 weitere.")
+  eq(lines[3], "Ungültig: " .. rep("z", 20) .. " (der Name ist länger als 16 Zeichen).")
+  local from = #wow.chat
+  wow.slash("/mshelf hilfe")
+  eq(chatSince(wow, from), GP .. "/macroshelf öffnet das Fenster, /macroshelf export zeigt deine Makros als Text, /macroshelf import öffnet das Feld zum Einfügen, /macroshelf backup sichert deine Makros, /macroshelf restore erstellt die fehlenden aus der Sicherung. Kurzform: /mshelf.\n"
+    .. GP .. "Sicherung: allgemeine Makros (13) vom " .. date("%d.%m.%Y %H:%M", 1) .. ", keine Sicherung der Charaktermakros.")
+  wow.slash("/mshelf sichern")
+  eq(#MacroShelfDB.account.macros, 13, "a German command word does not back up")
+  eq(ns.Window(), nil, "nor open the window")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    if key == "%Y-%m-%d %H:%M" then
+      eq(placeholders(text), "%d %m %Y %H %M", "the German date: day, month, year")
+    else
+      eq(placeholders(text), placeholders(key), key)
+    end
+    for _, mark in ipairs({ "<", "[macro]", "[end]", ">", "|", "\\", "/macroshelf", "/mshelf" }) do
+      eq(count(text, mark), count(key, mark), "the same " .. mark .. " in: " .. key)
+    end
+  end
+  eq(n, 51, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow, { account = { { "Pull", 135808, "/cast Fireball" } } })
+  eq(next(ns.L), nil)
+  wow.slash("/macroshelf")
+  local ui = ns.Window()
+  eq(ui.restoreButton:GetText(), "Restore")
+  eq(ui.create:GetText(), "Create macros")
+  eq(ns.Backup()[1], "Saved 1 account macros.")
+  eq(ns.BackupStatus(), "Backup: 1 account macros from 2026-11-20 18:00, 0 character macros from 2026-11-20 18:00.")
+end)
