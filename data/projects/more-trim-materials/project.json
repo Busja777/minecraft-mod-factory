@@ -1,0 +1,21 @@
+{
+  "slug": "more-trim-materials",
+  "game": "java",
+  "name": "More Trim Materials",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MoreTrimMaterials-1.0.zip",
+      "changelog": "## More Trim Materials 1.0\n\nFirst release.\n\n- Eight new armor trim materials for the smithing table: coal, obsidian, echo shard, slime ball, breeze rod, nether brick, popped chorus fruit and prismarine shard.\n- Each material has its own color palette, shown on worn armor and on the armor icon, and its name in the tooltip.\n- Works with all 18 trim patterns on leather, chainmail, iron, gold, diamond and netherite armor and the turtle shell. Copper armor is not included yet.\n- One zip for both sides: put it into the world's datapacks folder and into resourcepacks.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "1.21.2",
+        "26.3"
+      ]
+    }
+  ]
+}
