@@ -1,0 +1,19 @@
+{
+  "slug": "monster-loot-refresh",
+  "game": "stardewvalley",
+  "name": "Monster Loot Refresh",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MonsterLootRefresh-1.0.zip",
+      "changelog": "## Monster Loot Refresh 1.0\n\nFirst release.\n\n- Eleven common monsters of the Mines sometimes drop one or two extra items that fit their floor.\n- Slimes pick up the ore of their floor: copper ore from green slimes, iron ore from blue slimes, gold ore from red slimes.\n- Rock crabs drop stone and copper ore, duggies clay, grubs a cave carrot, dust sprites iron ore, metal heads gold ore.\n- Stone golems, frost bats and lava crabs can drop the geode of their floor.\n- Every vanilla drop keeps its chance. No bars, gems or rare items are added.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
