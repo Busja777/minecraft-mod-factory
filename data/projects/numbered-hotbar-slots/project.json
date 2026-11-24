@@ -1,0 +1,20 @@
+{
+  "slug": "numbered-hotbar-slots",
+  "game": "java",
+  "name": "Numbered Hotbar Slots",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "NumberedHotbarSlots-1.0.zip",
+      "changelog": "## Numbered Hotbar Slots 1.0\n\nFirst release.\n\n- Each hotbar slot shows a small number from 1 to 9 in its top-left corner, so you see which number key picks which slot.\n- Light grey digits with a dark shadow, readable on the dark slots.\n- The numbers sit in the corner that tools and weapons leave free; the item count and the durability bar stay where they were.\n- Only the hotbar picture changes, nothing else in the game looks different.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}
