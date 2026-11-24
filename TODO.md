@@ -1,22 +1,25 @@
 # To-dos
 
-Stand: 24.11.2026 früh. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
+Stand: 24.11.2026 morgens. Ganz oben steht, was als Nächstes dran ist. Grundsatz: Du legst ein Projekt einmal an, alles andere läuft ohne dich.
 
 ## Nacht 23./24.11.: so viel bauen wie möglich
 
 Dein Auftrag am Abend: „so viel wie möglich versuchen“. Claude hat lokal gebaut, was die Nacht-Sitzung nicht kann (Fabric-Mods), und Stardew dazu; die Nacht hat WoW gebaut.
 
-**Fertig, wartet nur auf #118** (eine Zeile je Test: Projekte ohne Logo dürfen `page.draft.json` haben):
-- Java (Fabric 1.21.1): Join Greeter und Patient Anvil (#119), Griefing Rules (#120), Sky Forecast (#121), Double Door Buddy (#122), Stack More (#123), Bonemeal More (#124), Bottled Levels (#126). Jeder mit JUnit- und Spieltests (4 bis 18), gegengelesen.
-- Stardew: Happy Barn (#127), Monster Loot Refresh (#129).
-
-**Ohne dich durch:** Nacht-WoW Loot Wishes, Macro Shelf, Camera Plus, Quiet Please (#128), dazu ihr Deutsch V1.1 (#130).
+**Alles auf `main` (auf dein Wort: #118, #135):** gebaut sind jetzt WoW 28, Java 23, Stardew 20, alle mit Vorrat. Online ist noch nichts: Der Engpass bleibt das Anlegen.
+- Java (Fabric 1.21.1): Join Greeter, Patient Anvil, Griefing Rules, Sky Forecast, Double Door Buddy, Stack More, Bonemeal More, Bottled Levels. Jeder mit JUnit- und Spieltests (4 bis 18), gegengelesen.
+- Stardew: Happy Barn, Monster Loot Refresh, Honest Sell Prices.
+- WoW: Loot Wishes, Macro Shelf, Camera Plus, Quiet Please (Nacht), Chat Calc, Login Bell, Chore List, Emote Bar, alle schon mit Deutsch V1.1. Die Nacht baut heute die letzten vier (Roll Call, Perf Meter, Twink Post, Screenshot Moments).
+- Neue Prüfung (#135): Kein Kurzbefehl eines Addons ist doppelt oder ein Befehl des Spiels. Gefunden beim Bau: `/cc`, `/rc` (Spiel), `/lc`, `/mb` (doppelt); behoben in #134.
+- Neue Logos fehlen allen Projekten seit dem 21.11. (`page.draft.json`); sie kommen mit dem Bilder-Workflow (#27) oder OpenAI-Guthaben.
 
 **Ehrlich gestoppt (Grund im Plan):**
 - Stardew Nr. 16 Fresh Farm TV Tips: jeder Sendetag beider Jahre hat schon einen Tipp.
 - Stardew Nr. 14 Gift Secret Notes: `Data/SecretNotes` ist nicht dokumentiert, neue Notizen wären blind riskant.
 - Stardew Nr. 22 Bountiful Forage: gebaut, aber nur zwei Zahlen, zu dünn (geparkt auf `park/stardew-bountiful-forage`).
 - Java Where I Died: zu nah an Trigger Homes (Rückkehr zum Todesort).
+- Stardew Nr. 30 Tailoring Recipes Plus: die Prüfung kennt keine Kleidungs-IDs, das Wiki dokumentiert nur drei.
+- WoW Nr. 26 Pinboard Notes: zu nah an Zone Notes, besser als Update dort.
 - Stardew Nr. 31 Sturdy Fences braucht `Data/Fences` in `TARGETS` (Werkzeug, dein Wort).
 
 **Neu aufgefallen:**
@@ -42,7 +45,7 @@ Dein Auftrag am Abend: „so viel wie möglich versuchen“. Claude hat lokal ge
 - **Werkzeug-PRs warten weiter:** #29 Bedrock, #30 Anlegen, #28 WoW-Seiten, #27 Bilder, #31 Saison, #34 Trend-Radar, #37 Trank-IDs. #18 (externer Wecker) ist durch #107 wohl überholt und kann geschlossen werden (deine Entscheidung).
 - **Blind bleibt blind:** Stardew, Bedrock und 1.21.1 sind ungetestet im Spiel; die Seiten sagen nichts anderes.
 
-**Empfohlene Reihenfolge für deine Merges:** **#118 zuerst** (neun fertige Projekte warten darauf) → #29 → #30 (Anlegen) → #28 → #27 → #37 → #31 → #34. Danach `npm run cf -- serie` für die Minecraft-Projekte, die schon warten.
+**Empfohlene Reihenfolge für deine Merges:** #29 → #30 (Anlegen) → #28 → #27 → #37 → #31 → #34. Danach `npm run cf -- serie` für die Minecraft-Projekte, die schon warten.
 
 ## Java-Packs auf den Zwischenversionen (seit #89)
 
