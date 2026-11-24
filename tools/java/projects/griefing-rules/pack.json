@@ -1,0 +1,8 @@
+{
+  "kind": "mod",
+  "name": "Griefing Rules",
+  "description": "One gamerule per kind of mob griefing: creepers, ghasts, the wither, endermen and ravagers",
+  "mc": "1.21.1",
+  "modId": "griefingrules",
+  "gameVersions": ["1.21.1", "Fabric", "Java 21", "Server", "Client"]
+}

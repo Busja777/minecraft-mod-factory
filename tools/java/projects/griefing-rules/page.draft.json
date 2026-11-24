@@ -1,0 +1,37 @@
+{
+  "name": "Griefing Rules",
+  "summary": "Stop creepers, ghasts, the wither, endermen or ravagers from changing your blocks, one gamerule each, while villagers keep farming.",
+  "class": "Mods",
+  "category": "Server Utility",
+  "logoPrompt": "A single cracked stone brick block standing on a small grass block, wrapped in a glowing green protective shield bubble, blocky voxel style, no text",
+  "cover": {
+    "tagline": "One gamerule per kind of mob griefing.",
+    "bullets": [
+      "Creepers, ghasts, wither",
+      "Endermen and ravagers",
+      "Villagers keep farming"
+    ]
+  },
+  "description": [
+    "**Griefing Rules splits the mobGriefing gamerule, so you can stop creeper craters without stopping your villagers from farming.**",
+    "",
+    "## Features",
+    "- `creeperGriefing` and `ghastGriefing`: explosions still hurt players and mobs but break no blocks; ghast fireballs light no fire.",
+    "- `witherGriefing`: the wither's blasts and skulls break nothing, it cannot break out when hurt, and its wither roses drop as items.",
+    "- `endermanGriefing`: endermen no longer pick up or place blocks.",
+    "- `ravagerGriefing`: ravagers stop breaking leaves.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Every rule starts on; switch one off in chat or the server console, for example `/gamerule creeperGriefing false`. The others: `/gamerule ghastGriefing false`, `/gamerule witherGriefing false`, `/gamerule endermanGriefing false`, `/gamerule ravagerGriefing false`.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- `mobGriefing false` still turns everything off.",
+    "- On a server only the server needs it; players join without installing anything.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

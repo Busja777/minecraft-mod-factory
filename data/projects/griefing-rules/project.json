@@ -1,0 +1,22 @@
+{
+  "slug": "griefing-rules",
+  "game": "java",
+  "name": "Griefing Rules",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "GriefingRules-1.0.jar",
+      "changelog": "## Griefing Rules 1.0\n\nFirst release.\n\n- Five new gamerules in the Mobs category: `creeperGriefing`, `ghastGriefing`, `witherGriefing`, `endermanGriefing` and `ravagerGriefing`. Each one switches off the block damage of one kind of mob, while `mobGriefing` stays on for everything else.\n- Creeper, ghast fireball and wither explosions still hurt and push players and mobs; only the blocks stay. Ghast fireballs light no fire.\n- `witherGriefing` also covers the blocks the wither breaks around itself when hurt and the wither roses it plants (the rose drops as an item instead).\n- All rules are on by default, so nothing changes until you switch one off. `mobGriefing false` still turns everything off.\n- Only the server needs the mod: players can join without installing anything.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}
