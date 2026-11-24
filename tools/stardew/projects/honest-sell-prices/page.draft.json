@@ -1,0 +1,39 @@
+{
+  "name": "Honest Sell Prices",
+  "summary": "Set how much your crops, animal products and artisan goods are worth, each group on its own, from a little less to a lot more.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A small wooden shipping crate with a ripe parsnip, a white egg and a wedge of cheese inside, a brass price tag tied to its side",
+  "cover": {
+    "tagline": "Your harvest, your prices.",
+    "bullets": [
+      "Crops, animal goods, artisan",
+      "From 75 % to 150 %",
+      "No buy-and-resell tricks"
+    ]
+  },
+  "description": [
+    "**Honest Sell Prices lets you choose what your crops, animal products and artisan goods sell for, each group with its own setting.**",
+    "",
+    "## Features",
+    "- Three settings: crops, animal products and fixed-price artisan goods.",
+    "- Each one at 75 %, 100 % (the normal game, default), 125 % or 150 %.",
+    "- Counts for the shipping bin and shops; profession bonuses and quality apply on top.",
+    "- Wine, juice, jelly, pickles and dried fruit follow the price of the crop they are made from.",
+    "- No shop item can be resold for more than it costs.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Pick the levels in the generated `config.json` or in Generic Mod Config Menu.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher.",
+    "- New prices count for items harvested or made afterwards; items you already have may keep their old price.",
+    "- Carrot, summer squash, broccoli and powdermelon keep vanilla prices.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
