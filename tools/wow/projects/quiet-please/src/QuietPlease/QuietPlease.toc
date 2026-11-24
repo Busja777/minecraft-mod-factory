@@ -1,0 +1,10 @@
+## Interface: 120105, 120107
+## Title: Quiet Please
+## Notes: Mutes the game sounds you list, on every login.
+## Version: @version@
+## SavedVariables: QuietPleaseDB
+
+Locale.lua
+Core.lua
+Mute.lua
+Commands.lua
