@@ -18,7 +18,7 @@
     "- Shared by all characters of your account.",
     "",
     "## How to use",
-    "It starts on its own. Type `/mb` for all commands. `/mb note Name-Realm text` sets your note, `/mb note target text` notes your target, `/mb list` shows recent group mates, `/mb forget Name-Realm` removes a player.",
+    "It starts on its own. Type `/metbefore` for all commands. `/metbefore note Name-Realm text` sets your note, `/metbefore note target text` notes your target, `/metbefore list` shows recent group mates, `/metbefore forget Name-Realm` removes a player.",
     "",
     "## Good to know",
     "- Works on Retail.",
