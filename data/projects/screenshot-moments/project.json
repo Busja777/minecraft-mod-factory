@@ -1,0 +1,18 @@
+{
+  "slug": "screenshot-moments",
+  "game": "wow",
+  "name": "Screenshot Moments",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ScreenshotMoments-1.0.zip",
+      "changelog": "## Screenshot Moments 1.0\n\nFirst release.\n\n- Takes a screenshot on its own when you reach a new level, earn an achievement or loot an item of Epic quality or better.\n- The screenshot follows one second after the moment, so the game's level-up or achievement toast is in the picture.\n- At most one screenshot every 10 seconds, and none during a loading screen. Moments in the same second share one screenshot.\n- A chat line names the moment: the level, the achievement or the item.\n- `/smo off` switches the screenshots off, `/smo on` brings them back. The setting counts for all your characters.\n- `/smo test` takes a test screenshot. `/smo` or `/shotmoments` shows whether it is on and lists the commands.\n- Screenshots land in the game's own Screenshots folder, like the ones you take by key.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
