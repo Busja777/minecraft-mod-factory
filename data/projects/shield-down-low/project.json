@@ -1,0 +1,20 @@
+{
+  "slug": "shield-down-low",
+  "game": "java",
+  "name": "Shield Down Low",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "ShieldDownLow-1.0.zip",
+      "changelog": "## Shield Down Low 1.0\n\nFirst release.\n\n- In first person, the shield sits 4 pixels lower in either hand, so it covers less of the screen.\n- Raising it to block moves it up and turns it just like before, only from a lower spot: you still clearly see when you are blocking.\n- Third person, the inventory, item frames and the ground show the shield as usual (on 26.3 shelves too).\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}
