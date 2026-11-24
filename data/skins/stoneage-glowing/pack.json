@@ -62,14 +62,16 @@
           "story": "Behind a solid violet visor, Spirit Warrior hears the voices of fallen warriors whispering through the purple seams of his armour."
         }
       ],
-      "mcpack": null,
-      "status": "due",
+      "mcpack": "Glow_Stone_Age_Pack_V1_1_Complete.mcpack",
+      "status": "published",
       "note": "Three new warriors join the tribe: the yellow-lit Lightning Chief, the blood-red Blood Shaman and the violet-visored Spirit Warrior.",
       "media": [
         "media/v1.1-skins.png"
       ],
-      "fileId": null,
-      "publishedAt": null
+      "fileId": 9796721,
+      "publishedAt": "2026-11-24T18:52:31.333Z",
+      "changelog": "## V1.1\n\n3 new skins join the pack: Lightning Chief, Blood Shaman and Spirit Warrior.\n\nThree new warriors join the tribe: the yellow-lit Lightning Chief, the blood-red Blood Shaman and the violet-visored Spirit Warrior.\n\nNew skins:\n- **Lightning Chief** — Lightning Chief rules the tribe with yellow lightning crackling across his mask and shoulders, a chief struck by the storm and left standing.\n- **Blood Shaman** — Blood Shaman paints his oaths in glowing red, and the stone drinks every one of them.\n- **Spirit Warrior** — Behind a solid violet visor, Spirit Warrior hears the voices of fallen warriors whispering through the purple seams of his armour.\n\nThis download contains all 5 skins of the pack, so new players get everything in one file.\n\n![V1.1 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/stoneage-glowing/media/v1.1-skins.png)\n",
+      "manual": false
     },
     {
       "stage": "U2",
@@ -206,5 +208,6 @@
     "26.10"
   ],
   "logoPrompt": "Square logo, a single blocky Minecraft-style stone-age shaman in pitch-black segmented stone armour, glowing cyan light lines tracing the mask, chest plates, arm edges and boot rims, intense cyan glow radiating into a dark smoky background, dramatic low-angle lighting, faint drifting light particles, no text.",
-  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style stone-age warriors standing side by side in pitch-black segmented stone armour: left with glowing orange light lines on mask, chest and boots, center with glowing cyan light lines, right with glowing violet-purple lines and a solid purple visor. Background: a dark prehistoric valley at night with jagged cliffs, a huge pale moon, embers and mist. Big stylised glowing stone-carved title letters reading \"StoneAge Glowing\" across the top."
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style stone-age warriors standing side by side in pitch-black segmented stone armour: left with glowing orange light lines on mask, chest and boots, center with glowing cyan light lines, right with glowing violet-purple lines and a solid purple visor. Background: a dark prehistoric valley at night with jagged cliffs, a huge pale moon, embers and mist. Big stylised glowing stone-carved title letters reading \"StoneAge Glowing\" across the top.",
+  "collection": "media/collection.png"
 }

@@ -124,11 +124,17 @@
     "cfName": "StoneAge Glowing",
     "projectId": 1509298,
     "status": "published",
-    "version": "1.0",
-    "lastPublishedAt": "2026-04-09T17:15:14.013Z",
-    "nextUpdateDue": "2026-05-02T03:20:06.186Z",
-    "updateCount": 0,
-    "files": [],
+    "version": "1.1",
+    "lastPublishedAt": "2026-11-24T18:52:31.333Z",
+    "nextUpdateDue": "2026-12-20T09:40:02.640Z",
+    "updateCount": 1,
+    "files": [
+      {
+        "fileId": 9796721,
+        "version": "1.1",
+        "uploadedAt": "2026-11-24T18:52:31.333Z"
+      }
+    ],
     "game": "bedrock"
   },
   {
