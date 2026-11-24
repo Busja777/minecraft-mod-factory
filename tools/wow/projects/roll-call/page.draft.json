@@ -1,0 +1,32 @@
+{
+  "name": "Roll Call",
+  "summary": "Start a short roll call, let your group type /roll and see every result ranked with the winner named when time is up.",
+  "category": "Chat & Communication",
+  "logoPrompt": "Two ivory dice with gold pips tumbling above a small brass bell in the centre",
+  "cover": {
+    "tagline": "Who rolled highest? Now you know.",
+    "bullets": ["Every /roll in one list", "Ties and odd ranges marked", "Winner shown when time is up"]
+  },
+  "description": [
+    "**Roll Call collects the /roll results of your group for a short time and tells you who rolled highest.**",
+    "",
+    "## Features",
+    "- A small window lists every roll, highest first, with a countdown.",
+    "- Only the first roll of each player counts, so rolling again changes nothing.",
+    "- Equal rolls are marked as a tie, and rolls that are not 1-100 are shown in orange.",
+    "- The winner appears in your own chat window when time is up.",
+    "",
+    "## How to use",
+    "Type `/rollcall start` and ask everyone to `/roll`. The call runs 30 seconds, or pick 5 to 120 with `/rollcall start 60`. `/rollcall stop` ends it early, `/rollcall` (or `/rolls`) shows the last result.",
+    "",
+    "## Good to know",
+    "- Works on Retail, best outside instances: there the game may hide chat lines from addons, and the window then says that rolls may be missing.",
+    "- Nothing is sent to other players.",
+    "- Reads roll lines in your client's language.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "slug": "roll-call",
+  "game": "wow",
+  "name": "Roll Call",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "RollCall-1.0.zip",
+      "changelog": "## Roll Call 1.0\n\nFirst release.\n\n- `/rollcall start` opens a roll call for 30 seconds, `/rollcall start 60` for any time from 5 to 120 seconds.\n- A small window lists every `/roll` it sees, highest first, with the range of each roll and a countdown.\n- Only the first roll of each player counts; later rolls of the same player are ignored and counted.\n- Equal rolls are marked as a tie, rolls that are not 1-100 (like `/roll 1000`) are shown in orange.\n- When the time is up the winner (or the tie) appears in your own chat window. Nothing is sent to other players.\n- Reads the roll line in your client's language, using the game's own text.\n- `/rollcall stop` ends early, `/rollcall` (or `/rolls`) shows the last result, also after a reload.\n- Where the game hides chat text from addons (in instances), the window says that rolls may be missing.\n- The window can be moved and remembers its place; Escape closes it.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}
