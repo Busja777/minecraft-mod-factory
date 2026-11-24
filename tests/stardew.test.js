@@ -25,8 +25,10 @@ test('Stardew: every pack folder is complete', () => {
     assert.match(pack.contentPatcher, /^\d+\.\d+\.\d+$/);
     assert.match(pack.minimumApiVersion, /^\d+\.\d+\.\d+$/);
     assert.ok(pack.gameVersions.length && pack.gameVersions.every(v => /^1\.6(\.\d+)?$/.test(v)), `${slug}: gameVersions must be 1.6.x`);
-    for (const f of ['pack.js', 'page.json', path.join('changelogs', '1.0.md')]) assert.ok(fs.existsSync(path.join(pack.dir, f)), `${slug}: ${f} is missing`);
-    const page = JSON.parse(fs.readFileSync(path.join(pack.dir, 'page.json'), 'utf-8'));
+    // a pack built before its logo exists keeps its page as page.draft.json; the draft gets the same checks
+    const pageFile = fs.existsSync(path.join(pack.dir, 'page.json')) ? 'page.json' : 'page.draft.json';
+    for (const f of ['pack.js', pageFile, path.join('changelogs', '1.0.md')]) assert.ok(fs.existsSync(path.join(pack.dir, f)), `${slug}: ${f} is missing`);
+    const page = JSON.parse(fs.readFileSync(path.join(pack.dir, pageFile), 'utf-8'));
     assert.equal(page.class, 'Mods');
     assert.ok(['Gameplay Basics', 'Events', 'Visuals', 'Food', 'Items', 'UI', 'Miscellaneous'].includes(page.category), `${slug}: category ${page.category}`);
   }
