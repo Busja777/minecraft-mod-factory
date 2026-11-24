@@ -1,0 +1,36 @@
+{
+  "name": "Bonemeal More",
+  "summary": "Use bone meal on sugar cane, cactus and nether wart to grow them a block or a stage at a time, by hand or from a dispenser.",
+  "class": "Mods",
+  "category": "Farming",
+  "logoPrompt": "A single tall green sugar cane stalk with a small white pile of bone meal at its base and a few green sparkles around it",
+  "cover": {
+    "tagline": "Bone meal for cane, cactus and wart.",
+    "bullets": [
+      "One block or stage per use",
+      "Works from dispensers",
+      "Server-side, client optional"
+    ]
+  },
+  "description": [
+    "**Bonemeal More lets bone meal grow the three plants it never worked on: sugar cane, cactus and nether wart.**",
+    "",
+    "## Features",
+    "- Sugar cane and cactus grow by one block on top per use, up to their natural height of three blocks.",
+    "- Nether wart moves on by one of its four stages, so fresh wart is ripe after three uses.",
+    "- No bone meal is lost: full columns, ripe wart, a block above the top or a cactus that would touch a block take none.",
+    "- Dispensers filled with bone meal grow all three plants as well.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Right-click any block of a sugar cane or cactus column, or a nether wart, with bone meal in your main hand.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players without the mod see the plant grow but not the green sparkles.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
