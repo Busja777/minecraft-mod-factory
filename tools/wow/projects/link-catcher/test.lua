@@ -75,12 +75,26 @@ test("addon defines only its own globals", function(wow, installed, before)
   wow.load(ADDON_DIR, ADDON_NAME)
   wow.fire("ADDON_LOADED", "LinkCatcher")
   game.lines = { "hello" }
-  wow.slash("/lc copy") -- creates the window
-  local allowed = { LinkCatcherDB = true, LinkCatcherFrame = true, SLASH_LINKCATCHER1 = true, SLASH_LINKCATCHER2 = true }
+  wow.slash("/linkcatcher copy") -- creates the window
+  local allowed = { LinkCatcherDB = true, LinkCatcherFrame = true, SLASH_LINKCATCHER1 = true }
   for k in pairs(_G) do
     if not before[k] and not installed[k] and not mine[k] and not allowed[k] then error("unexpected global " .. tostring(k)) end
   end
   eq(LinkCatcherFrame ~= nil, true, "the window exists")
+end)
+
+test("/lc stays with Level Clock, only /linkcatcher is registered", function(wow)
+  boot(wow)
+  eq(SLASH_LINKCATCHER1, "/linkcatcher")
+  eq(SLASH_LINKCATCHER2, nil, "no second alias")
+  for key in pairs(SlashCmdList) do
+    for i = 1, 9 do
+      local alias = _G["SLASH_" .. key .. i]
+      if not alias then break end
+      if alias:lower() == "/lc" then error("/lc is registered by " .. key) end
+    end
+  end
+  eq(pcall(wow.slash, "/lc"), false, "/lc does not reach the addon")
 end)
 
 test("finds addresses with a scheme, with www. and bare ones with a known ending", function(wow)
@@ -171,7 +185,7 @@ end)
 test("without a chat filter function nothing breaks and help says why", function(wow)
   local ns = boot(wow, { noFilters = true })
   eq(ns.filters, false)
-  wow.slash("/lc")
+  wow.slash("/linkcatcher")
   eq(lastChat(wow):find("does not let addons change chat lines", 1, true) ~= nil, true)
 end)
 
@@ -267,16 +281,16 @@ test("codes are stripped for copying", function(wow)
   eq(ns.StripCodes("plain 1.5"), "plain 1.5")
 end)
 
-test("/lc copy shows the last lines without codes and skips secret ones", function(wow)
+test("/linkcatcher copy shows the last lines without codes and skips secret ones", function(wow)
   local ns = boot(wow)
   game.lines = { "one", "|cffff0000two|r", { secret = true }, "[Mira]: www.example.com" }
-  wow.slash("/lc copy")
+  wow.slash("/linkcatcher copy")
   local f = ns.Window()
   eq(f:IsShown(), true)
   eq(f.title:GetText(), "Copy chat")
   eq(f.box:GetText(), "one\ntwo\n[Mira]: www.example.com")
   eq(f.hint:GetText():find("1 hidden lines left out", 1, true) ~= nil, true)
-  wow.slash("/lc copy 2")
+  wow.slash("/linkcatcher copy 2")
   eq(f.box:GetText(), "[Mira]: www.example.com")
 end)
 
@@ -289,9 +303,9 @@ test("line counts are clamped", function(wow)
   eq(ns.LineCount("9999"), 500)
 end)
 
-test("/lc copy with an empty or unreadable chat window", function(wow)
+test("/linkcatcher copy with an empty or unreadable chat window", function(wow)
   local ns = boot(wow)
-  wow.slash("/lc copy")
+  wow.slash("/linkcatcher copy")
   eq(lastChat(wow):find("nothing to copy", 1, true) ~= nil, true)
   DEFAULT_CHAT_FRAME.GetMessageInfo = nil
   wow.slash("/linkcatcher copy")
@@ -299,15 +313,15 @@ test("/lc copy with an empty or unreadable chat window", function(wow)
   eq(ns.Window(), nil, "no window opened")
 end)
 
-test("/lc off and on switch the links and are saved", function(wow)
+test("/linkcatcher off and on switch the links and are saved", function(wow)
   boot(wow)
   eq(LinkCatcherDB.enabled, true)
-  wow.slash("/lc OFF")
+  wow.slash("/linkcatcher OFF")
   eq(LinkCatcherDB.enabled, false)
   eq(say("CHAT_MSG_SAY", "www.example.com"), "www.example.com")
-  wow.slash("/lc")
+  wow.slash("/linkcatcher")
   eq(lastChat(wow):find("off right now", 1, true) ~= nil, true)
-  wow.slash("/lc on")
+  wow.slash("/linkcatcher on")
   eq(LinkCatcherDB.enabled, true)
   eq(linkOf(say("CHAT_MSG_SAY", "www.example.com")) ~= nil, true)
 end)
@@ -323,9 +337,9 @@ end)
 
 test("help lists the commands", function(wow)
   boot(wow)
-  wow.slash("/lc help")
-  eq(lastChat(wow):find("/lc copy", 1, true) ~= nil, true)
-  eq(lastChat(wow):find("/lc off", 1, true) ~= nil, true)
+  wow.slash("/linkcatcher help")
+  eq(lastChat(wow):find("/linkcatcher copy", 1, true) ~= nil, true)
+  eq(lastChat(wow):find("/linkcatcher off", 1, true) ~= nil, true)
 end)
 
 -- 1.1: German ------------------------------------------------------------------------------------------
@@ -346,19 +360,19 @@ end
 
 test("German client: the help and the switches in German, the command words stay English", function(wow)
   german(wow)
-  wow.slash("/lc")
-  eq(lastChat(wow), P .. "/lc copy zeigt die letzten Zeilen deines Hauptchatfensters zum Kopieren (/lc copy 50 für 50 Zeilen), /lc on und /lc off schalten die anklickbaren Links ein und aus. Klicke auf einen Link im Chat, um ihn zu kopieren.")
-  wow.slash("/lc aus")
+  wow.slash("/linkcatcher")
+  eq(lastChat(wow), P .. "/linkcatcher copy zeigt die letzten Zeilen deines Hauptchatfensters zum Kopieren (/linkcatcher copy 50 für 50 Zeilen), /linkcatcher on und /linkcatcher off schalten die anklickbaren Links ein und aus. Klicke auf einen Link im Chat, um ihn zu kopieren.")
+  wow.slash("/linkcatcher aus")
   eq(LinkCatcherDB.enabled, true, "German command words are not commands")
-  wow.slash("/lc off")
+  wow.slash("/linkcatcher off")
   eq(lastChat(wow), P .. "Weblinks im Chat bleiben einfacher Text.")
-  wow.slash("/lc")
+  wow.slash("/linkcatcher")
   eq(lastChat(wow), P .. "Anklickbare Links sind gerade ausgeschaltet.")
-  wow.slash("/lc on")
+  wow.slash("/linkcatcher on")
   eq(lastChat(wow), P .. "Weblinks im Chat sind anklickbar.")
   ChatFrame_AddMessageEventFilter = nil -- a client without chat filters
   german(wow, { noFilters = true })
-  wow.slash("/lc")
+  wow.slash("/linkcatcher")
   eq(lastChat(wow), P .. "Diese Spielversion lässt Addons keine Chatzeilen ändern, deshalb bleiben Links einfacher Text.")
 end)
 
@@ -378,16 +392,16 @@ end)
 
 test("German client: copying the chat in German", function(wow)
   local ns = german(wow)
-  wow.slash("/lc copy")
+  wow.slash("/linkcatcher copy")
   eq(lastChat(wow), P .. "Es gibt nichts zu kopieren.")
   game.lines = { "eins", { secret = true }, "[|Kq12|k]: hallo" }
-  wow.slash("/lc copy")
+  wow.slash("/linkcatcher copy")
   local f = ns.Window()
   eq(f.title:GetText(), "Chat kopieren")
   eq(f.box:GetText(), "eins\n[(Name)]: hallo")
   eq(f.hint:GetText(), "1 verborgene Zeilen ausgelassen. Drücke Strg+C (Cmd+C am Mac) zum Kopieren, Esc zum Schließen.")
   DEFAULT_CHAT_FRAME.GetMessageInfo = nil
-  wow.slash("/lc copy")
+  wow.slash("/linkcatcher copy")
   eq(lastChat(wow), P .. "Das Chatfenster lässt sich nicht lesen.")
 end)
 
@@ -407,9 +421,9 @@ test("an English client keeps the English texts", function(wow)
   local ns = boot(wow)
   eq(next(ns.L), nil)
   game.lines = { "one", { secret = true } }
-  wow.slash("/lc copy")
+  wow.slash("/linkcatcher copy")
   eq(ns.Window().title:GetText(), "Copy chat")
   eq(ns.Window().hint:GetText(), "1 hidden lines left out. Press Ctrl+C (Cmd+C on a Mac) to copy, Escape to close.")
-  wow.slash("/lc off")
+  wow.slash("/linkcatcher off")
   eq(lastChat(wow), P .. "Web links in chat stay plain text.")
 end)

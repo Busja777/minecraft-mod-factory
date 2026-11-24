@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Emote Bar
+## Notes: A small movable bar with your favourite emotes as buttons.
+## Version: @version@
+## SavedVariables: EmoteBarDB
+## IconTexture: Interface\Icons\Achievement_Reputation_01
+
+Locale.lua
+Core.lua
+Emotes.lua
+UI.lua
+Commands.lua

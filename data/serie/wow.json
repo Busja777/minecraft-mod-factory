@@ -323,7 +323,7 @@
       "slug": "pinboard-notes",
       "name": "Pinboard Notes",
       "art": "RF",
-      "was": "Verschiebbarer Notizzettel",
+      "was": "Verschiebbarer Notizzettel. ZURÜCKGESTELLT (24.11.): zu nah an Zone Notes (Notizen in einem verschiebbaren Fenster, Fair Play). Besser als Update von Zone Notes: ein Zettel, der in jeder Zone gilt.",
       "updates": [
         "mehrere Zettel",
         "Checklisten",

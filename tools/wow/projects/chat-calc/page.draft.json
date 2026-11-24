@@ -1,0 +1,32 @@
+{
+  "name": "Chat Calc",
+  "summary": "Work out sums right in the chat box, including gold, silver and copper, without opening a calculator outside the game.",
+  "category": "Chat & Communication",
+  "logoPrompt": "A small brass pocket calculator with glowing amber buttons, resting on a little pile of gold, silver and copper coins",
+  "cover": {
+    "tagline": "Do the math without leaving the game.",
+    "bullets": ["Type /calc and get the answer", "Counts in gold, silver, copper", "Clear messages for typos"]
+  },
+  "description": [
+    "**Chat Calc is a calculator in your chat box: type a sum, get the answer, and it understands gold amounts too.**",
+    "",
+    "## Features",
+    "- Adds, subtracts, multiplies and divides, with remainders (%), powers (^) and parentheses in the usual order.",
+    "- Reads gold amounts like `12g 50s 3c` or `1250000c` and shows gold results with the game's coin icons, in gold and in copper.",
+    "- Keeps gold sensible: `12g 50s * 3` stays gold, `100g / 12g 50s` gives a plain number.",
+    "- Explains what went wrong: division by zero, a missing parenthesis, a missing number or input that is too long.",
+    "",
+    "## How to use",
+    "Type `/calc 12g 50s * 3` (or `/chatcalc`) and press Enter. `/calc` on its own shows a short help.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- Answers appear only in your own chat window, nothing is sent to other players.",
+    "- Your input is read by its own small parser and is never run as code.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
