@@ -1,0 +1,22 @@
+{
+  "slug": "bonemeal-more",
+  "game": "java",
+  "name": "Bonemeal More",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "BonemealMore-1.0.jar",
+      "changelog": "## Bonemeal More 1.0\n\nFirst release.\n\n- Bone meal grows sugar cane and cactus by one block on top of the column, up to their natural height of three blocks. Click any block of the column.\n- A cactus only grows where the new block could stand, so it never breaks off. Full columns, a block above the top or a cactus that would touch a block use no bone meal.\n- Bone meal moves nether wart on by one of its four stages, so fresh wart is ripe after three uses. Ripe wart uses no bone meal.\n- Each use takes one bone meal. Dispensers with bone meal work on all three plants too.\n- Only the server needs the mod. With it on the client as well, players also see the green sparkles.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}

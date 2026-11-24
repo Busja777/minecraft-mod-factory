@@ -318,7 +318,7 @@
       "slug": "bountiful-forage",
       "name": "Bountiful Forage",
       "art": "CP",
-      "was": "Mehr Sammelgut in Wald und Strand",
+      "was": "Mehr Sammelgut in Wald und Strand. ZURÜCKGESTELLT (23.11.): gebaut (Branch park/stardew-bountiful-forage), aber V1.0 ändert nur zwei Zahlen (MaxDailyForageSpawn, MaxSpawnedForageAtOnce) an zwei Orten, zu dünn wie Trash Treasures. Erst bauen, wenn je Jahreszeit oder je Ort eigene, belegte Funde dazukommen.",
       "updates": [
         "je Jahreszeit",
         "Regler",
@@ -430,7 +430,7 @@
       "slug": "tailoring-recipes-plus",
       "name": "Tailoring Recipes Plus",
       "art": "CP",
-      "was": "Neue Stoff-Kombinationen an der Nähmaschine",
+      "was": "Neue Stoff-Kombinationen an der Nähmaschine. ZURÜCKGESTELLT (24.11.): Die Stardew-Prüfung kennt nur (O)-Gegenstände, jede Kleidungs-ID wird abgelehnt; und das Wiki dokumentiert nur drei Kleidungs-IDs ((S)1008, (S)1260, (H)56). Braucht eine belegte Kleidungsliste in der Prüfung (Werkzeug, Betreiber).",
       "updates": [
         "+20",
         "Färben",

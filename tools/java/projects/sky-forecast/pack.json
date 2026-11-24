@@ -1,0 +1,8 @@
+{
+  "kind": "mod",
+  "name": "Sky Forecast",
+  "description": "/forecast tells you when the rain and thunder come or go",
+  "mc": "1.21.1",
+  "modId": "skyforecast",
+  "gameVersions": ["1.21.1", "Fabric", "Java 21", "Server", "Client"]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "Sky Forecast",
+  "summary": "Type /forecast to learn when the rain starts or stops and whether thunder is coming, read from the weather timers the server keeps.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A single puffy cloud, white on one side and dark grey on the other, with a small yellow lightning bolt and three blue rain drops falling from its dark side, centred, in blocky voxel style, no text",
+  "cover": {
+    "tagline": "Know when the rain comes.",
+    "bullets": [
+      "Rain and thunder ahead",
+      "Every player, no OP needed",
+      "Players need nothing installed"
+    ]
+  },
+  "description": [
+    "**Sky Forecast adds the command /forecast, which tells you what the weather does next and roughly when.**",
+    "",
+    "## Features",
+    "- Shows whether it is clear, raining or thundering, and when the rain starts or stops, in minutes or in-game days.",
+    "- Says whether the coming rain brings thunder: for sure, possibly or not at all.",
+    "- Reads the server's own weather timers: known times to the minute, times still left to chance as a range, never a guess.",
+    "- Knows about `/weather clear`, the `doWeatherCycle` game rule and a frozen game, and says when the weather will not change.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API. Type `/forecast` in chat. Every player can use it without operator rights.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API.",
+    "- Works in singleplayer and on servers. On a server only the server needs it; players can join without installing anything.",
+    "- The Nether and the End have no weather; there it shows the Overworld's forecast.",
+    "- Sleeping through the night still ends the rain early.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

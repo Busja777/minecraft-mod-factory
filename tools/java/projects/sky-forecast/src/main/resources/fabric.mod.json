@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "skyforecast",
+  "version": "${version}",
+  "name": "Sky Forecast",
+  "description": "/forecast tells every player what the weather does next and roughly when, read from the server's own weather timers. Works on the server alone; players need nothing installed.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.skyforecast.SkyForecast"]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

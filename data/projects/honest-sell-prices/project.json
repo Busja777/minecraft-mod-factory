@@ -1,0 +1,19 @@
+{
+  "slug": "honest-sell-prices",
+  "game": "stardewvalley",
+  "name": "Honest Sell Prices",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "HonestSellPrices-1.0.zip",
+      "changelog": "## Honest Sell Prices 1.0\n\nFirst release.\n\n- Choose the sell price of three groups in the config, each on its own: crops, animal products and artisan goods. Every group has 75 %, 100 % (default, the normal game), 125 % and 150 %.\n- Crops: 39 harvests from the fields, from parsnips to sweet gem berries. Wine, juice, jelly, pickles, dried fruit and flower honey take their price from the crop, so they follow this setting.\n- Animal products: 17 kinds of eggs, milk, wool, duck feathers, rabbit's feet and truffles.\n- Artisan goods: 13 goods with a fixed price, such as cheese, mayonnaise, cloth, beer, pale ale, mead, truffle oil and caviar. At 150 %, beer stops at 285g so it never sells for as much as the 400g Gus asks for it.\n- The new price counts for the shipping bin and for selling in shops. Profession bonuses and quality still apply on top.\n- Oil, vinegar, coffee and cactus fruit keep their normal price, because shops sell them or what they are made of.\n- Carrot, summer squash, broccoli and powdermelon (new in 1.6) keep their normal price for now.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}

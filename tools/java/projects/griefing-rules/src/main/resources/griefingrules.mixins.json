@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.factory.griefingrules.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "WorldMixin",
+    "FireballEntityMixin",
+    "WitherEntityMixin",
+    "LivingEntityMixin",
+    "EndermanBlockGoalsMixin",
+    "RavagerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

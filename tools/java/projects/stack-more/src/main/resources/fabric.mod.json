@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "stackmore",
+  "version": "${version}",
+  "name": "Stack More",
+  "description": "Drinkable potions stack up to 16, eggs and snowballs up to 64. Only identical potions stack. Needed on the server and on every player's game.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.stackmore.StackMore"]
+  },
+  "mixins": ["stackmore.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

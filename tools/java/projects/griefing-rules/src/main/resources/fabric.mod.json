@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "griefingrules",
+  "version": "${version}",
+  "name": "Griefing Rules",
+  "description": "Splits the mobGriefing gamerule: creeperGriefing, ghastGriefing, witherGriefing, endermanGriefing and ravagerGriefing switch off the block damage of one kind of mob each, while everything else keeps working. mobGriefing false still turns all of it off. On a server only the server needs it.",
+  "authors": ["SevFactory"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.factory.griefingrules.GriefingRulesMod"]
+  },
+  "mixins": ["griefingrules.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

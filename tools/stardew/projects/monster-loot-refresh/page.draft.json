@@ -1,0 +1,37 @@
+{
+  "name": "Monster Loot Refresh",
+  "summary": "Common monsters in the mines now and then drop a bit of ore, a geode or another handy extra that suits their floor.",
+  "class": "Mods",
+  "category": "Gameplay Basics",
+  "logoPrompt": "A single open leather loot pouch with a few copper, iron and gold ore nuggets and a cracked geode spilling out of it",
+  "cover": {
+    "tagline": "Better loot on every floor of the mines.",
+    "bullets": [
+      "Extra drops for eleven monsters",
+      "Ore and geodes that fit the floor",
+      "Vanilla drops stay unchanged"
+    ]
+  },
+  "description": [
+    "**Monster Loot Refresh gives eleven common monsters of the Mines one or two small extra drops that fit their floor.**",
+    "",
+    "## Features",
+    "- Slimes pick up the ore of their floor: copper ore from green slimes, iron ore from blue ones, gold ore from red ones.",
+    "- Rock crabs shed stone and copper ore, duggies dig up clay, grubs sometimes leave a cave carrot.",
+    "- Stone golems, frost bats and lava crabs can drop their floor's geode; dust sprites and metal heads carry iron or gold ore.",
+    "- Every vanilla drop keeps its chance. No bars, gems or rare items.",
+    "",
+    "## How to use",
+    "Install SMAPI and Content Patcher, then unzip the file into your `Mods` folder. Fight in the Mines as usual.",
+    "",
+    "## Good to know",
+    "- Needs SMAPI and Content Patcher 2.9.0 or newer. Made for Stardew Valley 1.6.",
+    "- Built carefully from the documented formats of Stardew Valley 1.6 and Content Patcher. It only adds to the drop lists, so other packs' edits stay intact.",
+    "- The extras belong to the monster type: green slimes on the farm or in the Secret Woods drop them too.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

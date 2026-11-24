@@ -1,0 +1,22 @@
+{
+  "slug": "sky-forecast",
+  "game": "java",
+  "name": "Sky Forecast",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "SkyForecast-1.0.jar",
+      "changelog": "## Sky Forecast 1.0\n\nFirst release.\n\n- `/forecast` shows the weather now and when the rain starts or stops, in minutes or in-game days.\n- It says whether the rain brings thunder (for sure, possibly or not at all), and during a storm whether the thunder stops before the rain.\n- The times come from the timers the server already keeps: a known time to the minute, a time that is still random as a range (for example \"10 to 20 minutes\" right after sleeping through the rain).\n- After `/weather clear` it shows how long the clear sky lasts and that a thunderstorm follows. With the `doWeatherCycle` game rule off it says the weather will not change.\n- In the Nether and the End it says there is no weather there and shows the Overworld's forecast. In snowy and dry biomes it adds that it snows or never rains there.\n- Every player can use it without operator rights. Only the server needs the mod.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server",
+        "Client"
+      ]
+    }
+  ]
+}

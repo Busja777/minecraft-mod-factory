@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bonemealmore-gametest",
+  "version": "1.0.0",
+  "name": "Bonemeal More game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.bonemealmore.gametest.BonemealMoreGameTest"]
+  },
+  "depends": {
+    "bonemealmore": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

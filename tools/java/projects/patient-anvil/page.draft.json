@@ -1,0 +1,36 @@
+{
+  "name": "Patient Anvil",
+  "summary": "Repair and combine at the anvil at any cost you can pay: the level wall is gone, while every price stays exactly as in vanilla.",
+  "class": "Mods",
+  "category": "Utility & QoL",
+  "logoPrompt": "A heavy dark iron anvil with a glowing enchanted diamond pickaxe resting on top, in blocky voxel style, no text",
+  "cover": {
+    "tagline": "No more Too Expensive at the anvil.",
+    "bullets": [
+      "Costs stay as in vanilla",
+      "You still need the levels",
+      "Server needs it, clients optional"
+    ]
+  },
+  "description": [
+    "**Patient Anvil takes down the anvil's \"Too Expensive!\" wall, so a well-loved pickaxe can be repaired and enchanted again for as long as you have the levels.**",
+    "",
+    "## Features",
+    "- Repairs and enchantment combinations that cost 40 levels or more are no longer refused.",
+    "- Every cost stays the vanilla cost: nothing gets cheaper, it only becomes possible.",
+    "- You still pay the full cost; without enough levels the result cannot be taken.",
+    "- Creative mode, the rename discount and the rest of the anvil work as before.",
+    "",
+    "## How to use",
+    "Put the jar into the `mods` folder next to Fabric API: on the server, and on your own game if you like. Then use the anvil as usual.",
+    "",
+    "## Good to know",
+    "- Made for Fabric on Minecraft: Java Edition 1.21.1 and needs Fabric API. Works in singleplayer and on servers.",
+    "- On a server only the server needs it. Players without the mod still read \"Too Expensive!\" in red, but the result appears and can be taken; with the mod they see the real cost.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

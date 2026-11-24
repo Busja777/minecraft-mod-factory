@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.factory.bottledlevels.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": ["ExperienceBottleEntityMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

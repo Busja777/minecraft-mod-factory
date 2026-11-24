@@ -1,0 +1,8 @@
+{
+  "kind": "mod",
+  "name": "Stack More",
+  "description": "Potions stack to 16, eggs and snowballs to 64",
+  "mc": "1.21.1",
+  "modId": "stackmore",
+  "gameVersions": ["1.21.1", "Fabric", "Java 21", "Server", "Client"]
+}

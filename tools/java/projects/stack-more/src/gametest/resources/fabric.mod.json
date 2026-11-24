@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "stackmore-gametest",
+  "version": "1.0.0",
+  "name": "Stack More game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.stackmore.gametest.StackMoreGameTest"]
+  },
+  "depends": {
+    "stackmore": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

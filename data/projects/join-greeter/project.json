@@ -1,0 +1,21 @@
+{
+  "slug": "join-greeter",
+  "game": "java",
+  "name": "Join Greeter",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "JoinGreeter-1.0.jar",
+      "changelog": "## Join Greeter 1.0\n\nFirst release.\n\n- Players who join the world for the first time get a welcome line, players who come back get a welcome-back line, a second after vanilla's \"joined the game\".\n- Optional rule lines follow the welcome for newcomers, or on every join with `rulesEveryJoin`.\n- Optional starter kit for first-time players: item ids and counts in `starterKit`. It is empty by default, so nothing is given until you set it.\n- Colours and styles with `&` codes (`&0` to `&f`, `&l`, `&o`, `&n`, `&m`, `&k`, `&r`) or the section sign, and the placeholders `{player}` and `{online}`.\n- \"First time\" is read from the player's own statistics in the world, so players from before the install are greeted as returning players.\n- Everything is set in `config/joingreeter.json`, created on the first start. Only the server needs the mod.",
+      "status": "due",
+      "gameVersions": [
+        "1.21.1",
+        "Fabric",
+        "Java 21",
+        "Server"
+      ]
+    }
+  ]
+}
