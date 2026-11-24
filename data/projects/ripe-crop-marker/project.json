@@ -1,0 +1,20 @@
+{
+  "slug": "ripe-crop-marker",
+  "game": "java",
+  "name": "Ripe Crop Marker",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "RipeCropMarker-1.0.zip",
+      "changelog": "## Ripe Crop Marker 1.0\n\nFirst release.\n\n- Fully grown wheat, carrots, potatoes, beetroots and nether wart show a small golden sparkle just above their leaves, so you see at a glance which crops are ready to harvest.\n- Only the last growth stage changes: younger crops look exactly as in vanilla, and the plant itself keeps every pixel of the vanilla texture.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}
