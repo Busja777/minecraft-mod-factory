@@ -24,7 +24,9 @@ test('Java: every pack folder is complete', () => {
   for (const slug of packSlugs()) {
     const pack = packOf(slug);
     for (const mc of versionsOf(pack)) assert.ok(pack.gameVersions.includes(releaseName(mc)), `${slug}: gameVersions must include ${releaseName(mc)}`);
-    for (const f of ['pack.js', 'page.json', path.join('changelogs', '1.0.md')]) assert.ok(fs.existsSync(path.join(pack.dir, f)), `${slug}: ${f} is missing`);
+    // a pack built before its logo exists keeps its page as page.draft.json (like Fabric mods, Stardew and WoW)
+    const pageFile = fs.existsSync(path.join(pack.dir, 'page.json')) ? 'page.json' : 'page.draft.json';
+    for (const f of ['pack.js', pageFile, path.join('changelogs', '1.0.md')]) assert.ok(fs.existsSync(path.join(pack.dir, f)), `${slug}: ${f} is missing`);
   }
 });
 
