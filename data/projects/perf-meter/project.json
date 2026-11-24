@@ -1,0 +1,18 @@
+{
+  "slug": "perf-meter",
+  "game": "wow",
+  "name": "Perf Meter",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "PerfMeter-1.0.zip",
+      "changelog": "## Perf Meter 1.0\n\nFirst release.\n\n- A small movable line on screen shows your framerate, your home and world latency and the memory all your addons use together.\n- Each value is green, yellow or red: framerate green from 45 fps and red below 25, latency green below 100 ms and red from 250 ms, addon memory green below 200 MB and red from 500 MB.\n- Hover over the meter to see the same lines as the game's own performance tooltip, plus the five addons that use the most memory.\n- Framerate and latency update once per second. Addon memory is measured every 15 seconds and never during combat, because measuring it is expensive.\n- Drag the meter where you like and lock it. Its place, the lock and whether it is shown are saved for your whole account.\n- `/perfmeter` or `/pm` shows or hides the meter, `/pm lock` and `/pm unlock` fix or free it, `/pm reset` puts it back at the top of the screen.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
+    }
+  ]
+}

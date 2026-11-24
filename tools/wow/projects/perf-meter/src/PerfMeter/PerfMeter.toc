@@ -1,0 +1,11 @@
+## Interface: 120105, 120107
+## Title: Perf Meter
+## Notes: Shows your framerate, latency and addon memory in a small movable display.
+## Version: @version@
+## SavedVariables: PerfMeterDB
+## IconTexture: Interface\Icons\INV_Misc_PocketWatch_01
+
+Locale.lua
+Core.lua
+Meter.lua
+UI.lua
