@@ -1,0 +1,37 @@
+{
+  "name": "More Trim Materials",
+  "summary": "Trim your armor with coal, obsidian, echo shards, slime and more, each material with a color of its own.",
+  "class": "Data Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A single iron chestplate decorated with a bright violet and teal armor trim pattern, centred, in blocky voxel style",
+  "cover": {
+    "tagline": "Eight new colors for your armor trims.",
+    "bullets": [
+      "Coal, obsidian, echo and more",
+      "Every vanilla trim pattern",
+      "On worn armor and its icon"
+    ]
+  },
+  "description": [
+    "**More Trim Materials lets the smithing table trim armor with eight more items, each giving the trim a color of its own.**",
+    "",
+    "## Features",
+    "- New trim materials: coal, obsidian, echo shard, slime ball, breeze rod, nether brick, popped chorus fruit and prismarine shard.",
+    "- Each has its own palette, from deep obsidian violet to pale breeze blue.",
+    "- Works with every vanilla trim pattern on all armor except copper.",
+    "- Worn armor and its icon show the trim; the tooltip names the material.",
+    "",
+    "## How to use",
+    "Put the zip into the `datapacks` folder of your world and into your `resourcepacks` folder, then turn it on under Options > Resource Packs. At a smithing table, add a trim template, the armor and one of the new items.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1, 1.21.2 and 26.3.",
+    "- On a server the zip goes into the world's `datapacks` folder; players add it as a resource pack to see the colors.",
+    "- Keep the data pack in a world once armor carries a new trim: without it the game cannot read that armor.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or want another material? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
