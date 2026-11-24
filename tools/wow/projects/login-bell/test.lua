@@ -379,3 +379,107 @@ test("core: decisions, switch words and the cooldown table stays small", functio
   eq(ns.BNetName(nil), nil)
   eq(ns.BNetName({ battleTag = "NoNumber" }), "NoNumber")
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and its own online message (deDE GlobalStrings of 12.1.5).
+local function german(wow, g, saved)
+  wow.locale = "deDE"
+  local ns = boot(wow, g, saved)
+  ERR_FRIEND_ONLINE_SS = "|Hplayer:%s|h[%s]|h ist jetzt online."
+  return ns
+end
+
+test("German client: friends, guild members and Battle.net friends in German", function(wow)
+  german(wow, { friends = { "Ohm" }, guild = true, accounts = { [7] = { accountName = "Mira" } } })
+  local from = #wow.chat
+  online(wow, "Ohm-Silvermoon", "Ohm")
+  eq(chatSince(wow, from), P .. "Freund online: |Hplayer:Ohm-Silvermoon|h[Ohm]|h", "the German game text is read")
+  eq(#game.sounds, 1)
+  online(wow, "Grumbash-Silvermoon", "Grumbash", 3)
+  eq(lastChat(wow), P .. "Gildenmitglied online: |Hplayer:Grumbash-Silvermoon|h[Grumbash]|h")
+  bnet(wow, 7, false, 3)
+  eq(lastChat(wow), P .. "Freund online: Mira")
+  from = #wow.chat
+  wow.fire("CHAT_MSG_SYSTEM", "|Hplayer:Lia|h[Lia]|h has come online.")
+  wow.fire("CHAT_MSG_SYSTEM", "Ohm ist jetzt offline.")
+  online(wow, "Ohm-Silvermoon", "Ohm", 60)
+  eq(chatSince(wow, from), "", "other lines and the cooldown as before")
+  eq(#game.sounds, 3)
+end)
+
+test("German client: the settings, the help and the bell test in German", function(wow)
+  german(wow)
+  local from = #wow.chat
+  wow.slash("/lb")
+  local help = P .. "/lb sound, /lb friends und /lb guild schalten den Sound, Freunde und Gildenmitglieder ein oder aus (mit on oder off dahinter legst du es fest), /lb test spielt die Glocke ab."
+  eq(chatSince(wow, from), P .. "Sound: an, Freunde: an, Gilde: an.\n" .. help)
+  wow.slash("/lb sound")
+  eq(lastChat(wow), P .. "Sound: aus, Freunde: an, Gilde: an.")
+  eq(LoginBellDB.settings.sound, false)
+  wow.slash("/lb guild aus")
+  eq(lastChat(wow), help, "a German switch word is no command word")
+  eq(LoginBellDB.settings.guild, true)
+  wow.slash("/lb gilde off")
+  eq(lastChat(wow), help)
+  eq(LoginBellDB.settings.guild, true)
+  wow.slash("/lb guild off")
+  eq(lastChat(wow), P .. "Sound: aus, Freunde: an, Gilde: aus.")
+  wow.slash("/loginbell friends off")
+  eq(lastChat(wow), P .. "Sound: aus, Freunde: aus, Gilde: aus.")
+  wow.slash("/lb test")
+  eq(lastChat(wow), P .. "So klingt die Glocke. Der Sound ist aus, /lb sound schaltet ihn ein.")
+  eq(#game.sounds, 1, "the test plays the bell even with the sound off")
+  wow.slash("/lb sound on")
+  wow.slash("/lb test")
+  eq(lastChat(wow), P .. "So klingt die Glocke.")
+  wow.slash("/lb glocke")
+  eq(lastChat(wow), help)
+  eq(has(table.concat(wow.chat, "\n"), "on|off"), false, "help never uses | as separator")
+end)
+
+test("German client: settings saved in 1.0 are kept", function(wow)
+  german(wow, { friends = { "Ohm" }, guild = true }, { version = 1, settings = { sound = false, friends = true, guild = false } })
+  wow.slash("/lb")
+  eq(wow.chat[#wow.chat - 1], P .. "Sound: aus, Freunde: an, Gilde: aus.")
+  local from = #wow.chat
+  online(wow, "Grumbash", "Grumbash")
+  eq(chatSince(wow, from), "", "guild members stay off")
+  online(wow, "Ohm", "Ohm")
+  eq(lastChat(wow), P .. "Freund online: |Hplayer:Ohm|h[Ohm]|h")
+  eq(#game.sounds, 0, "the sound stays off")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("/lb", "")), select(2, text:gsub("/lb", "")), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 9, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow, { friends = { "Ohm" }, guild = true })
+  eq(next(ns.L), nil)
+  wow.slash("/lb")
+  eq(wow.chat[#wow.chat - 1], P .. "Sound: on, friends: on, guild: on.")
+  online(wow, "Ohm", "Ohm")
+  eq(lastChat(wow), P .. "Friend online: |Hplayer:Ohm|h[Ohm]|h")
+  online(wow, "Grumbash", "Grumbash")
+  eq(lastChat(wow), P .. "Guild member online: |Hplayer:Grumbash|h[Grumbash]|h")
+  wow.slash("/lb test")
+  eq(lastChat(wow), P .. "This is the bell.")
+end)

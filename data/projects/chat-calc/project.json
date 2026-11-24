@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "ChatCalc-1.1.zip",
+      "changelog": "## Chat Calc 1.1\n\n- Chat Calc now speaks **German**: the help and every message about what went wrong in a sum. On clients in other languages it stays in English.\n- Answers and messages use your client's own coin letters: on a German client the amount in gold and in copper reads `(37.5G, 375,000K)`, with K for Kupfer, next to the game's coin icons. On an English client nothing changes: `g`, `s` and `c` as before.\n- Numbers are written as before in every language: the decimal point is `.` (`1.5`), the comma only separates thousands (`1,250,000`). The German help and the message for `1,5` say so.\n- Typing stays the same in every language: `/calc 12g 50s * 3` works everywhere, and on a German client `3k` for copper works as in 1.0.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }

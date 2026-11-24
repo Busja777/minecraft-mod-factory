@@ -8,7 +8,8 @@ function ns.Print(msg)
 end
 
 local function help()
-  ns.Print(L["/calc 12g 50s * 3 counts in gold, silver and copper, /calc (5 + 3) ^ 2 works with plain numbers. You can use + - * / % ^ and parentheses."])
+  local sym = ns.CoinSymbols()
+  ns.Print(string.format(L["/calc 12%s 50%s * 3 counts in gold, silver and copper, /calc (5 + 3) ^ 2 works with plain numbers. You can use + - * / %% ^ and parentheses."], sym.g, sym.s))
 end
 
 function ns.Calculate(msg)

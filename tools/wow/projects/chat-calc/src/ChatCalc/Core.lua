@@ -46,6 +46,26 @@ function ns.CoinWords()
   return words
 end
 
+-- 1.1: the coin letters shown in answers and messages are the client's own (GOLD_AMOUNT_SYMBOL and
+-- friends: g, s, c in English, G, S, K in German), with the English letter as fallback. A letter is
+-- only shown when CoinWords reads it back as the same coin, so every answer can be typed again.
+ns.SYMBOLS = { { "g", "GOLD_AMOUNT_SYMBOL", 10000 }, { "s", "SILVER_AMOUNT_SYMBOL", 100 }, { "c", "COPPER_AMOUNT_SYMBOL", 1 } }
+
+function ns.CoinSymbols(coins)
+  coins = coins or ns.CoinWords()
+  local out = {}
+  for _, entry in ipairs(ns.SYMBOLS) do
+    local english, global, copper = entry[1], entry[2], entry[3]
+    local symbol = _G[global]
+    if type(symbol) == "string" and coins[symbol:lower()] == copper then
+      out[english] = symbol
+    else
+      out[english] = english
+    end
+  end
+  return out
+end
+
 -- Text the player typed, made safe to show in chat ("|" starts an escape sequence there).
 function ns.Escape(text)
   return (tostring(text):gsub("|", "||"))
@@ -96,7 +116,8 @@ function ns.Tokenize(text, coins)
       elseif coins[lower] then
         tokens[#tokens + 1] = { kind = "coin", copper = coins[lower], text = word }
       else
-        fail(L["Unknown \"%s\". Use numbers, + - * / %% ^, parentheses and g, s, c."], ns.Escape(word))
+        local sym = ns.CoinSymbols(coins)
+        fail(L["Unknown \"%s\". Use numbers, + - * / %% ^, parentheses and %s, %s, %s."], ns.Escape(word), sym.g, sym.s, sym.c)
       end
       i = i + #word
     end
@@ -133,7 +154,10 @@ end
 -- The arithmetic, with the rules for gold.
 function ns.Apply(op, a, b)
   if op == "+" or op == "-" then
-    if a.gold ~= b.gold then fail(L["Gold and plain numbers cannot be added or subtracted: write 5g, 5s or 5c."]) end
+    if a.gold ~= b.gold then
+      local sym = ns.CoinSymbols()
+      fail(L["Gold and plain numbers cannot be added or subtracted: write 5%s, 5%s or 5%s."], sym.g, sym.s, sym.c)
+    end
     return value(op == "+" and a.v + b.v or a.v - b.v, a.gold)
   elseif op == "*" then
     if a.gold and b.gold then fail(L["Gold cannot be multiplied by gold."]) end
@@ -177,13 +201,17 @@ local function Parser(tokens)
       local copper, last = 0, nil
       while true do
         local coin = nextToken()
-        if last and coin.copper >= last then fail(L["Coins go from gold to copper, each once, like 12g 50s 3c."]) end
+        if last and coin.copper >= last then
+          local sym = ns.CoinSymbols()
+          fail(L["Coins go from gold to copper, each once, like 12%s 50%s 3%s."], sym.g, sym.s, sym.c)
+        end
         copper = checked(copper + t.value * coin.copper)
         last = coin.copper
         local after, second = peek(), tokens[p.pos + 1]
         if not (after and after.kind == "number") then break end
         if not (second and second.kind == "coin") then
-          fail(L["Add g, s or c after %s."], ns.Escape(after.text))
+          local sym = ns.CoinSymbols()
+          fail(L["Add %s, %s or %s after %s."], sym.g, sym.s, sym.c, ns.Escape(after.text))
         end
         t = nextToken()
       end
@@ -260,11 +288,12 @@ end
 function ns.Evaluate(text, coins)
   text = strtrim(text or "")
   text = text:gsub("=%s*$", "")
-  if text == "" then return nil, L["Type something to calculate, like /calc 12g 50s * 3."] end
+  local sym = ns.CoinSymbols()
+  if text == "" then return nil, string.format(L["Type something to calculate, like /calc 12%s 50%s * 3."], sym.g, sym.s) end
   if #text > ns.MAX_INPUT then return nil, string.format(L["That is too long: at most %d characters."], ns.MAX_INPUT) end
   local ok, result = pcall(function()
     local tokens = ns.Tokenize(text, coins)
-    if #tokens == 0 then fail(L["Type something to calculate, like /calc 12g 50s * 3."]) end
+    if #tokens == 0 then fail(L["Type something to calculate, like /calc 12%s 50%s * 3."], sym.g, sym.s) end
     ns.CheckParentheses(tokens)
     return Parser(tokens).run()
   end)
@@ -303,17 +332,18 @@ function ns.RoundCopper(copper)
   return rounded, rounded ~= copper
 end
 
--- 375003 → "37g 50s 3c": zero coins are left out, 0 is "0c".
+-- 375003 → "37g 50s 3c": zero coins are left out, 0 is "0c". The letters are the client's (CoinSymbols).
 function ns.PlainMoney(copper)
+  local sym = ns.CoinSymbols()
   local sign = copper < 0 and "-" or ""
   copper = math.abs(copper)
   local g = math.floor(copper / 10000)
   local s = math.floor(copper / 100) % 100
   local c = copper % 100
   local parts = {}
-  if g > 0 then parts[#parts + 1] = thousands(string.format("%.0f", g)) .. "g" end
-  if s > 0 then parts[#parts + 1] = s .. "s" end
-  if c > 0 or #parts == 0 then parts[#parts + 1] = c .. "c" end
+  if g > 0 then parts[#parts + 1] = thousands(string.format("%.0f", g)) .. sym.g end
+  if s > 0 then parts[#parts + 1] = s .. sym.s end
+  if c > 0 or #parts == 0 then parts[#parts + 1] = c .. sym.c end
   return sign .. table.concat(parts, " ")
 end
 
@@ -336,6 +366,8 @@ function ns.FormatMoney(copper)
 end
 
 -- The answer line: "12g 50s * 3 = 37g 50s (37.5g, 375,000c)" or "2 ^ 10 = 1,024".
+-- Numbers keep the decimal point and the thousands comma in every language: they are what the parser
+-- reads back. The coin letters are the client's (CoinSymbols).
 function ns.ResultText(input, result)
   local shown = ns.Escape(strtrim((strtrim(input or ""):gsub("=%s*$", ""))))
   if not result.gold then
@@ -344,6 +376,7 @@ function ns.ResultText(input, result)
   local copper, rounded = ns.RoundCopper(result.v)
   local money = ns.FormatMoney(copper)
   if rounded then money = "~" .. money end
-  return string.format("%s = %s (%sg, %sc)", shown, money, ns.FormatNumber(result.v / 10000),
-    (rounded and "~" or "") .. ns.FormatNumber(copper))
+  local sym = ns.CoinSymbols()
+  return string.format("%s = %s (%s%s, %s%s)", shown, money, ns.FormatNumber(result.v / 10000), sym.g,
+    (rounded and "~" or "") .. ns.FormatNumber(copper), sym.c)
 end

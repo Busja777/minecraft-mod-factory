@@ -383,3 +383,132 @@ test("the slash command works with every alias and odd spacing", function(wow)
   local r = ns.Calculate("2+2")
   eq(r.v, 4)
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- A German client: its language and its own coin letters (deDE GlobalStrings of 12.1.5:
+-- GOLD_AMOUNT_SYMBOL "G", SILVER_AMOUNT_SYMBOL "S", COPPER_AMOUNT_SYMBOL "K").
+local GERMAN = { g = "G", s = "S", c = "K" }
+local function german(wow, g)
+  wow.locale = "deDE"
+  g = g or {}
+  g.symbols = GERMAN
+  return boot(wow, g)
+end
+local GP = "|cffffd100Chat Calc:|r "
+
+test("German client: answers with the client's coin letters and the help in German", function(wow)
+  german(wow, { money = false })
+  wow.slash("/calc 12g 50s * 3")
+  eq(last(wow), GP .. "12g 50s * 3 = 37G 50S (37.5G, 375,000K)")
+  wow.slash("/calc 10G / 3")
+  eq(last(wow), GP .. "10G / 3 = ~3G 33S 33K (3.333333G, ~33,333K)", "rounded to whole copper")
+  wow.slash("/calc 12k + 3c")
+  eq(last(wow), GP .. "12k + 3c = 15K (0.0015G, 15K)", "k as in 1.0, and the English letters stay")
+  wow.slash("/calc 2 ^ 10")
+  eq(last(wow), GP .. "2 ^ 10 = 1,024", "numbers are written as before")
+  wow.slash("/calc 1.5 * 2")
+  eq(last(wow), GP .. "1.5 * 2 = 3")
+  wow.slash("/calc")
+  eq(last(wow), GP .. "/calc 12G 50S * 3 rechnet mit Gold, Silber und Kupfer, /calc (5 + 3) ^ 2 mit einfachen Zahlen. Du kannst + - * / % ^ und Klammern nutzen. Kommazahlen schreibst du mit Punkt: 1.5.")
+  local count = #wow.chat
+  wow.slash("/calc help")
+  eq(#wow.chat, count + 1)
+  eq(has(last(wow), "rechnet mit Gold"), true)
+  wow.slash("/calc hilfe")
+  eq(last(wow), GP .. "hilfe: |cffff6060Unbekannt: „hilfe“. Nutze Zahlen, + - * / % ^, Klammern und G, S, K.|r", "a German command word is no command")
+  german(wow)
+  wow.slash("/calc 12g 50s * 3")
+  eq(last(wow), GP .. "12g 50s * 3 = <375000,sep> (37.5G, 375,000K)", "with the game's coin icons")
+  eq(#game.sent, 0, "SendChatMessage is never called")
+end)
+
+test("German client: every message in German, the decimal comma is explained", function(wow)
+  local ns = german(wow)
+  eq(problem(ns, "1,5 + 1"), "„1,5“ ist keine Zahl. Kommazahlen schreibst du mit Punkt (1250.5), das Komma trennt nur Tausender (1,250.5).")
+  eq(ns.ParseNumber("1,5"), nil, "the parser is unchanged: a comma is no decimal point")
+  eq(calc(ns, "1,250.5 * 2"), 2501)
+  eq(problem(ns, "5 + abc"), "Unbekannt: „abc“. Nutze Zahlen, + - * / % ^, Klammern und G, S, K.")
+  eq(problem(ns, "1 + 2)"), "Die Klammern passen nicht: Da steht eine „)“ ohne „(“.")
+  eq(problem(ns, "((1 + 2"), "Die Klammern passen nicht: Es fehlt 2-mal „)“.")
+  eq(problem(ns, string.rep("(", 31) .. "1" .. string.rep(")", 31)), "Zu viele Klammern ineinander (höchstens 30).")
+  eq(problem(ns, "(-8) ^ 0.5"), "Das hat kein reelles Ergebnis.")
+  eq(problem(ns, "10 ^ 16"), "Die Zahl ist zu groß.")
+  eq(problem(ns, "12g + 5"), "Gold und einfache Zahlen lassen sich nicht addieren oder subtrahieren: Schreib 5G, 5S oder 5K.")
+  eq(problem(ns, "2g * 3g"), "Gold lässt sich nicht mit Gold multiplizieren.")
+  eq(problem(ns, "10 / 2g"), "Eine einfache Zahl lässt sich nicht durch Gold teilen.")
+  eq(problem(ns, "1 / 0"), "Division durch null.")
+  eq(problem(ns, "2g ^ 2"), "Potenzen gehen nur mit einfachen Zahlen.")
+  eq(problem(ns, "5 +"), "Am Ende fehlt etwas.")
+  eq(problem(ns, "50s 12g"), "Schreib die Münzen von Gold bis Kupfer, jede nur einmal, zum Beispiel 12G 50S 3K.")
+  eq(problem(ns, "12g 50"), "Schreib G, S oder K hinter 50.")
+  eq(problem(ns, "k"), "Vor „k“ fehlt eine Zahl, zum Beispiel 12k.", "the letter as typed")
+  eq(problem(ns, "5 * * 3"), "Vor „*“ fehlt etwas.")
+  eq(problem(ns, "5 5"), "Vor „5“ fehlt ein Rechenzeichen.")
+  eq(problem(ns, "   "), "Gib etwas zum Rechnen ein, zum Beispiel /calc 12G 50S * 3.")
+  eq(problem(ns, string.rep("1+", 100) .. "1"), "Das ist zu lang: höchstens 200 Zeichen.")
+  local check = ns.CheckParentheses
+  ns.CheckParentheses = function() error("unforeseen") end
+  eq(problem(ns, "1 + 1"), "Das ließ sich nicht berechnen.")
+  ns.CheckParentheses = check
+  wow.slash("/calc 1 / 0")
+  eq(last(wow), GP .. "1 / 0: |cffff6060Division durch null.|r")
+  wow.slash("/calc 5 + |cffff0000rot")
+  eq(has(last(wow), "Unbekannt: „||cffff“"), true, "typed text stays escaped in German")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("/calc", "")), select(2, text:gsub("/calc", "")), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 23, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts; other clients get English texts with their own letters", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow, { money = false })
+  eq(next(ns.L), nil)
+  eq(problem(ns, "12g 50"), "Add g, s or c after 50.")
+  eq(problem(ns, "5 + abc"), "Unknown \"abc\". Use numbers, + - * / % ^, parentheses and g, s, c.")
+  eq(problem(ns, "12g + 5"), "Gold and plain numbers cannot be added or subtracted: write 5g, 5s or 5c.")
+  eq(problem(ns, "50s 12g"), "Coins go from gold to copper, each once, like 12g 50s 3c.")
+  eq(problem(ns, ""), "Type something to calculate, like /calc 12g 50s * 3.")
+  wow.slash("/calc")
+  eq(last(wow), "|cffffd100Chat Calc:|r /calc 12g 50s * 3 counts in gold, silver and copper, /calc (5 + 3) ^ 2 works with plain numbers. You can use + - * / % ^ and parentheses.")
+  wow.locale = "frFR"
+  ns = boot(wow, { money = false, symbols = { g = "po", s = "pa", c = "pc" } })
+  eq(next(ns.L), nil, "no French texts")
+  eq(problem(ns, "12po 50"), "Add po, pa or pc after 50.")
+  wow.slash("/calc 2po * 3")
+  eq(last(wow), "|cffffd100Chat Calc:|r 2po * 3 = 6po (6po, 60,000pc)")
+end)
+
+test("coin letters: the client's own when the calculator reads them back, the English ones otherwise", function(wow)
+  local ns = boot(wow)
+  local function letters() local s = ns.CoinSymbols() return s.g .. " " .. s.s .. " " .. s.c end
+  eq(letters(), "g s c")
+  ns = boot(wow, { symbols = GERMAN })
+  eq(letters(), "G S K")
+  eq(ns.PlainMoney(123456789), "12,345G 67S 89K")
+  eq(ns.PlainMoney(0), "0K")
+  eq(ns.PlainMoney(-10000), "-1G")
+  ns = boot(wow, { symbols = { g = "x", s = "5", c = "|" } })
+  eq(letters(), "g s c", "a letter that clashes is not shown")
+  ns = boot(wow, { symbols = { g = "c", s = "S", c = "" } })
+  eq(letters(), "g S c", "a letter of another coin or an empty one is not shown")
+  GOLD_AMOUNT_SYMBOL, SILVER_AMOUNT_SYMBOL, COPPER_AMOUNT_SYMBOL = nil, nil, nil
+  eq(letters(), "g s c", "a client without the constants")
+  eq(ns.PlainMoney(120003), "12g 3c")
+end)
