@@ -87,14 +87,17 @@
           "story": "Grandpa Walter shows up every winter in his red snowflake sweater, cheeks rosy, with presents nobody remembers wishing for."
         }
       ],
-      "mcpack": "OpasPack.mcpack",
-      "status": "due",
+      "mcpack": "Grandpa_Skin_Pack_V1_1_Complete.mcpack",
+      "status": "published",
       "note": "When winter came, four more chairs turned up by the fire. Gunter, Heinz, Leopold and Walter join the circle, bringing goggles, glasses and one very festive sweater.",
       "media": [
         "media/v1.1-skins.png"
       ],
-      "fileId": null,
-      "publishedAt": null
+      "fileId": 9779293,
+      "publishedAt": "2026-11-23T20:05:22.369Z",
+      "sourceMcpack": "OpasPack.mcpack",
+      "changelog": "## V1.1\n\n4 new skins join the pack: Grandpa Gunter, Grandpa Heinz, Grandpa Leopold and Grandpa Walter.\n\nWhen winter came, four more chairs turned up by the fire. Gunter, Heinz, Leopold and Walter join the circle, bringing goggles, glasses and one very festive sweater.\n\nNew skins:\n- **Grandpa Gunter** — Grandpa Gunter has white hair, rosy cheeks and purple overalls with a teal collar, and he smiles like he knows your secrets.\n- **Grandpa Heinz** — Grandpa Heinz wears a brown jacket, grey trousers and a neat grey moustache, and he still walks the old roads every dawn.\n- **Grandpa Leopold** — Grandpa Leopold hides behind dark goggles and a full white beard, and his green robe with its golden collar smells of potions.\n- **Grandpa Walter** — Grandpa Walter shows up every winter in his red snowflake sweater, cheeks rosy, with presents nobody remembers wishing for.\n\nThis download contains all 9 skins of the pack, so new players get everything in one file.\n\n![V1.1 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/old-grandpa-skinpack/media/v1.1-skins.png)\n",
+      "manual": false
     },
     {
       "stage": "F1",
@@ -180,5 +183,6 @@
     "26.10"
   ],
   "logoPrompt": "Square logo of a blocky Minecraft-style elderly grandpa figure with grey hair, a big bushy grey beard and moustache, green eyes, a red shirt and dark trousers, in a warm dramatic rim light like a lantern glow, against a dark navy background, pixel-art textures, cinematic lighting, no text",
-  "coverPrompt": "Wide cinematic cover showing three blocky Minecraft-style grandpa figures side by side: on the left, a grandpa with grey hair, green eyes, a teal shirt and purple trousers; in the middle, a grandpa with white bushy hair, blue eyes, a grey moustache, a green shirt and dark brown trousers; on the right, a grandpa with white hair, rosy cheeks, a grey moustache, a red Christmas sweater with white snowflake patterns and grey trousers. They stand in a cozy Minecraft village at sunset with warm lanterns and a wooden bench. Big stylised blocky title text reads \"Old Grandpa Skinpack\""
+  "coverPrompt": "Wide cinematic cover showing three blocky Minecraft-style grandpa figures side by side: on the left, a grandpa with grey hair, green eyes, a teal shirt and purple trousers; in the middle, a grandpa with white bushy hair, blue eyes, a grey moustache, a green shirt and dark brown trousers; on the right, a grandpa with white hair, rosy cheeks, a grey moustache, a red Christmas sweater with white snowflake patterns and grey trousers. They stand in a cozy Minecraft village at sunset with warm lanterns and a wooden bench. Big stylised blocky title text reads \"Old Grandpa Skinpack\"",
+  "collection": "media/collection.png"
 }

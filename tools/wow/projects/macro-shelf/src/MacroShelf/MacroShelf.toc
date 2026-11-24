@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Macro Shelf
+## Notes: Backs up your macros and moves them between characters as text.
+## Version: @version@
+## SavedVariables: MacroShelfDB
+## IconTexture: Interface\Icons\INV_Misc_Book_11
+
+Locale.lua
+Core.lua
+Macros.lua
+UI.lua
+Commands.lua

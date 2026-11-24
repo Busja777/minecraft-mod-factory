@@ -180,11 +180,17 @@
     "cfName": "Old Grandpa Skinpack",
     "projectId": 1497764,
     "status": "published",
-    "version": "1.0",
-    "lastPublishedAt": "2026-03-28T12:10:03.023Z",
-    "nextUpdateDue": "2026-04-20T20:22:14.163Z",
-    "updateCount": 0,
-    "files": [],
+    "version": "1.1",
+    "lastPublishedAt": "2026-11-23T20:05:22.369Z",
+    "nextUpdateDue": "2026-12-17T09:27:15.089Z",
+    "updateCount": 1,
+    "files": [
+      {
+        "fileId": 9779293,
+        "version": "1.1",
+        "uploadedAt": "2026-11-23T20:05:22.369Z"
+      }
+    ],
     "game": "bedrock"
   },
   {

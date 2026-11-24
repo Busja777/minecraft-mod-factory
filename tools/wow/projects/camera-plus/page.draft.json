@@ -1,0 +1,34 @@
+{
+  "name": "Camera Plus",
+  "summary": "Pulls the camera further out than the settings allow and keeps three camera angles you can jump back to with one command.",
+  "category": "Miscellaneous",
+  "logoPrompt": "A small vintage brass film camera with a long extended lens, seen from the front at a slight angle, with a soft blue glow inside the lens",
+  "cover": {
+    "tagline": "Zoom out further, jump back to your angle.",
+    "bullets": ["Farthest zoom the game allows", "Three saved camera angles", "Old distance back when off"]
+  },
+  "description": [
+    "**Camera Plus lets your camera zoom out as far as the game permits and remembers up to three camera positions for each character.**",
+    "",
+    "## Features",
+    "- Raises the maximum camera distance beyond the settings slider, up to the game's own limit.",
+    "- Pick a smaller step if the full distance is too much.",
+    "- Switching it off puts back the distance you had before.",
+    "- Three saved camera positions per character, back with one command.",
+    "- Your choice is set again on every login.",
+    "",
+    "## How to use",
+    "Type `/cplus far` and scroll out. `/cplus far 2.2` picks a step between 1 and 2.6, `/cplus off` turns it off. `/cplus save 1` (up to 3) stores the current camera, `/cplus 1` returns to it. `/cplus` alone shows the state and all commands.",
+    "",
+    "## Good to know",
+    "- Works on Retail.",
+    "- During combat a change waits until the fight is over.",
+    "- Moving the game's own distance slider switches Camera Plus off and keeps your new value.",
+    "- The first-person view and the game's default view stay untouched.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or have an idea? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "slug": "macro-shelf",
+  "game": "wow",
+  "name": "Macro Shelf",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "MacroShelf-1.0.zip",
+      "changelog": "## Macro Shelf 1.0\n\nFirst release.\n\n- `/macroshelf backup` saves your account macros and the macros of the character you are playing. Each character keeps its own backup.\n- A place without any macros at that moment never replaces a backup that holds some.\n- `/macroshelf restore` creates the macros from the backup that are missing. Existing macros are never changed or deleted.\n- `/macroshelf export` shows all your macros as text, already selected, so Ctrl+C (Cmd+C on a Mac) copies them.\n- `/macroshelf import` opens a box to paste such a text into; \"Create macros\" creates them, as account or character macros like in the text.\n- Text with any mistake creates nothing at all and lists the mistakes with their line numbers. Names have up to 16 characters, macro texts up to 255.\n- A macro whose name already exists is skipped and named in chat: rename one of them to keep both. The identical macro counts as already there.\n- Only as many macros are created as there are free slots; the rest is named in chat.\n- Creating macros is refused in combat.\n- `/mshelf` is the short form, `/macroshelf help` lists all commands.",
+      "status": "due"
+    }
+  ]
+}
