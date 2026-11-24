@@ -1,0 +1,20 @@
+{
+  "slug": "seamless-panes",
+  "game": "java",
+  "name": "Seamless Panes",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "SeamlessPanes-1.0.zip",
+      "changelog": "## Seamless Panes 1.0\n\nFirst release.\n\n- Clear glass loses its frame lines: walls and windows of glass blocks look like one clean surface instead of a grid.\n- Glass panes use the same texture for their faces, so they lose the frame too. The thin pane edge stays as it is.\n- The small diagonal highlights stay, so you can still see where the glass is.\n- The glass shell of the beacon uses this texture as well and looks clearer.\n- Stained and tinted glass are not changed yet.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "Seamless Panes",
+  "summary": "Takes the frame lines off clear glass and glass panes, so windows read as one clean surface.",
+  "class": "Resource Packs",
+  "category": "16x",
+  "logoPrompt": "A single clear glass block with no frame, only two small white glints on its face, floating in the centre",
+  "cover": {
+    "tagline": "Clear glass without the grid.",
+    "bullets": [
+      "No frame lines on clear glass",
+      "Glass panes look clean too",
+      "Small glints keep glass visible"
+    ]
+  },
+  "description": [
+    "**Seamless Panes removes the light blue frame from every clear glass block, so a wall of glass looks like one big window.**",
+    "",
+    "## Features",
+    "- Clear glass blocks lose the frame lines that turn every window into a grid.",
+    "- Glass panes share this texture, so their faces are clean too; only the thin edge you see from the side stays.",
+    "- The two small diagonal glints on each face stay, so you still see where the glass is and do not walk into it.",
+    "- Keeps the original 16x look: nothing is redrawn, only the frame is taken away.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs.",
+    "",
+    "## Good to know",
+    "- Resource pack for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. It only changes how glass looks, so you can add or remove it at any time.",
+    "- Stained and tinted glass keep their usual look for now. The glass shell of a beacon uses the same texture and looks clearer too.",
+    "- The glass icon in your inventory looks almost empty too.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a spot where the glass looks wrong? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
