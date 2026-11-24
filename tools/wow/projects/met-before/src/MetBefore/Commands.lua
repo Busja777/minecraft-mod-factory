@@ -1,10 +1,10 @@
 local _, ns = ...
 local L = ns.L
 
--- /mb note, /mb forget, /mb list and /mb help.
+-- /metbefore note, /metbefore forget, /metbefore list and /metbefore help.
 
 local function help()
-  ns.Print(L["/mb list shows the last 10 players you grouped with, /mb note Name-Realm text sets your note (no text removes it), /mb note target text notes your target, /mb forget Name-Realm removes a player."])
+  ns.Print(L["/metbefore list shows the last 10 players you grouped with, /metbefore note Name-Realm text sets your note (no text removes it), /metbefore note target text notes your target, /metbefore forget Name-Realm removes a player."])
 end
 
 local function notUnique(typed, names)
@@ -74,7 +74,6 @@ local function list()
 end
 
 SLASH_METBEFORE1 = "/metbefore"
-SLASH_METBEFORE2 = "/mb"
 SlashCmdList.METBEFORE = function(msg)
   if not ns.db then return end
   local cmd, rest = strtrim(msg or ""):match("^(%S*)%s*(.-)$")
