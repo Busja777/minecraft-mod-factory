@@ -170,7 +170,8 @@ test("/quiet list: labelled files on their own line, the rest grouped", function
   local ns = boot(wow, { ids = { [30] = true, [10] = true, [20] = "Bell" } })
   wow.slash("/quiet list")
   eq(wow.chat[1]:match("3 sound files on your list, muted%.") ~= nil, true)
-  eq(wow.chat[2]:match("Error speech: on, Emote sounds: on, Pet sounds: on") ~= nil, true)
+  -- 1.1: the option names as the game's sound settings write them (ENABLE_ERROR_SPEECH and kin)
+  eq(wow.chat[2]:match("Error Speech: on, Emote Sounds: on, Enable Pet Sounds: on") ~= nil, true)
   eq(wow.chat[3]:match("10$") ~= nil, true)
   eq(wow.chat[4]:match("20 %- Bell$") ~= nil, true)
   eq(wow.chat[5]:match("30$") ~= nil, true)
@@ -219,7 +220,7 @@ test("sound categories: toggle, on and off through the game's settings", functio
   local ns = boot(wow)
   wow.slash("/quiet errors")
   eq(game.cvars.Sound_EnableErrorSpeech, "0")
-  eq(last(wow), "|cffffd100Quiet Please:|r Error speech: off")
+  eq(last(wow), "|cffffd100Quiet Please:|r Error Speech: off")
   wow.slash("/quiet errors")
   eq(game.cvars.Sound_EnableErrorSpeech, "1")
   wow.slash("/quiet emotes off")
@@ -233,12 +234,12 @@ end)
 test("sound categories the client does not know or will not change", function(wow)
   local ns = boot(wow, nil, { cvars = { Sound_EnableErrorSpeech = "1" } })
   wow.slash("/quiet pets")
-  eq(last(wow):match("Pet sounds cannot be switched on this client") ~= nil, true)
+  eq(last(wow):match("Enable Pet Sounds cannot be switched on this client") ~= nil, true)
   wow.slash("/quiet list")
-  eq(said(wow, "Pet sounds"), true)
+  eq(said(wow, "Pet Sounds"), true)
   wow.chat = {}
   wow.slash("/quiet")
-  eq(wow.chat[3], "|cffffd100Quiet Please:|r Error speech: on", "status lists only known categories")
+  eq(wow.chat[3], "|cffffd100Quiet Please:|r Error Speech: on", "status lists only known categories")
   game.locked = true
   wow.slash("/quiet errors")
   eq(last(wow):match("could not be changed right now") ~= nil, true)
@@ -289,4 +290,137 @@ test("a reload in the same session mutes the list again without errors", functio
   local ns2 = boot(wow, saved)
   eq(QuietPleaseDB.ids[9], true)
   eq(ns2.applied[9], true)
+end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+local GP = "|cffffd100Quiet Please:|r "
+
+-- The names of the sound options in the game's own GlobalStrings of 12.1.5.
+local OPTION_NAMES = {
+  deDE = { ENABLE_ERROR_SPEECH = "Audiofehlermeldungen", ENABLE_EMOTE_SOUNDS = "Emote-Sounds", ENABLE_PET_SOUNDS = "Begleiter-Sounds" },
+  enUS = { ENABLE_ERROR_SPEECH = "Error Speech", ENABLE_EMOTE_SOUNDS = "Emote Sounds", ENABLE_PET_SOUNDS = "Enable Pet Sounds" },
+}
+local function client(wow, locale)
+  wow.locale = locale
+  for k, v in pairs(OPTION_NAMES[locale]) do _G[k] = v end
+end
+
+test("German client: the list, adding, removing and labels in German", function(wow)
+  client(wow, "deDE")
+  boot(wow, { ids = { [10] = true } }, { playable = { [8] = true } })
+  wow.slash("/quiet add 20 30 x 10")
+  eq(wow.chat[1], GP .. "Keine Sounddatei-ID: x. Datei-IDs sind ganze Zahlen über 0.")
+  eq(wow.chat[2], GP .. "Stummgeschaltet: 20, 30.")
+  eq(wow.chat[3], GP .. "Schon auf deiner Liste: 10.")
+  wow.slash("/quiet remove 30 31")
+  eq(wow.chat[4], GP .. "Entfernt und wieder hörbar: 30.")
+  eq(wow.chat[5], GP .. "Nicht auf deiner Liste: 31.")
+  wow.slash("/quiet label 20 Gildenglocke")
+  eq(last(wow), GP .. "20 trägt jetzt die Bezeichnung: Gildenglocke")
+  wow.slash("/quiet label 21 nein")
+  eq(last(wow), GP .. "Nicht auf deiner Liste: 21.")
+  wow.chat = {}
+  wow.slash("/quiet list")
+  eq(wow.chat[1], GP .. "2 Sounddateien auf deiner Liste, stummgeschaltet.")
+  eq(wow.chat[2], GP .. "Audiofehlermeldungen: an, Emote-Sounds: an, Begleiter-Sounds: an", "the names of the game's sound settings")
+  eq(wow.chat[3], GP .. "10")
+  eq(wow.chat[4], GP .. "20 - Gildenglocke")
+  wow.slash("/quiet label 20")
+  eq(last(wow), GP .. "Bezeichnung von 20 entfernt.")
+  wow.slash("/quiet play 8")
+  eq(last(wow), GP .. "Spiele 8 ab.")
+  wow.slash("/quiet play 9")
+  eq(last(wow), GP .. "Das Spiel konnte 9 nicht abspielen. Vielleicht ist die Datei stummgeschaltet oder keine Sounddatei.")
+  wow.slash("/quiet play 10")
+  eq(last(wow), GP .. "10 ist stummgeschaltet. Mit /quiet remove hörst du sie wieder.")
+  wow.slash("/quiet remove 10 20")
+  wow.slash("/quiet list")
+  eq(last(wow), GP .. "Deine Liste ist leer. Füge eine Sounddatei mit /quiet add und ihrer Datei-ID hinzu.")
+end)
+
+test("German client: switching the list and the sound options in German", function(wow)
+  client(wow, "deDE")
+  boot(wow, { ids = { [10] = true, [11] = true } })
+  wow.slash("/quiet on")
+  eq(last(wow), GP .. "Deine Liste ist schon stummgeschaltet.")
+  wow.slash("/quiet off")
+  eq(last(wow), GP .. "Alle Sounddateien auf deiner Liste sind wieder hörbar, bis du /quiet on eingibst.")
+  wow.slash("/quiet off")
+  eq(last(wow), GP .. "Deine Liste ist schon ausgeschaltet.")
+  wow.slash("/quiet add 12")
+  eq(last(wow), GP .. "Hinzugefügt: 12. Sie werden stummgeschaltet, sobald du /quiet on eingibst.")
+  wow.slash("/quiet list")
+  eq(wow.chat[#wow.chat - 2], GP .. "3 Sounddateien auf deiner Liste, ausgeschaltet (/quiet on schaltet sie wieder stumm).")
+  wow.slash("/quiet on")
+  eq(last(wow), GP .. "3 Sounddateien wieder stummgeschaltet.")
+  wow.slash("/quiet errors")
+  eq(last(wow), GP .. "Audiofehlermeldungen: aus")
+  eq(game.cvars.Sound_EnableErrorSpeech, "0")
+  wow.slash("/quiet emotes off")
+  eq(last(wow), GP .. "Emote-Sounds: aus")
+  wow.slash("/quiet pets an")
+  eq(last(wow), GP .. "Begleiter-Sounds: aus", "a German word is no on: it toggles, like any other word")
+  wow.slash("/quiet pets on")
+  eq(last(wow), GP .. "Begleiter-Sounds: an")
+  game.locked = true
+  wow.slash("/quiet pets off")
+  eq(last(wow), GP .. "„Begleiter-Sounds“ ließ sich gerade nicht ändern.")
+  game.cvars.Sound_EnableEmoteSounds = nil
+  wow.slash("/quiet emotes")
+  eq(last(wow), GP .. "„Emote-Sounds“ lässt sich auf diesem Client nicht umschalten.")
+  wow.slash("/quiet stumm 5")
+  eq(QuietPleaseDB.ids[5], nil, "a German command word adds nothing")
+  eq(last(wow), GP .. "Audiofehlermeldungen: aus, Begleiter-Sounds: an")
+  eq(wow.chat[#wow.chat - 2], GP .. "/quiet add 12345 67890 schaltet Sounddateien über ihre Datei-ID stumm, /quiet remove 12345 macht sie wieder hörbar, /quiet list zeigt deine Liste, /quiet label 12345 Text benennt eine Datei, /quiet play 12345 spielt eine Datei einmal ab, /quiet off macht alle wieder hörbar, /quiet on schaltet sie wieder stumm, /quiet errors, /quiet emotes und /quiet pets schalten diese Sounds ein oder aus.")
+  MuteSoundFile = nil
+  wow.slash("/quiet add 13")
+  eq(last(wow), GP .. "Dieser Client kann keine Sounddateien stummschalten, die Liste wird nur gespeichert.")
+end)
+
+test("the option names come from the game, English when the client lacks them", function(wow)
+  client(wow, "deDE")
+  local ns = boot(wow)
+  eq(ns.ToggleName(ns.FindToggle("errors")), "Audiofehlermeldungen")
+  eq(ns.ToggleName(ns.FindToggle("emotes")), "Emote-Sounds")
+  eq(ns.ToggleName(ns.FindToggle("pets")), "Begleiter-Sounds")
+  ENABLE_PET_SOUNDS = nil
+  ENABLE_ERROR_SPEECH = ""
+  ENABLE_EMOTE_SOUNDS = { secret = true }
+  eq(ns.ToggleName(ns.FindToggle("pets")), "Enable Pet Sounds")
+  eq(ns.ToggleName(ns.FindToggle("errors")), "Error Speech")
+  eq(ns.ToggleName(ns.FindToggle("emotes")), "Emote Sounds")
+end)
+
+test("German texts keep every placeholder of the English text, in order", function(wow)
+  wow.locale = "deDE"
+  local ns = boot(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(select(2, key:gsub("/quiet", "")), select(2, text:gsub("/quiet", "")), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 26, "every text on screen has its German one")
+end)
+
+test("an English client keeps the English texts, with the game's option names", function(wow)
+  client(wow, "enUS")
+  local ns = boot(wow, { ids = { [10] = true } })
+  eq(next(ns.L), nil)
+  wow.slash("/quiet list")
+  eq(wow.chat[1], GP .. "1 sound files on your list, muted.")
+  eq(wow.chat[2], GP .. "Error Speech: on, Emote Sounds: on, Enable Pet Sounds: on")
+  wow.slash("/quiet pets off")
+  eq(last(wow), GP .. "Enable Pet Sounds: off")
+  wow.slash("/quiet add 11")
+  eq(last(wow), GP .. "Muted: 11.")
 end)

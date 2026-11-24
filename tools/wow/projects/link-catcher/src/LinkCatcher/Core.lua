@@ -3,7 +3,7 @@ local _, ns = ...
 -- Pure text work: no frames, no events. Everything here runs outside the game in the tests.
 
 ns.MAX_URLS = 500        -- links remembered for clicking; older ones fall back to the link text
-ns.DEFAULT_LINES = 100   -- lines /lc copy takes from the chat window
+ns.DEFAULT_LINES = 100   -- lines /linkcatcher copy takes from the chat window
 ns.MAX_LINES = 500
 ns.COLOR = "ff3fa9f5"    -- light blue, readable on the dark chat background
 ns.LINK_TYPE = "addon:LinkCatcher:"
@@ -237,7 +237,7 @@ function ns.CollectLines(frame, count)
   return lines, skipped
 end
 
--- "/lc copy 50" → 50, clamped; nothing or garbage → the default.
+-- "/linkcatcher copy 50" → 50, clamped; nothing or garbage → the default.
 function ns.LineCount(arg)
   local n = tonumber(arg)
   if not n then return ns.DEFAULT_LINES end
