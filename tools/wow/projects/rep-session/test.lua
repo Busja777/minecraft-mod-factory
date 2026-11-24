@@ -332,6 +332,21 @@ test("the window shows the lines, refreshes, resets and remembers its place", fu
   eq(f:IsShown(), false)
 end)
 
+test("without a watched faction the window shows the hint across the whole line", function(wow)
+  local ns = boot(wow)
+  wow.slash("/rs show")
+  local f = RepSessionFrame
+  eq(f.lines[1].left:GetText():match("No faction is watched") ~= nil, true, "the hint sits on the left, where it can wrap")
+  eq(f.lines[1].right:GetText(), "", "nothing right-aligned that could run over it")
+  eq(f.lines[2].left:GetText(), "")
+  rep.watched = standard(2600, "The Severed Threads", 5, 4000, 3000, 9000)
+  wow.fire("UPDATE_FACTION")
+  eq(f.lines[1].left:GetText(), "Faction", "with a faction the label is back")
+  eq(f.lines[1].right:GetText():match("The Severed Threads") ~= nil, true)
+  wow.slash("/rs")
+  eq(wow.chat[#wow.chat - 3]:match("Faction: The Severed Threads") ~= nil, true)
+end)
+
 test("the saved window position is used after a reload", function(wow)
   RepSessionDB = { point = { "TOPLEFT", "TOPLEFT", 40, -80 } }
   local ns = boot(wow)

@@ -2,6 +2,7 @@
   "name": "Quest Autopilot",
   "summary": "Accepts quests and hands them in on its own, pauses while you hold Shift and leaves every reward choice to you.",
   "category": "Quests & Leveling",
+  "additionalCategories": ["Miscellaneous"],
   "logoPrompt": "A rolled parchment scroll tied with a red ribbon, standing slightly tilted, with a small brass compass resting against it whose needle glows softly",
   "cover": {
     "tagline": "Level with fewer clicks.",

@@ -16,6 +16,7 @@ import { arg, flag } from './lib/github-output.js';
 //   npm run serie -- plan                        Kalender nach Output/serie/PLAN.md
 //   npm run serie -- logo <slug> [--force]       KI-Logo erzeugen (kostet OpenAI-Guthaben)
 //   npm run serie -- seite <slug>                Titelbild, Texte und Prüfung nach Output/serie/<reihe>/<nr>-<slug>/
+//   npm run serie -- mappe [<reihe>|<slug> …]   Upload-Ordner je Projekt nach Output/Hochladen/<Reihe>/<NN> <Name>/
 //   npm run serie -- banner <slug>               mein Banner (720×340) nach Output/serie/<reihe>/<nr>-<slug>/banner-claude.png
 //   npm run serie -- banner-gemalt <slug>        gemaltes Banner über die OpenAI-Schnittstelle (kostet Guthaben)
 //   npm run serie -- chatgpt [<slug> …]          Aufträge für ChatGPT nach Output/chatgpt-bilder/ (ohne Slug: alle ohne gewähltes Banner)
@@ -45,8 +46,15 @@ const pageOptions = (reihe, project) => ({
   // visual packs need a real in-game image; a pack without visuals (sounds only) says shot: false
   needsShot: reihe.reihe === 'java' && /R/.test(project.art) && project.shot !== false,
   bannerFrom: project.banner?.from || null,
-  needsBanner: reihe.banner !== false
+  needsBanner: reihe.banner !== false,
+  categories: categoryNames(reihe.reihe)
 });
+
+// CurseForge category names of a series' game, if the list is in the repo.
+function categoryNames(reiheKey) {
+  const file = path.join('./tools', reiheKey, 'categories.json');
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf-8')).names : null;
+}
 
 function pageFiles(reihe, project) {
   const dir = outDir(reihe.reihe, project);
@@ -75,17 +83,18 @@ async function logo() {
 
 function handover(reihe, project, page, zips) {
   const game = gameOf(config, reihe.game);
+  const shots = fs.existsSync(path.join(outDir(reihe.reihe, project), 'shot-1.png'));
   return [
     `# ${page.name}: Projekt auf CurseForge anlegen`,
     '',
     `Reihe ${reihe.title}, Projekt ${project.nr} von 33, geplant für den ${de(plannedDate(reihe, project.nr))}`,
     '',
     `1. Im CurseForge-Konto für **${game.name}** ein neues Projekt anlegen${page.class ? ` (Projektart: **${page.class}**)` : ''}.`,
-    '2. Name, Summary und Kategorie von unten eintragen. Im Beschreibungs-Editor auf **Markdown** stellen und die Beschreibung einfügen.',
+    '2. Name, Summary, Kategorie und Zusatzkategorien von unten eintragen. Im Beschreibungs-Editor auf **Markdown** stellen und die Beschreibung einfügen.',
     '3. `logo.png` als Logo hochladen.',
     reihe.banner === false
-      ? '4. Unter **Images** `cover.png` hochladen und als Hauptbild markieren.'
-      : `4. Unter **Images** \`banner.png\` hochladen und als Hauptbild markieren, dazu \`cover.png\`${fs.existsSync(path.join(outDir(reihe.reihe, project), 'shot-1.png')) ? ' und die `shot-*.png`' : ''}.`,
+      ? `4. Unter **Images** \`cover.png\` hochladen und als Hauptbild markieren${shots ? ', dazu die `shot-*.png`' : ''}.`
+      : `4. Unter **Images** \`banner.png\` hochladen und als Hauptbild markieren, dazu \`cover.png\`${shots ? ' und die `shot-*.png`' : ''}.`,
     '5. **Keine Datei hochladen.** Lizenz: All Rights Reserved.',
     `6. Projekt-ID eintragen: \`npm run serie -- id ${project.slug} <Projekt-ID>\`. Das ist dein Go, die erste Datei geht abends von selbst hoch.`,
     '',
@@ -101,6 +110,7 @@ function handover(reihe, project, page, zips) {
     '',
     page.class ? `${page.class} → ${page.category}` : page.category,
     '',
+    ...(page.additionalCategories?.length ? ['## Additional categories', '', page.additionalCategories.join(', '), ''] : []),
     '## Description',
     '',
     page.description.trim(),
@@ -113,6 +123,14 @@ function handover(reihe, project, page, zips) {
 
 async function seite() {
   const { reihe, project } = findSerieProject(loadReihen(), argv[1] || '');
+  const { page, dir, results } = await buildPage(reihe, project);
+  console.log(`${page.name} (${reihe.title} ${project.nr}/33) → ${dir}`);
+  for (const r of results) console.log(`  ${MARK[r.level]} ${r.label}${r.detail ? `: ${r.detail}` : ''}`);
+  if (!pageOk(results)) process.exit(1);
+}
+
+// Logo, cover, banner, shots and curseforge.md into Output/serie/<reihe>/<nr>-<slug>/, plus the page check.
+async function buildPage(reihe, project) {
   const page = loadPage(reihe, project);
   if (!page) fail(`${project.slug}: ${path.join(projectDir(reihe.reihe, project.slug), 'page.json')} fehlt.`);
   const src = projectDir(reihe.reihe, project.slug);
@@ -131,13 +149,46 @@ async function seite() {
     else if (fs.existsSync(path.join(dir, 'banner.png'))) fs.rmSync(path.join(dir, 'banner.png'));
   }
   const shotDir = path.join(src, 'shots');
+  for (const old of fs.readdirSync(dir).filter(f => /^shot-\d+\.png$/.test(f))) fs.rmSync(path.join(dir, old)); // a removed shot must not linger
   if (fs.existsSync(shotDir)) fs.readdirSync(shotDir).filter(f => f.endsWith('.png')).sort().forEach((f, i) => fs.copyFileSync(path.join(shotDir, f), path.join(dir, `shot-${i + 1}.png`)));
   const zips = listReleaseProjects().includes(project.slug) ? loadReleaseProject(project.slug).versions.map(v => `V${v.version}: ${v.file} (${v.status === 'due' ? 'wartet' : 'online'})`) : [];
   fs.writeFileSync(path.join(dir, 'curseforge.md'), handover(reihe, project, page, zips));
   const results = await checkPage(page, pageFiles(reihe, project), pageOptions(reihe, project));
-  console.log(`${page.name} (${reihe.title} ${project.nr}/33) → ${dir}`);
-  for (const r of results) console.log(`  ${MARK[r.level]} ${r.label}${r.detail ? `: ${r.detail}` : ''}`);
-  if (!pageOk(results)) process.exit(1);
+  return { page, dir, results };
+}
+
+// One folder per project that still has to be created: Output/Hochladen/<Reihe>/<NN> <Name>/
+// with the first file, the texts and all images under descriptive names. Projects without a page
+// or logo, already created ones and pages with red checks are listed but get no folder.
+async function mappe() {
+  const wanted = argv.slice(1).filter(a => !a.startsWith('--'));
+  const { planUploadFolder, writeUploadFolder, UPLOAD_ROOT } = await import('./lib/upload-folder.js');
+  const reihen = loadReihen().filter(r => !wanted.length || wanted.includes(r.reihe) || r.projects.some(p => wanted.includes(p.slug)));
+  if (!reihen.length) fail(`Unbekannt: ${wanted.join(', ')}`);
+  for (const reihe of reihen) {
+    const game = gameOf(config, reihe.game);
+    const root = path.join(UPLOAD_ROOT, reihe.title);
+    console.log(`■ ${reihe.title} → ${root}`);
+    for (const project of reihe.projects) {
+      if (wanted.length && !wanted.includes(reihe.reihe) && !wanted.includes(project.slug)) continue;
+      const src = projectDir(reihe.reihe, project.slug);
+      if (project.cfProjectId) continue; // already on CurseForge
+      if (!fs.existsSync(path.join(src, 'page.json')) || !fs.existsSync(path.join(src, 'logo.png'))) {
+        if (wanted.includes(project.slug)) console.log(`  – ${project.name}: noch ohne Seite oder Logo`);
+        continue;
+      }
+      const { page, dir, results } = await buildPage(reihe, project);
+      if (!pageOk(results)) {
+        console.log(`  ✗ ${page.name}: Seiten-Prüfung rot (${results.filter(r => r.level === 'error').map(r => r.label).join(', ')}), npm run serie -- seite ${project.slug}`);
+        continue;
+      }
+      const release = listReleaseProjects().includes(project.slug) ? { ...loadReleaseProject(project.slug), root: path.join('./data/projects', project.slug) } : null;
+      const plan = planUploadFolder({ reihe, project, page, pageDir: dir, shotDir: path.join(src, 'shots'), release, gameVersionType: game.versionTypes?.[0] });
+      writeUploadFolder(plan, root);
+      const shots = plan.files.filter(f => f.role === 'shot');
+      console.log(`  ✓ ${plan.folder}: ${release ? release.versions[0].file : 'keine Datei'}, ${shots.length} Bild(er) aus dem Spiel${shots.some(s => s.since) ? ` (davon ${shots.filter(s => s.since).length} für spätere Versionen, beschriftet)` : ''}`);
+    }
+  }
 }
 
 // Projects whose banner is not chosen yet and that have a page and a logo (or the slugs given).
@@ -366,6 +417,7 @@ else if (cmd === 'stand') stand();
 else if (cmd === 'plan') plan();
 else if (cmd === 'logo') await logo();
 else if (cmd === 'seite') await seite();
+else if (cmd === 'mappe') await mappe();
 else if (cmd === 'id') await id();
 else if (cmd === 'vorrat') vorrat();
 else if (cmd === 'namen') await namen();

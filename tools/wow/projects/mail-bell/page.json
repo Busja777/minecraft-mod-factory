@@ -2,6 +2,7 @@
   "name": "Mail Bell",
   "summary": "Rings when new mail arrives and reminds you at login which of your other characters still have letters waiting.",
   "category": "Mail",
+  "additionalCategories": ["Audio & Video"],
   "logoPrompt": "A small polished brass hand bell tilted mid-ring, standing in front of a sealed cream-coloured envelope with a red wax seal",
   "cover": {
     "tagline": "Never miss a letter again.",

@@ -11,7 +11,8 @@
       "changelog": "## Level Clock 1.0\n\nFirst release.\n\n- Shows your XP per hour for the current session, counted correctly across level-ups.\n- Estimates the time until your next level and shows the XP you still need.\n- Shows your rested bonus as a percentage of the level.\n- Small window with session XP and session time. Drag it anywhere, its position is remembered.\n- At maximum level the window says so instead of showing numbers.\n- Open it with `/lc` or `/levelclock`. `/lc reset` starts a new session.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -20,7 +21,8 @@
       "changelog": "## Level Clock 1.1\n\n- New **History** view: click the History button in the window to see your last 10 sessions with XP for this character: when they started, how long they lasted, XP gained, XP per hour and levels gained.\n- New command `/lc history`: lists the same sessions in the chat.\n- A UI reload or a quick relog (within five minutes) continues the session instead of splitting it. `/lc reset` still starts a fresh one.\n- The last session saved by version 1.0 becomes the first entry of the history, nothing is lost.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -29,7 +31,8 @@
       "changelog": "## Level Clock 1.2\n\n- New **window options**: `/lc lock` keeps the window in place so you cannot drag it by accident, `/lc unlock` lets you move it again.\n- `/lc scale` followed by a number from 0.8 to 1.5 (or 80 to 150) makes the window smaller or larger. It stays where you put it.\n- The window now remembers whether you left it open and opens again at your next login.\n- `/lc hidemax` keeps the window closed on characters at maximum level, and closes it when you reach the maximum level. Your other characters still see it, and `/lc` still opens it whenever you want.\n- `/lc options` shows these settings. All of them are saved for your whole account.\n- Your sessions and window position from 1.1 stay as they are, and the History view works as before.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "changelog": "## Level Clock 1.3\n\n- New **level history** for every character: from now on Level Clock notes when you reach each level.\n- New command `/lc levels`: lists the last 10 levels of the character you are playing, newest first, with the date and how long each level took.\n- When the game has told your played time in this session (type `/played` once, or another addon asks for it), each level also gets its /played time, and the time it took is counted in played time. Otherwise it shows the real time between two level-ups, marked as \"real time\", because that includes time spent offline.\n- Typing `/played` right after a level-up still fills in when that level was reached.\n- Your sessions, history and window settings from 1.2 stay as they are. Levels reached before 1.3 are not known, so the list starts with your next level-up.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -47,7 +51,8 @@
       "changelog": "## Level Clock 1.4\n\n- Level Clock now speaks **German**: the clock, the history, the level list and every chat line. On clients in other languages it stays in English.\n- The Rested line, the XP column of the history and the Back button come from the game itself now, so they read exactly like in your client's language, for example \"EP\" in German. In English they stay the same words.\n- Dates in the history and in `/lc levels` follow your client's language, and so do large numbers: `12,345` in English, `12.345` in German.\n- The commands stay the same in every language, for example `/lc levels` or `/lc hidemax`. `/lc scale` takes a size with a point or a comma, `1.2` as well as `1,2`.\n- Your sessions, levels and window settings from 1.3 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     }
   ]

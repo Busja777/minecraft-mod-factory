@@ -64,6 +64,8 @@ local function create()
     local y = -32 - (i - 1) * 18
     local left = text(f, "GameFontNormalSmall")
     left:SetPoint("TOPLEFT", 14, y)
+    left:SetWidth(292) -- the whole line, so the hint without a watched faction wraps instead of running into the value
+    left:SetWordWrap(true)
     local right = text(f, "GameFontHighlightSmall", "RIGHT")
     right:SetPoint("TOPRIGHT", -14, y)
     f.lines[i] = { left = left, right = right }
@@ -90,7 +92,11 @@ end
 
 function ns.Refresh()
   if not ui or not ui:IsShown() then return end
-  local lines = ns.Lines(ns.Current())
+  local view = ns.Current()
+  local lines = ns.Lines(view)
+  -- Without a watched faction the hint is a sentence, not a value: it takes the whole first line
+  -- (before, it stood right-aligned as the value and ran over the label "Faction").
+  if not view then lines = { { lines[1][2], "" } } end
   for i, row in ipairs(ui.lines) do
     local line = lines[i]
     row.left:SetText(line and line[1] or "")

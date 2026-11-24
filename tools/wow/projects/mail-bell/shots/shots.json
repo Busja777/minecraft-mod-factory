@@ -1,0 +1,9 @@
+[
+  {
+    "file": "01.png",
+    "name": "mail-notification-other-characters",
+    "title": "Mail on your other characters, with your own bell sound",
+    "description": "Mail Bell tells you which of your other characters have mail waiting, and /mb sound lets you pick the bell you hear.",
+    "since": "1.3"
+  }
+]

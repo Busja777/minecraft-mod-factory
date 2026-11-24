@@ -2,6 +2,7 @@
   "name": "Queue Horn",
   "summary": "Hear and see it the moment your dungeon group, ready check, battleground or pet battle pops, even while you are tabbed out.",
   "category": "Audio & Video",
+  "additionalCategories": ["PvP", "Battle Pets"],
   "logoPrompt": "A curved brass hunting horn with a polished glowing rim, lying slightly tilted in the centre, with soft rings of sound rising from its bell",
   "cover": {
     "tagline": "Never miss a queue pop again.",

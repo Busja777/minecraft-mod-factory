@@ -1,0 +1,9 @@
+[
+  {
+    "file": "01.png",
+    "name": "gear-durability-repair-costs",
+    "title": "Your gear condition on screen; repair costs are noted at the vendor",
+    "description": "The display shows your gear condition in percent, and repair costs are noted whenever you visit a vendor who can repair.",
+    "since": "1.2"
+  }
+]

@@ -2,6 +2,7 @@
   "name": "Alt Almanac",
   "summary": "See the level, gold, location and rested bonus of every character on your account in a single window.",
   "category": "Miscellaneous",
+  "additionalCategories": ["Auction & Economy", "Quests & Leveling"],
   "logoPrompt": "A thick closed leather-bound almanac with brass corner fittings, a small silver bookmark ribbon hanging out and a few gold coins stacked against its spine",
   "cover": {
     "tagline": "All your characters at a glance.",

@@ -1,0 +1,23 @@
+[
+  {
+    "file": "01.png",
+    "name": "vendor-sale-log-items-prices",
+    "title": "Every item of a vendor visit, with its price",
+    "description": "/jb log 1 lists every item of your last vendor visit with its count and price.",
+    "since": "1.3"
+  },
+  {
+    "file": "02.png",
+    "name": "vendor-visits-sale-log",
+    "title": "Your vendor visits: what was sold and what it paid",
+    "description": "/jb log lists your recent vendor visits, what was sold and what each visit paid.",
+    "since": "1.3"
+  },
+  {
+    "file": "03.png",
+    "name": "auto-sell-junk-auto-repair-keep-list",
+    "title": "Selling and repairing on or off, and a keep list for your items",
+    "description": "/jb shows whether selling and repairing are on, and /jb keep protects an item from ever being sold.",
+    "since": "1.2"
+  }
+]

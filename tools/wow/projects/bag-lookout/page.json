@@ -2,6 +2,7 @@
   "name": "Bag Lookout",
   "summary": "Keeps a small count of your free bag slots on screen and gives one clear alert before your bags run out of room.",
   "category": "Bags & Inventory",
+  "additionalCategories": ["Miscellaneous"],
   "logoPrompt": "A sturdy brown leather backpack with its flap slightly open, a small brass spyglass strapped to its side and a soft amber warning glow coming from inside",
   "cover": {
     "tagline": "See bag space before it runs out.",

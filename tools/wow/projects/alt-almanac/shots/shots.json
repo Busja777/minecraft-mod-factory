@@ -1,0 +1,16 @@
+[
+  {
+    "file": "01.png",
+    "name": "all-characters-gold-level-played-time",
+    "title": "All your characters: level, gold, zone, rested XP and played time",
+    "description": "Every character on your account in one window: level, gold, zone, rested bonus, played time and when you last played.",
+    "since": "1.2"
+  },
+  {
+    "file": "02.png",
+    "name": "character-list-realm-level-filter",
+    "title": "Filter by realm or hide low-level characters",
+    "description": "Show only the characters of your current realm or hide those below a level; the total line adds up what is shown.",
+    "since": "1.2"
+  }
+]

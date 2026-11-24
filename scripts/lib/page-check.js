@@ -46,7 +46,26 @@ async function imageCheck(id, label, file, [w, h], { flat = false } = {}) {
   return res(id, 'ok', label, `${w}×${h} px, ${(buf.length / 1000).toFixed(0)} KB`);
 }
 
-export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null, needsBanner = true } = {}) {
+// Main category plus additional ones (page.additionalCategories, optional, at most MAX_EXTRA_CATEGORIES).
+// categories: the CurseForge names of the game, if known (tools/<reihe>/categories.json).
+export const MAX_EXTRA_CATEGORIES = 3;
+export function categoryCheck(page, categories = null) {
+  const main = String(page.category || '').trim();
+  const extra = page.additionalCategories || [];
+  if (!main) return res('category', 'error', 'Kategorie', 'fehlt');
+  const problems = [];
+  if (!Array.isArray(extra)) problems.push('additionalCategories muss eine Liste sein');
+  else {
+    if (extra.length > MAX_EXTRA_CATEGORIES) problems.push(`${extra.length} Zusatzkategorien (höchstens ${MAX_EXTRA_CATEGORIES}, nur was wirklich passt)`);
+    if (extra.includes(main)) problems.push(`„${main}“ ist schon die Hauptkategorie`);
+    if (new Set(extra).size !== extra.length) problems.push('doppelte Zusatzkategorie');
+  }
+  if (categories) for (const c of [main, ...(Array.isArray(extra) ? extra : [])]) if (!categories.includes(c)) problems.push(`„${c}“ gibt es auf CurseForge nicht`);
+  if (problems.length) return res('category', 'error', 'Kategorie', problems.join('; '));
+  return res('category', 'ok', 'Kategorie', Array.isArray(extra) && extra.length ? `${main} + ${extra.join(', ')}` : main);
+}
+
+export async function checkPage(page, files = {}, { maxWords = 200, minWords = 100, needsShot = false, bannerFrom = null, needsBanner = true, categories = null } = {}) {
   const out = [];
   const name = String(page.name || '').trim();
   if (!name) out.push(res('name', 'error', 'Titel', 'fehlt'));
@@ -86,8 +105,7 @@ export async function checkPage(page, files = {}, { maxWords = 200, minWords = 1
   }
   out.push(problems.length ? res('description', 'error', 'Beschreibung', problems.join('; ')) : res('description', 'ok', 'Beschreibung', `${count} Wörter, ${SECTIONS.length} Abschnitte`));
 
-  if (!String(page.category || '').trim()) out.push(res('category', 'error', 'Kategorie', 'fehlt'));
-  else out.push(res('category', 'ok', 'Kategorie', page.category));
+  out.push(categoryCheck(page, categories));
 
   out.push(await imageCheck('logo', 'Logo', files.logo, [400, 400], { flat: true }));
   out.push(await imageCheck('cover', 'Titelbild', files.cover, COVER_SIZE));

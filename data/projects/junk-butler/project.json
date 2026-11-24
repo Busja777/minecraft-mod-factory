@@ -11,7 +11,8 @@
       "changelog": "## Junk Butler 1.0\n\nFirst release.\n\n- Sells every grey item that has a vendor price as soon as you open a vendor, a few items at a time.\n- Repairs all your gear at vendors that can repair, paid from your own gold. If your gold is short, it tries once more after the sale.\n- One chat line tells you how many items were sold, for how much, and what the repair cost.\n- Hold Shift while you open a vendor to skip both for that visit.\n- `/jb` or `/junkbutler` shows the settings. `/jb sell` and `/jb repair` switch each half on or off.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -20,7 +21,8 @@
       "changelog": "## Junk Butler 1.1\n\n- New **keep list**: grey items on it are never sold. Handy for joke items, keepsakes and grey transmog pieces.\n- `/jb keep` followed by an item link (shift-click the item) or an item ID adds it. Several items in one command work too.\n- `/jb unkeep` followed by a link or ID takes an item off the list again. `/jb keep` on its own lists everything on it.\n- The keep list is shared by all characters of your account, so you only set it up once.\n- After a sale, the chat line also says how many items were kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -29,7 +31,8 @@
       "changelog": "## Junk Butler 1.2\n\n- New: **guild bank repairs**. Type `/jb guild on` and Junk Butler repairs from your guild bank first, when your guild rank may repair from it and the bank (and your daily limit) covers the cost.\n- When the guild bank cannot pay, your own gold pays, just like before. If the guild bank turns a repair down, Junk Butler notices and pays from your gold instead.\n- The chat line tells you when the guild bank paid.\n- `/jb guild off` switches it off again. It starts switched off, so nothing changes until you turn it on.\n- `/jb` now also shows the guild bank setting. Your settings and keep list from 1.1 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "changelog": "## Junk Butler 1.3\n\n- New **sale log**: every vendor visit that sells something is noted with the date, the vendor, the items, how many and what they brought in. Each character keeps its last 20 visits.\n- `/jb log` lists the visits, newest first, with the total of each visit and of all of them together.\n- `/jb log` followed by a number shows what was sold in that visit, for example `/jb log 1` for the latest one. Items show as links you can click.\n- Visits from the last 15 minutes are marked with how long ago they were. Sold something by mistake? The vendor's Buyback tab may still have it, but the game keeps only your latest sold items there and empties it when you log out.\n- `/jb log clear` empties the log of the character you are playing.\n- Your settings, keep list and guild bank choice from 1.2 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -47,7 +51,8 @@
       "changelog": "## Junk Butler 1.4\n\n- Junk Butler now speaks **German**. On clients in other languages it stays in English.\n- The hint in `/jb log` names the vendor's Buyback tab exactly as your vendor window does, in your client's language.\n- Dates in `/jb log` follow your client's language.\n- The commands stay the same in every language, for example `/jb keep` or `/jb guild on`.\n- Your settings, keep list, guild bank choice and sale log from 1.3 stay as they are.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     }
   ]

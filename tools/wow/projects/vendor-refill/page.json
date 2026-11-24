@@ -2,6 +2,7 @@
   "name": "Vendor Refill",
   "summary": "Tops up your food, drinks and reagents to the count you choose whenever you visit a vendor that sells them.",
   "category": "Bags & Inventory",
+  "additionalCategories": ["Auction & Economy"],
   "logoPrompt": "A small wooden supply crate with its lid propped open, neatly filled with corked glass bottles of clear water and round loaves of bread, a single gold coin leaning against its front",
   "cover": {
     "tagline": "Never run out of water again.",

@@ -2,6 +2,7 @@
   "name": "Polite Decline",
   "summary": "Turns down duel requests and group invitations from strangers without a fuss, while friends and guild mates still get through.",
   "category": "Miscellaneous",
+  "additionalCategories": ["Chat & Communication", "PvP"],
   "logoPrompt": "A closed arched wooden door with an ornate iron ring knocker, and a red velvet rope on two small brass posts in front of it",
   "cover": {
     "tagline": "No more popups from strangers.",

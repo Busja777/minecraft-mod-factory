@@ -11,7 +11,8 @@
       "changelog": "## Polite Decline 1.0\n\nFirst release.\n\n- Turns down duel requests and group invitations from strangers and hides their popups.\n- Friends, Battle.net friends and guild mates always get through, and so does everyone on your own allow list.\n- When it cannot tell who someone is, it lets the request through rather than decline it by mistake.\n- One chat line per declined request with the name and a count for this session. `/pd quiet on` turns the lines off.\n- `/pd` or `/politedecline` shows the settings. `/pd duels on|off` and `/pd invites on|off` switch each half, `/pd allow Name`, `/pd unallow Name` and `/pd list` keep the allow list.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -20,7 +21,8 @@
       "changelog": "## Polite Decline 1.1\n\n- New **reply whisper**: a stranger whose duel or group invite was declined can get one short, polite whisper, so they know it was not personal. It is off until you switch it on with `/pd whisper on`.\n- The default reply is \"Thanks, but I don't take duels or group invites from people I don't know. Have a good day!\" `/pd whisper text` followed by your own words sets your own (up to 200 characters), `/pd whisper reset` brings back the default, `/pd whisper` shows the reply.\n- No spam: the same character gets the whisper at most once every 30 minutes, and two whispers never go out within 10 seconds.\n- No whispers inside dungeons, raids, battlegrounds, arenas or scenarios, or while the game has chat locked. Declining works there as before.\n- Friends, guild mates, your allow list and anyone the addon is unsure about are never whispered, because they are never declined.\n- Your settings and allow list from 1.0 are kept.\n\n- The help text now reads \"on/off\" instead of \"on|off\", which the chat could show garbled.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -29,7 +31,8 @@
       "changelog": "## Polite Decline 1.2\n\n- New **log**: every duel and group invite that Polite Decline turns down is noted with the time, the name and the kind of request, also in quiet mode.\n- `/pd log` lists what was declined this session, newest first, with the number of declines so far.\n- `/pd log all` lists the last 50 declined requests across all your sessions and characters, so you can see who kept asking while you were busy.\n- `/pd log clear` empties the log.\n- Requests that got through (friends, guild mates, your allow list, anyone the addon was unsure about) are not logged, because they were not declined.\n- `/pd` now mentions `/pd log` in its help. Your settings, allow list and reply whisper from 1.0 and 1.1 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "changelog": "## Polite Decline 1.3\n\n- Polite Decline now speaks **German**. On clients in other languages it stays in English.\n- On a German client the default reply whisper is German too, since the stranger most likely plays on a German realm. A reply you set yourself with `/pd whisper text` is sent exactly as you typed it.\n- Dates in `/pd log` follow your client's language.\n- The commands stay the same in every language, for example `/pd allow Name` or `/pd whisper on`.\n- Your settings, allow list, reply whisper and log from 1.2 are kept.",
       "status": "due",
       "gameVersions": [
-        "12.1.5"
+        "12.1.5",
+        "12.1.7"
       ]
     }
   ]
