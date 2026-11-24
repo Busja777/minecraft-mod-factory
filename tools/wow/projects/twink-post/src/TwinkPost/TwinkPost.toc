@@ -1,0 +1,12 @@
+## Interface: 120105, 120107
+## Title: Twink Post
+## Notes: Fills the mail recipient with one of your own characters in one click.
+## Version: @version@
+## SavedVariables: TwinkPostDB
+## IconTexture: Interface\Icons\INV_Misc_Note_01
+
+Locale.lua
+Core.lua
+Roster.lua
+Mailbox.lua
+Commands.lua
