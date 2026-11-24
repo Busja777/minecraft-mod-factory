@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bottledlevels-gametest",
+  "version": "1.0.0",
+  "name": "Bottled Levels game tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": ["com.factory.bottledlevels.gametest.BottledLevelsGameTest"]
+  },
+  "depends": {
+    "bottledlevels": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}
