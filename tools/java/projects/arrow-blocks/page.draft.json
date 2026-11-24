@@ -1,0 +1,37 @@
+{
+  "name": "Arrow Blocks",
+  "summary": "Shows which way hoppers, dispensers, droppers and observers send their items or signal, with small arrows right on the blocks.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A grey metal funnel block with a bold white arrow on its side pointing to the right",
+  "cover": {
+    "tagline": "Read your redstone at a glance.",
+    "bullets": [
+      "Hoppers point to their output",
+      "Dispensers and droppers too",
+      "Observers point where signals go"
+    ]
+  },
+  "description": [
+    "**Arrow Blocks draws small arrows on the blocks that move items or signals, so you can read a contraption at a glance.**",
+    "",
+    "## Features",
+    "- Hoppers: arrows on the sides of the funnel (all four when it points down, two when sideways) and on the floor inside a sideways hopper, pointing where items go.",
+    "- Dispensers and droppers: arrows on the four sides around the front, pointing at the front where items come out.",
+    "- Observers: arrows on the two plain sides, pointing to the back where the signal leaves, like the triangle on top.",
+    "- The arrows turn with the block in all six directions.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Only the look of four blocks changes, so you can add or remove it anytime.",
+    "- Fronts, backs and items in your inventory keep their vanilla look.",
+    "- Another resource pack that changes these blocks wins if it sits higher in the list.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or want arrows on more blocks? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}
