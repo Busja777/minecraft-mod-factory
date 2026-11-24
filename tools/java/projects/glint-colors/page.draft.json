@@ -1,0 +1,37 @@
+{
+  "name": "Glint Colors",
+  "summary": "Turns the purple enchantment shimmer into a soft rainbow that drifts across every enchanted item and armour piece.",
+  "class": "Resource Packs",
+  "category": "Miscellaneous",
+  "logoPrompt": "A diamond sword wrapped in a soft shimmer of rainbow-coloured light streaks, from red through yellow and green to blue and pink",
+  "cover": {
+    "tagline": "Your enchantments, in every colour.",
+    "bullets": [
+      "8 colours instead of purple",
+      "Drifts as the glint moves",
+      "Items, books and armour"
+    ]
+  },
+  "description": [
+    "**Glint Colors swaps the purple enchantment glint for a gentle rainbow that flows over everything you enchant.**",
+    "",
+    "## Features",
+    "- 8 colours: red, orange, yellow, green, cyan, blue, violet and pink, blended softly into each other.",
+    "- The colours wander across an item as the glint moves, a full round about every 7.5 seconds.",
+    "- Swords, tools, books, armour, elytra, tridents and shields all shimmer in the same rainbow.",
+    "- The streak pattern and brightness stay close to vanilla, so enchanted gear still looks enchanted.",
+    "",
+    "## How to use",
+    "Put the zip into the `resourcepacks` folder of your game, then turn it on under Options > Resource Packs.",
+    "",
+    "## Good to know",
+    "- Made for Minecraft: Java Edition 1.21, 1.21.1 and 26.3. Only the glint pictures change, so you can add or remove it at any time.",
+    "- The game has room for one glint picture, so one pack is one look: this pack is the rainbow with 8 colours.",
+    "- The Glint Speed slider under Accessibility makes the colours drift slower or faster.",
+    "- New features arrive with updates, see each file's changelog.",
+    "",
+    "Found a bug or want a different colour mix? Leave a comment.",
+    "",
+    "*(The logo is AI-generated.)*"
+  ]
+}

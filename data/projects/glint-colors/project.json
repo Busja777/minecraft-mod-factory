@@ -1,0 +1,20 @@
+{
+  "slug": "glint-colors",
+  "game": "java",
+  "name": "Glint Colors",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "GlintColors-1.0.zip",
+      "changelog": "## Glint Colors 1.0\n\nFirst release.\n\n- The enchantment glint becomes a soft rainbow of 8 colours: red, orange, yellow, green, cyan, blue, violet and pink.\n- The colours drift over enchanted items as the glint moves, one full round about every 7.5 seconds at the default glint speed.\n- Works on items, books, armour, elytra, tridents and shields, in your hand, in the inventory and on the ground.\n- The shimmer keeps the vanilla streak pattern and about the same brightness, so it still looks enchanted.\n- Works on Minecraft 1.21, 1.21.1 and 26.3.",
+      "status": "due",
+      "gameVersions": [
+        "1.21",
+        "1.21.1",
+        "26.3"
+      ]
+    }
+  ]
+}
