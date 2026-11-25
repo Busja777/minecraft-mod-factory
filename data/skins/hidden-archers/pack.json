@@ -62,14 +62,17 @@
           "story": "The Frost Shadow Archer comes down from the glaciers in ice-blue armour, and his cold cyan eye can freeze a hunter in place."
         }
       ],
-      "mcpack": "HiddenArcher_Pack_Vol2.mcpack",
-      "status": "due",
+      "mcpack": "Hidden_Archer_Pack_V1_1_Complete.mcpack",
+      "status": "published",
       "note": "Three new eyes open far from the forest: the Midnight Void Archer, the Desert Sand Archer and the Frost Shadow Archer join the watch.",
       "media": [
         "media/v1.1-skins.png"
       ],
-      "fileId": null,
-      "publishedAt": null
+      "fileId": 9815226,
+      "publishedAt": "2026-11-25T18:51:28.515Z",
+      "sourceMcpack": "HiddenArcher_Pack_Vol2.mcpack",
+      "changelog": "## V1.1\n\n3 new skins join the pack: Midnight Void Archer, Desert Sand Archer and Frost Shadow Archer.\n\nThree new eyes open far from the forest: the Midnight Void Archer, the Desert Sand Archer and the Frost Shadow Archer join the watch.\n\nNew skins:\n- **Midnight Void Archer** — Born from purple-black nothing, the Midnight Void Archer waits in the dark with pale lavender hands and an eye like a dying star.\n- **Desert Sand Archer** — Gold as the dunes at noon, the Desert Sand Archer crosses the desert unseen, and one amber eye burns beneath the hood.\n- **Frost Shadow Archer** — The Frost Shadow Archer comes down from the glaciers in ice-blue armour, and his cold cyan eye can freeze a hunter in place.\n\nThis download contains all 5 skins of the pack, so new players get everything in one file.\n\n![V1.1 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/hidden-archers/media/v1.1-skins.png)\n",
+      "manual": false
     },
     {
       "stage": "U2",
@@ -146,5 +149,6 @@
     "26.10"
   ],
   "logoPrompt": "Square logo, a single blocky Minecraft-style hooded archer seen from the front, deep blue pixelated hood and shoulder pauldrons, pale blue-white gloves, slate-blue armoured tunic, one narrow horizontal eye slit glowing bright cyan from the shadow of the hood, cyan rim light and faint frost particles, dramatic lighting, dark navy background, no text",
-  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style hooded archers standing side by side: on the left a red-hooded archer with red shoulder pauldrons, grey sleeves, a dark grey tunic with a red belt and a white glowing eye slit; in the centre a gold-sand hooded archer with gold gloves and a glowing amber-orange eye; on the right a blue-hooded archer with pale blue gloves and a glowing cyan eye. Misty twilight forest with distant dunes and icy peaks, drifting embers and fog, dramatic rim lighting. Large stylised title letters reading \"Hidden Archers\" across the top"
+  "coverPrompt": "Wide cinematic cover, three blocky Minecraft-style hooded archers standing side by side: on the left a red-hooded archer with red shoulder pauldrons, grey sleeves, a dark grey tunic with a red belt and a white glowing eye slit; in the centre a gold-sand hooded archer with gold gloves and a glowing amber-orange eye; on the right a blue-hooded archer with pale blue gloves and a glowing cyan eye. Misty twilight forest with distant dunes and icy peaks, drifting embers and fog, dramatic rim lighting. Large stylised title letters reading \"Hidden Archers\" across the top",
+  "collection": "media/collection.png"
 }

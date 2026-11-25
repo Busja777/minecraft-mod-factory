@@ -158,11 +158,17 @@
     "cfName": "Hidden Archers",
     "projectId": 1510695,
     "status": "published",
-    "version": "1.0",
-    "lastPublishedAt": "2026-04-11T08:27:46.653Z",
-    "nextUpdateDue": "2026-05-05T08:19:06.854Z",
-    "updateCount": 0,
-    "files": [],
+    "version": "1.1",
+    "lastPublishedAt": "2026-11-25T18:51:28.515Z",
+    "nextUpdateDue": "2026-12-20T06:28:57.447Z",
+    "updateCount": 1,
+    "files": [
+      {
+        "fileId": 9815226,
+        "version": "1.1",
+        "uploadedAt": "2026-11-25T18:51:28.515Z"
+      }
+    ],
     "game": "bedrock"
   },
   {
