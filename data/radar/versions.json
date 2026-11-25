@@ -1,9 +1,9 @@
 {
-  "checked": "2026-11-20",
+  "checked": "2026-11-25",
   "note": "Baseline for the radar: the newest versions seen per source. A change against this file is what the day-one machine reacts to.",
   "minecraftJava": {
     "release": "26.3",
-    "snapshot": "26.4-snapshot-10",
+    "snapshot": "26.4-pre-1",
     "source": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
   },
   "minecraftBedrockSamples": {

@@ -1,7 +1,7 @@
 {
-  "checked": "2026-11-23",
+  "checked": "2026-11-25",
   "release": "26.3",
-  "snapshot": "26.4-snapshot-10",
+  "snapshot": "26.4-pre-1",
   "packs": {
     "actionbar-coords": {
       "kind": "data",
@@ -16,7 +16,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 8,
@@ -37,7 +37,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 17,
@@ -58,7 +58,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 61,
@@ -79,7 +79,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": false,
         "files": 1,
@@ -96,7 +96,7 @@
         "ok": null,
         "waiting": "26.4"
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 18,
@@ -117,7 +117,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 20,
@@ -138,7 +138,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 23,
@@ -159,7 +159,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 13,
@@ -180,7 +180,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 424,
@@ -201,7 +201,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 12,
@@ -222,7 +222,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 252,
@@ -243,7 +243,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-snapshot-10": {
+      "26.4-pre-1": {
         "ok": true,
         "loaded": true,
         "files": 8,
@@ -257,7 +257,27 @@
       "mc": "1.21.1",
       "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
     },
+    "bonemeal-more": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "bottled-levels": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "double-door-buddy": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
     "fast-leaf-fall": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "griefing-rules": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "join-greeter": {
       "mc": "1.21.1",
       "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
     },
@@ -265,14 +285,26 @@
       "mc": "1.21.1",
       "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
     },
+    "patient-anvil": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
     "replant-click": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "sky-forecast": {
+      "mc": "1.21.1",
+      "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
+    },
+    "stack-more": {
       "mc": "1.21.1",
       "note": "a mod is compiled per Minecraft version; it needs its own build for a new one"
     }
   },
   "next": {
     "from": "26.3",
-    "to": "26.4-snapshot-10",
+    "to": "26.4-pre-1",
     "adds": {
       "item": [
         "brittle_ice",
