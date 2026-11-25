@@ -1,0 +1,19 @@
+{
+  "slug": "fair-traveling-cart",
+  "game": "stardewvalley",
+  "name": "Fair Traveling Cart",
+  "cfProjectId": null,
+  "lastGameVersions": [],
+  "versions": [
+    {
+      "version": "1.0",
+      "file": "FairTravelingCart-1.0.zip",
+      "changelog": "## Fair Traveling Cart 1.0\n\nFirst release.\n\n- The traveling cart's regular stock costs at most a multiple of each item's sell price: choose 2x, 3x (default) or 4x in the config.\n- At 3x, Coal (sells for 15g) costs 45g instead of 100g to 1,000g, and Starfruit (sells for 750g) costs 2,250g instead of up to 3,750g.\n- At 4x the cart still rolls its own prices and keeps them whenever they are lower than the cap.\n- What the cart sells, how much and on which days stays as it is. Furniture, Rare Seeds, Coffee Beans and the rare special items keep their prices.",
+      "status": "due",
+      "gameVersions": [
+        "1.6.14",
+        "1.6.15"
+      ]
+    }
+  ]
+}
