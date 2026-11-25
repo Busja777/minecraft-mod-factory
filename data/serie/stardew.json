@@ -290,7 +290,7 @@
       "slug": "giant-crop-luck",
       "name": "Giant Crop Luck",
       "art": "CP",
-      "was": "Riesenpflanzen häufiger",
+      "was": "Riesenpflanzen häufiger. ZURÜCKGESTELLT (25.11., Nacht-Sitzung): V1.0 würde nur das Feld `Chance` der wenigen Einträge in `Data/GiantCrops` ändern, also ein paar Zahlen, zu dünn wie Bountiful Forage und Trash Treasures (Fair Play „low effort“). Erst bauen, wenn je Pflanze eigene, belegte Regeln dazukommen (z. B. Mindestfeld, Jahreszeit), oder als Update eines bestehenden Ernte-Pakets.",
       "updates": [
         "Regler",
         "mehr Pflanzen",
