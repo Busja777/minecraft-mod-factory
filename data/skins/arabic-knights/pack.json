@@ -63,13 +63,15 @@
         }
       ],
       "mcpack": "Arabic_Medieval_Skins_V1_1.mcpack",
-      "status": "due",
+      "status": "published",
       "note": "Hooves in the sand: the Bedouin Trader leads his caravan in, protected by the chainmail of the Fatimid Soldier.",
       "media": [
         "media/v1.1-skins.png"
       ],
-      "fileId": null,
-      "publishedAt": null
+      "fileId": 9830741,
+      "publishedAt": "2026-11-26T17:25:43.911Z",
+      "changelog": "## V1.1\n\n2 new skins join the pack: Bedouin Trader and Fatimid Soldier.\n\nHooves in the sand: the Bedouin Trader leads his caravan in, protected by the chainmail of the Fatimid Soldier.\n\nNew skins:\n- **Bedouin Trader** — Under a red-and-white checkered headscarf, the Bedouin Trader guides his brown-robed caravan through dunes no map has ever described.\n- **Fatimid Soldier** — The Fatimid Soldier stands guard in chainmail and a horned steel helm, a green emblem shining on his white tabard.\n\nThis download contains all 5 skins of the pack, so new players get everything in one file.\n\n![V1.1 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/arabic-knights/media/v1.1-skins.png)\n",
+      "manual": false
     },
     {
       "stage": "U2",
@@ -202,5 +204,6 @@
     "26.10"
   ],
   "logoPrompt": "Square logo: a blocky Minecraft-style Seljuk Sultan figure, gold crown with a red jewel, white beard, red robe with a golden zigzag across the chest, white fur shoulder collar trimmed in bright cyan, chainmail-grey gauntlets, dramatic golden rim light and soft cyan glow, dark navy background with faint drifting desert sand, NO text.",
-  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style characters side by side. Left: Abbasid Caliph with white turban and white face veil, black robe with gold shoulder bands, gold belt and gold hem. Center: Mamluk Warrior with steel helmet and thin black visor slit, segmented silver chest plate, teal sleeves and teal legs, brown boots. Right: Seljuk Sultan with gold crown and red jewel, white beard, red robe with golden zigzag, white fur collar trimmed in cyan. Background: golden desert dunes at dusk, a distant walled city with domes and minarets, warm sunset sky fading into deep blue. Title text \"Arabic Knights\" in big stylised gold letters with ornate edges at the top."
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style characters side by side. Left: Abbasid Caliph with white turban and white face veil, black robe with gold shoulder bands, gold belt and gold hem. Center: Mamluk Warrior with steel helmet and thin black visor slit, segmented silver chest plate, teal sleeves and teal legs, brown boots. Right: Seljuk Sultan with gold crown and red jewel, white beard, red robe with golden zigzag, white fur collar trimmed in cyan. Background: golden desert dunes at dusk, a distant walled city with domes and minarets, warm sunset sky fading into deep blue. Title text \"Arabic Knights\" in big stylised gold letters with ornate edges at the top.",
+  "collection": "media/collection.png"
 }
