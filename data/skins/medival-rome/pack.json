@@ -76,13 +76,15 @@
         }
       ],
       "mcpack": "Roman_Warriors_V1_1.mcpack",
-      "status": "due",
+      "status": "published",
       "note": "The arena gates creak open again: the bare-chested Retiarius Gladiator steps onto the sand, while the gold-scaled Roman Eques rides in from the mist.",
       "media": [
         "media/v1.1-skins.png"
       ],
-      "fileId": null,
-      "publishedAt": null
+      "fileId": 9854497,
+      "publishedAt": "2026-11-27T19:39:43.745Z",
+      "changelog": "## V1.1\n\n2 new skins join the pack: Retiarius Gladiator and Roman Eques.\n\nThe arena gates creak open again: the bare-chested Retiarius Gladiator steps onto the sand, while the gold-scaled Roman Eques rides in from the mist.\n\nNew skins:\n- **Retiarius Gladiator** — The Retiarius Gladiator fights with no helmet at all, bearded and bare-chested, trusting only the golden guard on his shoulder.\n- **Roman Eques** — The Roman Eques rides out of the mist in a steel helmet, gold-scaled armour and red tunic, hoofbeats echoing where no horse remains.\n\nThis download contains all 7 skins of the pack, so new players get everything in one file.\n\n![V1.1 skins](https://raw.githubusercontent.com/Busja777/minecraft-mod-factory/main/data/skins/medival-rome/media/v1.1-skins.png)\n",
+      "manual": false
     },
     {
       "stage": "U2",
@@ -161,8 +163,17 @@
     "26.0.02",
     "26.0",
     "26.3",
-    "26.10"
+    "26.10",
+    "26.11",
+    "26.12",
+    "26.20",
+    "26.13",
+    "26.30",
+    "26.40",
+    "26.50",
+    "26.60"
   ],
   "logoPrompt": "Square logo: a blocky Minecraft-style Murmillo gladiator, a golden helmet with a wide brim shading big white cartoon eyes with black pupils, bare tan chest with a small scar, a golden striped arm guard on one arm, a white loincloth with a gold belt buckle, golden striped greaves. Dramatic warm golden rim light and sheen on the metal, drifting arena dust, deep dark navy background, centred heroic pose, NO text.",
-  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style Roman warriors side by side with big white cartoon eyes and black pupils. Left: Roman Centurion in a gold helmet with a red side crest, checkered gold chest armour, red tunic legs and gold greaves. Centre: Murmillo Gladiator in a wide-brimmed gold helmet, bare tan chest with a scar, a gold striped arm guard, white loincloth and gold greaves. Right: Roman General in a gold helmet with a white plume, gold armour, purple cuffs and purple legs. Behind them, a moonlit ruined Colosseum with torches and drifting sand, warm gold light against deep night blue. Big stylised Roman stone-carved gold letters reading \"MEDIVAL ROME\" across the top."
+  "coverPrompt": "Wide cinematic cover: three blocky Minecraft-style Roman warriors side by side with big white cartoon eyes and black pupils. Left: Roman Centurion in a gold helmet with a red side crest, checkered gold chest armour, red tunic legs and gold greaves. Centre: Murmillo Gladiator in a wide-brimmed gold helmet, bare tan chest with a scar, a gold striped arm guard, white loincloth and gold greaves. Right: Roman General in a gold helmet with a white plume, gold armour, purple cuffs and purple legs. Behind them, a moonlit ruined Colosseum with torches and drifting sand, warm gold light against deep night blue. Big stylised Roman stone-carved gold letters reading \"MEDIVAL ROME\" across the top.",
+  "collection": "media/collection.png"
 }

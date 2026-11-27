@@ -110,11 +110,17 @@
     "cfName": "Medival Rome",
     "projectId": 1512775,
     "status": "published",
-    "version": "1.0",
-    "lastPublishedAt": "2026-04-13T08:29:41.743Z",
-    "nextUpdateDue": "2026-05-06T02:57:43.010Z",
-    "updateCount": 0,
-    "files": [],
+    "version": "1.1",
+    "lastPublishedAt": "2026-11-27T19:39:43.745Z",
+    "nextUpdateDue": "2026-12-22T15:32:32.793Z",
+    "updateCount": 1,
+    "files": [
+      {
+        "fileId": 9854497,
+        "version": "1.1",
+        "uploadedAt": "2026-11-27T19:39:43.745Z"
+      }
+    ],
     "game": "bedrock"
   },
   {
