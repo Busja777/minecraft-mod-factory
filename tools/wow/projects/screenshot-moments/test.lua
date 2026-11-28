@@ -413,3 +413,116 @@ test("game format strings become anchored patterns", function(wow)
   eq(ns.Take(state), nil, "a loading screen drops the waiting screenshot")
   eq(ns.Offer(state, 200, "e"), "loading")
 end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- Every command in a text with its words: "/smo on, /smo off, /smo test".
+local WORDS = { on = true, off = true, test = true }
+local function commands(text)
+  local out = {}
+  for cmd, rest in text:gmatch("(/s%a+)([^,%.%(%)/]*)") do
+    if cmd == "/smo" or cmd == "/shotmoments" then
+      local word = rest:match("^ (%a+)")
+      out[#out + 1] = (word and WORDS[word]) and (cmd .. " " .. word) or cmd
+    end
+  end
+  return table.concat(out, ", ")
+end
+
+local function german(wow, g, saved)
+  wow.locale = "deDE"
+  return boot(wow, g or { lootSelf = "Ihr erhaltet Beute: %s", lootSelfMultiple = "Ihr erhaltet Beute: %sx%d" }, saved)
+end
+
+test("German client: the chat lines of the moments are German", function(wow)
+  german(wow, { lootSelf = "Ihr erhaltet Beute: %s", lootSelfMultiple = "Ihr erhaltet Beute: %sx%d",
+    achievements = { [6] = "Stufe 10", [46] = "Erkundet den Wald von Elwynn" } })
+  wow.fire("PLAYER_LEVEL_UP", 42)
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot gespeichert: Stufe 42.")
+  later(wow, 10)
+  wow.fire("ACHIEVEMENT_EARNED", 46, false)
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot gespeichert: Erfolg Erkundet den Wald von Elwynn.", "the achievement name from the game")
+  later(wow, 10)
+  wow.fire("CHAT_MSG_LOOT", "Ihr erhaltet Beute: " .. EPIC_LINK .. ".")
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot gespeichert: epische Beute " .. EPIC_LINK .. ".")
+  later(wow, 10)
+  wow.fire("PLAYER_LEVEL_UP", 43)
+  wow.fire("ACHIEVEMENT_EARNED", 6, false)
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot gespeichert: Stufe 43, Erfolg Stufe 10.", "shared screenshot")
+  later(wow, 10)
+  wow.fire("PLAYER_LEVEL_UP", SECRET)
+  wow.fire("ACHIEVEMENT_EARNED", SECRET)
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot gespeichert: neue Stufe, Erfolg.")
+  later(wow, 10)
+  wow.fire("PLAYER_LEVEL_UP", 44)
+  settle(wow, "SCREENSHOT_FAILED")
+  eq(lastChat(wow), P .. "Der Screenshot hat nicht geklappt: Stufe 44.")
+  eq(game.shots, 6)
+end)
+
+test("German client: every answer to a command in German", function(wow)
+  german(wow)
+  wow.slash("/smo")
+  eq(wow.chat[1], P .. "Screenshots bei einem Stufenaufstieg, einem Erfolg und epischer Beute sind an.")
+  eq(wow.chat[2], P .. "/smo on oder /smo off schaltet die Screenshots ein oder aus, /smo test macht einen Test-Screenshot. Sie landen im Ordner Screenshots des Spiels.")
+  wow.slash("/smo off")
+  eq(lastChat(wow), P .. "Screenshots bei besonderen Momenten sind aus.")
+  wow.slash("/smo test")
+  eq(lastChat(wow), P .. "Ein Test-Screenshot folgt in einer Sekunde.")
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot gespeichert: Test.")
+  later(wow, 3)
+  wow.slash("/smo test")
+  eq(lastChat(wow), P .. "Der letzte Screenshot wurde gerade gemacht. Versuch es in 7 Sekunden noch mal.")
+  wow.fire("LOADING_SCREEN_ENABLED")
+  later(wow, 10)
+  wow.slash("/shotmoments test")
+  eq(lastChat(wow), P .. "Nicht während eines Ladebildschirms.")
+  wow.slash("/smo on")
+  eq(lastChat(wow), P .. "Screenshots bei einem Stufenaufstieg, einem Erfolg und epischer Beute sind an.", "the commands stay English")
+end)
+
+test("German client: the off switch saved in 1.0 is kept", function(wow)
+  german(wow, nil, { version = 1, settings = { on = false } })
+  eq(ScreenshotMomentsDB.settings.on, false)
+  wow.fire("PLAYER_LEVEL_UP", 50)
+  settle(wow, false)
+  eq(game.shots, 0)
+  eq(#wow.chat, 0)
+end)
+
+test("German texts keep every placeholder and command of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(commands(text), commands(key), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 15, "every text on screen has its German one")
+  eq(commands("/smo on or /smo off switches, /shotmoments shows."), "/smo on, /smo off, /shotmoments")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  wow.locale = "enUS"
+  local ns = boot(wow)
+  eq(next(ns.L), nil)
+  wow.fire("PLAYER_LEVEL_UP", 12)
+  settle(wow)
+  eq(lastChat(wow), P .. "Screenshot saved: level 12.")
+  wow.slash("/smo off")
+  eq(lastChat(wow), P .. "Screenshots at special moments are off.")
+end)

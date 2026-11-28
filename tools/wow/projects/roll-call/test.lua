@@ -264,7 +264,7 @@ test("the German client collects German roll lines", function(wow)
   roll(wow, "Yubi", 77, 1, 100, 1)
   wow.fire("CHAT_MSG_SYSTEM", "Kel rolls 99 (1-100)") -- an English line cannot come from a German client
   tick(ns, 20, wow)
-  eq(lastChat(wow), P .. "Winner: Yubi with 77 (1-100).")
+  eq(lastChat(wow), P .. "Gewinner: Yubi mit 77 (1-100).", "1.1: the result in German")
   eq(#ns.round.rolls, 2)
 end)
 
@@ -403,4 +403,113 @@ test("the window remembers where it was moved and closes with Escape", function(
   wow.slash("/rollcall")
   eq(RollCallFrame.point[1], "TOPLEFT")
   eq(RollCallFrame.point[4], 120)
+end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- Every command in a text with its words: "/rollcall start, /rollcall stop, /roll".
+local WORDS = { start = true, stop = true }
+local function commands(text)
+  local out = {}
+  for cmd, rest in text:gmatch("(/r%a*)([^,%.%(%)]*)") do
+    if cmd == "/rollcall" or cmd == "/rolls" or cmd == "/roll" then
+      local word = rest:match("^ (%a+)")
+      out[#out + 1] = (word and WORDS[word]) and (cmd .. " " .. word) or cmd
+    end
+  end
+  return table.concat(out, ", ")
+end
+
+local function german(wow, saved)
+  return boot(wow, { text = DE, locale = "deDE" }, saved)
+end
+
+test("German client: every answer to a command in German", function(wow)
+  local ns = german(wow)
+  wow.slash("/rollcall")
+  eq(lastChat(wow), P .. "Noch keine Würfelrunde. Mit /rollcall start beginnst du eine.")
+  eq(RollCallFrame.status.text, "|cff9d9d9dNoch keine Würfelrunde.|r")
+  eq(RollCallFrame.button.text, "Starten (30 s)")
+  wow.slash("/rollcall stop")
+  eq(lastChat(wow), P .. "Es läuft keine Würfelrunde.")
+  wow.slash("/rollcall start 20")
+  eq(lastChat(wow), P .. "Würfelrunde für 20 Sekunden gestartet. Jetzt kann jeder mit /roll würfeln.")
+  eq(RollCallFrame.notes[1].text, "|cff9d9d9dWarte auf /roll ...|r")
+  eq(RollCallFrame.button.text, "Beenden")
+  wow.slash("/rollcall start 10")
+  eq(lastChat(wow), P .. "Es läuft schon eine Würfelrunde. /rollcall stop beendet sie.")
+  roll(wow, "Ohm", 64, 1, 100, 1)
+  roll(wow, "Ohm", 99, 1, 100, 1)
+  tick(ns, 3, wow)
+  wow.slash("/rollcall")
+  eq(lastChat(wow), P .. "Würfe werden gesammelt: noch 15 Sekunden")
+  eq(RollCallFrame.notes[1].text, "|cff9d9d9dNur der erste Wurf zählt: 1 weitere ignoriert.|r")
+  wow.slash("/rollcall stop")
+  eq(lastChat(wow), P .. "Gewinner: Ohm mit 64 (1-100).")
+  wow.slash("/rollcall start 500")
+  eq(lastChat(wow), P .. "Würfelrunde für 120 Sekunden gestartet (zwischen 5 und 120). Jetzt kann jeder mit /roll würfeln.")
+  wow.slash("/rollcall stop")
+  eq(lastChat(wow), P .. "Es wurden keine Würfe gesehen.")
+  wow.slash("/rollcall help")
+  eq(lastChat(wow), P .. "/rollcall start 30 sammelt 30 Sekunden lang Würfe (5 bis 120), /rollcall stop beendet die Runde vorzeitig, /rollcall zeigt das letzte Ergebnis.")
+end)
+
+test("German client: ties, odd ranges, a long list and secret lines in German", function(wow)
+  local ns = german(wow)
+  wow.slash("/rollcall start 60")
+  roll(wow, "Ohm", 870, 1, 1000)
+  roll(wow, "Yubi", 870, 1, 1000)
+  for i = 1, 11 do roll(wow, "P" .. i, i) end
+  wow.fire("CHAT_MSG_SYSTEM", SECRET)
+  eq(RollCallFrame.rows[1].mark.text, "|cffffd100gleich|r")
+  eq(RollCallFrame.rows[10].name.text, "|cff9d9d9dund 4 weitere|r")
+  local notes = table.concat(texts(RollCallFrame.notes), "\n")
+  eq(has(notes, "Einige Zeilen ließen sich hier nicht lesen, es können Würfe fehlen."), true, notes)
+  eq(has(notes, "Orange Bereiche sind nicht 1-100."), true, notes)
+  local from = #wow.chat
+  wow.slash("/rollcall stop")
+  local said = chatSince(wow, from)
+  eq(has(said, "Gleichstand bei 870: Ohm, Yubi."), true, said)
+  eq(has(said, "Einige Zeilen ließen sich hier nicht lesen"), true)
+  local r = ns.NewRound(0, 30)
+  ns.AddRoll(r, "Kel", 870, 1, 1000)
+  eq(ns.ResultText(r), "Gewinner: Kel mit 870 (1-1000, nicht 1-100).")
+end)
+
+test("German client: the last result saved in 1.0 is kept", function(wow)
+  local ns = german(wow, { version = 1, last = { open = false, rolls = { { name = "Ohm", roll = 5, low = 1, high = 100, n = 1 } }, seen = { Ohm = true }, repeats = 0, unreadable = 0 } })
+  wow.slash("/rolls")
+  eq(lastChat(wow), P .. "Gewinner: Ohm mit 5 (1-100).")
+  eq(RollCallFrame.rows[1].name.text, "Ohm")
+end)
+
+test("German texts keep every placeholder and command of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(commands(text), commands(key), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 21, "every text on screen has its German one")
+  eq(commands("/rollcall start 30 collects, /rollcall stop ends, /roll now, /rolls."), "/rollcall start, /rollcall stop, /roll, /rolls")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  local ns = boot(wow, { locale = "enUS" })
+  eq(next(ns.L), nil)
+  wow.slash("/rollcall start 20")
+  eq(lastChat(wow), P .. "Roll call started for 20 seconds. Everyone can /roll now.")
+  eq(RollCallFrame.button.text, "Stop")
+  roll(wow, "Ohm", 64)
+  wow.slash("/rollcall stop")
+  eq(lastChat(wow), P .. "Winner: Ohm with 64 (1-100).")
 end)

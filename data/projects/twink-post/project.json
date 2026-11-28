@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "TwinkPost-1.1.zip",
+      "changelog": "## Twink Post 1.1\n\n- Twink Post now speaks **German**: the tooltip of the mailbox button, the hint in the menu and every answer to a command. On clients in other languages it stays in English.\n- As in 1.0, the level and the faction names come from your client, so a German client shows \"Stufe 70\" and its own faction names.\n- Character and realm names stay exactly as the game writes them, so the recipient box gets the same `Name` or `Name-Realm` as before.\n- The commands stay the same in every language, for example `/twinkpost forget Name` or `/tp`.\n- Your saved characters from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }
