@@ -38,8 +38,9 @@ local function addons(list)
   for _, a in ipairs(list) do table.insert(pc.addons, { name = a[1], kb = a[2], loaded = a.loaded, security = a.security }) end
 end
 
-local function boot(wow, saved)
+local function boot(wow, saved, locale)
   model()
+  if locale then wow.locale = locale end
   addons({ { "Details", 40960 }, { "WeakAuras", 81920 }, { "BigWigs", 20480 }, { "PerfMeter", 120 } })
   PerfMeterDB = saved
   local ns = wow.load(ADDON_DIR, ADDON_NAME)
@@ -376,4 +377,99 @@ test("slash before login does nothing", function(wow)
   wow.slash("/perfmeter lock")
   eq(PerfMeterFrame, nil)
   eq(#wow.chat, 0)
+end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- Every command in a text with its words: "/perfmeter lock, /perfmeter reset, /pm".
+local WORDS = { show = true, hide = true, lock = true, unlock = true, reset = true }
+local function commands(text)
+  local out = {}
+  for cmd, rest in text:gmatch("(/p[em]%a*)([^,%.%(%)]*)") do
+    if cmd == "/perfmeter" or cmd == "/pm" then
+      local word = rest:match("^ (%a+)")
+      out[#out + 1] = (word and WORDS[word]) and (cmd .. " " .. word) or cmd
+    end
+  end
+  return table.concat(out, ", ")
+end
+
+test("German client: the meter, the tooltip and every answer to a command in German", function(wow)
+  MAINMENUBAR_FPS_LABEL = "Framerate: %.0f FPS"
+  local ns = boot(wow, nil, "deDE")
+  local f = PerfMeterFrame
+  eq(plain(f.text.text), "60 FPS  40/55 ms  AddOns 140.1 MB", "unit and values as in 1.0, ADDONS from the client")
+  f.scripts.OnEnter(f)
+  local lines = wow.tooltip.lines
+  eq(lines[1], "Perf Meter")
+  eq(lines[2], "Framerate: 60 FPS", "the game's own line")
+  eq(plain(lines[#lines - 1]), "Speichermessung: vor 0 s.")
+  eq(plain(lines[#lines]), "Zum Verschieben ziehen. /perfmeter lock hält die Anzeige fest.")
+  f.scripts.OnLeave(f)
+  wow.slash("/pm lock")
+  eq(plain(lastChat(wow)), "Perf Meter: Die Anzeige ist gesperrt.")
+  wow.slash("/pm unlock")
+  eq(plain(lastChat(wow)), "Perf Meter: Die Anzeige ist entsperrt. Zieh sie, um sie zu verschieben.")
+  wow.slash("/pm reset")
+  eq(plain(lastChat(wow)), "Perf Meter: Die Anzeige ist wieder oben am Bildschirm.")
+  wow.slash("/pm help")
+  eq(plain(lastChat(wow)), "Perf Meter: /perfmeter blendet die Anzeige ein oder aus, /perfmeter lock oder unlock sperrt oder entsperrt sie, /perfmeter reset setzt sie wieder nach oben.")
+end)
+
+test("German client in combat: the tooltip says in German why memory is missing", function(wow)
+  model()
+  wow.locale = "deDE"
+  addons({ { "Details", 4096 } })
+  pc.combat = true
+  wow.load(ADDON_DIR, ADDON_NAME)
+  wow.fire("PLAYER_LOGIN")
+  local f = PerfMeterFrame
+  f.scripts.OnEnter(f)
+  local tip = plain(table.concat(wow.tooltip.lines, "\n"))
+  eq(tip:find("Der Speicher der Addons wird außerhalb des Kampfes gemessen.", 1, true) ~= nil, true)
+  eq(tip:find("Im Kampf wird kein Speicher gemessen.", 1, true) ~= nil, true)
+end)
+
+test("German client: place, lock and hidden state saved in 1.0 are kept", function(wow)
+  local ns = boot(wow, { point = { "BOTTOMLEFT", "BOTTOMLEFT", 300, 40 }, locked = true, hidden = false }, "deDE")
+  local f = PerfMeterFrame
+  eq(f.point[1], "BOTTOMLEFT")
+  eq(f.point[4], 300)
+  eq(PerfMeterDB.locked, true)
+  local moving = false
+  f.StartMoving = function() moving = true end
+  f.scripts.OnDragStart(f)
+  eq(moving, false, "still locked")
+  ns = boot(wow, { hidden = true }, "deDE")
+  eq(pc.updates, 0, "a hidden meter stays hidden")
+end)
+
+test("German texts keep every placeholder and command of the English text, in order", function(wow)
+  local ns = boot(wow, nil, "deDE")
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(commands(text), commands(key), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 10, "every text on screen has its German one")
+  eq(commands("/perfmeter lock or unlock fixes it, /perfmeter reset puts it back. Short form: /pm."), "/perfmeter lock, /perfmeter reset, /pm")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  local ns = boot(wow, nil, "enUS")
+  eq(next(ns.L), nil)
+  eq(plain(PerfMeterFrame.text.text), "60 fps  40/55 ms  AddOns 140.1 MB")
+  wow.slash("/pm lock")
+  eq(plain(lastChat(wow)), "Perf Meter: The meter is locked.")
+  wow.slash("/pm help")
+  eq(plain(lastChat(wow)), "Perf Meter: /perfmeter shows or hides the meter, /perfmeter lock or unlock fixes or frees it, /perfmeter reset puts it back at the top.")
 end)

@@ -56,6 +56,7 @@ local function boot(wow, opts)
   wow.player = opts.player
   wow.realm = opts.realm
   wow.class = opts.class
+  if opts.locale then wow.locale = opts.locale end
   local w = world(wow, opts)
   if opts.saved then TwinkPostDB = opts.saved end
   local ns = wow.load(ADDON_DIR, ADDON_NAME)
@@ -371,4 +372,104 @@ test("a forgotten character leaves the mail menu", function(wow)
   ns.button:Click()
   local items = w.lastMenu()
   eq(#items, 2)
+end)
+
+-- 1.1: German ------------------------------------------------------------------------------------------
+
+-- Every placeholder of a text, in order: "%d", "%s", "%%".
+local function placeholders(text)
+  local out = {}
+  for p in text:gmatch("%%[%d%.]*[%a%%]") do out[#out + 1] = p end
+  return table.concat(out, " ")
+end
+
+-- Every command in a text with its word: "/twinkpost, /twinkpost forget, /tp".
+local function commands(text)
+  local out = {}
+  for cmd, rest in text:gmatch("(/t%a*)([^,%.%(%)]*)") do
+    if cmd == "/twinkpost" or cmd == "/tp" then
+      local word = rest:match("^ (%a+)")
+      out[#out + 1] = (word == "forget" or word == "list") and (cmd .. " " .. word) or cmd
+    end
+  end
+  return table.concat(out, ", ")
+end
+
+local function german(wow, opts)
+  opts = opts or {}
+  opts.locale = "deDE"
+  opts.levelTemplate = opts.levelTemplate or "Stufe %d"
+  return boot(wow, opts)
+end
+
+test("German client: /twinkpost and every answer to forget in German", function(wow)
+  local saved = account()
+  saved.chars["Brakk-Argent Dawn"] = char("Brakk", "Argent Dawn", "WARRIOR", 10, "Alliance")
+  german(wow, { saved = saved })
+  wow.slash("/twinkpost")
+  eq(wow.chat[1], PREFIX .. "Bekannte Charaktere: 8")
+  eq(wow.chat[2], "  |cff3fc7ebAsh|r - Argent Dawn, Stufe 45, Alliance", "level from the game's own template")
+  local own
+  for _, line in ipairs(wow.chat) do if line:find("Yubi", 1, true) then own = line end end
+  eq(own, "  |cff3fc7ebYubi|r - Silvermoon, Stufe 80, Alliance (dieser Charakter)")
+  eq(wow.chat[#wow.chat], PREFIX .. "/twinkpost zeigt deine Charaktere, /twinkpost forget Name oder Name-Realm entfernt einen. Am Briefkasten trägt die Schaltfläche neben dem Empfängerfeld beim Verschicken von Post einen davon ein.")
+  wow.chat = {}
+  wow.slash("/tp forget lumi")
+  eq(wow.chat[1], PREFIX .. "Lumi-Silvermoon vergessen.")
+  wow.slash("/tp forget Brakk")
+  eq(wow.chat[2], PREFIX .. "Mehrere Charaktere heißen Brakk. Gib Name-Realm an.")
+  wow.slash("/tp forget Brakk-ArgentDawn")
+  eq(wow.chat[3], PREFIX .. "Brakk-Argent Dawn vergessen.")
+  wow.slash("/tp forget Yubi")
+  eq(wow.chat[4], PREFIX .. "Den Charakter, den du gerade spielst, kannst du nicht vergessen.")
+  wow.slash("/tp forget Niemand")
+  eq(wow.chat[5], PREFIX .. "Kein Charakter heißt Niemand.")
+  wow.slash("/tp forget")
+  eq(wow.chat[6]:find("/twinkpost zeigt", 1, true) ~= nil, true, "the German help")
+end)
+
+test("German client: the button, its tooltip and the menu", function(wow)
+  local ns, w = german(wow, { saved = account() })
+  ns.button.scripts.OnEnter(ns.button)
+  eq(wow.tooltip.lines[1], "Twink Post")
+  eq(wow.tooltip.lines[2], "Klicken, um einen deiner Charaktere als Empfänger zu wählen.")
+  ns.button:Click()
+  local items, root = w.lastMenu()
+  eq(root.items[1].title, "Twink Post")
+  eq(items[1].text, "|cffc69b6dBrakk|r  |cff9d9d9dStufe 70|r")
+  items[1].callback()
+  eq(SendMailNameEditBox:GetText(), "Brakk", "the names stay as they are")
+  eq(#w.sent, 0, "nothing is sent")
+end)
+
+test("German client: the hint without other characters, in the menu and in chat", function(wow)
+  local ns, w = german(wow)
+  ns.button:Click()
+  local items = w.lastMenu()
+  eq(items[1].text, "Hier ist noch kein anderer Charakter bekannt. Melde dich einmal mit jedem deiner Charaktere an.")
+  MenuUtil = nil
+  ns.OpenMenu(ns.button)
+  eq(wow.chat[#wow.chat], PREFIX .. "Hier ist noch kein anderer Charakter bekannt. Melde dich einmal mit jedem deiner Charaktere an.")
+end)
+
+test("German texts keep every placeholder and command of the English text, in order", function(wow)
+  local ns = german(wow)
+  local n = 0
+  for key, text in pairs(ns.L) do
+    n = n + 1
+    eq(placeholders(text), placeholders(key), key)
+    eq(commands(text), commands(key), "the commands stay: " .. key)
+    eq(text:find("|", 1, true), nil, "no | in a German text: " .. key)
+  end
+  eq(n, 10, "every text on screen has its German one")
+  eq(commands("/twinkpost lists, /twinkpost forget Name removes, /tp list."), "/twinkpost, /twinkpost forget, /tp list")
+end)
+
+test("an English client keeps the English texts", function(wow)
+  local ns = boot(wow, { saved = account(), locale = "enUS" })
+  eq(next(ns.L), nil)
+  wow.slash("/tp forget Nobody")
+  eq(wow.chat[1], PREFIX .. "No character called Nobody.")
+  ns.button.scripts.OnEnter(ns.button)
+  eq(wow.tooltip.lines[2], "Click to pick one of your characters as the recipient.")
 end)

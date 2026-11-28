@@ -13,6 +13,15 @@
       "gameVersions": [
         "12.1.5"
       ]
+    },
+    {
+      "version": "1.1",
+      "file": "RollCall-1.1.zip",
+      "changelog": "## Roll Call 1.1\n\n- Roll Call now speaks **German**: the window, the result in chat and every answer to a command. On clients in other languages it stays in English.\n- As in 1.0, the roll lines are read with the game's own text, so a German client's \"würfelt. Ergebnis:\" lines are counted.\n- The commands stay the same in every language, for example `/rollcall start 30` or `/rollcall stop`.\n- The last result and the window's position from 1.0 are kept.",
+      "status": "due",
+      "gameVersions": [
+        "12.1.5"
+      ]
     }
   ]
 }
