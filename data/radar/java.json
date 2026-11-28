@@ -1,7 +1,7 @@
 {
-  "checked": "2026-11-25",
+  "checked": "2026-11-28",
   "release": "26.3",
-  "snapshot": "26.4-pre-1",
+  "snapshot": "26.4-pre-2",
   "packs": {
     "actionbar-coords": {
       "kind": "data",
@@ -16,7 +16,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 8,
@@ -37,7 +37,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 17,
@@ -58,7 +58,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 61,
@@ -79,7 +79,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": false,
         "files": 1,
@@ -96,7 +96,7 @@
         "ok": null,
         "waiting": "26.4"
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 18,
@@ -117,7 +117,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 20,
@@ -138,7 +138,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 23,
@@ -159,7 +159,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 13,
@@ -180,7 +180,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 424,
@@ -201,7 +201,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 12,
@@ -222,7 +222,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 252,
@@ -243,7 +243,7 @@
         "problems": [],
         "more": 0
       },
-      "26.4-pre-1": {
+      "26.4-pre-2": {
         "ok": true,
         "loaded": true,
         "files": 8,
@@ -304,7 +304,7 @@
   },
   "next": {
     "from": "26.3",
-    "to": "26.4-pre-1",
+    "to": "26.4-pre-2",
     "adds": {
       "item": [
         "brittle_ice",
